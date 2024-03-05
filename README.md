@@ -7,7 +7,7 @@
 </p>
 
 <!-- <h3 align="center"><b>Torqbit</b></h3> -->
-<p align="center"><b>An Open Source Online learning platform.</b></p>
+<p align="center"><b>An open source platform for teachers, creators & educational organization</b></p>
 
 <p align="center">
 <a href="https://discord.gg/kKR9TWm7">
