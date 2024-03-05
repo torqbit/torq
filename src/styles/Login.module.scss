@@ -1,0 +1,88 @@
+.login_page_wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.spin_loader {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.login_page_wrapper > div {
+  flex: 1 1 100%;
+}
+
+.login_img {
+  background-color: #f0f0f0;
+  display: grid;
+  place-items: center;
+  img {
+    width: 100%;
+  }
+}
+
+.social_login_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px 0;
+  background-color: #0e1326;
+  padding: 20px;
+}
+
+.social_login_container .google_btn,
+.social_login_container .github_btn {
+  width: 240px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  gap: 0 8px;
+  align-items: center;
+  justify-content: center;
+}
+.social_login_container h3 {
+  font-size: 1.4rem;
+  color: #fff;
+  margin-top: -100px;
+}
+
+.social_login_container .google_btn {
+  background-color: #0070f3;
+  color: #fff;
+}
+.social_login_container .github_btn {
+  background-color: #fff;
+  color: #000;
+  &:hover {
+    background-color: #fff;
+    color: #000;
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .login_page_wrapper {
+    flex-direction: column;
+    gap: 0;
+    background-color: #0e1326;
+    padding: 20px;
+  }
+  .login_img {
+    margin-top: 30px;
+    background-color: #0e1326;
+  }
+  .social_login_container {
+    h3 {
+      margin-top: -150px;
+    }
+  }
+  .social_login_container .google_btn,
+  .social_login_container .github_btn {
+    width: 280px;
+  }
+}

@@ -1,0 +1,36 @@
+.empty_course_msg {
+  margin-top: 100px;
+  .ant-result-title {
+    color: var(--ft-color);
+  }
+}
+
+.in-active-user-page {
+  height: 100vh;
+  background: #0e1326;
+  display: flex;
+  padding-top: 140px;
+  justify-content: center;
+
+  .ant-result-title {
+    color: #fff;
+    font-size: 2rem;
+  }
+}
+
+.center-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about_resource_overview {
+  .ant-tabs-tab {
+    padding: 6px 20px;
+  }
+}
+
+.content-type-segment {
+  .ant-segmented-item-label {
+    width: 200px;
+  }
+}

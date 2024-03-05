@@ -1,0 +1,389 @@
+//**** DB CONFIG ****//
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+//****  DB CONFIG END  ****//
+
+//****** User Schema  *****//
+enum Role {
+  STUDENT
+  AUTHOR
+  TA
+}
+
+model User {
+  id                   Int                   @id @default(autoincrement()) @db.Int()
+  name                 String?
+  email                String?               @unique
+  phone                String?
+  image                String?
+  emailVerified        DateTime?
+  isActive             Boolean               @default(true)
+  role                 Role                  @default(STUDENT)
+  dateJoined           DateTime              @default(now())
+  createdAt            DateTime              @default(now())
+  programRegistration  programRegistration[]
+  account              Account[]
+  sessions             Session[]
+  discussion           Discussion[]
+  fromUserNotification Notification[]        @relation("fromUser")
+  toUserNotification   Notification[]        @relation("toUser")
+  submissionTask       SubmissionTask[]      @relation("user")
+  evaluatedAssignment  SubmissionTask[]      @relation("evaluatedByUser")
+}
+
+//****** User Schema End ******//
+
+//****** Account Schema ******//
+model Account {
+  id                 Int     @id @default(autoincrement())
+  userId             Int     @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text()
+  access_token       String? @db.Text()
+  expires_at         Int?
+  token_type         String? @db.Text()
+  scope              String? @db.Text()
+  id_token           String? @db.Text()
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String? @db.Text()
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+//****** Account Schema End ******//
+
+//****** Session Schema  ******//
+model Session {
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique @map("session_token")
+  userId       Int      @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+//****** Session Schema End ******//
+
+//****** VerificationToken Schema  ******//
+model VerificationToken {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+//****** VerificationToken Schema End ******//
+
+//****** Course Schema  ******//
+enum CourseType {
+  PAID
+  FREE
+}
+
+enum StateType {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+model Course {
+  courseId Int @id @default(autoincrement())
+
+  programId   Int    @default(1)
+  name        String
+  about       String @db.Text()
+  description String @db.Text()
+
+  thumbnail        String
+  icon             String?
+  authorId         Int        @map("user_id")
+  skills           Json?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @default(now())
+  courseType       CourseType @default(FREE)
+  isActive         Boolean    @default(true)
+  coursePrice      Float?     @default(0)
+  sequenceId       Int
+  durationInMonths Int        @default(12)
+  state            StateType
+  videoDuration    Int        @default(600)
+  chapter          Chapter[]
+  program          Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, name])
+  @@index([programId])
+}
+
+//****** Course Schema  End******//
+
+//****** Chapter Schema  ******//
+model Chapter {
+  chapterId   Int        @id @default(autoincrement())
+  courseId    Int
+  objective   String?    @db.Text()
+  name        String
+  description String?    @db.Text()
+  sequenceId  Int
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  course      Course     @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  resource    Resource[]
+
+  @@unique([chapterId])
+  @@index([courseId])
+}
+
+//****** Chapter Schema End******//
+
+//****** Reource Schema  ******//
+enum ResourceContentType {
+  Video
+  Assignment
+}
+
+model Resource {
+  resourceId Int    @id @default(autoincrement())
+  name       String
+
+  description String? @db.Text()
+
+  assignment         Json?
+  videoDuration      Int
+  chapterId          Int
+  sequenceId         Int
+  daysToSubmit       Int?
+  assignmentLang     Json?
+  contentType        ResourceContentType
+  content            String?             @db.Text()
+  isActive           Boolean             @default(true)
+  thumbnail          String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  chapter            Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
+  courseProgress     CourseProgress[]
+  discussion         Discussion[]
+  resourceAssignInfo AssignmentAndTask[]
+  notification       Notification[]
+
+  @@unique([resourceId])
+  @@index([chapterId])
+}
+
+//****** Reource Schema End ******//
+
+//****** CourseRegistration Schema  ******//
+enum ProgramState {
+  ENROLLED
+  STARTED
+  COMPLETED
+}
+
+model programRegistration {
+  registrationId Int          @id @default(autoincrement())
+  programId      Int
+  studentId      Int
+  programState   ProgramState @default(ENROLLED)
+  image          String?
+  isActive       Boolean      @default(true)
+  dateJoined     DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  expireIn       DateTime?
+  user           User         @relation(fields: [studentId], references: [id])
+  program        Program      @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([registrationId])
+  @@index([studentId])
+  @@index([programId])
+}
+
+//****** CourseRegistration Schema End******//
+
+//****** CourseProgress Schema  ******//
+model CourseProgress {
+  courseProgressId Int @id @default(autoincrement())
+  programId        Int
+  sequenceId       Int
+  resourceId       Int
+
+  studentId Int      @map("user_id")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  resource  Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
+
+  @@unique([courseProgressId, resourceId])
+  @@index([resourceId])
+  @@index([programId])
+}
+
+//****** CourseProgress Schema  End******//
+
+//****** AssignmentAndTask Schema  ******//
+enum SubmissionStatus {
+  PENDING
+  SUBMITTED
+  EVALUATED
+}
+
+model AssignmentAndTask {
+  id               Int              @id @default(autoincrement())
+  assignmentId     Int
+  userId           Int
+  sequenceNo       Int
+  isStarted        Boolean          @default(false)
+  submissionStatus SubmissionStatus @default(PENDING)
+  startedAt        DateTime?
+  deadLine         DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  resource         Resource         @relation(fields: [assignmentId], references: [resourceId], map: "assingmentTask_resource_fk")
+  submissionTask   SubmissionTask   @relation(fields: [id], references: [assignmentTaskId], map: "assingmentTask_submission_fk")
+
+  @@index([id])
+  @@index([assignmentId])
+  @@index([userId])
+}
+
+//****** AssignmentAndTask Schema  End******//
+
+//****** SubmissionTask Schema ******//
+model SubmissionTask {
+  id                 Int                 @id @unique @default(autoincrement())
+  userId             Int
+  evaluatedByUserId  Int?
+  assignmentTaskId   Int                 @unique
+  assignmentId       Int
+  isEvaluated        Boolean
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  evaluatedOn        DateTime?
+  evaluationComments String?             @db.Text()
+  score              Int?
+  content            Json?
+  assignmentTask     AssignmentAndTask[]
+  user               User                @relation(name: "user", fields: [userId], references: [id])
+  evaluatedByUser    User?               @relation(name: "evaluatedByUser", fields: [evaluatedByUserId], references: [id])
+
+  @@index([assignmentTaskId])
+  @@index([assignmentId])
+  @@index([userId])
+  @@index([evaluatedByUserId])
+}
+
+//****** SubmissionTask Schema End******//
+
+//****** Discussion Schema ******//
+model Discussion {
+  id                 Int            @unique @default(autoincrement()) @db.Int()
+  userId             Int
+  resourceId         Int
+  tagCommentId       Int?
+  comment            String?        @db.Text
+  attachedFiles      Json?
+  parentCommentId    Int?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  user               User           @relation(fields: [userId], references: [id])
+  resource           Resource       @relation(fields: [resourceId], references: [resourceId])
+  tagCmtNotification Notification[] @relation(name: "tagComment")
+  cmtNotification    Notification?  @relation(name: "comment")
+
+  @@index([userId])
+  @@index([resourceId])
+}
+
+//****** Discussion Schema End******//
+
+//****** Notification Schema ******//
+enum NotificationType {
+  COMMENT
+  EVALUATE_ASSIGNMENT
+}
+
+model Notification {
+  id               Int              @unique @default(autoincrement()) @db.Int()
+  notificationType NotificationType
+  fromUserId       Int
+  resourceId       Int?
+  toUserId         Int
+  title            String?
+  description      String?
+  tagCommentId     Int?
+  commentId        Int?             @unique
+  isView           Boolean          @default(false)
+  tagComment       Discussion?      @relation(name: "tagComment", fields: [tagCommentId], references: [id], onDelete: Cascade)
+  comment          Discussion?      @relation(name: "comment", fields: [commentId], references: [id], onDelete: Cascade)
+  fromUser         User             @relation("fromUser", fields: [fromUserId], references: [id])
+  toUser           User             @relation("toUser", fields: [toUserId], references: [id])
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  resource         Resource?        @relation(fields: [resourceId], references: [resourceId])
+
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([tagCommentId])
+  @@index([commentId])
+  @@index([resourceId])
+}
+
+//****** Notification Schema End******//
+
+//****** Torbit - Landing page ******//
+//****** UserJoinWaiting Schema ******//
+model UserJoinWaiting {
+  id         Int      @default(autoincrement()) @db.Int()
+  email      String
+  ip         String?
+  sequenceId Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+
+  @@unique([id, email])
+}
+
+//****** UserJoinWaiting Schema End******//
+enum ProgramType {
+  PAID
+  FREE
+}
+
+model Program {
+  id                  Int                   @default(autoincrement()) @db.Int()
+  authorId            Int                   @map("user_id")
+  title               String                @db.Text()
+  description         String?               @db.Text()
+  durationInMonths    Int
+  thumbnail           String?               @db.Text()
+  banner              String?               @db.Text()
+  skills              Json?
+  aboutProgram        String?               @db.Text()
+  state               StateType
+  course              Course[]
+  programType         ProgramType           @default(FREE)
+  programRegistration programRegistration[]
+  programPrice        Float?                @default(0)
+  programProgress     CourseProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@unique([id])
+}
