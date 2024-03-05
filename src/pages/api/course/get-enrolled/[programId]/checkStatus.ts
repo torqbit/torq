@@ -18,7 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     cookieName,
   });
   const userId = Number(token?.id);
-  console.log(userId, "studentID");
   const { programId } = req.query;
   try {
     const program = await prisma.programRegistration.findFirst({
