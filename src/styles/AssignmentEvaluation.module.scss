@@ -1,0 +1,30 @@
+.center_content {
+
+  padding: 120px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.assignment_list_page {
+  background-color: var(--bg-secondary);
+
+  min-height: 100vh;
+
+  h2 {
+    color: var(--font-primary);
+  }
+
+  .assignment_tables {
+    margin-top: 30px;
+  }
+}
+
+.assignment_evaluation_page {
+  min-height: 100vh;
+  h2 {
+    margin-bottom: 5px;
+  }
+
+  .submit_btn {
+    width: 160px;
+  }
+}

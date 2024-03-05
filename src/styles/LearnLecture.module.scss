@@ -1,0 +1,459 @@
+.learn_resource_page {
+  background-color: #f0f0f0;
+  min-height: 100vh;
+  .resource_wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 0;
+    .skeleton {
+      width: 500px;
+    }
+    .course_breadcrumb {
+      font-size: 23px;
+      font-weight: 600;
+      color: #393939;
+      .chapter_name {
+        font-size: 1;
+        font-size: 23px;
+        font-weight: 400;
+      }
+    }
+    .resource_content {
+      flex-basis: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0 30px;
+      margin-top: 20px;
+    }
+
+    .view_resource_container {
+      flex-basis: 70%;
+
+      .resource_player {
+        position: relative;
+        z-index: 1000;
+        margin-bottom: 15px;
+        height: 440px;
+
+        .assignment_completed {
+          height: 440px;
+          width: auto;
+          background-color: var(--bg-primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          line-height: 4;
+          > div:first-child {
+            color: var(--font-primary);
+            font-size: 1.5rem;
+          }
+          .nextResBTn {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+          }
+        }
+
+        .view_submit_assignment {
+          .submit_date {
+            margin-bottom: 0;
+            font-size: 13px;
+            span {
+              color: var(--danger);
+              font-style: italic;
+              font-size: 15px;
+            }
+          }
+          .assign_t_and_c {
+            position: relative;
+            z-index: -1;
+            padding: 30px 60px 20px 60px;
+            background-color: #fff;
+
+            h3 {
+              color: #000;
+
+              margin-bottom: 20px;
+            }
+            h4 {
+              color: #000;
+
+              font-size: 15px;
+              font-weight: 500;
+              margin-bottom: 20px;
+              line-height: 1.4;
+            }
+
+            ol li {
+              color: #000;
+              margin-bottom: 15px;
+              line-height: 1.4;
+            }
+
+            .start_assign_btn {
+              border-radius: 4px;
+              margin-top: 40px;
+              margin-right: -60px;
+              width: 180px;
+              float: right;
+            }
+          }
+        }
+
+        .assignment_submission_form {
+          height: 440px;
+          padding: 20px;
+          background-color: #fff;
+          overflow: auto;
+
+          .assignment_score {
+            font-size: 18px;
+            font-weight: 500;
+          }
+
+          .evaluation_comments {
+            margin-top: 20px;
+            p {
+              white-space: pre-wrap;
+            }
+          }
+        }
+
+        .resource_not_completed {
+          position: relative;
+          z-index: 1;
+
+          background-color: var(--font-primary);
+          height: 100%;
+          width: 100%;
+
+          .disabled_react_player {
+            height: 100%;
+            width: 100%;
+            .returnText {
+              cursor: pointer;
+            }
+            > div:first-child {
+              height: 100%;
+              width: 100%;
+              position: relative;
+              // z-index: 1;
+              display: flex;
+              flex-direction: row-reverse;
+              align-items: center;
+              justify-content: center;
+              gap: 10px;
+              color: var(--bg-primary);
+              font-size: 1.2rem;
+              > div:last-child > .play_btn {
+                font-size: 3rem;
+              }
+            }
+          }
+
+          .react_player {
+            opacity: 0.2;
+            margin-top: -440px;
+            position: absolute;
+            z-index: -1;
+          }
+        }
+      }
+      .resource_status_footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .lecture_name {
+          color: var(--font-primary);
+        }
+
+        .lecture_completed {
+          background-color: var(--success);
+        }
+      }
+      .about_resource_container {
+        margin-top: 15px;
+      }
+
+      .course_overview {
+        p {
+          font-size: 18px;
+        }
+      }
+    }
+    .chapter_list_title {
+      display: none;
+    }
+    .list_resource_items {
+      flex-basis: 30%;
+      background-color: #fff;
+
+      .lecture_item {
+        width: 100%;
+        padding: 10px 6px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        cursor: pointer;
+        border-left: 3px solid transparent;
+        .lecture_name {
+          color: var(--font-primary);
+
+          font-weight: 600;
+        }
+        .lecture_time {
+          color: var(--font-secondary);
+        }
+
+        .checked_icon {
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          color: var(--success);
+        }
+      }
+
+      .slt_lecture {
+        border-left-color: #666;
+        background-color: #dcdcdca1;
+
+        img {
+          height: 30px;
+        }
+      }
+    }
+
+    .qa_discussion_tab {
+      .qa_form {
+        .qa_form_input {
+          border-color: transparent;
+          border-top-right-radius: 8px;
+          border-top-left-radius: 8px;
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+        .qa_form_footer {
+          display: flex;
+          justify-content: space-between;
+          padding: 5px;
+          border-bottom-right-radius: 8px;
+          border-bottom-left-radius: 8px;
+          // border: 1px solid var(--border-color);
+          border-top: 0;
+          box-shadow: var(--box-shadow);
+          background-color: #f7f7f7;
+          img {
+            cursor: pointer;
+          }
+        }
+      }
+
+      .load_more_comment {
+        // margin: 20px 0 0 48px;
+        font-weight: 500;
+        color: var(--label-color);
+      }
+    }
+  }
+}
+
+.reply_comment_section {
+  margin-right: 0;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+
+  .qa_form {
+    &:nth-child(1) {
+      width: 90%;
+    }
+    &:nth-child(2) {
+      width: 85%;
+    }
+  }
+
+  .comment_box {
+    width: 90%;
+  }
+}
+
+.comment_box {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  .comment {
+    flex-basis: 94%;
+    .comment_body {
+      padding: 5px 8px;
+      border-top-right-radius: 8px;
+      border-top-left-radius: 8px;
+      min-height: 80px;
+      background-color: #fff;
+      .tag_commented {
+        padding: 5px 10px 15px 10px;
+        margin: 5px 0;
+        box-shadow: var(--box-shadow);
+        border-radius: 8px;
+        border-left: 3px solid var(--primary);
+        cursor: pointer;
+      }
+      .comment_action_btns {
+        display: none;
+      }
+      &:hover {
+        .comment_action_btns {
+          display: flex;
+        }
+      }
+      .comment_body_header {
+        display: flex;
+        justify-content: space-between;
+        .comment_action_btns {
+          cursor: pointer;
+        }
+        .user_info {
+          h4,
+          h5 {
+            margin: 0;
+          }
+          .resource_name {
+            color: var(--primary);
+          }
+          .comment_time {
+            color: var(--label-color);
+          }
+        }
+      }
+
+      .comment_content {
+        padding: 5px 5px 10px 5px;
+        white-space: pre-wrap;
+        .qa_edit_input {
+          border: none;
+        }
+      }
+    }
+    .comment_footer {
+      padding: 5px 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+      background-color: #f7f7f7;
+      .reply_btn {
+        font-size: 12px;
+        display: inline;
+        cursor: pointer;
+        color: var(--ft-color);
+        font-weight: 500;
+        &:hover {
+          text-decoration: underline;
+          color: var(--font-secondary);
+        }
+
+        img {
+          height: 18px;
+        }
+      }
+    }
+  }
+}
+
+.reply_drawer {
+  position: relative;
+  overflow-x: hidden;
+  .list_reply_cmt {
+    padding: 10px 20px 20px 20px;
+  }
+  .comment_box {
+    gap: 0 10px;
+    width: 100%;
+    .comment_footer {
+      background-color: #fff;
+    }
+  }
+
+  .qa_form {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    box-shadow: var(--box-shadow);
+    .qa_form_input {
+      width: 100%;
+      border: 0;
+      border-radius: 0;
+    }
+    .qa_form_footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px;
+      border-top: 0;
+      background-color: #f7f7f7;
+      img {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+//pdf viewer
+
+.pdf_container {
+  height: 395px;
+  overflow-y: scroll;
+  .react-pdf__Page__canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .learn_resource_page {
+    .resource_wrapper {
+      padding: 100px 20px 20px 20px;
+      .view_resource_container {
+        flex-basis: 100%;
+        .resource_player {
+          height: 300px;
+          .view_submit_assignment {
+            height: 300px;
+            overflow: auto;
+          }
+          .assignment_submission_form {
+            height: 300px;
+          }
+        }
+        .resource_status_footer {
+          .lecture_name {
+            font-size: 15px;
+          }
+          .lecture_time {
+            color: #000;
+          }
+          .lecture_completed,
+          .lecture_status_btn {
+            width: auto;
+            background-color: var(--font-primary);
+            font-size: 12px;
+            height: 30px;
+          }
+        }
+      }
+      .chapter_list_title {
+        margin: 20px 0 15px 0;
+        display: block;
+        color: var(--primary);
+      }
+    }
+  }
+
+  .reply_drawer {
+    width: 370px;
+  }
+
+  .comment_box {
+    gap: 0 7px;
+  }
+}

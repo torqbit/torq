@@ -1,0 +1,74 @@
+.admin_dashboard_page {
+  color: var(--font-primary);
+
+  background-color: var(--bg-secondary);
+
+  min-height: 100vh;
+
+  .center_content {
+    h2 {
+      color: var(--font-primary);
+    }
+
+    padding-top: 120px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .center_content > div:first-child {
+    display: flex;
+    justify-content: space-between;
+  }
+  .adminHeader > button {
+    font-weight: 400;
+    padding: 4px 20px;
+    background-color: var(--ft-color);
+  }
+  .adminHeader > button:hover {
+    background-color: var(--ft-color);
+  }
+
+  .user_update_form {
+    Button {
+      background-color: var(--font-primary) !important;
+      color: var(--bg-primary);
+    }
+    .label {
+      color: var(--font-primary);
+    }
+  }
+}
+.uploadWrapper {
+  height: 160px;
+  width: 160px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+
+  .ant__upload {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+  .camera__button {
+    background: var(--font-secondary);
+    border-radius: 8px;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 0.5s;
+
+    &:hover {
+      background-color: var(--font-primary);
+    }
+  }
+}
