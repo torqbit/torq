@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# torq
-An open source platform for teachers, creators &amp; educational organization
-=======
 <br /><br />
 
 <p align="center">
@@ -177,4 +173,3 @@ Our [Code of Conduct](https://github.com/torqbit/console) applies to all Torqbit
 ## ⛓️ Security
 
 If you believe you have found a security vulnerability in Torqbit, we encourage you to responsibly disclose this and not open a public issue. We will investigate all legitimate reports. Email info@torqbit.com to disclose any security vulnerabilities.
->>>>>>> master
