@@ -376,3 +376,24 @@ input {
 .ant-drawer .ant-drawer-header {
   border-bottom: none;
 }
+
+/* ++++++++++++++++ Style for New Layout ++++++++++++++++++++++ */
+
+.main_sider .ant-layout-sider-children {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.main_sider .ant-menu-item {
+  margin-inline: 0;
+  width: 100%;
+  border-radius: 0;
+}
+
+.main_sider .ant-menu-item-selected,
+.main_sider .ant-menu-item-active {
+  border-right: 3px solid rgb(105, 106, 107);
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #000;
+}
