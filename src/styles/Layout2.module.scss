@@ -1,7 +1,16 @@
 .layout2_wrapper {
   display: flex;
   height: 100vh;
+  .layout_header {
+    padding: 40px 40px 0 40px;
+  }
   .sider_content {
     flex-basis: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+    h3 {
+      margin-top: 30px;
+      color: #333232b9;
+    }
   }
 }

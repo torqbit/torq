@@ -1,12 +1,24 @@
 import { createContext, Dispatch, useContext, useReducer } from "react";
 import { INotification } from "../Header/Header";
 import { Session } from "next-auth";
-import { getFetch, IResponse } from "@/services/request";
-import { message } from "antd";
+
+export type ISiderMenu =
+  | "dashboard"
+  | "coursed"
+  | "certifications"
+  | "guides"
+  | "quiz"
+  | "setting"
+  | "notification"
+  | "users"
+  | "content"
+  | "addCourse"
+  | "configuration";
 
 // Define your state type
 type AppState = {
   notifications?: INotification[];
+  selectedSiderMenu: ISiderMenu;
   user?: Session;
 };
 
@@ -14,10 +26,13 @@ type AppState = {
 type AppAction =
   | { type: "SET_NOTIFICATION"; payload: INotification[] }
   | { type: "GET_NOTIFICATION"; payload: number }
-  | { type: "SET_USER"; payload: Session };
+  | { type: "SET_USER"; payload: Session }
+  | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu };
 
 // Define the initial state
-const initialState: AppState = {};
+const initialState: AppState = {
+  selectedSiderMenu: "dashboard",
+};
 
 // Create the context
 const AppContext = createContext<{
@@ -36,6 +51,8 @@ export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
         return { ...currentState, notifications: action.payload };
       case "SET_USER":
         return { ...currentState, user: action.payload };
+      case "SET_SELECTED_SIDER_MENU":
+        return { ...currentState, selectedSiderMenu: action.payload };
       default:
         return currentState;
     }
