@@ -158,7 +158,7 @@ const AddCourseForm: FC = () => {
           <Button size="small">Publish Changes</Button>
         </div>
         <Tabs
-          tabBarGutter={20}
+          tabBarGutter={40}
           defaultActiveKey="1"
           className={styles.add_course_tabs}
           items={items}
