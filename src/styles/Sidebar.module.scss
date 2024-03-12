@@ -1,0 +1,26 @@
+.main_sider {
+  height: 100vh;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-right: 1px solid #dfdcdc;
+
+  .logo {
+    padding: 15px 16px 30px 16px;
+  }
+
+  .user_profile {
+    width: 100%;
+    justify-content: space-between;
+    padding: 8px 15px;
+    background-color: var(--bg-secondary);
+
+    h4,
+    h5 {
+      margin: 0 0 2px 0;
+    }
+    h5 {
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+  }
+}

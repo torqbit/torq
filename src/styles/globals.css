@@ -376,3 +376,63 @@ input {
 .ant-drawer .ant-drawer-header {
   border-bottom: none;
 }
+
+/* ++++++++++++++++ Style for New Layout ++++++++++++++++++++++ */
+
+.main_sider .ant-layout-sider-children {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.main_sider .ant-menu-item {
+  margin-inline: 0;
+  width: 100%;
+  border-radius: 0;
+}
+
+.main_sider .ant-menu-inline .ant-menu-item {
+  height: 35px;
+  line-height: 35px;
+  font-size: 13px;
+}
+
+.main_sider .ant-menu-item-selected,
+.main_sider .ant-menu-item-active {
+  border-right: 3px solid rgb(105, 106, 107);
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #000;
+}
+
+/* ++++++++++++++++++ Users Table ++++++++++++++++++++++++ */
+
+.users_table .ant-table-thead tr th {
+  background-color: var(--bg-secondary);
+  font-size: 13px;
+}
+.users_table .ant-table-tbody tr td {
+  font-size: 13px;
+  background-color: #fff;
+}
+
+.users_table .ant_table {
+  background-color: transparent;
+}
+
+.content_tab .ant-tab-nav::before {
+  border-color: #d9d6d6;
+}
+
+/* **************** Add Course ******************** */
+.wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select,
+.course_video_uploader .ant-upload {
+  width: 225px !important;
+  float: right;
+  height: 120px !important;
+}
+
+.course_thumbnail_uploader .ant-upload {
+  float: right;
+  height: 160px !important;
+  width: 190px !important;
+}

@@ -105,10 +105,10 @@ enum StateType {
 model Course {
   courseId Int @id @default(autoincrement())
 
-  programId   Int    @default(1)
-  name        String
-  about       String @db.Text()
-  description String @db.Text()
+  programId        Int?        @default(1)
+  name             String    
+  about            String     @db.Text()
+  description      String     @db.Text()
 
   thumbnail        String
   icon             String?
@@ -119,12 +119,12 @@ model Course {
   courseType       CourseType @default(FREE)
   isActive         Boolean    @default(true)
   coursePrice      Float?     @default(0)
-  sequenceId       Int
+  sequenceId       Int?
   durationInMonths Int        @default(12)
   state            StateType
   videoDuration    Int        @default(600)
   chapter          Chapter[]
-  program          Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  program          Program?    @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, name])
   @@index([programId])

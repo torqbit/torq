@@ -3,6 +3,9 @@ export default {
     borderRadius: 4,
   },
   components: {
+    Sider: {
+      color: "#666",
+    },
     Card: {
       paddingLG: 0,
     },
