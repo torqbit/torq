@@ -12,7 +12,7 @@ export type ISiderMenu =
   | "notification"
   | "users"
   | "content"
-  | "addCourse"
+  | "addCourseForm"
   | "configuration";
 
 // Define your state type

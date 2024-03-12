@@ -4,40 +4,10 @@ import styles from "../../styles/Layout2.module.scss";
 import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
-import Dashboard from "../Dashboard/dashboard";
-import Users from "../Administration/Users";
-import Courses from "../Coureses/course";
 import { useAppContext } from "../ContextApi/AppContext";
-import Content from "../Administration/Content";
-import AddCourse from "../Administration/AddCourse";
+import { Layout } from "antd";
 
-const SiderContent: any = {
-  dashboard: {
-    component: <Dashboard />,
-    title: "Dashboard",
-    isHeader: true,
-  },
-  users: {
-    component: <Users />,
-    title: "Administrantion > Users",
-    isHeader: true,
-  },
-  content: {
-    component: <Content />,
-    title: "Administrantion > Content",
-    isHeader: true,
-  },
-  courses: {
-    component: <Courses />,
-    title: "Courses",
-    isHeader: true,
-  },
-  addCourse: {
-    component: <AddCourse />,
-    title: "",
-    isHeader: false,
-  },
-};
+const { Content } = Layout;
 
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { data: user } = useSession();
@@ -70,20 +40,12 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={`layout2-wrapper ${styles.layout2_wrapper} `}>
+      <Layout>
         <Sidebar />
-        <section className={`${styles.sider_content} ${styles.className}`}>
-          {SiderContent[`${globalState.selectedSiderMenu}`]?.isHeader && (
-            <div className={styles.layout_header}>
-              <h2>Hello {user?.user?.name}</h2>
-
-              <h3>{SiderContent[`${globalState.selectedSiderMenu}`]?.title ?? "No Title"}</h3>
-            </div>
-          )}
-
-          {SiderContent[`${globalState.selectedSiderMenu}`]?.component ?? <>No Page</>}
-        </section>
-      </div>
+        <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
+          <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
+        </Layout>
+      </Layout>
     </>
   );
 };

@@ -10,6 +10,8 @@ import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 const { Sider } = Layout;
 
 const Sidebar: FC = () => {
+  const [collapsed, setCollapsed] = React.useState(false);
+
   const { data: user } = useSession();
   const { globalState, dispatch } = useAppContext();
 
@@ -20,12 +22,12 @@ const Sidebar: FC = () => {
       key: "group1",
     },
     {
-      label: "Dashboard",
+      label: <Link href="dashboard">Dashboard</Link>,
       key: "dashboard",
       icon: SvgIcons.dashboard,
     },
     {
-      label: "Courses",
+      label: <Link href="courses">Courses</Link>,
       key: "courses",
       icon: SvgIcons.courses,
     },
@@ -65,12 +67,12 @@ const Sidebar: FC = () => {
       key: "administration",
     },
     {
-      label: "Users",
+      label: <Link href="users">Users</Link>,
       key: "users",
       icon: SvgIcons.userGroup,
     },
     {
-      label: "Content",
+      label: <Link href="content">Content</Link>,
       key: "content",
       icon: SvgIcons.content,
     },
@@ -82,7 +84,14 @@ const Sidebar: FC = () => {
   ];
 
   return (
-    <Sider width={260} className={`${styles.main_sider} main_sider`}>
+    <Sider
+      width={260}
+      theme="light"
+      className={`${styles.main_sider} main_sider`}
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+    >
       <div>
         <div className={styles.logo}>
           <Link href="/programs">
@@ -99,30 +108,16 @@ const Sidebar: FC = () => {
         />
       </div>
       <Space direction="horizontal" className={styles.user_profile}>
-        <Space align="start">
+        <Space align={collapsed ? "center" : "start"}>
           <Avatar icon={<UserOutlined />} />
-          <div>
-            <h4>{user?.user?.name}</h4>
-            <h5>{user?.user?.email}</h5>
-          </div>
+          {!collapsed && (
+            <div>
+              <h4>{user?.user?.name}</h4>
+              <h5>{user?.user?.email}</h5>
+            </div>
+          )}
         </Space>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={35}
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          style={{
-            cursor: "pointer",
-          }}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-          />
-        </svg>
+        {!collapsed && SvgIcons.threeDots}
       </Space>
     </Sider>
   );

@@ -3,6 +3,7 @@ import styles from "../../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
 import { List, Space, Tabs, TabsProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
+import Layout2 from "@/components/Layout2/Layout2";
 
 const EnrolledCourseList: FC = () => {
   const courseList = [
@@ -41,6 +42,7 @@ const EnrolledCourseList: FC = () => {
 
 const Dashboard: FC = () => {
   const { data: user } = useSession();
+
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -67,9 +69,14 @@ const Dashboard: FC = () => {
   ];
 
   return (
-    <section className={styles.dashboard_content}>
-      <Tabs defaultActiveKey="1" className="content_tab" items={items} onChange={onChange} />
-    </section>
+    <Layout2>
+      <section className={styles.dashboard_content}>
+        <h2>Hello {user?.user?.name}</h2>
+        <h3>Dashboard</h3>
+
+        <Tabs defaultActiveKey="1" className="content_tab" items={items} onChange={onChange} />
+      </section>
+    </Layout2>
   );
 };
 

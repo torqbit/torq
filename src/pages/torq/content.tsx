@@ -2,7 +2,10 @@ import React, { FC } from "react";
 import styles from "../../styles/Dashboard.module.scss";
 import { Button, Dropdown, MenuProps, Table, Tabs, TabsProps, Tag } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
+import { ISiderMenu, useAppContext } from "../../components/ContextApi/AppContext";
+import Layout2 from "@/components/Layout2/Layout2";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const EnrolledCourseList: FC = () => {
   const dropdownMenu: MenuProps["items"] = [
@@ -55,23 +58,7 @@ const EnrolledCourseList: FC = () => {
       render: (_: any, user: any) => (
         <>
           <Dropdown menu={{ items: dropdownMenu }} placement="bottomRight" arrow={{ pointAtCenter: true }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width={30}
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              style={{
-                cursor: "pointer",
-              }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-              />
-            </svg>
+            {SvgIcons.threeDots}
           </Dropdown>
         </>
       ),
@@ -114,6 +101,8 @@ const EnrolledCourseList: FC = () => {
 };
 
 const Content: FC = () => {
+  const { data: user } = useSession();
+
   const { globalState, dispatch } = useAppContext();
   const onChange = (key: string) => {
     console.log(key);
@@ -138,28 +127,34 @@ const Content: FC = () => {
   ];
 
   return (
-    <section className={styles.dashboard_content}>
-      <Tabs
-        tabBarGutter={60}
-        tabBarStyle={{
-          borderColor: "gray",
-        }}
-        tabBarExtraContent={
-          <Button
-            size="small"
-            type="primary"
-            onClick={() => dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "addCourse" as ISiderMenu })}
-            className={styles.add_user_btn}
-          >
-            <span>Add Course</span>
-            {SvgIcons.arrowRight}
-          </Button>
-        }
-        defaultActiveKey="1"
-        items={items}
-        onChange={onChange}
-      />
-    </section>
+    <Layout2>
+      <section className={styles.dashboard_content}>
+        <h2>Hello {user?.user?.name}</h2>
+        <h3>Content</h3>
+        <Tabs
+          tabBarGutter={60}
+          tabBarStyle={{
+            borderColor: "gray",
+          }}
+          tabBarExtraContent={
+            <Link href="addCourseForm">
+              <Button
+                size="small"
+                type="primary"
+                onClick={() => dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "content" as ISiderMenu })}
+                className={styles.add_user_btn}
+              >
+                <span>Add Course</span>
+                {SvgIcons.arrowRight}
+              </Button>
+            </Link>
+          }
+          defaultActiveKey="1"
+          items={items}
+          onChange={onChange}
+        />
+      </section>
+    </Layout2>
   );
 };
 
