@@ -9,29 +9,34 @@ import styles from "@/styles/Dashboard.module.scss";
 import { Button, Form, Input, List, Space, Tabs, TabsProps, Upload, UploadProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import Curriculum from "./Curriculum";
+import { useRouter } from "next/router";
 const AddCourseForm: FC = () => {
   const onChange = (key: string) => {
-    console.log(key);
+    router.replace(`/admin/content/${key}`);
   };
+  const router = useRouter();
 
   const items: TabsProps["items"] = [
     {
-      key: "1",
-      label: "Setting",
+      key: "settings",
+      label: "Settings",
       children: <Setting />,
     },
     {
-      key: "2",
+      key: "curriculum",
       label: "Curriculum",
-      children: "Content of Tab Pane 2",
+
+      children: <Curriculum />,
     },
 
     {
-      key: "3",
+      key: "preview",
       label: "Preview",
       children: "Content of Tab Pane 3",
     },
   ];
+  console.log(router.query.feature, "rou");
   return (
     <Layout2>
       <section className={styles.add_course_page}>
@@ -46,7 +51,7 @@ const AddCourseForm: FC = () => {
         </div>
         <Tabs
           tabBarGutter={40}
-          defaultActiveKey="1"
+          defaultActiveKey={router.query.feature as string}
           className={styles.add_course_tabs}
           items={items}
           onChange={onChange}

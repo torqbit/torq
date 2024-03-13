@@ -1,0 +1,43 @@
+.curriculum {
+  .add_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .draft_btn {
+    Button {
+      background-color: #ffc0cb63;
+    }
+  }
+  .publish_btn {
+    Button {
+      background-color: #804b8071;
+    }
+  }
+  .curriculum_container {
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    > div:first-child {
+      margin-bottom: 20px;
+    }
+
+    .labelContainer {
+      background-color: #fff;
+    }
+  }
+  .chapter_list {
+    margin: 20px 0px;
+
+    .resContainer {
+      height: 50px;
+
+      border-bottom: 1px solid #a7a4a4b9;
+
+      padding: 5px 0px;
+      padding-left: 20px;
+    }
+  }
+}
