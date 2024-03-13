@@ -3,9 +3,15 @@ export default {
     borderRadius: 4,
   },
   components: {
+    Radio: {
+      buttonSolidCheckedActiveBg: "#000",
+      buttonSolidCheckedBg: "#000",
+      buttonSolidCheckedHoverBg: "#000",
+    },
     Sider: {
       color: "#666",
     },
+
     Card: {
       paddingLG: 0,
     },
