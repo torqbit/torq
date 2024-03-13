@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import styles from "../../styles/Dashboard.module.scss";
+import styles from "@/styles/Dashboard.module.scss";
 import { Button, Dropdown, MenuProps, Table, Tabs, TabsProps, Tag } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";

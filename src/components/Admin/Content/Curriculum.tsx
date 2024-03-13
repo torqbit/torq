@@ -78,7 +78,7 @@ const Label: FC<{
 };
 
 const Curriculum = () => {
-  const [render, setRender] = useState("header");
+  const [render, setRender] = useState("1");
   const git = [
     <div className={styles.resContainer}>
       <Label
@@ -273,6 +273,7 @@ const Curriculum = () => {
         return (
           <div key={i} className={styles.chapter_list}>
             <Collapse
+              defaultActiveKey={"1"}
               accordion={false}
               size="small"
               activeKey={render}

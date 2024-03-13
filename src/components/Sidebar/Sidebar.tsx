@@ -67,7 +67,7 @@ const Sidebar: FC = () => {
       key: "administration",
     },
     {
-      label: <Link href="users">Users</Link>,
+      label: <Link href="/admin/users">Users</Link>,
       key: "users",
       icon: SvgIcons.userGroup,
     },
