@@ -67,12 +67,12 @@ const Sidebar: FC = () => {
       key: "administration",
     },
     {
-      label: <Link href="users">Users</Link>,
+      label: <Link href="/admin/users">Users</Link>,
       key: "users",
       icon: SvgIcons.userGroup,
     },
     {
-      label: <Link href="/admin/content/setting">Content</Link>,
+      label: <Link href="/admin/content/settings">Content</Link>,
       key: "content",
       icon: SvgIcons.content,
     },

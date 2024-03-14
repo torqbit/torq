@@ -40,5 +40,10 @@ export default {
     Drawer: {
       zIndexPopup: 1001,
     },
+    Collapse: {
+      contentPadding: "0px",
+      headerBg: "#fff",
+      paddingSM: 0,
+    },
   },
 };
