@@ -11,6 +11,7 @@ import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
+import Preview from "./Preview";
 const AddCourseForm: FC = () => {
   const onChange = (key: string) => {
     router.replace(`/admin/content/${key}`);
@@ -33,7 +34,7 @@ const AddCourseForm: FC = () => {
     {
       key: "preview",
       label: "Preview",
-      children: "Content of Tab Pane 3",
+      children: <Preview />,
     },
   ];
   console.log(router.query.feature, "rou");

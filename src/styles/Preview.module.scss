@@ -1,0 +1,60 @@
+.preview_container {
+  padding: 40px;
+  .react_player {
+    background-color: #000;
+    height: 400px;
+    width: 800px;
+    display: flex;
+    padding: 20px;
+    align-items: end;
+    justify-content: space-between;
+    > div:first-child {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    h2,
+    p {
+      margin: 0;
+      padding: 0;
+      color: #fff;
+
+      max-width: 400px;
+    }
+    p {
+      color: #666;
+    }
+    .save_btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+  }
+  .play_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -230px;
+    height: 30;
+    width: 30;
+    width: 750px;
+    color: white;
+    cursor: pointer;
+  }
+  .chapter_list {
+    width: 800px;
+    margin: 20px 0px;
+
+    .resContainer {
+      height: 35px;
+
+      border-bottom: 1px solid #a7a4a4b9;
+
+      padding: 5px 0px;
+      padding-left: 20px;
+    }
+  }
+}

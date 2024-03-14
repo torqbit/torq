@@ -1,32 +1,17 @@
 import SvgIcons from "@/components/SvgIcons";
-import styles from "@/styles/Curriculum.module.scss";
-import { ArrowDownOutlined, EllipsisOutlined, FolderAddOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Collapse, Dropdown, Flex, MenuProps, Space, Tag } from "antd";
-
+import styles from "@/styles/Preview.module.scss";
+import { Button, Collapse, Dropdown, Flex, Tag } from "antd";
+import { dropdownMenu } from "./Curriculum";
 import { FC, ReactNode, useState } from "react";
-export const dropdownMenu: MenuProps["items"] = [
-  {
-    key: "1",
-    label: "Edit",
-  },
-  {
-    key: "2",
-    label: "Block",
-  },
-  {
-    key: "3",
-    label: "Delete",
-  },
-];
+
 const Label: FC<{
   title: string;
-  type: string;
+  time: string;
   keyValue: string;
   onRender: (value: string[]) => void;
   render: string[];
   icon: ReactNode;
-  state: string;
-}> = ({ title, type, onRender, render, keyValue, icon, state }) => {
+}> = ({ title, time, onRender, render, keyValue, icon }) => {
   const onActive = (value: string[]) => {
     if (render.includes(value[0])) {
       let currentValue = render.filter((v) => v !== value[0]);
@@ -47,103 +32,69 @@ const Label: FC<{
           <Flex gap={10} align="center">
             {icon}
             <div style={{ cursor: "pointer" }} onClick={() => onActive([keyValue])}>
-              {" "}
               {title}
             </div>
           </Flex>
         </div>
         <div>
-          <Flex align="center" gap={10}>
-            {type === "chapter" && (
-              <Button className={styles.add_btn}>
-                <div>Add Content </div>
-                {SvgIcons.chevronDown}
-              </Button>
-            )}{" "}
-            <Dropdown.Button
-              className={state === "Draft" ? styles.draft_btn : styles.publish_btn}
-              icon={SvgIcons.chevronDown}
-              menu={{
-                items: [
-                  {
-                    key: 1,
-                    label: state === "Published" ? "Draft" : "Published",
-                    onClick: () => {},
-                  },
-                ],
-              }}
-            >
-              {state}
-            </Dropdown.Button>
-            <div>
-              <Dropdown menu={{ items: dropdownMenu }} placement="bottomRight" arrow={{ pointAtCenter: true }}>
-                <div style={{ rotate: "90deg" }}>{SvgIcons.threeDots}</div>
-              </Dropdown>
-            </div>
-          </Flex>
+          <Tag color="#888">{time}</Tag>
         </div>
       </Flex>
     </div>
   );
 };
 
-const Curriculum = () => {
+const Preview = () => {
   const [render, setRender] = useState(["1", "2"]);
-
   const git = [
     <div className={styles.resContainer}>
       <Label
         title="History to Git"
         icon={SvgIcons.playBtn}
-        type=""
+        time="4m 5s"
         onRender={setRender}
         render={render}
         keyValue="res1"
-        state="Draft"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="Install GIt on Mac & Windows "
         icon={SvgIcons.playBtn}
-        type=""
+        time="6m 25s"
         onRender={setRender}
         render={render}
         keyValue="res2"
-        state="Draft"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="Basic  Git Commands"
         icon={SvgIcons.playBtn}
-        type=""
+        time="7m 25s"
         onRender={setRender}
         render={render}
         keyValue="res3"
-        state="Draft"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="Test ypur Git skills "
         icon={SvgIcons.file}
-        type=""
+        time="7m 25s"
         onRender={setRender}
         render={render}
         keyValue="res4"
-        state="Published"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="  Git commit & logs"
         icon={SvgIcons.file}
-        type=""
+        time="7m 25s"
         onRender={setRender}
         render={render}
         keyValue="res5"
-        state="Published"
       />
     </div>,
   ];
@@ -152,55 +103,50 @@ const Curriculum = () => {
       <Label
         title="Feature branch"
         icon={SvgIcons.playBtn}
-        type=""
+        time="7m 25s"
         onRender={setRender}
         render={render}
         keyValue="res1"
-        state="Draft"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="Merging multiple branches "
         icon={SvgIcons.playBtn}
-        type=""
+        time="7m 25s"
         onRender={setRender}
         render={render}
         keyValue="res2"
-        state="Draft"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="  Git rebase"
         icon={SvgIcons.playBtn}
-        type=""
+        time="4m 30s"
         onRender={setRender}
         render={render}
         keyValue="res3"
-        state="Draft"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="Test ypur Git skills "
         icon={SvgIcons.file}
-        type=""
+        time="4m 30s"
         onRender={setRender}
         render={render}
         keyValue="res4"
-        state="Published"
       />
     </div>,
     <div className={styles.resContainer}>
       <Label
         title="  Git branch commands "
         icon={SvgIcons.file}
-        type=""
+        time="4m 30s"
         onRender={setRender}
         render={render}
         keyValue="res5"
-        state="Published"
       />
     </div>,
   ];
@@ -211,11 +157,10 @@ const Curriculum = () => {
         <Label
           title="Introduction to Git"
           icon={SvgIcons.folder}
-          type="chapter"
+          time="5m 15s"
           onRender={setRender}
           render={render}
           keyValue="1"
-          state="Draft"
         />
       ),
       children: git,
@@ -227,11 +172,10 @@ const Curriculum = () => {
         <Label
           title="  Git branching"
           icon={SvgIcons.folder}
-          type="chapter"
+          time="5m 15s"
           onRender={setRender}
           render={render}
           keyValue="2"
-          state="Draft"
         />
       ),
       children: branch,
@@ -240,36 +184,23 @@ const Curriculum = () => {
   ];
 
   return (
-    <section className={styles.curriculum}>
-      <div className={styles.curriculum_container}>
-        <Flex justify="space-between" align="center">
-          <h1>Curriculum</h1>
-
-          <Space>
-            <Button>Discard</Button>
-
-            <Button type="primary">
-              Save Curriculum <img style={{ marginLeft: 5 }} src="/img/program/arrow-right.png" alt="arrow" />
-            </Button>
-          </Space>
-        </Flex>
+    <section className={styles.preview_container}>
+      <div className={styles.react_player}>
+        <div>
+          <div>
+            <h2>Code Collaboration with Git & Github</h2>
+            <p>
+              Learn to Collaborate with team using Git & Github, and work on projects that span to multiple teams ...
+            </p>
+          </div>
+          <Button className={styles.save_btn}>
+            <div> Enroll Now</div>
+            {SvgIcons.arrowRight}
+          </Button>
+        </div>
       </div>
-      <div>
-        <Flex justify="space-between" align="center">
-          <h2>2 Chapters</h2>
-
-          <Space>
-            <Button className={styles.add_btn}>
-              {SvgIcons.plusBtn}
-              <div> Add Chapter</div>
-            </Button>
-
-            <Button className={styles.add_btn} onClick={() => setRender([""])}>
-              {SvgIcons.barsArrowDown}Collapse All
-            </Button>
-          </Space>
-        </Flex>
-      </div>
+      <div className={styles.play_btn}>{SvgIcons.reactPlayBtn}</div>
+      <h2>Table of Contents</h2>
       {items.map((item, i) => {
         return (
           <div key={i} className={styles.chapter_list}>
@@ -294,4 +225,4 @@ const Curriculum = () => {
   );
 };
 
-export default Curriculum;
+export default Preview;
