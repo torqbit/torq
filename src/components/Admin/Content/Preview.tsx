@@ -187,19 +187,19 @@ const Preview = () => {
 
   return (
     <section className={styles.preview_container}>
-      <div className={styles.react_player}>
+      <div>
+        <video className={styles.video_container} autoPlay src="/trailer/git_trailer.mp4"></video>
+      </div>
+      <div className={styles.react_player}></div>
+      <div className={styles.video_player_info}>
         <div>
-          <div>
-            <h2>Code Collaboration with Git & Github</h2>
-            <p>
-              Learn to Collaborate with team using Git & Github, and work on projects that span to multiple teams ...
-            </p>
-          </div>
-          <Button className={styles.save_btn}>
-            <div> Enroll Now</div>
-            {SvgIcons.arrowRight}
-          </Button>
+          <h2>Code Collaboration with Git & Github</h2>
+          <p>Learn to Collaborate with team using Git & Github, and work on projects that span to multiple teams ...</p>
         </div>
+        <Button className={styles.save_btn}>
+          <div> Enroll Now</div>
+          {SvgIcons.arrowRight}
+        </Button>
       </div>
       <div className={styles.play_btn}>{SvgIcons.reactPlayBtn}</div>
       <h2>Table of Contents</h2>
