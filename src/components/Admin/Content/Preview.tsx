@@ -37,7 +37,9 @@ const Label: FC<{
           </Flex>
         </div>
         <div>
-          <Tag color="#888">{time}</Tag>
+          <Tag color="#eee" className={styles.time_tag}>
+            {time}
+          </Tag>
         </div>
       </Flex>
     </div>
