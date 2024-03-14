@@ -188,7 +188,7 @@ const Preview = () => {
   return (
     <section className={styles.preview_container}>
       <div>
-        <video className={styles.video_container} autoPlay src="/trailer/git_trailer.mp4"></video>
+        <video className={styles.video_container} autoPlay src="/trailer/git_trailer.mp4" loop />
       </div>
       <div className={styles.react_player}></div>
       <div className={styles.video_player_info}>
