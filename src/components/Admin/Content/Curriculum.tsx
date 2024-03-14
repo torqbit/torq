@@ -41,12 +41,15 @@ const Label: FC<{
     );
   };
   return (
-    <div className={styles.labelContainer} onClick={() => onActive([keyValue])}>
+    <div className={styles.labelContainer}>
       <Flex justify="space-between" align="center">
         <div>
           <Flex gap={10} align="center">
             {icon}
-            <div> {title}</div>
+            <div style={{ cursor: "pointer" }} onClick={() => onActive([keyValue])}>
+              {" "}
+              {title}
+            </div>
           </Flex>
         </div>
         <div>
@@ -59,7 +62,6 @@ const Label: FC<{
             )}{" "}
             <Dropdown.Button
               className={state === "Draft" ? styles.draft_btn : styles.publish_btn}
-              trigger={["click"]}
               icon={SvgIcons.chevronDown}
               menu={{
                 items: [
