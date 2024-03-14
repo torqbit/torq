@@ -22,23 +22,31 @@ const Label: FC<{
   title: string;
   type: string;
   keyValue: string;
-  onRender: (value: string) => void;
-  render: string;
+  onRender: (value: string[]) => void;
+  render: string[];
   icon: ReactNode;
   state: string;
 }> = ({ title, type, onRender, render, keyValue, icon, state }) => {
+  const onActive = (value: string[]) => {
+    if (render.includes(value[0])) {
+      let currentValue = render.filter((v) => v !== value[0]);
+      onRender(currentValue);
+    } else {
+      render.push(value[0]);
+    }
+    console.log(
+      render,
+      keyValue,
+      render.filter((v) => v !== value[0])
+    );
+  };
   return (
-    <div className={styles.labelContainer} onClick={() => onRender("1")}>
+    <div className={styles.labelContainer} onClick={() => onActive([keyValue])}>
       <Flex justify="space-between" align="center">
         <div>
           <Flex gap={10} align="center">
             {icon}
-            <div
-            //  onClick={() => (render === keyValue ? onRender("") : onRender(keyValue))}
-            >
-              {" "}
-              {title}
-            </div>
+            <div> {title}</div>
           </Flex>
         </div>
         <div>
@@ -78,7 +86,8 @@ const Label: FC<{
 };
 
 const Curriculum = () => {
-  const [render, setRender] = useState("1");
+  const [render, setRender] = useState(["1", "2"]);
+
   const git = [
     <div className={styles.resContainer}>
       <Label
@@ -211,7 +220,7 @@ const Curriculum = () => {
       showArrow: false,
     },
     {
-      key: "1",
+      key: "2",
       label: (
         <Label
           title="  Git branching"
@@ -263,7 +272,7 @@ const Curriculum = () => {
               <div> Add Chapter</div>
             </Button>
 
-            <Button className={styles.add_btn} onClick={() => setRender("")}>
+            <Button className={styles.add_btn} onClick={() => setRender([""])}>
               {SvgIcons.barsArrowDown}Collapse All
             </Button>
           </Space>
@@ -274,8 +283,8 @@ const Curriculum = () => {
           <div key={i} className={styles.chapter_list}>
             <Collapse
               defaultActiveKey={"1"}
-              accordion={false}
               size="small"
+              accordion={false}
               activeKey={render}
               items={[
                 {
