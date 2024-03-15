@@ -1,6 +1,5 @@
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { NextApiRequest, NextApiResponse } from "next";
-import { encrypt } from "./encryption";
 import prisma from "@/lib/prisma";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
