@@ -2,16 +2,15 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { NextApiRequest, NextApiResponse } from "next";
 import { encrypt } from "./encryption";
 import prisma from "@/lib/prisma";
+import { withMethods } from "@/lib/api-middlewares/with-method";
+import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
     const { service_type, provider_name, api_key, api_secret } = body;
-    console.log(body, "body");
-    if (body) {
-      // const encrypted_api_key = encrypt(api_key);   //for encryption
-      // const encrypted_api_secret = encrypt(api_secret);
 
+    if (body) {
       const addCredentials = await prisma?.serviceProvider.create({
         data: {
           service_type: service_type,
@@ -31,4 +30,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default withMethods(["POST"], withUserAuthorized(handler));
