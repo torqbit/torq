@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log(credentials);
     if (credentials) {
       const decrypted_api_key = decrypt(credentials.api_key);
-      console.log(decrypted_api_key, "api");
+
       return res.status(200).json({ success: true, messsage: "Found credentials", credentials });
     }
   } catch (err) {

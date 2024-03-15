@@ -9,15 +9,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { service_type, provider_name, api_key, api_secret } = body;
     console.log(body, "body");
     if (body) {
-      const encrypted_api_key = encrypt(api_key);
-      const encrypted_api_secret = encrypt(api_secret);
+      // const encrypted_api_key = encrypt(api_key);   //for encryption
+      // const encrypted_api_secret = encrypt(api_secret);
 
       const addCredentials = await prisma?.serviceProvider.create({
         data: {
           service_type: service_type,
           provider_name: provider_name,
-          api_key: encrypted_api_key,
-          api_secret: encrypted_api_secret,
+          api_key: api_key,
+          api_secret: api_secret,
         },
       });
 
