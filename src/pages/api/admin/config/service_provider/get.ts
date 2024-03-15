@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
-import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { decrypt } from "./encryption";
+import { decrypt } from "../encryption";
+import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -23,7 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return errorHandler(err, res);
   }
 };
-
-export default handler;
+export default withMethods(["GET"], withUserAuthorized(handler));
 
 // not woriking
