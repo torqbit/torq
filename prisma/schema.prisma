@@ -105,10 +105,10 @@ enum StateType {
 model Course {
   courseId Int @id @default(autoincrement())
 
-  programId        Int?        @default(1)
-  name             String    
-  about            String     @db.Text()
-  description      String     @db.Text()
+  programId   Int?   @default(1)
+  name        String
+  about       String @db.Text()
+  description String @db.Text()
 
   thumbnail        String
   icon             String?
@@ -124,7 +124,7 @@ model Course {
   state            StateType
   videoDuration    Int        @default(600)
   chapter          Chapter[]
-  program          Program?    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  program          Program?   @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, name])
   @@index([programId])
@@ -384,6 +384,18 @@ model Program {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
+  @@unique([id])
+}
+
+model ServiceProvider {
+  id Int @default(autoincrement()) @db.Int()
+
+  service_type  String   @db.Text()
+  provider_name String   @db.Text()
+  api_key       String   @db.Text()
+  api_secret    String   @db.Text()
+  dt_added      DateTime @default(now())
 
   @@unique([id])
 }

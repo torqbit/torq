@@ -8,8 +8,7 @@ export function withUserAuthorized(handler: NextApiHandler) {
       const session = await getServerSession(req, res, authOptions);
 
       if (!session || session.role !== "AUTHOR") {
-
-        return res.status(401).json({ success: false, error: "Sorry, You are not authorized" });
+        return res.status(401).json({ success: false, error: " You are not authorized" });
       }
       return handler(req, res);
     } catch (error) {
