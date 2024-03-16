@@ -105,12 +105,14 @@ enum StateType {
 model Course {
   courseId Int @id @default(autoincrement())
 
-  programId   Int?   @default(1)
-  name        String
-  about       String @db.Text()
-  description String @db.Text()
-
-  thumbnail        String
+  programId        Int?       @default(1)
+  name             String
+  about            String     @db.Text()
+  description      String     @db.Text()
+  thumbnailId      String?
+  videoUrl         String?
+  videoId          String?
+  thumbnail        String?
   icon             String?
   authorId         Int        @map("user_id")
   skills           Json?

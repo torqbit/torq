@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 import Layout2 from "@/components/Layout2/Layout2";
 import Link from "next/link";
@@ -6,17 +6,18 @@ import Link from "next/link";
 import Setting from "./Setting";
 import styles from "@/styles/Dashboard.module.scss";
 
-import { Button, Form, Input, List, Space, Tabs, TabsProps, Upload, UploadProps, message } from "antd";
+import { Button, Tabs, TabsProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
 import Preview from "./Preview";
 const AddCourseForm: FC = () => {
   const onChange = (key: string) => {
-    router.replace(`/admin/content/${key}`);
+    router.replace(`/admin/content/course/${router.query.id}/${key}/`);
   };
   const router = useRouter();
+
+  useEffect(() => {}, []);
 
   const items: TabsProps["items"] = [
     {
