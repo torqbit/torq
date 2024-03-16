@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
 
-import { Avatar, Button, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
+import { Avatar, Badge, Button, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
