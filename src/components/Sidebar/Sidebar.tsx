@@ -1,20 +1,30 @@
 import React, { FC, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-import { Avatar, Button, Layout, Menu, MenuProps, Modal, Space } from "antd";
+
+import { Avatar, Button, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
+
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
+
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
 import { error } from "console";
+
+import { IResponse, getFetch } from "@/services/request";
+
 const { Sider } = Layout;
 
 const Sidebar: FC = () => {
   const [collapsed, setCollapsed] = React.useState(false);
+
   const router = useRouter();
+
+  const [isNewNotifi, setNewNotifi] = React.useState(false);
+
   const { data: user } = useSession();
   const { globalState, dispatch } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,6 +85,20 @@ const Sidebar: FC = () => {
     }
   };
 
+  const getNewNotification = async (userId: number) => {
+    try {
+      const res = await getFetch(`/api/notification/check/${user?.id}`);
+      const result = (await res.json()) as IResponse;
+      if (res.ok && result.success) {
+        setNewNotifi(result.notifications);
+      } else {
+        message.error(result.error);
+      }
+    } catch (err: any) {
+      console.log("Error while fetching Notification status");
+    }
+  };
+
   const siderMenu: MenuProps["items"] = [
     {
       type: "group",
@@ -117,9 +141,13 @@ const Sidebar: FC = () => {
       icon: SvgIcons.setting,
     },
     {
-      label: "Notifications",
+      label: <Link href="/torq/notifications">Notifications</Link>,
       key: "notification",
-      icon: SvgIcons.nottification,
+      icon: (
+        <Badge color="blue" dot={!isNewNotifi}>
+          {SvgIcons.nottification}
+        </Badge>
+      ),
     },
     {
       type: "group",
@@ -151,6 +179,12 @@ const Sidebar: FC = () => {
       icon: SvgIcons.configuration,
     },
   ];
+
+  React.useEffect(() => {
+    if (user?.id) {
+      getNewNotification(user.id);
+    }
+  }, [user?.id]);
 
   return (
     <Sider
