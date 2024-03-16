@@ -52,23 +52,23 @@ const Sidebar: FC = () => {
       ProgramService.getLatesDraftCourse(
         (result) => {
           console.log(result);
-        if(result.getCourse){
-          modal.confirm({
-            title: "would you like to use?",
-            content: (
-              <>
-                <Space>
-                  <Button onClick={() => previousDraft(result.getCourse.courseId)}>previous draft course</Button>
-                  or
-                  <Button onClick={handleOk}>Create a new course</Button>
-                </Space>
-              </>
-            ),
-            footer: null,
-          });
-        }else{
-          handleOk()
-        }
+          if (result.getCourse) {
+            modal.confirm({
+              title: "would you like to use?",
+              content: (
+                <>
+                  <Space>
+                    <Button onClick={() => previousDraft(result.getCourse.courseId)}>previous draft course</Button>
+                    or
+                    <Button onClick={handleOk}>Create a new course</Button>
+                  </Space>
+                </>
+              ),
+              footer: null,
+            });
+          } else {
+            handleOk();
+          }
         },
         (error) => {}
       );
@@ -109,7 +109,7 @@ const Sidebar: FC = () => {
     {
       type: "group",
       label: "ACCOUNT",
-      key: "quiz",
+      key: "group",
     },
     {
       label: "Setting",

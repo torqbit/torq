@@ -1,92 +1,34 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
-import { useSession } from "next-auth/react";
-import { Button, Form, Input, List, Radio, Space, Tabs, TabsProps, Upload, UploadProps, message } from "antd";
+
+import { Button, Form, FormInstance, Input, Radio, Space, Upload, UploadProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { ArrowRightOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import appConstant from "@/services/appConstant";
-import { getFetch, postWithFile } from "@/services/request";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
-import { error } from "console";
 
 const { TextArea } = Input;
 
-const Setting: FC = () => {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
+const Setting: FC<{
+  onDiscard: () => void;
+  form: FormInstance;
+  onSubmit: () => void;
 
-  const [uploadUrl, setUploadUrl] = useState<{
+  beforeUpload: (file: any, fileType: string) => void;
+  loading: boolean;
+  onSetCourseData: (key: string, value: string) => void;
+  courseData: { name: string; description: string; duration: number };
+  uploadUrl: {
     uploadType?: string;
     thumbnailImg?: string;
     thumbnailId?: string;
     videoUrl?: string;
     videoId?: string;
-  }>();
-
-  const [courseData, setCourseData] = useState<{ name: string; description: string; duration: number }>({
-    name: "",
-    description: "",
-    duration: 0,
-  });
-
-  const onDiscard = () => {
-    ProgramService.getCourses(
-      Number(router.query.id),
-      (result) => {
-        console.log(result, "delete res");
-        onDeleteThumbnail(result.getCourse.thumbnailId);
-        onDeleteThumbnail(result.getCourse.videoId);
-        ProgramService.deleteCourse(
-          Number(router.query.id),
-
-          (result) => {
-            console.log(result, "dele");
-            message.success(result.message);
-          },
-          (error) => {}
-        );
-      },
-      (error) => {}
-    );
   };
-
-  const onSubmit = () => {
-    console.log(router.query.id, "qew");
-    ProgramService.getCourses(
-      Number(router.query.id),
-      (result) => {
-        console.log(result, "delete res");
-        let course = {
-          name: courseData?.name,
-          duration: courseData?.duration,
-          state: "ACTIVE",
-          skills: [],
-          description: courseData?.description,
-          thumbnail: result.getCourse.thumbnail || "",
-          thumbnailId: result.getCourse.thumbnailId || "",
-          videoUrl: result.getCourse.videoUrl || "",
-          videoId: result.getCourse.videoId || "",
-          programId: 0,
-          authorId: 0,
-          sequenceId: undefined,
-          courseId: Number(router.query.id),
-        };
-        ProgramService.updateCourse(
-          course,
-          (result) => {
-            form.resetFields();
-            message.success("course created");
-          },
-          (error) => {
-            message.error(error);
-          }
-        );
-      },
-      (error) => {}
-    );
-  };
+  refresh: boolean;
+}> = ({ onSubmit, form, courseData, onDiscard, beforeUpload, loading, uploadUrl, onSetCourseData, refresh }) => {
+  const router = useRouter();
 
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
@@ -95,92 +37,17 @@ const Setting: FC = () => {
     </button>
   );
 
-  const beforeUpload = async (file: any, fileType: string) => {
-    setUploadUrl({ ...courseData, uploadType: fileType });
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-
-    try {
-      if (!isJpgOrPng && fileType === "img") {
-        message.error("You can only upload JPG/PNG file!");
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M && fileType === "img") {
-        message.error("Image must smaller than 2MB!");
-      }
-
-      const formData = new FormData();
-      formData.append("files", file);
-      formData.append("folder", appConstant.IMG_KIT_PROGRAM_FOLDER);
-      setLoading(true);
-
-      const postRes = await postWithFile(formData, `/api/v1/upload/file`);
-      if (!postRes.ok) {
-        setLoading(false);
-
-        throw new Error("Failed to upload file");
-      }
-      const res = await postRes.json();
-      console.log(res, "post res");
-      setUploadUrl({ ...uploadUrl, thumbnailImg: res.uploadedFile[0].url, thumbnailId: res.uploadedFile[0].fileId });
-      if (res) {
-        let course = {
-          name: "",
-          duration: 0,
-          state: "DRAFT",
-          skills: [],
-          description: "",
-          thumbnail: fileType === "img" ? res.uploadedFile[0]?.url : "",
-          thumbnailId: fileType === "img" ? res.uploadedFile[0]?.fileId : "",
-          videoUrl: fileType === "video" ? res.uploadedFile[0]?.url : "",
-          videoId: fileType === "video" ? res.uploadedFile[0]?.fileId : "",
-          programId: 0,
-          authorId: 0,
-          sequenceId: undefined,
-          courseId: Number(router.query.id),
-        };
-        ProgramService.updateCourse(
-          course,
-          (result) => {
-            message.success("file uploaded");
-          },
-          (error) => {
-            message.error(error);
-          }
-        );
-      }
-
-      setLoading(false);
-      return false;
-    } catch (err: any) {
-      setLoading(false);
-
-      message.error(err.message ?? appConstant.cmnErrorMsg);
-      console.log(err, "this is error");
-    }
-  };
-
-  const onDeleteThumbnail = async (id: string | null) => {
-    try {
-      if (id) {
-        setLoading(true);
-        const deleteRes = await getFetch(`/api/upload/delete/${id}`);
-        if (!deleteRes.ok) {
-          setLoading(false);
-          throw new Error("Failed to delete uploaded file");
-        }
-        setUploadUrl({ ...uploadUrl, thumbnailImg: "", thumbnailId: "" });
-
-        setLoading(false);
-        message.success("File deleted successfully");
-      } else {
-        return;
-      }
-    } catch (err: any) {
-      setLoading(false);
-      message.error(err.message ?? appConstant.cmnErrorMsg);
-    }
-  };
-
+  useEffect(() => {
+    ProgramService.getCourses(
+      Number(router.query.id),
+      (result) => {
+        form.setFieldValue("course_name", result.getCourse.name);
+        form.setFieldValue("course_description", result.getCourse.description);
+        onSetCourseData("duration", String(result.getCourse.durationInMonths));
+      },
+      (error) => {}
+    );
+  }, [router.query.id, refresh]);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
       // setLoading(true);
@@ -189,20 +56,6 @@ const Setting: FC = () => {
     if (info.file.status === "done") {
     }
   };
-
-  useEffect(() => {
-    ProgramService.getCourses(
-      Number(router.query.id),
-      (result) => {
-        console.log(result, "sdf");
-        form.setFieldValue("course_name", result.getCourse.name);
-        form.setFieldValue("course_description", result.getCourse.description);
-        setCourseData({ ...courseData, duration: result.getCourse.durationInMonths });
-        setUploadUrl({ thumbnailImg: result.getCourse.thumbnail, videoUrl: result.getCourse.videoUrl });
-      },
-      (error) => {}
-    );
-  }, [router.query.id]);
 
   return (
     <section className={styles.add_course_setting}>
@@ -222,7 +75,7 @@ const Setting: FC = () => {
             <Input
               placeholder="Course Name"
               onChange={(e) => {
-                setCourseData({ ...courseData, name: e.currentTarget.value });
+                onSetCourseData("name", e.currentTarget.value);
               }}
             />
           </Form.Item>
@@ -234,7 +87,7 @@ const Setting: FC = () => {
           >
             <TextArea
               onChange={(e) => {
-                setCourseData({ ...courseData, description: e.currentTarget.value });
+                onSetCourseData("descripiton", e.currentTarget.value);
               }}
               rows={3}
               placeholder="A brief description about the course"
@@ -262,11 +115,7 @@ const Setting: FC = () => {
               }}
               onChange={handleChange}
             >
-              <button
-                style={{ border: 0, background: "none" }}
-                onClick={() => setUploadUrl({ ...courseData, uploadType: "video" })}
-                type="button"
-              >
+              <button style={{ border: 0, background: "none" }} type="button">
                 {loading && uploadUrl?.uploadType === "video" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                 <div style={{ marginTop: 8 }}>Upload Video</div>
               </button>
@@ -311,7 +160,7 @@ const Setting: FC = () => {
               <Input
                 placeholder="days left"
                 onChange={(e) => {
-                  setCourseData({ ...courseData, duration: Number(e.currentTarget.value) });
+                  onSetCourseData("duration", e.currentTarget.value);
                 }}
                 value={courseData.duration}
                 defaultValue={courseData.duration}
