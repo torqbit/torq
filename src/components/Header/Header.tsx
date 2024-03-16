@@ -26,6 +26,10 @@ export interface INotification extends Notification {
       courseId: number;
     };
   };
+  fromUser: {
+    name: string;
+    image: string;
+  };
 }
 
 const NotificationContentCard: FC<{ notifi: INotification }> = ({ notifi }) => {
