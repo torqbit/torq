@@ -58,11 +58,11 @@ const NotificationList: FC = () => {
             title={
               <Link href="#">
                 {item.fromUser.name}
-                {" : "}
+
                 {item.notificationType === "COMMENT" ? (
                   <span>
-                    Reply on QA{" "}
-                    <i style={{ color: "#666" }}>{truncateString(item?.tagComment?.comment as string, 20)}</i>
+                    replied on Question {" : "}
+                    <span style={{ color: "#666" }}>{truncateString(item?.tagComment?.comment as string, 20)}</span>
                   </span>
                 ) : (
                   ""
