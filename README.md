@@ -49,8 +49,8 @@ Development system must have docker engine installed and running.
 
 Setting up local environment is extremely easy and straight forward. Follow the below step and you will be ready to contribute
 
-1. Clone the code locally using `git clone https://github.com/torqbit/console`
-1. Switch to the code folder `cd console`
+1. Clone the code locally using `git clone https://github.com/torqbit/torq`
+1. Switch to the code folder `cd torq`
 1. Create your feature or fix branch you plan to work on using `git checkout -b <feature-branch-name>`
 1. Open the code on VSCode or similar equivalent IDE
 1. Review the `.env` files available in various folders. Visit [Environment Setup](./ENV_SETUP.md) to know about various environment variables used in system
@@ -168,7 +168,7 @@ The Torqbit community can be found on GitHub Discussions, where you can ask ques
 
 To chat with other community members you can join the [Torqbit Discord](https://discord.gg/kKR9TWm7).
 
-Our [Code of Conduct](https://github.com/torqbit/console) applies to all Torqbit community channels.
+Our [Code of Conduct](https://github.com/torqbit/torq) applies to all Torqbit community channels.
 
 ## ⛓️ Security
 

@@ -48,6 +48,12 @@ export const getNotifi = async (userId: number) => {
           },
         },
       },
+      fromUser: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
     },
   });
 };
