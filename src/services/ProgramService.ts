@@ -318,7 +318,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/program/addCourses`, {
+    fetch(`/api/v1/course/add`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -349,7 +349,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/${courseId}`, {
+    fetch(`/api/v1/course/${courseId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -376,7 +376,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/list/${programId}?state=${state}`, {
+    fetch(`/api/v1/course/list/${programId}?state=${state}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -452,7 +452,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/add`, {
+    fetch(`/api/v1/chapter/add`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -478,7 +478,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/${chapterId}`, {
+    fetch(`/api/v1/chapter/${chapterId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -506,7 +506,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/update`, {
+    fetch(`/api/v1/chapter/update`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -604,7 +604,7 @@ class ProgramService {
   ) => {
     console.log(courseData, "c");
 
-    fetch(`/api/v1/program/course/update`, {
+    fetch(`/api/v1/course/update`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -632,7 +632,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/delete/${courseId}`, {
+    fetch(`/api/v1/course/delete/${courseId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -658,7 +658,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/delete/${chapterId}`, {
+    fetch(`/api/v1/chapter/delete/${chapterId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -686,7 +686,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/updateState`, {
+    fetch(`/api/v1/course/updateState`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -713,7 +713,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/resource/list/${chapterId}`, {
+    fetch(`/api/v1/resource/list/${chapterId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -740,7 +740,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/resource/add`, {
+    fetch(`/api/v1/resource/add`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -768,7 +768,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/resource/delete/${resourceId}`, {
+    fetch(`/api/v1/resource/delete/${resourceId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -795,7 +795,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/resource/update`, {
+    fetch(`/api/v1/resource/update`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -822,7 +822,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/resource/${resourceId}`, {
+    fetch(`/api/v1/resource/${resourceId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -848,7 +848,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/program/course/chapter/resource/assignment/${resourceId}`, {
+    fetch(`/api/v1/resource/assignment/${resourceId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
