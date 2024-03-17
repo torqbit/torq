@@ -55,12 +55,6 @@ const Dashboard: FC = () => {
       children: <EnrolledCourseList />,
     },
     {
-      key: "2",
-      label: "Certifications",
-      children: "Content of Tab Pane 2",
-      icon: SvgIcons.certification,
-    },
-    {
       key: "3",
       label: "Quiz",
       children: "Content of Tab Pane 3",

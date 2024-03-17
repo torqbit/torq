@@ -1,7 +1,4 @@
 .user_profile_page {
-  padding-top: 160px;
-  min-height: 100vh;
-  background-color: var(--bg-secondary);
   .content_center {
     max-width: 1200px;
     margin: 0 auto;
@@ -14,18 +11,13 @@
       box-shadow: var(--hd-box-shadow);
       border: 4px solid var(--bg-primary);
       border-radius: 50%;
-      height: 240px;
-      width: 240px;
+      height: 200px;
+      width: 200px;
     }
   }
 
   .right_content {
     width: 50%;
-    .page_title {
-      color: var(--font-primary);
-
-      font-size: 2.4rem;
-    }
     .user_profile_form {
       width: 100%;
 
