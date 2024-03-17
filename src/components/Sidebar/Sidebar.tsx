@@ -38,7 +38,7 @@ const Sidebar: FC = () => {
     ProgramService.createDraftCourses(
       undefined,
       (result) => {
-        router.push(`/admin/content/course/${result.getCourse.courseId}/settings`);
+        router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
       },
       (error) => {
         console.log(error);
@@ -46,7 +46,7 @@ const Sidebar: FC = () => {
     );
   };
   const previousDraft = (id: number) => {
-    router.push(`/admin/content/course/${id}/settings`);
+    router.push(`/admin/content/course/${id}/edit`);
 
     setIsModalOpen(false);
   };
