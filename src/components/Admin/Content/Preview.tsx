@@ -64,7 +64,7 @@ const Preview: FC<{
         <Label
           title={content.name}
           icon={SvgIcons.folder}
-          time="5m 15s"
+          time={""}
           onRender={setRender}
           render={render}
           keyValue={`${i + 1}`}
@@ -76,8 +76,8 @@ const Preview: FC<{
           <div className={styles.resContainer}>
             <Label
               title={res.name}
-              icon={SvgIcons.playBtn}
-              time="4m 5s"
+              icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
+              time={res.contentType === "Video" ? `${res.videoDuration} min` : `${res.daysToSubmit} days`}
               onRender={setRender}
               render={render}
               keyValue={`${i + 1}`}
@@ -88,149 +88,13 @@ const Preview: FC<{
       showArrow: false,
     };
   });
-  // const git = [
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="History to Git"
-  //       icon={SvgIcons.playBtn}
-  //       time="4m 5s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res1"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Install GIt on Mac & Windows "
-  //       icon={SvgIcons.playBtn}
-  //       time="6m 25s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res2"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Basic  Git Commands"
-  //       icon={SvgIcons.playBtn}
-  //       time="7m 25s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res3"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Test ypur Git skills "
-  //       icon={SvgIcons.file}
-  //       time="7m 25s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res4"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="  Git commit & logs"
-  //       icon={SvgIcons.file}
-  //       time="7m 25s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res5"
-  //     />
-  //   </div>,
-  // ];
-  // const branch = [
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Feature branch"
-  //       icon={SvgIcons.playBtn}
-  //       time="7m 25s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res1"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Merging multiple branches "
-  //       icon={SvgIcons.playBtn}
-  //       time="7m 25s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res2"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="  Git rebase"
-  //       icon={SvgIcons.playBtn}
-  //       time="4m 30s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res3"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Test ypur Git skills "
-  //       icon={SvgIcons.file}
-  //       time="4m 30s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res4"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="  Git branch commands "
-  //       icon={SvgIcons.file}
-  //       time="4m 30s"
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res5"
-  //     />
-  //   </div>,
-  // ];
-  // const items = [
-  //   {
-  //     key: "1",
-  //     label: (
-  //       <Label
-  //         title="Introduction to Git"
-  //         icon={SvgIcons.folder}
-  //         time="5m 15s"
-  //         onRender={setRender}
-  //         render={render}
-  //         keyValue="1"
-  //       />
-  //     ),
-  //     children: git,
-  //     showArrow: false,
-  //   },
-  //   {
-  //     key: "2",
-  //     label: (
-  //       <Label
-  //         title="  Git branching"
-  //         icon={SvgIcons.folder}
-  //         time="5m 15s"
-  //         onRender={setRender}
-  //         render={render}
-  //         keyValue="2"
-  //       />
-  //     ),
-  //     children: branch,
-  //     showArrow: false,
-  //   },
-  // ];
 
   return (
     <section className={styles.preview_container}>
       <div>
         <video className={styles.video_container} autoPlay src={uploadUrl.videoUrl} loop />
       </div>
-      <div className={styles.react_player}></div>
+
       <div className={styles.video_player_info}>
         <div>
           <h2>Code Collaboration with Git & Github</h2>
@@ -241,7 +105,7 @@ const Preview: FC<{
           {SvgIcons.arrowRight}
         </Button>
       </div>
-      <div className={styles.play_btn}>{SvgIcons.reactPlayBtn}</div>
+
       <h2>Table of Contents</h2>
       {items.map((item, i) => {
         return (

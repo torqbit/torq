@@ -123,6 +123,7 @@ const Label: FC<{
 
 const Curriculum: FC<{
   chapter: ChapterDetail[];
+  onDiscard: () => void;
   onRefresh: () => void;
   setOpen: (value: boolean) => void;
   onFindResource: (id: number, content: ResourceContentType) => void;
@@ -141,126 +142,13 @@ const Curriculum: FC<{
   updateChapterState,
   updateResState,
   deleteRes,
+  onDiscard,
 }) => {
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
   const [render, setRender] = useState(renderKey);
 
-  // const git = [
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="History to Git"
-  //       icon={SvgIcons.playBtn}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res1"
-  //       state="Draft"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Install GIt on Mac & Windows "
-  //       icon={SvgIcons.playBtn}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res2"
-  //       state="Draft"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Basic  Git Commands"
-  //       icon={SvgIcons.playBtn}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res3"
-  //       state="Draft"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Test ypur Git skills "
-  //       icon={SvgIcons.file}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res4"
-  //       state="Published"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="  Git commit & logs"
-  //       icon={SvgIcons.file}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res5"
-  //       state="Published"
-  //     />
-  //   </div>,
-  // ];
-  // const branch = [
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Feature branch"
-  //       icon={SvgIcons.playBtn}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res1"
-  //       state="Draft"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Merging multiple branches "
-  //       icon={SvgIcons.playBtn}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res2"
-  //       state="Draft"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="  Git rebase"
-  //       icon={SvgIcons.playBtn}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res3"
-  //       state="Draft"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="Test ypur Git skills "
-  //       icon={SvgIcons.file}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res4"
-  //       state="Published"
-  //     />
-  //   </div>,
-  //   <div className={styles.resContainer}>
-  //     <Label
-  //       title="  Git branch commands "
-  //       icon={SvgIcons.file}
-  //       type=""
-  //       onRender={setRender}
-  //       render={render}
-  //       keyValue="res5"
-  //       state="Published"
-  //     />
-  //   </div>,
-  // ];
   const items = chapter.map((content, i) => {
     return {
       key: `${i + 1}`,
@@ -303,41 +191,6 @@ const Curriculum: FC<{
     };
   });
 
-  // const items = [
-  //   {
-  //     key: "1",
-  //     label: (
-  //       <Label
-  //         title="Introduction to Git"
-  //         icon={SvgIcons.folder}
-  //         type="chapter"
-  //         onRender={setRender}
-  //         render={render}
-  //         keyValue="1"
-  //         state="Draft"
-  //       />
-  //     ),
-  //     children: git,
-  //     showArrow: false,
-  //   },
-  //   {
-  //     key: "2",
-  //     label: (
-  //       <Label
-  //         title="  Git branching"
-  //         icon={SvgIcons.folder}
-  //         type="chapter"
-  //         onRender={setRender}
-  //         render={render}
-  //         keyValue="2"
-  //         state="Draft"
-  //       />
-  //     ),
-  //     children: branch,
-  //     showArrow: false,
-  //   },
-  // ];
-
   return (
     <section className={styles.curriculum}>
       <div className={styles.curriculum_container}>
@@ -345,7 +198,15 @@ const Curriculum: FC<{
           <h1>Curriculum</h1>
 
           <Space>
-            <Button>Discard</Button>
+            <Popconfirm
+              title={`Delete this course`}
+              description={`Are you sure to delete this entire course?`}
+              onConfirm={() => onDiscard()}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button>Discard</Button>
+            </Popconfirm>
 
             <Button
               type="primary"

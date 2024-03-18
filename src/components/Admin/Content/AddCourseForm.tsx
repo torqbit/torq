@@ -369,7 +369,9 @@ const AddCourseForm: FC = () => {
 
       description: formData.getFieldsValue().description,
       chapterId: chapterId,
-      sequenceId: Number(formData.getFieldsValue().index),
+      // sequenceId: Number(formData.getFieldsValue().index),
+      sequenceId: Number(currentSeqIds[0] + 1),
+
       assignmentLang: formData.getFieldsValue().assignmentLang || [],
       videoDuration: formData.getFieldsValue().duration || 0,
       daysToSubmit: formData.getFieldsValue().submitDay || 0,
@@ -485,6 +487,7 @@ const AddCourseForm: FC = () => {
           updateResState={updateResState}
           deleteRes={deleteRes}
           onSave={onChange}
+          onDiscard={onDiscard}
         />
       ),
     },
