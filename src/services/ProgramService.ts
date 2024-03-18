@@ -62,6 +62,8 @@ export type ApiResponse = {
     videoUrl: string;
     chapter: [
       {
+        sequenceId: number;
+
         chapterId: number;
         courseId: number;
         createdAt: string;
@@ -98,6 +100,7 @@ export type ApiResponse = {
   getChapter: [
     {
       chapterId: number;
+
       courseId: number;
       createdAt: string;
       description: string;
@@ -693,6 +696,62 @@ class ProgramService {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ courseId, state }),
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+  updateChapterState = (
+    chapterId: number,
+    state: string,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/chapter/updateState`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chapterId, state }),
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+  updateResState = (
+    resourceId: number,
+    state: string,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/resource/updateState`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ resourceId, state }),
     }).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {

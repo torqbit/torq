@@ -173,7 +173,19 @@
         h3 {
           margin: 0;
           margin-bottom: 20px;
-          color: #000;
+          color: #eee;
+        }
+        .camera_btn_img,
+        .camera_btn {
+          position: relative;
+          right: 120px;
+          color: #fff;
+          height: 30px;
+          width: 30px;
+        }
+        .camera_btn_img {
+          right: 110px;
+          color: #eee;
         }
         .row_1,
         .row_2 {

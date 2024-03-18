@@ -1,32 +1,25 @@
 import SvgIcons from "@/components/SvgIcons";
+import { ChapterDetail } from "@/pages/add-course";
 import styles from "@/styles/Curriculum.module.scss";
-import { ArrowDownOutlined, EllipsisOutlined, FolderAddOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Collapse, Dropdown, Flex, MenuProps, Space, Tag } from "antd";
+import { ResourceContentType } from "@prisma/client";
+import { Button, Collapse, Dropdown, Flex, Form, MenuProps, Popconfirm, Space, Tag, message } from "antd";
 
 import { FC, ReactNode, useState } from "react";
-export const dropdownMenu: MenuProps["items"] = [
-  {
-    key: "1",
-    label: "Edit",
-  },
-  {
-    key: "2",
-    label: "Block",
-  },
-  {
-    key: "3",
-    label: "Delete",
-  },
-];
+
 const Label: FC<{
   title: string;
+  id: number;
+  deleteChapter: (id: number) => void;
   type: string;
   keyValue: string;
   onRender: (value: string[]) => void;
   render: string[];
+  onFindResource: (id: number, content: ResourceContentType) => void;
+
   icon: ReactNode;
   state: string;
-}> = ({ title, type, onRender, render, keyValue, icon, state }) => {
+  updateState: (id: number, state: string) => void;
+}> = ({ title, type, onRender, render, keyValue, icon, onFindResource, state, deleteChapter, id, updateState }) => {
   const onActive = (value: string[]) => {
     if (render.includes(value[0])) {
       let currentValue = render.filter((v) => v !== value[0]);
@@ -34,19 +27,35 @@ const Label: FC<{
     } else {
       render.push(value[0]);
     }
-    console.log(
-      render,
-      keyValue,
-      render.filter((v) => v !== value[0])
-    );
   };
+  const dropdownMenu: MenuProps["items"] = [
+    {
+      key: "1",
+      label: "Edit",
+    },
+
+    {
+      key: "2",
+      label: (
+        <Popconfirm
+          title={`Delete the ${type}`}
+          description={`Are you sure to delete this ${type}?`}
+          onConfirm={() => deleteChapter(id)}
+          okText="Yes"
+          cancelText="No"
+        >
+          Delete
+        </Popconfirm>
+      ),
+    },
+  ];
   return (
     <div className={styles.labelContainer}>
       <Flex justify="space-between" align="center">
         <div>
           <Flex gap={10} align="center">
             {icon}
-            <div style={{ cursor: "pointer" }} onClick={() => onActive([keyValue])}>
+            <div style={{ cursor: "pointer" }} onClick={() => type === "chapter" && onActive([keyValue])}>
               {" "}
               {title}
             </div>
@@ -54,12 +63,35 @@ const Label: FC<{
         </div>
         <div>
           <Flex align="center" gap={10}>
-            {type === "chapter" && (
-              <Button className={styles.add_btn}>
-                <div>Add Content </div>
-                {SvgIcons.chevronDown}
-              </Button>
-            )}{" "}
+            <div>
+              {type === "chapter" && (
+                <Dropdown.Button
+                  icon={SvgIcons.chevronDown}
+                  menu={{
+                    items: [
+                      {
+                        key: 1,
+                        label: "VIDEO",
+                        onClick: () => {
+                          onFindResource(id, "Video");
+                        },
+                      },
+                      {
+                        key: 2,
+                        label: "ASSIGNMENT",
+                        onClick: () => {
+                          console.log("hittt");
+
+                          onFindResource(id, "Assignment");
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  Add Content
+                </Dropdown.Button>
+              )}
+            </div>
             <Dropdown.Button
               className={state === "Draft" ? styles.draft_btn : styles.publish_btn}
               icon={SvgIcons.chevronDown}
@@ -68,7 +100,9 @@ const Label: FC<{
                   {
                     key: 1,
                     label: state === "Published" ? "Draft" : "Published",
-                    onClick: () => {},
+                    onClick: () => {
+                      updateState(id, state === "Published" ? "DRAFT" : "ACTIVE");
+                    },
                   },
                 ],
               }}
@@ -87,157 +121,222 @@ const Label: FC<{
   );
 };
 
-const Curriculum = () => {
-  const [render, setRender] = useState(["1", "2"]);
+const Curriculum: FC<{
+  chapter: ChapterDetail[];
+  onRefresh: () => void;
+  setOpen: (value: boolean) => void;
+  onFindResource: (id: number, content: ResourceContentType) => void;
+  deleteChapter: (id: number) => void;
+  updateChapterState: (id: number, state: string) => void;
+  updateResState: (id: number, state: string) => void;
+  deleteRes: (id: number) => void;
+  onSave: (value: string) => void;
+}> = ({
+  onSave,
+  chapter,
+  onRefresh,
+  setOpen,
+  onFindResource,
+  deleteChapter,
+  updateChapterState,
+  updateResState,
+  deleteRes,
+}) => {
+  const renderKey = chapter.map((c, i) => {
+    return `${i + 1}`;
+  });
+  const [render, setRender] = useState(renderKey);
 
-  const git = [
-    <div className={styles.resContainer}>
-      <Label
-        title="History to Git"
-        icon={SvgIcons.playBtn}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res1"
-        state="Draft"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="Install GIt on Mac & Windows "
-        icon={SvgIcons.playBtn}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res2"
-        state="Draft"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="Basic  Git Commands"
-        icon={SvgIcons.playBtn}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res3"
-        state="Draft"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="Test ypur Git skills "
-        icon={SvgIcons.file}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res4"
-        state="Published"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="  Git commit & logs"
-        icon={SvgIcons.file}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res5"
-        state="Published"
-      />
-    </div>,
-  ];
-  const branch = [
-    <div className={styles.resContainer}>
-      <Label
-        title="Feature branch"
-        icon={SvgIcons.playBtn}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res1"
-        state="Draft"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="Merging multiple branches "
-        icon={SvgIcons.playBtn}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res2"
-        state="Draft"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="  Git rebase"
-        icon={SvgIcons.playBtn}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res3"
-        state="Draft"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="Test ypur Git skills "
-        icon={SvgIcons.file}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res4"
-        state="Published"
-      />
-    </div>,
-    <div className={styles.resContainer}>
-      <Label
-        title="  Git branch commands "
-        icon={SvgIcons.file}
-        type=""
-        onRender={setRender}
-        render={render}
-        keyValue="res5"
-        state="Published"
-      />
-    </div>,
-  ];
-  const items = [
-    {
-      key: "1",
+  // const git = [
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="History to Git"
+  //       icon={SvgIcons.playBtn}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res1"
+  //       state="Draft"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="Install GIt on Mac & Windows "
+  //       icon={SvgIcons.playBtn}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res2"
+  //       state="Draft"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="Basic  Git Commands"
+  //       icon={SvgIcons.playBtn}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res3"
+  //       state="Draft"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="Test ypur Git skills "
+  //       icon={SvgIcons.file}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res4"
+  //       state="Published"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="  Git commit & logs"
+  //       icon={SvgIcons.file}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res5"
+  //       state="Published"
+  //     />
+  //   </div>,
+  // ];
+  // const branch = [
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="Feature branch"
+  //       icon={SvgIcons.playBtn}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res1"
+  //       state="Draft"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="Merging multiple branches "
+  //       icon={SvgIcons.playBtn}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res2"
+  //       state="Draft"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="  Git rebase"
+  //       icon={SvgIcons.playBtn}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res3"
+  //       state="Draft"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="Test ypur Git skills "
+  //       icon={SvgIcons.file}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res4"
+  //       state="Published"
+  //     />
+  //   </div>,
+  //   <div className={styles.resContainer}>
+  //     <Label
+  //       title="  Git branch commands "
+  //       icon={SvgIcons.file}
+  //       type=""
+  //       onRender={setRender}
+  //       render={render}
+  //       keyValue="res5"
+  //       state="Published"
+  //     />
+  //   </div>,
+  // ];
+  const items = chapter.map((content, i) => {
+    return {
+      key: `${i + 1}`,
       label: (
         <Label
-          title="Introduction to Git"
+          title={content.name}
           icon={SvgIcons.folder}
           type="chapter"
           onRender={setRender}
+          deleteChapter={deleteChapter}
+          updateState={updateChapterState}
+          onFindResource={onFindResource}
+          id={content.chapterId}
           render={render}
-          keyValue="1"
-          state="Draft"
+          keyValue={`${i + 1}`}
+          state={content.state === "ACTIVE" ? "Published" : "Draft"}
         />
       ),
-      children: git,
+      children: content.resource.map((res, i) => {
+        console.log(res, "res");
+        return (
+          <div className={styles.resContainer}>
+            <Label
+              title={res.name}
+              icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
+              deleteChapter={deleteRes}
+              id={res.resourceId}
+              updateState={updateResState}
+              type="resource"
+              onFindResource={() => {}}
+              onRender={setRender}
+              render={render}
+              keyValue={`${i + 1}`}
+              state={res.state === "ACTIVE" ? "Published" : "Draft"}
+            />
+          </div>
+        );
+      }),
       showArrow: false,
-    },
-    {
-      key: "2",
-      label: (
-        <Label
-          title="  Git branching"
-          icon={SvgIcons.folder}
-          type="chapter"
-          onRender={setRender}
-          render={render}
-          keyValue="2"
-          state="Draft"
-        />
-      ),
-      children: branch,
-      showArrow: false,
-    },
-  ];
+    };
+  });
+
+  // const items = [
+  //   {
+  //     key: "1",
+  //     label: (
+  //       <Label
+  //         title="Introduction to Git"
+  //         icon={SvgIcons.folder}
+  //         type="chapter"
+  //         onRender={setRender}
+  //         render={render}
+  //         keyValue="1"
+  //         state="Draft"
+  //       />
+  //     ),
+  //     children: git,
+  //     showArrow: false,
+  //   },
+  //   {
+  //     key: "2",
+  //     label: (
+  //       <Label
+  //         title="  Git branching"
+  //         icon={SvgIcons.folder}
+  //         type="chapter"
+  //         onRender={setRender}
+  //         render={render}
+  //         keyValue="2"
+  //         state="Draft"
+  //       />
+  //     ),
+  //     children: branch,
+  //     showArrow: false,
+  //   },
+  // ];
 
   return (
     <section className={styles.curriculum}>
@@ -248,7 +347,12 @@ const Curriculum = () => {
           <Space>
             <Button>Discard</Button>
 
-            <Button type="primary">
+            <Button
+              type="primary"
+              onClick={() => {
+                onSave("3");
+              }}
+            >
               Save Curriculum <img style={{ marginLeft: 5 }} src="/img/program/arrow-right.png" alt="arrow" />
             </Button>
           </Space>
@@ -256,10 +360,10 @@ const Curriculum = () => {
       </div>
       <div>
         <Flex justify="space-between" align="center">
-          <h2>2 Chapters</h2>
+          <h2>{chapter.length ? chapter.length : 0} Chapters</h2>
 
           <Space>
-            <Button className={styles.add_btn}>
+            <Button className={styles.add_btn} onClick={() => setOpen(true)}>
               {SvgIcons.plusBtn}
               <div> Add Chapter</div>
             </Button>

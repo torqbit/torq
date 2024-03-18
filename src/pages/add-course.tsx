@@ -12,11 +12,22 @@ import CourseOverview from "@/components/AddCourse/CourseOverview";
 import AddChapterForm from "@/components/AddCourse/AddChapterForm";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 // import { getItem } from "./course/about/[courseId]";
-import { CourseType } from "@prisma/client";
+import { Chapter, CourseType, Resource } from "@prisma/client";
 import { Session } from "next-auth";
 import appConstant from "@/services/appConstant";
 import { IContentType } from "@/components/AddCourse/AddResourceForm";
 const SpinIcon = <LoadingOutlined rev={undefined} style={{ fontSize: 24 }} spin />;
+export interface ChapterDetail {
+  sequenceId: number;
+  chapterId: number;
+  courseId: number;
+  createdAt: string;
+  state: string;
+  description: string;
+  isActive: boolean;
+  name: string;
+  resource: [Resource];
+}
 
 export interface IAddResources {
   category?: string;

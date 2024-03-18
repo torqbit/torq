@@ -31,7 +31,7 @@ const ResourceList: FC<{
   addRes: IAddResource;
   duration: number | null;
   resId: number;
-  onFindRsource: (id: number) => void;
+  onFindRsource: (id: number, content: ResourceContentType) => void;
   formData: FormInstance;
   chapterId: number;
 }> = ({ name, contentType, duration, setAddRes, addRes, resId, chapterId, onFindRsource, formData }) => {
@@ -42,7 +42,7 @@ const ResourceList: FC<{
       Number(resId),
       (result) => {
         message.success(result.message);
-        onFindRsource(chapterId);
+        onFindRsource(chapterId, "Video");
       },
       (error) => {
         message.error(error);
@@ -135,7 +135,7 @@ const AddResource: FC<{
   setResourceDrawer: (value: boolean) => void;
   showResourceDrawer: boolean;
   availableRes: Resource[] | undefined;
-  onFindRsource: (id: number) => void;
+  onFindRsource: (id: number, content: ResourceContentType) => void;
   onUpdateRes: (resId: number) => void;
 }> = ({
   setResourceDrawer,
@@ -151,7 +151,7 @@ const AddResource: FC<{
   onFindRsource,
 }) => {
   const router = useRouter();
-
+  console.log(addRes.content, "contetn");
   const onUploadAssignment = (info: any) => {
     if (info.file.status !== "uploading") {
     }
@@ -313,7 +313,7 @@ const AddResource: FC<{
                 </Form.Item>
               </div>
 
-              <div>
+              {/* <div>
                 <Form.Item label={"Choose resource type"} name={"contentType"}>
                   <Segmented
                     onChange={(v) => {
@@ -327,7 +327,7 @@ const AddResource: FC<{
                     size="middle"
                   />
                 </Form.Item>
-              </div>
+              </div> */}
 
               {addRes.content === "Video" && (
                 <div>
