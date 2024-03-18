@@ -48,11 +48,6 @@ const Sidebar: FC = () => {
       icon: SvgIcons.courses,
     },
     {
-      label: "Certifications",
-      key: "certifications",
-      icon: SvgIcons.certification,
-    },
-    {
       label: "Guides",
       key: "guides",
       icon: SvgIcons.guides,
@@ -67,7 +62,7 @@ const Sidebar: FC = () => {
       label: "ACCOUNT",
     },
     {
-      label: "Setting",
+      label: <Link href="/torq/setting">Setting</Link>,
       key: "setting",
       icon: SvgIcons.setting,
     },
