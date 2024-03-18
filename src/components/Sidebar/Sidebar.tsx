@@ -1,21 +1,89 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-import { Avatar, Badge, Layout, Menu, MenuProps, Space, message } from "antd";
+
+import { Avatar, Badge, Button, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
+
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
+
+import ProgramService from "@/services/ProgramService";
+import { useRouter } from "next/router";
+import { error } from "console";
+
 import { IResponse, getFetch } from "@/services/request";
+
 const { Sider } = Layout;
 
 const Sidebar: FC = () => {
   const [collapsed, setCollapsed] = React.useState(false);
+
+  const router = useRouter();
+
   const [isNewNotifi, setNewNotifi] = React.useState(false);
 
   const { data: user } = useSession();
   const { globalState, dispatch } = useAppContext();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const [modal, contextWrapper] = Modal.useModal();
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    ProgramService.createDraftCourses(
+      undefined,
+      (result) => {
+        router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+  const previousDraft = (id: number) => {
+    router.push(`/admin/content/course/${id}/edit`);
+
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const onCreateDraftCourse = () => {
+    showModal();
+
+    if (router.query.id) {
+      router.push(`/admin/content/course/${router.query.id}/settings`);
+    } else {
+      ProgramService.getLatesDraftCourse(
+        (result) => {
+          console.log(result);
+          if (result.getCourse) {
+            modal.confirm({
+              title: "would you like to use?",
+              content: (
+                <>
+                  <Space>
+                    <Button onClick={() => previousDraft(result.getCourse.courseId)}>previous draft course</Button>
+                    or
+                    <Button onClick={handleOk}>Create a new course</Button>
+                  </Space>
+                </>
+              ),
+              footer: null,
+            });
+          } else {
+            handleOk();
+          }
+        },
+        (error) => {}
+      );
+    }
+  };
 
   const getNewNotification = async (userId: number) => {
     try {
@@ -60,6 +128,7 @@ const Sidebar: FC = () => {
     {
       type: "group",
       label: "ACCOUNT",
+      key: "group",
     },
     {
       label: <Link href="/torq/setting">Setting</Link>,
@@ -86,7 +155,16 @@ const Sidebar: FC = () => {
       icon: SvgIcons.userGroup,
     },
     {
-      label: <Link href="/admin/content/settings">Content</Link>,
+      label: (
+        <div
+          // href="/admin/content/settings"
+          onClick={() => {
+            onCreateDraftCourse();
+          }}
+        >
+          Content
+        </div>
+      ),
       key: "content",
       icon: SvgIcons.content,
     },
@@ -112,6 +190,7 @@ const Sidebar: FC = () => {
       collapsible
       collapsed={collapsed}
     >
+      {contextWrapper}
       <div>
         <div className={styles.logo}>
           <Link href="/programs">

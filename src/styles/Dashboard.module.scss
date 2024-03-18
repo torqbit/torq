@@ -223,12 +223,15 @@
                 padding: 2px 10px;
                 border-radius: 4px;
               }
-              > div:first-child {
+              > input {
+                width: 70px;
                 border-top-right-radius: 0px;
 
                 border-bottom-right-radius: 0px;
               }
               > div:last-child {
+                height: 32px;
+
                 background-color: #eee;
                 border-top-left-radius: 0px;
 
@@ -254,12 +257,16 @@
                   border-radius: 4px;
                 }
 
-                > div:first-child {
+                > input {
+                  width: 70px;
+
                   border-top-right-radius: 0px;
 
                   border-bottom-right-radius: 0px;
                 }
                 > div:last-child {
+                  height: 32px;
+
                   background-color: #eee;
                   border-top-left-radius: 0px;
 
