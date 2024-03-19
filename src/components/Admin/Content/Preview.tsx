@@ -2,6 +2,7 @@ import SvgIcons from "@/components/SvgIcons";
 import { ChapterDetail } from "@/pages/add-course";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
+import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Collapse, Dropdown, Flex, MenuProps, Popconfirm, Tag } from "antd";
 
 import { FC, ReactNode, useEffect, useState } from "react";
@@ -100,6 +101,7 @@ const Preview: FC<{
           src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
           loop
         />
+
         {/* <div>
           <iframe
             className={styles.video_container}

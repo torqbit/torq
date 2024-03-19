@@ -7,7 +7,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 import { useRouter } from "next/router";
 import { ChapterDetail } from "@/pages/add-course";
-import { createVideo, onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
 import ProgramService from "@/services/ProgramService";
 import { postWithFile } from "@/services/request";
 
@@ -19,7 +19,7 @@ const Setting: FC<{
   onSubmit: () => void;
   setLoading: (value: boolean) => void;
   onRefresh: () => void;
-
+  createVideo: (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => void;
   beforeUpload: (file: any, fileType: string) => void;
   loading: boolean;
   onSetCourseData: (key: string, value: string) => void;
@@ -36,6 +36,7 @@ const Setting: FC<{
   onSubmit,
   form,
   courseData,
+  createVideo,
   setLoading,
   onDiscard,
   beforeUpload,
@@ -123,7 +124,7 @@ const Setting: FC<{
                     ProgramService.getCredentials(
                       "bunny",
                       async (result) => {
-                        setLoading(true);
+                        console.log(loading, refresh, "before");
 
                         if (uploadUrl.videoUrl) {
                           onDeleteVideo(
@@ -137,10 +138,9 @@ const Setting: FC<{
                           Number(result.credentials.api_secret),
                           result.credentials.api_key,
                           Number(router.query.id),
-                          file,
-                          setLoading,
-                          onRefresh
+                          file
                         );
+                        console.log(loading, refresh, "after");
                       },
                       (error) => {}
                     );
@@ -168,7 +168,7 @@ const Setting: FC<{
 
                     {uploadUrl?.videoUrl && (
                       <div style={{ width: 230 }} className={styles.camera_btn}>
-                        {SvgIcons.video}
+                        {loading  ? <LoadingOutlined /> : SvgIcons.video}
                       </div>
                     )}
                   </>

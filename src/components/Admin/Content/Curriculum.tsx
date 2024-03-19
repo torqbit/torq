@@ -211,6 +211,7 @@ const Curriculum: FC<{
             <Button
               type="primary"
               onClick={() => {
+                onRefresh();
                 onSave("3");
               }}
             >

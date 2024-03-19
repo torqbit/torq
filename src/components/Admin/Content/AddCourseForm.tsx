@@ -31,7 +31,16 @@ const AddCourseForm: FC = () => {
   const [formData] = Form.useForm();
   const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
   const [availableRes, setAvailableRes] = useState<Resource[]>();
+  const onRefresh = () => {
+    setRefresh(!refresh);
+  };
+
   const onChange = (key: string) => {
+    if (key === "3") {
+      onRefresh();
+      router.replace(`/admin/content/course/${router.query.id}/edit`);
+      setActiveKey("3");
+    }
     setActiveKey(key);
   };
 
@@ -64,10 +73,6 @@ const AddCourseForm: FC = () => {
     duration: 0,
     chapter: [],
   });
-
-  const onRefresh = () => {
-    setRefresh(!refresh);
-  };
 
   const onDiscard = () => {
     ProgramService.getCourses(
@@ -447,6 +452,81 @@ const AddCourseForm: FC = () => {
     );
   };
 
+  const createVideo = async (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => {
+    setLoading(true);
+    const fetch = require("node-fetch");
+    const url = `https://video.bunnycdn.com/library/${Number(libraryId)}/videos`;
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        AccessKey: accessKey as string,
+      },
+      body: JSON.stringify({ title: title }),
+    };
+
+    fetch(url, options)
+      .then((res: { json: () => JSON }) => res.json())
+      .then((json: any) => {
+        console.log(json, "va");
+        let uploadedData = uploadVideo(json.guid, accessKey, libraryId, courseId, file);
+        return uploadedData;
+      })
+      .catch((err: string) => {
+        console.error("error:" + err);
+      });
+  };
+
+  const uploadVideo = (id: string, accessKey: string, libraryId: number, courseId: number, file: any) => {
+    console.log("guid:", id, "key:", accessKey, "lib:", libraryId);
+    const fetch = require("node-fetch");
+
+    const url = `https://video.bunnycdn.com/library/${libraryId}/videos/${id}`;
+    const options = {
+      method: "PUT",
+      headers: { accept: "application/json", AccessKey: accessKey },
+      body: file,
+    };
+
+    fetch(url, options)
+      .then((res: { json: () => JSON }) => res.json())
+      .then((json: any) => {
+        let course = {
+          name: undefined,
+          duration: undefined,
+          state: "DRAFT",
+          skills: [],
+          description: undefined,
+          thumbnail: undefined,
+          thumbnailId: undefined,
+          videoUrl: id,
+          videoId: `${libraryId}`,
+          programId: 0,
+          authorId: 0,
+          sequenceId: undefined,
+          courseId: courseId,
+        };
+        ProgramService.updateCourse(
+          course,
+          (result) => {
+            setRefresh(!refresh);
+            message.success("file uploaded");
+            setLoading(false);
+            router.reload();
+          },
+          (error) => {
+            setLoading(true);
+
+            message.error(error);
+          }
+        );
+      })
+      .catch((err: string) => {
+        console.error("error:" + err);
+      });
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -461,6 +541,7 @@ const AddCourseForm: FC = () => {
           courseData={courseData}
           setLoading={setLoading}
           onRefresh={onRefresh}
+          createVideo={createVideo}
           uploadUrl={
             uploadUrl as {
               uploadType?: string;
