@@ -74,7 +74,7 @@ const AddCourseForm: FC = () => {
       Number(router.query.id),
       (result) => {
         onDeleteThumbnail(result.getCourse.thumbnailId);
-        onDeleteThumbnail(result.getCourse.videoId);
+        // onDeleteThumbnail(result.getCourse.videoId);
         ProgramService.deleteCourse(
           Number(router.query.id),
 
@@ -162,6 +162,7 @@ const AddCourseForm: FC = () => {
 
         throw new Error("Failed to upload file");
       }
+
       const res = await postRes.json();
       console.log(res, "response");
       fileType === "img" &&
@@ -458,6 +459,8 @@ const AddCourseForm: FC = () => {
           onSubmit={onSubmit}
           onDiscard={onDiscard}
           courseData={courseData}
+          setLoading={setLoading}
+          onRefresh={onRefresh}
           uploadUrl={
             uploadUrl as {
               uploadType?: string;
@@ -521,6 +524,7 @@ const AddCourseForm: FC = () => {
         form.setFieldValue("course_duration", result.getCourse.durationInMonths);
 
         // onSetCourseData("duration", String(result.getCourse.durationInMonths));
+
         setCourseData({
           ...courseData,
           duration: result.getCourse.durationInMonths,

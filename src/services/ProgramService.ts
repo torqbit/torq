@@ -120,6 +120,14 @@ export type ApiResponse = {
       ];
     }
   ];
+  credentials: {
+    id: number;
+    service_type: string;
+    provider_name: string;
+    api_key: string;
+    api_secret: string;
+    dt_added: Date;
+  };
   allCourse: ICourseDetial[];
   course: Course;
 };
@@ -587,18 +595,18 @@ class ProgramService {
 
   updateCourse = (
     courseData: {
-      name: string;
-      duration: number;
-      state: string | undefined;
-      skills: string[];
-      description: string;
-      thumbnail: string;
-      thumbnailId: string;
-      videoUrl: string;
-      videoId: string;
-      programId: number;
-      authorId: number | undefined;
-      sequenceId: number | undefined;
+      name?: string;
+      duration?: number;
+      state?: string | undefined;
+      skills?: string[];
+      description?: string;
+      thumbnail?: string;
+      thumbnailId?: string;
+      videoUrl?: string;
+      videoId?: string;
+      programId?: number;
+      authorId?: number | undefined;
+      sequenceId?: number | undefined;
       courseId: number;
     },
 
@@ -908,6 +916,33 @@ class ProgramService {
     onFailure: (message: string) => void
   ) => {
     fetch(`/api/v1/resource/assignment/${resourceId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  getCredentials = (
+    provider_name: string,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/admin/config/service-provider/get/${provider_name}`, {
       method: "GET",
       headers: {
         Accept: "application/json",

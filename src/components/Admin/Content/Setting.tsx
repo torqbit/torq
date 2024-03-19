@@ -1,12 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
 
-import { Button, Form, FormInstance, Input, Popconfirm, Radio, Space, Upload, UploadProps } from "antd";
+import { Button, Form, FormInstance, Input, Popconfirm, Radio, Space, Upload, UploadProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 import { useRouter } from "next/router";
 import { ChapterDetail } from "@/pages/add-course";
+import { createVideo, onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+import ProgramService from "@/services/ProgramService";
+import { postWithFile } from "@/services/request";
 
 const { TextArea } = Input;
 
@@ -14,6 +17,8 @@ const Setting: FC<{
   onDiscard: () => void;
   form: FormInstance;
   onSubmit: () => void;
+  setLoading: (value: boolean) => void;
+  onRefresh: () => void;
 
   beforeUpload: (file: any, fileType: string) => void;
   loading: boolean;
@@ -27,7 +32,21 @@ const Setting: FC<{
     videoId?: string;
   };
   refresh: boolean;
-}> = ({ onSubmit, form, courseData, onDiscard, beforeUpload, loading, uploadUrl, onSetCourseData, refresh }) => {
+}> = ({
+  onSubmit,
+  form,
+  courseData,
+  setLoading,
+  onDiscard,
+  beforeUpload,
+  loading,
+  uploadUrl,
+  onSetCourseData,
+  refresh,
+  onRefresh,
+}) => {
+  const router = useRouter();
+  const [preview, setPreview] = useState<boolean>(false);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
       // setLoading(true);
@@ -97,23 +116,61 @@ const Setting: FC<{
                 listType="picture-card"
                 className={"course_video_uploader"}
                 showUploadList={false}
-                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 beforeUpload={(file) => {
-                  beforeUpload(file, "video");
+                  // beforeUpload(file, "video");
+                  if (router.query.id) {
+                    ProgramService.getCredentials(
+                      "bunny",
+                      async (result) => {
+                        setLoading(true);
+
+                        if (uploadUrl.videoUrl) {
+                          onDeleteVideo(
+                            uploadUrl.videoUrl as string,
+                            Number(uploadUrl.videoId),
+                            result.credentials.api_key
+                          );
+                        }
+                        createVideo(
+                          `${form.getFieldsValue().course_name}_trailer`,
+                          Number(result.credentials.api_secret),
+                          result.credentials.api_key,
+                          Number(router.query.id),
+                          file,
+                          setLoading,
+                          onRefresh
+                        );
+                      },
+                      (error) => {}
+                    );
+                  }
                 }}
                 onChange={handleChange}
               >
                 {uploadUrl?.videoUrl ? (
                   <>
-                    <video
-                      height={"100%"}
-                      width={"100%"}
-                      style={{ marginLeft: 20 }}
-                      src={uploadUrl?.videoUrl}
+                    {/* <video
+                      className={styles.video_container}
                       autoPlay
+                      src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
                       loop
+                    
+                    /> */}
+                    <img
+                      src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/thumbnail.jpg`}
+                      alt=""
+                      height={"100%"}
+                      className={styles.video_container}
+                      // width={270}
+                      width={"100%"}
                     />
-                    {uploadUrl?.videoUrl && <div className={styles.camera_btn}>{SvgIcons.video}</div>}
+
+                    {uploadUrl?.videoUrl && (
+                      <div style={{ width: 230 }} className={styles.camera_btn}>
+                        {SvgIcons.video}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <button style={{ border: 0, background: "none" }} type="button">

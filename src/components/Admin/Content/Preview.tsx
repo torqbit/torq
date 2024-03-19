@@ -1,9 +1,10 @@
 import SvgIcons from "@/components/SvgIcons";
 import { ChapterDetail } from "@/pages/add-course";
+import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
 import { Button, Collapse, Dropdown, Flex, MenuProps, Popconfirm, Tag } from "antd";
 
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 
 const Label: FC<{
   title: string;
@@ -57,6 +58,7 @@ const Preview: FC<{
     return `${i + 1}`;
   });
   const [render, setRender] = useState(renderKey);
+
   const items = chapter.map((content, i) => {
     return {
       key: `${i + 1}`,
@@ -92,7 +94,27 @@ const Preview: FC<{
   return (
     <section className={styles.preview_container}>
       <div>
-        <video className={styles.video_container} autoPlay src={uploadUrl.videoUrl} loop />
+        <video
+          className={styles.video_container}
+          autoPlay
+          src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
+          loop
+        />
+        {/* <div>
+          <iframe
+            className={styles.video_container}
+            src={`https://iframe.mediadelivery.net/embed/${uploadUrl.videoId}/${uploadUrl.videoUrl}?autoplay=true`}
+            // src={`"https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/preview.webp"`}
+            // src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/thumbnail.jpg`}
+            loading="lazy"
+            // style="border: none; position: absolute; top: 0; height: 100%; width: 100%;"
+
+            height={400}
+            width={"100%"}
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;loop;"
+            allowFullScreen={true}
+          ></iframe>
+        </div> */}
       </div>
 
       <div className={styles.video_player_info}>

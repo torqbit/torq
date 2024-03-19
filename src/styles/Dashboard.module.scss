@@ -170,6 +170,9 @@
         background-color: #fff;
         padding: 10px 20px;
         margin-top: 20px;
+        .video_container {
+          margin-left: 27px;
+        }
         h3 {
           margin: 0;
           margin-bottom: 20px;
@@ -178,10 +181,9 @@
         .camera_btn_img,
         .camera_btn {
           position: relative;
+          z-index: 100;
           right: 120px;
           color: #fff;
-          height: 30px;
-          width: 30px;
         }
         .camera_btn_img {
           right: 110px;
