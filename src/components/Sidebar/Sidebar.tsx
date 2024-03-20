@@ -57,7 +57,7 @@ const Sidebar: FC = () => {
     showModal();
 
     if (router.query.id) {
-      router.push(`/admin/content/course/${router.query.id}/settings`);
+      router.push(`/admin/content/course/${router.query.id}/edit`);
     } else {
       ProgramService.getLatesDraftCourse(
         (result) => {

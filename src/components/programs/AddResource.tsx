@@ -31,7 +31,7 @@ const ResourceList: FC<{
   addRes: IAddResource;
   duration: number | null;
   resId: number;
-  onFindRsource: (id: number) => void;
+  onFindRsource: (id: number, content: ResourceContentType) => void;
   formData: FormInstance;
   chapterId: number;
 }> = ({ name, contentType, duration, setAddRes, addRes, resId, chapterId, onFindRsource, formData }) => {
@@ -42,7 +42,7 @@ const ResourceList: FC<{
       Number(resId),
       (result) => {
         message.success(result.message);
-        onFindRsource(chapterId);
+        onFindRsource(chapterId, "Video");
       },
       (error) => {
         message.error(error);
@@ -135,7 +135,7 @@ const AddResource: FC<{
   setResourceDrawer: (value: boolean) => void;
   showResourceDrawer: boolean;
   availableRes: Resource[] | undefined;
-  onFindRsource: (id: number) => void;
+  onFindRsource: (id: number, content: ResourceContentType) => void;
   onUpdateRes: (resId: number) => void;
 }> = ({
   setResourceDrawer,
@@ -151,7 +151,7 @@ const AddResource: FC<{
   onFindRsource,
 }) => {
   const router = useRouter();
-
+  console.log(addRes.content, "contetn");
   const onUploadAssignment = (info: any) => {
     if (info.file.status !== "uploading") {
     }
@@ -171,13 +171,13 @@ const AddResource: FC<{
   return (
     <>
       <Drawer
-        width={800}
+        width={400}
         maskClosable={false}
         closeIcon={false}
         className={styles.newResDetails}
         title={
           <div className={styles.drawerHeader}>
-            <div>
+            {/* <div>
               <ResourceList
                 chapterId={0}
                 resId={0}
@@ -189,7 +189,7 @@ const AddResource: FC<{
                 setAddRes={setAddRes}
                 addRes={addRes}
               />
-            </div>
+            </div> */}
             <Space className={styles.drawerTitle}>
               <CloseOutlined
                 onClick={() => {
@@ -240,7 +240,7 @@ const AddResource: FC<{
         }
       >
         <div className={styles.drawerContainer}>
-          <div className={styles.resourceContainer}>
+          {/* <div className={styles.resourceContainer}>
             {availableRes && availableRes?.length >= 1 ? (
               availableRes?.map((c: Resource, i) => {
                 return (
@@ -261,7 +261,7 @@ const AddResource: FC<{
             ) : (
               <div className={styles.resorceListWrapper} style={{ border: "none" }}></div>
             )}
-          </div>
+          </div> */}
           <Form
             form={formData}
             layout="vertical"
@@ -289,7 +289,7 @@ const AddResource: FC<{
                   </Form.Item>
                 </div>
               </div>
-
+              {/* 
               <div>
                 <Form.Item label="Set Index" name="index" rules={[{ required: true, message: "Please Enter Index" }]}>
                   <Select placeholder="Choose index">
@@ -311,9 +311,9 @@ const AddResource: FC<{
                     )}
                   </Select>
                 </Form.Item>
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <Form.Item label={"Choose resource type"} name={"contentType"}>
                   <Segmented
                     onChange={(v) => {
@@ -327,7 +327,7 @@ const AddResource: FC<{
                     size="middle"
                   />
                 </Form.Item>
-              </div>
+              </div> */}
 
               {addRes.content === "Video" && (
                 <div>

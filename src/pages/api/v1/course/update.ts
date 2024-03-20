@@ -35,11 +35,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (description) updateObj["description"] = description;
     if (thumbnail) updateObj["thumbnail"] = thumbnail;
     if (thumbnailId) updateObj["thumbnailId"] = thumbnail;
-    if (videoUrl) updateObj["videoUrl"] = thumbnail;
-    if (videoId) updateObj["videoId"] = thumbnail;
+    if (videoUrl) updateObj["videoUrl"] = videoUrl;
+    if (videoId) updateObj["videoId"] = videoId;
 
     if (sequenceId) updateObj["sequenceId"] = sequenceId;
-    console.log(updateObj, "updated object");
 
     const findCourse = await prisma.course.findUnique({
       where: {
