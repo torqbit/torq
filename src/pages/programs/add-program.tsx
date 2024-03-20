@@ -62,8 +62,6 @@ const AddNewProgram: NextPage = () => {
       if (postRes.ok && result.success) {
         message.success(result.message);
         if (action === "continue") {
-          console.log(state, "and", edit, "and", action);
-
           state === "ACTIVE" && edit === "false" && router.push(`/programs/${result?.program?.id}/add-overview`);
 
           state === "DRAFT" && edit === "false" && router.push(`/programs/${result?.program?.id}/add-overview`);

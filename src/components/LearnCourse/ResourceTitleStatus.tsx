@@ -86,7 +86,6 @@ const ResourceTitleStatus: FC<{
       message.error(appConstant.cmnErrorMsg);
     }
   };
-  console.log(sltResource, "sfd");
   return (
     <article className={style.resource_status_footer}>
       {loading ? <Skeleton.Input /> : <h3 className={style.lecture_name}>{sltResource?.name}</h3>}

@@ -145,7 +145,6 @@ const LearnLecture = (props: IProps) => {
 
     try {
       setLoading(true);
-      console.log(currResId, "curResID");
       const res = await getFetch(`/api/resource/get/${currResId}`);
       const result = (await res.json()) as IResResources;
       if (res.ok && result.success) {
@@ -220,7 +219,6 @@ const LearnLecture = (props: IProps) => {
         }
         setLoading(false);
       } else {
-        console.log(result, "se");
         setLoading(false);
       }
     } catch (err) {
@@ -268,7 +266,7 @@ const LearnLecture = (props: IProps) => {
             setChapterId(chapter?.chapterId);
           } else if (currchapter && currchapter.sequenceId === course.chapter.length) {
             const findCourse = program.course.find((c) => c.sequenceId === course.sequenceId + 1);
-            console.log(findCourse, "find");
+
             if (findCourse && findCourse.sequenceId < program.course.length) {
               setAllResources(findCourse.chapter[0].resource.sort((a, b) => a.sequenceId - b.sequenceId));
 
@@ -296,7 +294,6 @@ const LearnLecture = (props: IProps) => {
         }
       }
     } else if (mode === "back" && sltResource) {
-      console.log(sltResource);
       if (sltResource?.sequenceId <= allResources.length) {
         const prevRes = allResources.find((res: IResource) => res.sequenceId === sltResource.sequenceId - 1);
         if (prevRes) {

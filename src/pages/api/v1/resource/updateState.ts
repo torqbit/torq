@@ -6,31 +6,24 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { courseId } = req.query;
-    const course = await prisma.course.findUnique({
+    const { resourceId, state } = req.body;
+    const updateState = await prisma.resource.update({
       where: {
-        courseId: Number(courseId),
+        resourceId: Number(resourceId),
       },
-      include: {
-        chapter: {
-          where: {
-            courseId: Number(courseId),
-          },
-          include: {
-            resource: {},
-          },
-        },
+      data: {
+        state: state,
       },
     });
     return res.status(200).json({
       info: false,
       success: true,
-      message: "Crouse found",
-      getCourse: course,
+      message: "State updated",
+      programs: updateState,
     });
   } catch (error) {
     return errorHandler(error, res);
   }
 };
 
-export default withMethods(["GET"], withAuthentication(handler));
+export default withMethods(["POST"], withAuthentication(handler));

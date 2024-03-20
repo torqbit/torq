@@ -10,7 +10,6 @@ const CountDown: FC<{ id: number; onMarkAsCompleted: () => void }> = ({ id, onMa
       id,
       (result) => {
         let currentTIme = new Date().getTime();
-        console.log(result.deadline - new Date().getTime(), "deadline cd");
 
         setDeadLine(result.deadline - currentTIme);
       },
@@ -25,7 +24,6 @@ const CountDown: FC<{ id: number; onMarkAsCompleted: () => void }> = ({ id, onMa
           value={new Date().getTime() + deadLine}
           onFinish={() => {
             onMarkAsCompleted();
-            console.log("finish");
           }}
         />
       )}

@@ -7,12 +7,12 @@ import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const { name, duration, state, skills, description, thumbnail, authorId, sequenceId } = body;
+    const { name, duration, state, skills, description, thumbnail, authorId, sequenceId, courseId } = body;
 
     // CHECK IS COURSE EXIST WITH THIS NAME
     const isCrouseExist = await prisma.course.findFirst({
       where: {
-        name: name,
+        courseId: courseId,
       },
     });
 

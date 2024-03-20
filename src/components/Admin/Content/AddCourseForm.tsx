@@ -6,19 +6,51 @@ import Link from "next/link";
 import Setting from "./Setting";
 import styles from "@/styles/Dashboard.module.scss";
 
-import { Button, Form, Tabs, TabsProps, UploadProps, message } from "antd";
+import { Button, Form, Tabs, TabsProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
 import Preview from "./Preview";
-import { getFetch, postWithFile } from "@/services/request";
-import appConstant from "@/services/appConstant";
+
 import ProgramService from "@/services/ProgramService";
+import { ChapterDetail } from "@/pages/add-course";
+import AddCourseChapter from "@/components/programs/AddCourseChapter";
+import { Resource, ResourceContentType } from "@prisma/client";
+import { IAddResource, resData } from "@/lib/types/program";
+import AddResource from "@/components/programs/AddResource";
+import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+
 const AddCourseForm: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [activeKey, setActiveKey] = useState<string>("1");
 
+  const [chapterForm] = Form.useForm();
+  const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
+  const [formData] = Form.useForm();
+  const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
+  const [availableRes, setAvailableRes] = useState<Resource[]>();
+  const onRefresh = () => {
+    setRefresh(!refresh);
+  };
+
+  const onChange = (key: string) => {
+    if (key === "3") {
+      onRefresh();
+      router.replace(`/admin/content/course/${router.query.id}/edit`);
+      setActiveKey("3");
+    }
+    setActiveKey(key);
+  };
+
+  const [addRes, setAddRes] = useState<IAddResource>({
+    name: "New Video ",
+    duration: 0,
+    content: "Video",
+    assignmentFileName: "",
+    chapterId: 0,
+  });
 
   const router = useRouter();
 
@@ -30,23 +62,44 @@ const AddCourseForm: FC = () => {
     videoId?: string;
   }>();
 
-  const [courseData, setCourseData] = useState<{ name: string; description: string; duration: number }>({
+  const [courseData, setCourseData] = useState<{
+    name: string;
+    description: string;
+    duration: number;
+    chapter: ChapterDetail[];
+  }>({
     name: "",
     description: "",
     duration: 0,
+    chapter: [],
   });
 
   const onDiscard = () => {
     ProgramService.getCourses(
       Number(router.query.id),
       (result) => {
-        onDeleteThumbnail(result.getCourse.thumbnailId);
-        onDeleteThumbnail(result.getCourse.videoId);
-        ProgramService.deleteCourse(
-          Number(router.query.id),
+        ProgramService.getCredentials(
+          "bunny",
+          async (videoData) => {
+            if (uploadUrl?.videoUrl) {
+              onDeleteVideo(uploadUrl.videoUrl as string, Number(uploadUrl.videoId), videoData.credentials.api_key);
+            }
+            ProgramService.getCredentials(
+              "bunny img",
+              async (imgData) => {
+                onDeleteThumbnail(result.getCourse?.thumbnail, imgData.credentials.api_key);
 
-          (result) => {
-            message.success(result.message);
+                ProgramService.deleteCourse(
+                  Number(router.query.id),
+
+                  (result) => {
+                    message.success(result.message);
+                  },
+                  (error) => {}
+                );
+              },
+              (error) => {}
+            );
           },
           (error) => {}
         );
@@ -78,6 +131,7 @@ const AddCourseForm: FC = () => {
         ProgramService.updateCourse(
           course,
           (result) => {
+            setActiveKey("2");
             form.resetFields();
             setRefresh(!refresh);
             message.success("course created");
@@ -91,93 +145,372 @@ const AddCourseForm: FC = () => {
     );
   };
 
-  const beforeUpload = async (file: any, fileType: string) => {
-    setUploadUrl({ ...courseData, uploadType: fileType });
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-
-    try {
-      if (!isJpgOrPng && fileType === "img") {
-        message.error("You can only upload JPG/PNG file!");
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M && fileType === "img") {
-        message.error("Image must smaller than 2MB!");
-      }
-
-      const formData = new FormData();
-      formData.append("files", file);
-      formData.append("folder", appConstant.IMG_KIT_PROGRAM_FOLDER);
-      setLoading(true);
-
-      const postRes = await postWithFile(formData, `/api/v1/upload/file`);
-      if (!postRes.ok) {
-        setLoading(false);
-
-        throw new Error("Failed to upload file");
-      }
-      const res = await postRes.json();
-      setUploadUrl({ ...uploadUrl, thumbnailImg: res.uploadedFile[0].url, thumbnailId: res.uploadedFile[0].fileId });
-      if (res) {
-        let course = {
-          name: "",
-          duration: 0,
-          state: "DRAFT",
-          skills: [],
-          description: "",
-          thumbnail: fileType === "img" ? res.uploadedFile[0]?.url : "",
-          thumbnailId: fileType === "img" ? res.uploadedFile[0]?.fileId : "",
-          videoUrl: fileType === "video" ? res.uploadedFile[0]?.url : "",
-          videoId: fileType === "video" ? res.uploadedFile[0]?.fileId : "",
-          programId: 0,
-          authorId: 0,
-          sequenceId: undefined,
-          courseId: Number(router.query.id),
-        };
-        ProgramService.updateCourse(
-          course,
-          (result) => {
-            message.success("file uploaded");
-          },
-          (error) => {
-            message.error(error);
-          }
-        );
-      }
-
-      setLoading(false);
-      return false;
-    } catch (err: any) {
-      setLoading(false);
-
-      message.error(err.message ?? appConstant.cmnErrorMsg);
-    }
-  };
-
-  const onDeleteThumbnail = async (id: string | null) => {
-    try {
-      if (id) {
-        setLoading(true);
-        const deleteRes = await getFetch(`/api/upload/delete/${id}`);
-        if (!deleteRes.ok) {
-          setLoading(false);
-          throw new Error("Failed to delete uploaded file");
-        }
-        setUploadUrl({ ...uploadUrl, thumbnailImg: "", thumbnailId: "" });
-
-        setLoading(false);
-        message.success("File deleted successfully");
-      } else {
-        return;
-      }
-    } catch (err: any) {
-      setLoading(false);
-      message.error(err.message ?? appConstant.cmnErrorMsg);
-    }
-  };
   const onSetCourseData = (key: string, value: string) => {
     setCourseData({ ...courseData, [key]: value });
   };
 
+  let currentSeqIds = courseData.chapter.map((c) => {
+    return c.sequenceId;
+  });
+
+  const showChapterDrawer = (value: boolean) => {
+    setOpen(value);
+  };
+
+  const deleteChapter = (id: number) => {
+    ProgramService.deleteChapter(
+      id,
+      (result) => {
+        message.success(result.message);
+        onRefresh();
+      },
+      (error) => {}
+    );
+  };
+  const deleteRes = (id: number) => {
+    ProgramService.deleteResource(
+      id,
+      (result) => {
+        message.success(result.message);
+        onRefresh();
+      },
+      (error) => {}
+    );
+  };
+
+  const updateChapterState = (id: number, state: string) => {
+    ProgramService.updateChapterState(
+      id,
+      state,
+      (result) => {
+        message.success(result.message);
+
+        onRefresh();
+      },
+      (error) => {}
+    );
+  };
+  const updateResState = (id: number, state: string) => {
+    ProgramService.updateResState(
+      id,
+      state,
+      (result) => {
+        message.success(result.message);
+        onRefresh();
+      },
+      (error) => {}
+    );
+  };
+  const createChapter = async (courseId: number) => {
+    setLoading(true);
+    let chaptereData = {
+      name: chapterForm.getFieldsValue().name,
+      description: chapterForm.getFieldsValue().description,
+      duration: chapterForm.getFieldsValue().duration,
+
+      courseId: courseId,
+      // sequenceId: Number(chapterForm.getFieldsValue().index),
+      sequenceId: Number(currentSeqIds[0] + 1),
+    };
+
+    ProgramService.createChapter(
+      chaptereData,
+      (result) => {
+        setLoading(false);
+        message.info(result.message);
+        onRefresh();
+        showChapterDrawer(false);
+        chapterForm.resetFields();
+      },
+      (error) => {
+        setLoading(false);
+        message.error(error);
+      }
+    );
+  };
+
+  const updateChapter = async (chapterId: number) => {
+    setLoading(true);
+
+    ProgramService.updateChapter(
+      chapterId,
+      chapterForm.getFieldsValue().name,
+      chapterForm.getFieldsValue().description,
+      Number(chapterForm.getFieldsValue().index),
+      (result) => {
+        setLoading(false);
+        message.info(result.message);
+        // onRefresh();
+        showChapterDrawer(false);
+        chapterForm.resetFields();
+
+        router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
+      },
+      (error) => {
+        setLoading(false);
+        message.error(error);
+      }
+    );
+  };
+
+  const onFindResource = (id: number, content: ResourceContentType) => {
+    ProgramService.getResources(
+      id,
+      (result) => {
+        setAvailableRes(result.allResource);
+        !showResourceDrawer && setResourceDrawer(true);
+        !showResourceDrawer
+          ? setAddRes({ ...addRes, chapterId: id, content: content })
+          : setAddRes({
+              content: content,
+              chapterId: 0,
+              name: "",
+              duration: 0,
+              assignmentFileName: "",
+            });
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
+  };
+
+  const onCreateRes = (chapterId: number) => {
+    setLoading(true);
+    let resData = {
+      name: formData.getFieldsValue().name,
+
+      description: formData.getFieldsValue().description,
+      chapterId: chapterId,
+      // sequenceId: Number(formData.getFieldsValue().index),
+      sequenceId: Number(currentSeqIds[0] + 1),
+
+      assignmentLang: formData.getFieldsValue().assignmentLang || [],
+      videoDuration: formData.getFieldsValue().duration || 0,
+      daysToSubmit: formData.getFieldsValue().submitDay || 0,
+      thumbnail: formData.getFieldsValue().VideoUrl || "",
+      contentType: addRes.content,
+      content: addRes.assignmentFileName || "",
+    } as resData;
+    ProgramService.createResource(
+      resData,
+      (result) => {
+        message.success(result.message);
+        onFindResource(chapterId, "Video");
+        formData.resetFields();
+        setLoading(false);
+        setResourceDrawer(false);
+        setAddRes({
+          content: "Video",
+          chapterId: 0,
+          name: "",
+          duration: 0,
+          assignmentFileName: "",
+        });
+        onRefresh();
+      },
+      (error) => {
+        message.error(error);
+        setLoading(false);
+      }
+    );
+  };
+
+  const onUpdateRes = (resId: number) => {
+    setLoading(true);
+
+    let resData = {
+      name: formData.getFieldsValue().name,
+      resourceId: resId,
+      description: formData.getFieldsValue().description,
+      chapterId: addRes.chapterId,
+      sequenceId: Number(formData.getFieldsValue().index),
+      assignmentLang: formData.getFieldsValue().assignmentLang || [],
+      videoDuration: formData.getFieldsValue().duration || 0,
+      daysToSubmit: formData.getFieldsValue().submitDay || 0,
+      thumbnail: formData.getFieldsValue().VideoUrl || "",
+      contentType: addRes.content,
+      content: addRes.assignmentFileName || "",
+    } as resData;
+
+    ProgramService.updateResource(
+      resData,
+      (result) => {
+        message.success(result.message);
+        onFindResource(addRes.chapterId, "Video");
+        formData.resetFields();
+        setLoading(false);
+        // router.query.resId && router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
+        setAddRes({
+          content: "Video",
+          chapterId: 0,
+          name: "",
+          duration: 0,
+          assignmentFileName: "",
+        });
+        formData.setFieldValue("contentType", "Video");
+
+        // setResourceDrawer(false);
+      },
+      (error) => {
+        message.error(error);
+        setLoading(false);
+      }
+    );
+  };
+
+  const createVideo = async (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => {
+    setLoading(true);
+    const fetch = require("node-fetch");
+    const url = `https://video.bunnycdn.com/library/${Number(libraryId)}/videos`;
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        AccessKey: accessKey as string,
+      },
+      body: JSON.stringify({ title: title }),
+    };
+
+    fetch(url, options)
+      .then((res: { json: () => JSON }) => res.json())
+      .then((json: any) => {
+        let uploadedData = uploadVideo(json.guid, accessKey, libraryId, courseId, file);
+        return uploadedData;
+      })
+      .catch((err: string) => {
+        console.error("error:" + err);
+      });
+  };
+
+  const uploadVideo = (id: string, accessKey: string, libraryId: number, courseId: number, file: any) => {
+    const fetch = require("node-fetch");
+
+    const url = `https://video.bunnycdn.com/library/${libraryId}/videos/${id}`;
+    const options = {
+      method: "PUT",
+      headers: { accept: "application/json", AccessKey: accessKey },
+      body: file,
+    };
+
+    fetch(url, options)
+      .then((res: { json: () => JSON }) => res.json())
+      .then((json: any) => {
+        let course = {
+          name: undefined,
+          duration: undefined,
+          state: "DRAFT",
+          skills: [],
+          description: undefined,
+          thumbnail: undefined,
+          thumbnailId: undefined,
+          videoUrl: id,
+          videoId: `${libraryId}`,
+          programId: 0,
+          authorId: 0,
+          sequenceId: undefined,
+          courseId: courseId,
+        };
+        ProgramService.updateCourse(
+          course,
+          (result) => {
+            setRefresh(!refresh);
+            message.success("file uploaded");
+            setLoading(false);
+            router.reload();
+          },
+          (error) => {
+            setLoading(true);
+
+            message.error(error);
+          }
+        );
+      })
+      .catch((err: string) => {
+        console.error("error:" + err);
+      });
+  };
+
+  const uploadFile = async (file: any, accessKey: string) => {
+    if (file) {
+      setLoading(true);
+      const fileExtention = function getFileExtension(filename: string) {
+        const extension = filename.split(".").pop();
+        return extension;
+      };
+      let extension = fileExtention(file.name);
+      let dashed = form.getFieldsValue().course_name.replace(/\s+/g, "-").toLowerCase();
+      let currentTime = new Date().getTime();
+      const fileName = `${dashed}-${currentTime}.${extension}`;
+      const BASE_HOSTNAME = "storage.bunnycdn.com";
+
+      const url = `https://storage.bunnycdn.com/torqbit-files/static/course-banners/${fileName}`;
+
+      const options = {
+        method: "PUT",
+        host: BASE_HOSTNAME,
+        headers: {
+          AccessKey: accessKey,
+          "Content-Type": "application/json",
+        },
+        body: file,
+      };
+
+      fetch(url, options)
+        .then((res: { json: () => any }) => res.json())
+        .then((json: any) => {
+          let course = {
+            name: undefined,
+            duration: undefined,
+            state: "DRAFT",
+            skills: [],
+            description: undefined,
+            thumbnail: fileName,
+            thumbnailId: "",
+            videoUrl: undefined,
+            videoId: undefined,
+            programId: 0,
+            authorId: 0,
+            sequenceId: undefined,
+            courseId: Number(router.query.id),
+          };
+          ProgramService.updateCourse(
+            course,
+            (result) => {
+              setRefresh(!refresh);
+              message.success("file uploaded");
+              setLoading(false);
+            },
+            (error) => {
+              setLoading(true);
+
+              message.error(error);
+            }
+          );
+        })
+        .catch((err: string) => {
+          console.error("error:" + err);
+        });
+    }
+  };
+  const onDeleteThumbnail = (name: string, accessKey: string) => {
+    const fetch = require("node-fetch");
+
+    const url = `https://storage.bunnycdn.com/torqbit-files/static/course-banners/${name}`;
+
+    const options = {
+      method: "DELETE",
+      headers: { AccessKey: accessKey },
+    };
+
+    fetch(url, options)
+      .then((res: { json: () => any }) => res.json())
+      .then((json: any) => {
+        onRefresh();
+      })
+      .catch((err: string) => console.error("error:" + err));
+  };
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -185,11 +518,15 @@ const AddCourseForm: FC = () => {
       children: (
         <Setting
           onSetCourseData={onSetCourseData}
-          beforeUpload={beforeUpload}
           form={form}
           onSubmit={onSubmit}
           onDiscard={onDiscard}
           courseData={courseData}
+          setLoading={setLoading}
+          onRefresh={onRefresh}
+          createVideo={createVideo}
+          uploadFile={uploadFile}
+          onDeleteThumbnail={onDeleteThumbnail}
           uploadUrl={
             uploadUrl as {
               uploadType?: string;
@@ -208,15 +545,66 @@ const AddCourseForm: FC = () => {
       key: "2",
       label: "Curriculum",
 
-      children: <Curriculum />,
+      children: (
+        <Curriculum
+          chapter={courseData.chapter}
+          onRefresh={onRefresh}
+          setOpen={setOpen}
+          onFindResource={onFindResource}
+          deleteChapter={deleteChapter}
+          updateChapterState={updateChapterState}
+          updateResState={updateResState}
+          deleteRes={deleteRes}
+          onSave={onChange}
+          onDiscard={onDiscard}
+        />
+      ),
     },
 
     {
       key: "3",
       label: "Preview",
-      children: <Preview />,
+      children: (
+        <Preview
+          uploadUrl={
+            uploadUrl as {
+              uploadType?: string;
+              thumbnailImg?: string;
+              thumbnailId?: string;
+              videoUrl?: string;
+              videoId?: string;
+            }
+          }
+          chapter={courseData.chapter}
+        />
+      ),
     },
   ];
+
+  useEffect(() => {
+    ProgramService.getCourses(
+      Number(router.query.id),
+      (result) => {
+        form.setFieldValue("course_name", result.getCourse.name);
+        form.setFieldValue("course_description", result.getCourse.description);
+        form.setFieldValue("course_duration", result.getCourse.durationInMonths);
+
+        setCourseData({
+          ...courseData,
+          duration: result.getCourse.durationInMonths,
+          chapter: result.getCourse.chapter as any,
+        });
+        setUploadUrl({
+          ...uploadUrl,
+          thumbnailId: result.getCourse.thumbnailId,
+          thumbnailImg: result.getCourse.thumbnail,
+          videoId: result.getCourse.videoId,
+          videoUrl: result.getCourse.videoUrl,
+        });
+      },
+      (error) => {}
+    );
+  }, [router.query.id, refresh]);
 
   return (
     <Layout2>
@@ -226,17 +614,41 @@ const AddCourseForm: FC = () => {
             <div className={styles.cancel_add_course}>
               <Link href="content">{SvgIcons.xMark}</Link>
             </div>
-            <h3>ADD COURSE</h3>
+            <h3>EDIT COURSE</h3>
           </div>
-          <Button size="small">Publish Changes</Button>
+          <Button>Publish Changes</Button>
         </div>
         <Tabs
           tabBarGutter={40}
-          defaultActiveKey={router.query.feature as string}
+          activeKey={activeKey}
           className={styles.add_course_tabs}
           items={items}
+          onChange={onChange}
         />
       </section>
+      <AddCourseChapter
+        createChapter={createChapter}
+        courseId={Number(router.query.id)}
+        updateChapter={updateChapter}
+        currentSeqIds={currentSeqIds}
+        showChapterDrawer={showChapterDrawer}
+        loading={loading}
+        open={open}
+        form={chapterForm}
+      />
+      <AddResource
+        chapterId={addRes.chapterId}
+        addRes={addRes}
+        setAddRes={setAddRes}
+        onCreateRes={onCreateRes}
+        onUpdateRes={onUpdateRes}
+        availableRes={availableRes}
+        formData={formData}
+        setResourceDrawer={setResourceDrawer}
+        showResourceDrawer={showResourceDrawer}
+        loading={loading}
+        onFindRsource={onFindResource}
+      />
     </Layout2>
   );
 };

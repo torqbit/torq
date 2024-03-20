@@ -31,7 +31,7 @@ const AddCourseChapter: FC<{
   const onClose = () => {
     showChapterDrawer(false);
     form.resetFields();
-    router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
+    // router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
   };
 
   return (
@@ -87,7 +87,7 @@ const AddCourseChapter: FC<{
               </div>
             </div>
 
-            <div>
+            {/* <div>
               <Form.Item label="Set Index" name="index" rules={[{ required: true, message: "Please Enter Index" }]}>
                 <Select placeholder="Choose index">
                   {currentSeqIds.length >= 1 &&
@@ -105,7 +105,7 @@ const AddCourseChapter: FC<{
                   )}
                 </Select>
               </Form.Item>
-            </div>
+            </div> */}
           </div>
         </Form>
       </Drawer>

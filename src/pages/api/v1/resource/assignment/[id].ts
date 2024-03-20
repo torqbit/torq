@@ -28,13 +28,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     let deadline = new Date(`${assignment?.deadLine}`).getSeconds() - new Date(`${assignment?.startedAt}`).getSeconds();
-    console.log(deadline, "this is deadline");
-    console.log(new Date(`${assignment?.deadLine}`), "end");
-    console.log(new Date().getUTCHours(), "start");
     const end = Date.parse(`${assignment?.deadLine}`);
     const start = Date.parse(`${assignment?.startedAt}`);
-    console.log(end, "ended");
-    console.log(start, "strtrd");
 
     return res.status(200).json({
       info: false,
