@@ -6,19 +6,19 @@ import Link from "next/link";
 import Setting from "./Setting";
 import styles from "@/styles/Dashboard.module.scss";
 
-import { Button, Form, Tabs, TabsProps, UploadProps, message } from "antd";
+import { Button, Form, Tabs, TabsProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
 import Preview from "./Preview";
-import { getFetch, postWithFile } from "@/services/request";
-import appConstant from "@/services/appConstant";
+
 import ProgramService from "@/services/ProgramService";
 import { ChapterDetail } from "@/pages/add-course";
 import AddCourseChapter from "@/components/programs/AddCourseChapter";
 import { Resource, ResourceContentType } from "@prisma/client";
 import { IAddResource, resData } from "@/lib/types/program";
 import AddResource from "@/components/programs/AddResource";
+import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
 
 const AddCourseForm: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -78,13 +78,28 @@ const AddCourseForm: FC = () => {
     ProgramService.getCourses(
       Number(router.query.id),
       (result) => {
-        onDeleteThumbnail(result.getCourse.thumbnailId);
-        // onDeleteThumbnail(result.getCourse.videoId);
-        ProgramService.deleteCourse(
-          Number(router.query.id),
+        ProgramService.getCredentials(
+          "bunny",
+          async (videoData) => {
+            if (uploadUrl?.videoUrl) {
+              onDeleteVideo(uploadUrl.videoUrl as string, Number(uploadUrl.videoId), videoData.credentials.api_key);
+            }
+            ProgramService.getCredentials(
+              "bunny img",
+              async (imgData) => {
+                onDeleteThumbnail(result.getCourse?.thumbnail, imgData.credentials.api_key);
 
-          (result) => {
-            message.success(result.message);
+                ProgramService.deleteCourse(
+                  Number(router.query.id),
+
+                  (result) => {
+                    message.success(result.message);
+                  },
+                  (error) => {}
+                );
+              },
+              (error) => {}
+            );
           },
           (error) => {}
         );
@@ -97,7 +112,6 @@ const AddCourseForm: FC = () => {
     ProgramService.getCourses(
       Number(router.query.id),
       (result) => {
-        console.log(result, "res");
         let course = {
           name: courseData?.name || form.getFieldsValue().course_name,
           duration: courseData?.duration,
@@ -131,110 +145,6 @@ const AddCourseForm: FC = () => {
     );
   };
 
-  const beforeUpload = async (file: any, fileType: string) => {
-    setUploadUrl({ ...courseData, uploadType: fileType });
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-
-    try {
-      setLoading(true);
-
-      if (!isJpgOrPng && fileType === "img") {
-        message.error("You can only upload JPG/PNG file!");
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M && fileType === "img") {
-        setLoading(false);
-
-        message.error("Image must smaller than 2MB!");
-      }
-      const isVidLt10M = file.size / 1024 / 1024 < 10;
-
-      if (!isVidLt10M && fileType === "video") {
-        setLoading(false);
-
-        message.error("Video must smaller than 10MB!");
-      }
-
-      const formData = new FormData();
-      formData.append("files", file);
-      formData.append("folder", appConstant.IMG_KIT_PROGRAM_FOLDER);
-
-      console.log(formData, "second step");
-
-      const postRes = await postWithFile(formData, `/api/v1/upload/file`);
-      if (!postRes.ok) {
-        setLoading(false);
-
-        throw new Error("Failed to upload file");
-      }
-
-      const res = await postRes.json();
-      console.log(res, "response");
-      fileType === "img" &&
-        setUploadUrl({ ...uploadUrl, thumbnailImg: res.uploadedFile[0].url, thumbnailId: res.uploadedFile[0].fileId });
-      fileType === "video" &&
-        setUploadUrl({ ...uploadUrl, videoUrl: res.uploadedFile[0].url, videoId: res.uploadedFile[0].fileId });
-      if (res) {
-        setTimeout(() => {
-          console.log(uploadUrl, "up");
-        }, 3000);
-        let course = {
-          name: "",
-          duration: 0,
-          state: "DRAFT",
-          skills: [],
-          description: "",
-          thumbnail: fileType === "img" ? res.uploadedFile[0]?.url : uploadUrl?.thumbnailImg,
-          thumbnailId: fileType === "img" ? res.uploadedFile[0]?.fileId : uploadUrl?.thumbnailId,
-          videoUrl: fileType === "video" ? res.uploadedFile[0]?.url : uploadUrl?.videoUrl,
-          videoId: fileType === "video" ? res.uploadedFile[0]?.fileId : uploadUrl?.videoId,
-          programId: 0,
-          authorId: 0,
-          sequenceId: undefined,
-          courseId: Number(router.query.id),
-        };
-        ProgramService.updateCourse(
-          course,
-          (result) => {
-            message.success("file uploaded");
-          },
-          (error) => {
-            message.error(error);
-          }
-        );
-      }
-
-      setLoading(false);
-      return false;
-    } catch (err: any) {
-      setLoading(false);
-      console.log(err, "err");
-      message.error(err.message ?? appConstant.cmnErrorMsg);
-    }
-    setLoading(false);
-  };
-
-  const onDeleteThumbnail = async (id: string | null) => {
-    try {
-      if (id) {
-        setLoading(true);
-        const deleteRes = await getFetch(`/api/upload/delete/${id}`);
-        if (!deleteRes.ok) {
-          setLoading(false);
-          throw new Error("Failed to delete uploaded file");
-        }
-        setUploadUrl({ ...uploadUrl, thumbnailImg: "", thumbnailId: "" });
-
-        setLoading(false);
-        message.success("File deleted successfully");
-      } else {
-        return;
-      }
-    } catch (err: any) {
-      setLoading(false);
-      message.error(err.message ?? appConstant.cmnErrorMsg);
-    }
-  };
   const onSetCourseData = (key: string, value: string) => {
     setCourseData({ ...courseData, [key]: value });
   };
@@ -258,7 +168,6 @@ const AddCourseForm: FC = () => {
     );
   };
   const deleteRes = (id: number) => {
-    console.log();
     ProgramService.deleteResource(
       id,
       (result) => {
@@ -270,7 +179,6 @@ const AddCourseForm: FC = () => {
   };
 
   const updateChapterState = (id: number, state: string) => {
-    console.log(state);
     ProgramService.updateChapterState(
       id,
       state,
@@ -295,7 +203,6 @@ const AddCourseForm: FC = () => {
   };
   const createChapter = async (courseId: number) => {
     setLoading(true);
-    console.log(currentSeqIds, "sdf");
     let chaptereData = {
       name: chapterForm.getFieldsValue().name,
       description: chapterForm.getFieldsValue().description,
@@ -469,7 +376,6 @@ const AddCourseForm: FC = () => {
     fetch(url, options)
       .then((res: { json: () => JSON }) => res.json())
       .then((json: any) => {
-        console.log(json, "va");
         let uploadedData = uploadVideo(json.guid, accessKey, libraryId, courseId, file);
         return uploadedData;
       })
@@ -479,7 +385,6 @@ const AddCourseForm: FC = () => {
   };
 
   const uploadVideo = (id: string, accessKey: string, libraryId: number, courseId: number, file: any) => {
-    console.log("guid:", id, "key:", accessKey, "lib:", libraryId);
     const fetch = require("node-fetch");
 
     const url = `https://video.bunnycdn.com/library/${libraryId}/videos/${id}`;
@@ -527,6 +432,85 @@ const AddCourseForm: FC = () => {
       });
   };
 
+  const uploadFile = async (file: any, accessKey: string) => {
+    if (file) {
+      setLoading(true);
+      const fileExtention = function getFileExtension(filename: string) {
+        const extension = filename.split(".").pop();
+        return extension;
+      };
+      let extension = fileExtention(file.name);
+      let dashed = form.getFieldsValue().course_name.replace(/\s+/g, "-").toLowerCase();
+      let currentTime = new Date().getTime();
+      const fileName = `${dashed}-${currentTime}.${extension}`;
+      const BASE_HOSTNAME = "storage.bunnycdn.com";
+
+      const url = `https://storage.bunnycdn.com/torqbit-files/static/course-banners/${fileName}`;
+
+      const options = {
+        method: "PUT",
+        host: BASE_HOSTNAME,
+        headers: {
+          AccessKey: accessKey,
+          "Content-Type": "application/json",
+        },
+        body: file,
+      };
+
+      fetch(url, options)
+        .then((res: { json: () => any }) => res.json())
+        .then((json: any) => {
+          let course = {
+            name: undefined,
+            duration: undefined,
+            state: "DRAFT",
+            skills: [],
+            description: undefined,
+            thumbnail: fileName,
+            thumbnailId: "",
+            videoUrl: undefined,
+            videoId: undefined,
+            programId: 0,
+            authorId: 0,
+            sequenceId: undefined,
+            courseId: Number(router.query.id),
+          };
+          ProgramService.updateCourse(
+            course,
+            (result) => {
+              setRefresh(!refresh);
+              message.success("file uploaded");
+              setLoading(false);
+            },
+            (error) => {
+              setLoading(true);
+
+              message.error(error);
+            }
+          );
+        })
+        .catch((err: string) => {
+          console.error("error:" + err);
+        });
+    }
+  };
+  const onDeleteThumbnail = (name: string, accessKey: string) => {
+    const fetch = require("node-fetch");
+
+    const url = `https://storage.bunnycdn.com/torqbit-files/static/course-banners/${name}`;
+
+    const options = {
+      method: "DELETE",
+      headers: { AccessKey: accessKey },
+    };
+
+    fetch(url, options)
+      .then((res: { json: () => any }) => res.json())
+      .then((json: any) => {
+        onRefresh();
+      })
+      .catch((err: string) => console.error("error:" + err));
+  };
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -534,7 +518,6 @@ const AddCourseForm: FC = () => {
       children: (
         <Setting
           onSetCourseData={onSetCourseData}
-          beforeUpload={beforeUpload}
           form={form}
           onSubmit={onSubmit}
           onDiscard={onDiscard}
@@ -542,6 +525,8 @@ const AddCourseForm: FC = () => {
           setLoading={setLoading}
           onRefresh={onRefresh}
           createVideo={createVideo}
+          uploadFile={uploadFile}
+          onDeleteThumbnail={onDeleteThumbnail}
           uploadUrl={
             uploadUrl as {
               uploadType?: string;
@@ -603,8 +588,6 @@ const AddCourseForm: FC = () => {
         form.setFieldValue("course_name", result.getCourse.name);
         form.setFieldValue("course_description", result.getCourse.description);
         form.setFieldValue("course_duration", result.getCourse.durationInMonths);
-
-        // onSetCourseData("duration", String(result.getCourse.durationInMonths));
 
         setCourseData({
           ...courseData,

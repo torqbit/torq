@@ -74,7 +74,6 @@ const Preview: FC<{
         />
       ),
       children: content.resource.map((res, i) => {
-        console.log(res, "res");
         return (
           <div className={styles.resContainer}>
             <Label

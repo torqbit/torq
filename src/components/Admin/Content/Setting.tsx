@@ -18,9 +18,10 @@ const Setting: FC<{
   form: FormInstance;
   onSubmit: () => void;
   setLoading: (value: boolean) => void;
+  uploadFile: (file: any, accessKey: string) => void;
   onRefresh: () => void;
   createVideo: (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => void;
-  beforeUpload: (file: any, fileType: string) => void;
+
   loading: boolean;
   onSetCourseData: (key: string, value: string) => void;
   courseData: { name: string; description: string; duration: number; chapter: ChapterDetail[] };
@@ -32,17 +33,20 @@ const Setting: FC<{
     videoId?: string;
   };
   refresh: boolean;
+  onDeleteThumbnail: (name: string, accessKey: string) => void;
 }> = ({
   onSubmit,
   form,
   courseData,
   createVideo,
   setLoading,
+  uploadFile,
   onDiscard,
-  beforeUpload,
+
   loading,
   uploadUrl,
   onSetCourseData,
+  onDeleteThumbnail,
   refresh,
   onRefresh,
 }) => {
@@ -117,15 +121,11 @@ const Setting: FC<{
                 listType="picture-card"
                 className={"course_video_uploader"}
                 showUploadList={false}
-                // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 beforeUpload={(file) => {
-                  // beforeUpload(file, "video");
                   if (router.query.id) {
                     ProgramService.getCredentials(
                       "bunny",
                       async (result) => {
-                        console.log(loading, refresh, "before");
-
                         if (uploadUrl.videoUrl) {
                           onDeleteVideo(
                             uploadUrl.videoUrl as string,
@@ -140,7 +140,6 @@ const Setting: FC<{
                           Number(router.query.id),
                           file
                         );
-                        console.log(loading, refresh, "after");
                       },
                       (error) => {}
                     );
@@ -150,25 +149,17 @@ const Setting: FC<{
               >
                 {uploadUrl?.videoUrl ? (
                   <>
-                    {/* <video
-                      className={styles.video_container}
-                      autoPlay
-                      src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
-                      loop
-                    
-                    /> */}
                     <img
                       src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/thumbnail.jpg`}
                       alt=""
                       height={"100%"}
                       className={styles.video_container}
-                      // width={270}
                       width={"100%"}
                     />
 
                     {uploadUrl?.videoUrl && (
                       <div style={{ width: 230 }} className={styles.camera_btn}>
-                        {loading  ? <LoadingOutlined /> : SvgIcons.video}
+                        {loading ? <LoadingOutlined /> : SvgIcons.video}
                       </div>
                     )}
                   </>
@@ -195,13 +186,30 @@ const Setting: FC<{
                 showUploadList={false}
                 action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 beforeUpload={(file) => {
-                  beforeUpload(file, "img");
+                  // beforeUpload(file, "img");
+                  if (router.query.id) {
+                    ProgramService.getCredentials(
+                      "bunny img",
+                      async (result) => {
+                        if (uploadUrl.thumbnailImg) {
+                          onDeleteThumbnail(uploadUrl.thumbnailImg, result.credentials.api_key);
+                        }
+                        uploadFile(file, result.credentials.api_key);
+                      },
+                      (error) => {}
+                    );
+                  }
                 }}
                 onChange={handleChange}
               >
                 {uploadUrl?.thumbnailImg ? (
                   <>
-                    <img height={"100%"} width={"100%"} style={{ marginLeft: 20 }} src={uploadUrl?.thumbnailImg} />
+                    <img
+                      height={"100%"}
+                      width={"100%"}
+                      style={{ marginLeft: 20, objectFit: "cover" }}
+                      src={`https://torqbit-dev.b-cdn.net/static/course-banners/${uploadUrl.thumbnailImg}`}
+                    />
                     {uploadUrl?.thumbnailImg && <div className={styles.camera_btn_img}>{SvgIcons.camera}</div>}
                   </>
                 ) : (

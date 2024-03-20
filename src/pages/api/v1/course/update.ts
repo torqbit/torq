@@ -6,10 +6,7 @@ import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 import { StateType } from "@prisma/client";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("hit");
   try {
-    console.log("it");
-
     const body = await req.body;
     const {
       name,
@@ -24,7 +21,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       videoUrl,
       videoId,
     } = body;
-    console.log(body, "body");
 
     let updateObj: any = {};
 
@@ -104,7 +100,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           course: updateCourse,
         });
       } else {
-        console.log("hit");
         const updateCourse = await prisma.course.update({
           where: {
             courseId: Number(courseId),

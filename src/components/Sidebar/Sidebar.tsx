@@ -61,7 +61,6 @@ const Sidebar: FC = () => {
     } else {
       ProgramService.getLatesDraftCourse(
         (result) => {
-          console.log(result);
           if (result.getCourse) {
             modal.confirm({
               title: "would you like to use?",

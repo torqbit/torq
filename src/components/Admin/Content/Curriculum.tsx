@@ -80,8 +80,6 @@ const Label: FC<{
                         key: 2,
                         label: "ASSIGNMENT",
                         onClick: () => {
-                          console.log("hittt");
-
                           onFindResource(id, "Assignment");
                         },
                       },
@@ -168,7 +166,6 @@ const Curriculum: FC<{
         />
       ),
       children: content.resource.map((res, i) => {
-        console.log(res, "res");
         return (
           <div className={styles.resContainer}>
             <Label

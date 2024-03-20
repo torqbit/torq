@@ -9,14 +9,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const query = req.query;
     const { name } = query;
-    console.log(name, "name");
     if (name) {
       const credentials = await prisma.serviceProvider.findFirst({
         where: {
           provider_name: name as string,
         },
       });
-      console.log(credentials);
       if (credentials) {
         // const decrypted_api_key = decrypt(credentials.api_key);
 

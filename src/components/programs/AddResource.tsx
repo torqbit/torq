@@ -151,7 +151,6 @@ const AddResource: FC<{
   onFindRsource,
 }) => {
   const router = useRouter();
-  console.log(addRes.content, "contetn");
   const onUploadAssignment = (info: any) => {
     if (info.file.status !== "uploading") {
     }

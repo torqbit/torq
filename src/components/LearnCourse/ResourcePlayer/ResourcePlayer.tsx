@@ -155,7 +155,6 @@ const ResourcePlayer: FC<{
         );
         if (lastCompletedResource) {
           const isResourceCompleted = await getProgress(lastCompletedResource?.resourceId).then((value) => {
-            console.log(value, "sf");
             if (value === false) {
               setResLocked(true);
             } else {
@@ -172,7 +171,6 @@ const ResourcePlayer: FC<{
 
     const res = await getFetch(`/api/progress/get/${sltResource?.resourceId}/checkStatus`);
     const result = (await res.json()) as IResponse;
-    console.log(result);
 
     if (res.ok && result.success && result.isCompleted === true) {
       setCompleted(true);

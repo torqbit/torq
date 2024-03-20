@@ -613,8 +613,6 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    console.log(courseData, "c");
-
     fetch(`/api/v1/course/update`, {
       method: "POST",
       headers: {

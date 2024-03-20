@@ -39,8 +39,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(200).json({ success: true, message: "Found Resource", resource, chapter, course });
       }
     } else if (!resource) {
-      console.log("hit");
-
       return res.json({ status: 400, success: false, error: "Resource Not Found" });
     }
   } catch (error) {
