@@ -1,5 +1,6 @@
 import SvgIcons from "@/components/SvgIcons";
 import { ChapterDetail } from "@/pages/add-course";
+import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Curriculum.module.scss";
 import { ResourceContentType } from "@prisma/client";
 import { Button, Collapse, Dropdown, Flex, Form, MenuProps, Popconfirm, Space, Tag, message } from "antd";
@@ -11,15 +12,32 @@ const Label: FC<{
   id: number;
   deleteChapter: (id: number) => void;
   type: string;
+  onEdit: (id: number) => void;
+
   keyValue: string;
   onRender: (value: string[]) => void;
   render: string[];
   onFindResource: (id: number, content: ResourceContentType) => void;
+  deleteRes: (id: number, videoId: number, videoUrl: string, assignment_file: string, type: string) => void;
 
   icon: ReactNode;
   state: string;
   updateState: (id: number, state: string) => void;
-}> = ({ title, type, onRender, render, keyValue, icon, onFindResource, state, deleteChapter, id, updateState }) => {
+}> = ({
+  title,
+  type,
+  onRender,
+  onEdit,
+  render,
+  keyValue,
+  deleteRes,
+  icon,
+  onFindResource,
+  state,
+  deleteChapter,
+  id,
+  updateState,
+}) => {
   const onActive = (value: string[]) => {
     if (render.includes(value[0])) {
       let currentValue = render.filter((v) => v !== value[0]);
@@ -28,10 +46,29 @@ const Label: FC<{
       render.push(value[0]);
     }
   };
+  const onDeleteRes = () => {
+    ProgramService.getResource(
+      id,
+      (result) => {
+        console.log(result, "resfddf");
+        deleteRes(
+          id,
+          Number(result.resource.videoId),
+          result.resource.thumbnail as string,
+          "course-assignment",
+          result.resource.contentType
+        );
+      },
+      (error) => {}
+    );
+  };
   const dropdownMenu: MenuProps["items"] = [
     {
       key: "1",
       label: "Edit",
+      onClick: () => {
+        onEdit(id);
+      },
     },
 
     {
@@ -40,7 +77,7 @@ const Label: FC<{
         <Popconfirm
           title={`Delete the ${type}`}
           description={`Are you sure to delete this ${type}?`}
-          onConfirm={() => deleteChapter(id)}
+          onConfirm={() => (type === "chapter" ? deleteChapter(id) : onDeleteRes())}
           okText="Yes"
           cancelText="No"
         >
@@ -71,14 +108,14 @@ const Label: FC<{
                     items: [
                       {
                         key: 1,
-                        label: "VIDEO",
+                        label: "Video",
                         onClick: () => {
                           onFindResource(id, "Video");
                         },
                       },
                       {
                         key: 2,
-                        label: "ASSIGNMENT",
+                        label: "Assignment",
                         onClick: () => {
                           onFindResource(id, "Assignment");
                         },
@@ -123,12 +160,13 @@ const Curriculum: FC<{
   chapter: ChapterDetail[];
   onDiscard: () => void;
   onRefresh: () => void;
+  onEditResource: (id: number) => void;
   setOpen: (value: boolean) => void;
   onFindResource: (id: number, content: ResourceContentType) => void;
   deleteChapter: (id: number) => void;
   updateChapterState: (id: number, state: string) => void;
   updateResState: (id: number, state: string) => void;
-  deleteRes: (id: number) => void;
+  deleteRes: (id: number, videoId: number, videoUrl: string, assignment_file: string, type: string) => void;
   onSave: (value: string) => void;
 }> = ({
   onSave,
@@ -137,6 +175,7 @@ const Curriculum: FC<{
   setOpen,
   onFindResource,
   deleteChapter,
+  onEditResource,
   updateChapterState,
   updateResState,
   deleteRes,
@@ -159,7 +198,9 @@ const Curriculum: FC<{
           deleteChapter={deleteChapter}
           updateState={updateChapterState}
           onFindResource={onFindResource}
+          deleteRes={() => {}}
           id={content.chapterId}
+          onEdit={() => {}}
           render={render}
           keyValue={`${i + 1}`}
           state={content.state === "ACTIVE" ? "Published" : "Draft"}
@@ -171,12 +212,14 @@ const Curriculum: FC<{
             <Label
               title={res.name}
               icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              deleteChapter={deleteRes}
+              deleteChapter={() => {}}
               id={res.resourceId}
               updateState={updateResState}
+              onEdit={onEditResource}
               type="resource"
               onFindResource={() => {}}
               onRender={setRender}
+              deleteRes={deleteRes}
               render={render}
               keyValue={`${i + 1}`}
               state={res.state === "ACTIVE" ? "Published" : "Draft"}

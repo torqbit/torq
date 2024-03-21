@@ -179,6 +179,7 @@ model Resource {
   state          StateType           @default(ACTIVE)
 
   thumbnail          String?
+  videoId            Int?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   chapter            Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)

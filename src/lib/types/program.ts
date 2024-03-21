@@ -58,6 +58,7 @@ export interface resData {
   thumbnail: string;
   contentType: string;
   content: string;
+  videoId: string;
 }
 
 export interface allProgram {

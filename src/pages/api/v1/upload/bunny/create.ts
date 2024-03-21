@@ -1,4 +1,7 @@
 export const onDeleteVideo = (id: string, libraryId: number, accessKey: string) => {
+  console.log(id, "vi");
+  console.log(libraryId, "id");
+  console.log(accessKey, "ac");
   const options = {
     method: "DELETE",
     headers: {

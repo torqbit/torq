@@ -18,9 +18,9 @@ const Setting: FC<{
   form: FormInstance;
   onSubmit: () => void;
   setLoading: (value: boolean) => void;
-  uploadFile: (file: any, accessKey: string) => void;
+  uploadFile: (file: any, accessKey: string, type: string, dir: string) => void;
   onRefresh: () => void;
-  createVideo: (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => void;
+  createVideo: (title: string, libraryId: number, accessKey: string, courseId: number, file: any, type: string) => void;
 
   loading: boolean;
   onSetCourseData: (key: string, value: string) => void;
@@ -33,7 +33,7 @@ const Setting: FC<{
     videoId?: string;
   };
   refresh: boolean;
-  onDeleteThumbnail: (name: string, accessKey: string) => void;
+  onDeleteThumbnail: (name: string, accessKey: string, dir: string) => void;
 }> = ({
   onSubmit,
   form,
@@ -51,13 +51,14 @@ const Setting: FC<{
   onRefresh,
 }) => {
   const router = useRouter();
-  const [preview, setPreview] = useState<boolean>(false);
+
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
-      // setLoading(true);
+      setLoading(true);
       return;
     }
     if (info.file.status === "done") {
+      setLoading(false);
     }
   };
 
@@ -138,7 +139,8 @@ const Setting: FC<{
                           Number(result.credentials.api_secret),
                           result.credentials.api_key,
                           Number(router.query.id),
-                          file
+                          file,
+                          "trailer"
                         );
                       },
                       (error) => {}
@@ -192,9 +194,9 @@ const Setting: FC<{
                       "bunny img",
                       async (result) => {
                         if (uploadUrl.thumbnailImg) {
-                          onDeleteThumbnail(uploadUrl.thumbnailImg, result.credentials.api_key);
+                          onDeleteThumbnail(uploadUrl.thumbnailImg, result.credentials.api_key, "course-banners");
                         }
-                        uploadFile(file, result.credentials.api_key);
+                        uploadFile(file, result.credentials.api_key, "banner", "course-banners");
                       },
                       (error) => {}
                     );
