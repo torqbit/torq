@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import styles from "../../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
-import { Button, Tag } from "antd";
+import { Button, Space, Tag } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";
 
@@ -27,10 +27,7 @@ const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescr
 
         <div className={styles.card_footer}>
           <div className={styles.course_duration}>{duration}</div>
-          <Button className={styles.start_course_btn}>
-            <span>Start Course</span>
-            {SvgIcons.arrowRight}
-          </Button>
+          <Button type="primary">Start Course</Button>
         </div>
       </div>
     </div>

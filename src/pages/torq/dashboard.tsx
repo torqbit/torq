@@ -51,6 +51,7 @@ const Dashboard: FC = () => {
     {
       key: "1",
       label: "Enrolled Courses",
+      className: "some-class",
       icon: SvgIcons.courses,
       children: <EnrolledCourseList />,
     },

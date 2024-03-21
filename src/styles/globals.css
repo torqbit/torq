@@ -85,6 +85,12 @@ input {
   box-sizing: border-box;
 }
 
+.content_tab .ant-tabs-tab-btn {
+  text-shadow: none !important;
+  display: flex;
+  align-items: flex-start;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

@@ -11,9 +11,9 @@
       font-size: 13px;
       padding: 10px 15px;
       cursor: pointer;
-      //   transition: all 0.4s ease-in;
+      transition: all 0.3s ease-in;
       &:hover {
-        font-weight: 500;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 10px;
       }
     }
   }
@@ -79,15 +79,6 @@
         .course_duration {
           font-size: 13px;
           font-weight: 500;
-        }
-        .start_course_btn {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          font-size: 12px;
-          gap: 0 10px;
-          background-color: var(--primary-button);
-          color: #fff;
         }
       }
     }

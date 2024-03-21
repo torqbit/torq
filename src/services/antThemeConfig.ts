@@ -1,8 +1,12 @@
 export default {
   token: {
     borderRadius: 4,
+    colorText: "#666",
   },
   components: {
+    Menu: {
+      itemColor: "#666",
+    },
     Radio: {
       buttonSolidCheckedActiveBg: "#000",
       buttonSolidCheckedBg: "#000",
@@ -11,7 +15,6 @@ export default {
     Sider: {
       color: "#666",
     },
-
     Card: {
       paddingLG: 0,
     },
@@ -34,8 +37,10 @@ export default {
     },
     Tabs: {
       inkBarColor: "#000",
+      itemColor: "#666",
+      itemActiveColor: "#000",
       itemSelectedColor: "#000",
-      itemHoverColor: "#666",
+      itemHoverColor: "#000",
     },
     Drawer: {
       zIndexPopup: 1001,
