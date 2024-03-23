@@ -189,11 +189,21 @@ const Sidebar: FC = () => {
       collapsible
       collapsed={collapsed}
     >
+      <div
+        className={`${styles.collapsed_btn} ${collapsed ? styles.collapsed : styles.not_collapsed}`}
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        {collapsed ? SvgIcons.carretRight : SvgIcons.carretLeft}
+      </div>
       {contextWrapper}
       <div>
         <div className={styles.logo}>
           <Link href="/programs">
-            <Image src="/img/dark-logo.png" alt="torqbit" width={130} height={30} />
+            {collapsed ? (
+              <Image src="/icon/torq-logo.svg" alt="torqbit" width={40} height={30} />
+            ) : (
+              <Image src="/icon/torq-long-logo.svg" alt="torqbit" width={130} height={30} />
+            )}
           </Link>
         </div>
         <Menu
@@ -201,12 +211,16 @@ const Sidebar: FC = () => {
           onSelect={(value) => dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: value.key as ISiderMenu })}
           defaultSelectedKeys={["dashboard"]}
           selectedKeys={[globalState.selectedSiderMenu]}
-          style={{ width: "100%" }}
+          style={{ width: "100%", borderInlineEnd: "none" }}
           items={siderMenu}
         />
       </div>
-      <Space direction="horizontal" className={styles.user_profile}>
-        <Space align={collapsed ? "center" : "start"}>
+      <Space
+        direction={collapsed ? "vertical" : "horizontal"}
+        align={collapsed ? "center" : "start"}
+        className={styles.user_profile}
+      >
+        <Space>
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div>
