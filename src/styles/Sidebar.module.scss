@@ -23,4 +23,36 @@
       color: rgba(0, 0, 0, 0.45);
     }
   }
+
+  .collapsed_btn {
+    position: absolute;
+    width: 30px;
+    height: 34px;
+
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #c4c4c4;
+    border-right: 0;
+    cursor: pointer;
+    &:hover {
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    }
+  }
+
+  .not_collapsed {
+    right: 0;
+    top: 14px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+  .collapsed {
+    right: -30px;
+    top: 14px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-left: 0;
+    border-right: 1px solid #c4c4c4;
+  }
 }
