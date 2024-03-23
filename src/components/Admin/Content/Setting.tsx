@@ -7,7 +7,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 import { useRouter } from "next/router";
 import { ChapterDetail } from "@/pages/add-course";
-import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+import { onDeleteVideo } from "@/pages/api/v1/upload/video/method";
 import ProgramService from "@/services/ProgramService";
 import { postWithFile } from "@/services/request";
 

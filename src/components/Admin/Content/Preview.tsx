@@ -97,7 +97,7 @@ const Preview: FC<{
         <video
           className={styles.video_container}
           autoPlay
-          src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
+          src={`https://vz-bb827f5e-131.b-cdn.net/d8e35c31-35e9-4726-89f5-6205f3cfdecc/play_720p.mp4`}
           loop
         />
 

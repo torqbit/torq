@@ -18,7 +18,10 @@ import AddCourseChapter from "@/components/programs/AddCourseChapter";
 import { Resource, ResourceContentType } from "@prisma/client";
 import { IAddResource, resData } from "@/lib/types/program";
 import AddResource from "@/components/programs/AddResource";
-import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+import { onDeleteVideo } from "@/pages/api/v1/upload/video/method";
+import { RcFile } from "antd/es/upload";
+import { postWithFile } from "@/services/request";
+import fetch from "node-fetch";
 
 const AddCourseForm: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -284,6 +287,7 @@ const AddCourseForm: FC = () => {
     formData.resetFields();
     setResourceDrawer(true);
     setUploadResUrl({});
+    setAddRes({ ...addRes, chapterId: id, content: content });
     // ProgramService.getResources(
     //   id,
     //   (result) => {
@@ -430,7 +434,7 @@ const AddCourseForm: FC = () => {
     type: string
   ) => {
     setLoading(true);
-    const fetch = require("node-fetch");
+
     const url = `https://video.bunnycdn.com/library/${Number(libraryId)}/videos`;
     const options = {
       method: "POST",
@@ -443,7 +447,7 @@ const AddCourseForm: FC = () => {
     };
 
     fetch(url, options)
-      .then((res: { json: () => JSON }) => res.json())
+      .then((res) => res.json())
       .then((json: any) => {
         let uploadedData = uploadVideo(json.guid, accessKey, libraryId, courseId, file, type);
         return uploadedData;
@@ -453,9 +457,40 @@ const AddCourseForm: FC = () => {
       });
   };
 
-  const uploadVideo = (id: string, accessKey: string, libraryId: number, courseId: number, file: any, type: string) => {
-    const fetch = require("node-fetch");
+  const onCreateVideo = async (file: any, title: string, id: number, type: string) => {
+    const data = {
+      title: title,
+      file,
+    };
+    const formData = new FormData();
+    formData.append("files", file);
+    formData.append("title", title);
 
+    const res = await postWithFile(formData, `/api/v1/upload/video/create`);
+    if (!res.ok) {
+      setLoading(false);
+      throw new Error("Failed to upload file");
+    }
+    const result = await res.json();
+
+    console.log(result, "result");
+
+    // ProgramService.uploadVideo(
+    //   formData,
+    //   (result) => {
+    //     console.log(result, "result");
+    //     setUploadResUrl({ videoId: result.videoData.videoLibraryId, videoUrl: result.videoData.guid });
+
+    //     setTimeout(() => {
+    //       setUploadResUrl({ videoId: result.videoData.videoLibraryId, videoUrl: result.videoData.guid });
+    //       setLoading(false);
+    //     }, 4000);
+    //   },
+    //   () => {}
+    // );
+  };
+
+  const uploadVideo = (id: string, accessKey: string, libraryId: number, courseId: number, file: any, type: string) => {
     const url = `https://video.bunnycdn.com/library/${libraryId}/videos/${id}`;
     const options = {
       method: "PUT",
@@ -467,7 +502,7 @@ const AddCourseForm: FC = () => {
     }
 
     fetch(url, options)
-      .then((res: { json: () => JSON }) => res.json())
+      .then((res) => res.json())
       .then((json: any) => {
         if (type === "trailer") {
           let course = {
@@ -582,8 +617,6 @@ const AddCourseForm: FC = () => {
     }
   };
   const onDeleteThumbnail = (name: string, accessKey: string, dir: string) => {
-    const fetch = require("node-fetch");
-
     const url = `https://storage.bunnycdn.com/torqbit-files/static/${dir}/${name}`;
 
     const options = {
@@ -744,6 +777,7 @@ const AddCourseForm: FC = () => {
         onDeleteThumbnail={onDeleteThumbnail}
         createVideo={createVideo}
         setLoading={setLoading}
+        onCreateVideo={onCreateVideo}
         uploadResUrl={
           uploadResUrl as {
             thumbnailImg?: string;

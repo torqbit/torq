@@ -1,6 +1,7 @@
 import formidable, { IncomingForm } from "formidable";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import ImageKit from "imagekit";
+import { uploadVideo } from "./v1/upload/video/method";
 import fs from "fs";
 
 // read file from request

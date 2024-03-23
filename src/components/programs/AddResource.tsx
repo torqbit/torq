@@ -24,7 +24,7 @@ import appConstant from "@/services/appConstant";
 import { IAddResource } from "@/lib/types/program";
 import ProgramService from "@/services/ProgramService";
 import { error } from "console";
-import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+import { onDeleteVideo } from "@/pages/api/v1/upload/video/method";
 import { RcFile } from "antd/es/upload";
 import SvgIcons from "../SvgIcons";
 
@@ -145,6 +145,7 @@ const AddResource: FC<{
     videoId?: string;
   };
   setResourceDrawer: (value: boolean) => void;
+  onCreateVideo: (file: any, title: string, id: number, type: string) => void;
   showResourceDrawer: boolean;
   availableRes: Resource[] | undefined;
   onFindRsource: (id: number, content: ResourceContentType) => void;
@@ -160,6 +161,7 @@ const AddResource: FC<{
   chapterId,
   setAddRes,
   formData,
+  onCreateVideo,
   onDeleteThumbnail,
   uploadResUrl,
   setLoading,
@@ -312,28 +314,13 @@ const AddResource: FC<{
                         // className={styles.video_upload}
                         showUploadList={false}
                         disabled={!formData.getFieldsValue().name ? true : false}
-                        beforeUpload={(file) => {
+                        beforeUpload={(file: RcFile) => {
                           if (router.query.id && formData.getFieldsValue().name) {
-                            ProgramService.getCredentials(
-                              "bunny",
-                              async (result) => {
-                                if (uploadResUrl?.videoUrl) {
-                                  onDeleteVideo(
-                                    uploadResUrl.videoUrl as string,
-                                    Number(uploadResUrl.videoId),
-                                    result.credentials.api_key
-                                  );
-                                }
-                                const data = createVideo(
-                                  `${formData.getFieldsValue().name}_trailer`,
-                                  Number(result.credentials.api_secret),
-                                  result.credentials.api_key,
-                                  Number(router.query.id),
-                                  file,
-                                  "resource"
-                                );
-                              },
-                              (error) => {}
+                            onCreateVideo(
+                              file,
+                              `${formData.getFieldsValue().name}_trailer`,
+                              Number(router.query.id),
+                              "resource"
                             );
                           } else {
                             message.warning("please enter the title of the resource");
