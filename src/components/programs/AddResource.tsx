@@ -13,16 +13,19 @@ import {
   Popconfirm,
   MenuProps,
   Dropdown,
+  Flex,
 } from "antd";
 import { FC } from "react";
 import styles from "@/styles/AddCourse.module.scss";
 import { useRouter } from "next/router";
-import { CloseOutlined, EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, EllipsisOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Resource, ResourceContentType } from "@prisma/client";
 import appConstant from "@/services/appConstant";
 import { IAddResource } from "@/lib/types/program";
 import ProgramService from "@/services/ProgramService";
 import { error } from "console";
+import { RcFile } from "antd/es/upload";
+import SvgIcons from "../SvgIcons";
 
 const ResourceList: FC<{
   name: string;
@@ -80,7 +83,6 @@ const ResourceList: FC<{
       label: "Edit",
 
       onClick: () => {
-        router.replace(`/programs/${router.query.programId}/add-overview?edit=true&resId=${resId}`);
         onEditResource();
       },
       style: { textAlign: "center" },
@@ -129,26 +131,40 @@ const AddResource: FC<{
   setAddRes: (value: IAddResource) => void;
   addRes: IAddResource;
   formData: FormInstance;
+  onDeleteVideo: (id: string) => void;
+  uploadResourceUrl: {
+    fileName?: string;
+    videoUrl?: string;
+    videoId?: string;
+  };
   loading: boolean | undefined;
   chapterId: number;
+  onUploadVideo: (file: RcFile, title: string) => void;
   onCreateRes: (chapterId: number) => void;
   setResourceDrawer: (value: boolean) => void;
   showResourceDrawer: boolean;
   availableRes: Resource[] | undefined;
   onFindRsource: (id: number, content: ResourceContentType) => void;
   onUpdateRes: (resId: number) => void;
+  onDeleteThumbnail: (name: string, dir: string) => void;
+  uploadFile: (file: any, title: string) => void;
 }> = ({
   setResourceDrawer,
   showResourceDrawer,
   onUpdateRes,
+  uploadResourceUrl,
   loading,
   chapterId,
   setAddRes,
   formData,
+  onDeleteVideo,
   onCreateRes,
   availableRes,
+  onUploadVideo,
   addRes,
   onFindRsource,
+  onDeleteThumbnail,
+  uploadFile,
 }) => {
   const router = useRouter();
   const onUploadAssignment = (info: any) => {
@@ -203,7 +219,6 @@ const AddResource: FC<{
         onClose={() => {
           setResourceDrawer(false);
           formData.resetFields();
-          router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
         }}
         open={showResourceDrawer}
         footer={
@@ -221,7 +236,7 @@ const AddResource: FC<{
                 type="default"
                 onClick={() => {
                   setResourceDrawer(false);
-                  router.query.resId && router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
+
                   formData.resetFields();
                   setAddRes({
                     content: "Video",
@@ -239,28 +254,6 @@ const AddResource: FC<{
         }
       >
         <div className={styles.drawerContainer}>
-          {/* <div className={styles.resourceContainer}>
-            {availableRes && availableRes?.length >= 1 ? (
-              availableRes?.map((c: Resource, i) => {
-                return (
-                  <ResourceList
-                    chapterId={c.chapterId}
-                    resId={c.resourceId}
-                    formData={formData}
-                    key={i}
-                    name={c.name}
-                    contentType={c.contentType}
-                    duration={c.contentType === "Video" ? c.videoDuration : c.daysToSubmit}
-                    onFindRsource={onFindRsource}
-                    setAddRes={setAddRes}
-                    addRes={addRes}
-                  />
-                );
-              })
-            ) : (
-              <div className={styles.resorceListWrapper} style={{ border: "none" }}></div>
-            )}
-          </div> */}
           <Form
             form={formData}
             layout="vertical"
@@ -274,6 +267,7 @@ const AddResource: FC<{
                   onChange={(e) => {
                     !router.query.resId && setAddRes({ ...addRes, name: e.target.value });
                   }}
+                  value={formData.getFieldsValue().name}
                   placeholder="Set the title of the resource"
                 />
               </Form.Item>
@@ -288,45 +282,6 @@ const AddResource: FC<{
                   </Form.Item>
                 </div>
               </div>
-              {/* 
-              <div>
-                <Form.Item label="Set Index" name="index" rules={[{ required: true, message: "Please Enter Index" }]}>
-                  <Select placeholder="Choose index">
-                    {currentSeqIds &&
-                      currentSeqIds.length >= 1 &&
-                      currentSeqIds.map((seq) => {
-                        return <Select.Option value={`${seq}`}>{seq}</Select.Option>;
-                      })}
-                    {!router.query.resId && (
-                      <>
-                        {currentSeqIds && currentSeqIds.length >= 1 ? (
-                          <Select.Option value={`${currentSeqIds.length + 1}`}>
-                            {currentSeqIds.length + 1}
-                          </Select.Option>
-                        ) : (
-                          <Select.Option value="1">1</Select.Option>
-                        )}
-                      </>
-                    )}
-                  </Select>
-                </Form.Item>
-              </div> */}
-
-              {/* <div>
-                <Form.Item label={"Choose resource type"} name={"contentType"}>
-                  <Segmented
-                    onChange={(v) => {
-                      !router.query.resId &&
-                        setAddRes({
-                          ...addRes,
-                          content: v.toLocaleString() as ResourceContentType,
-                        });
-                    }}
-                    options={["Video", "Assignment"]}
-                    size="middle"
-                  />
-                </Form.Item>
-              </div> */}
 
               {addRes.content === "Video" && (
                 <div>
@@ -336,7 +291,39 @@ const AddResource: FC<{
                       label="Video URL"
                       rules={[{ required: true, message: "Please Enter Description" }]}
                     >
-                      <Input placeholder="Enter the url" />
+                      <Upload
+                        name="avatar"
+                        disabled={!formData.getFieldsValue().name ? true : false}
+                        listType="picture-card"
+                        className={"resource_video_uploader"}
+                        showUploadList={false}
+                        beforeUpload={(file) => {
+                          if (uploadResourceUrl.videoUrl) {
+                            onDeleteVideo(uploadResourceUrl.videoUrl);
+                          }
+                          onUploadVideo(file, formData.getFieldsValue().name);
+                        }}
+                      >
+                        {uploadResourceUrl?.videoUrl ? (
+                          <>
+                            <img
+                              src={`https://vz-bb827f5e-131.b-cdn.net/${uploadResourceUrl.videoUrl}/thumbnail.jpg`}
+                              alt=""
+                              height={"100%"}
+                              className={styles.video_container}
+                              width={355}
+                            />
+                          </>
+                        ) : (
+                          <button style={{ border: 0, background: "none", width: 350 }} type="button">
+                            {loading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                            <div style={{ marginTop: 8 }}>Upload Video</div>
+                          </button>
+                        )}
+                      </Upload>
+                      {uploadResourceUrl?.videoUrl && (
+                        <div className={styles.camera_btn}>{loading ? <LoadingOutlined /> : SvgIcons.video}</div>
+                      )}
                     </Form.Item>
                   </div>
                   <div>
@@ -387,16 +374,49 @@ const AddResource: FC<{
 
                   <Form.Item label="Assignment file" name="assignment_file">
                     <Upload
-                      onChange={onUploadAssignment}
-                      style={{ width: "100%" }}
-                      multiple={false}
-                      maxCount={1}
-                      action="/api/assignment/save"
-                      listType="text"
+                      name="avatar"
+                      listType="picture-card"
+                      className={"resource_video_uploader"}
+                      showUploadList={false}
+                      disabled={!formData.getFieldsValue().name ? true : false}
+                      action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                      beforeUpload={(file) => {
+                        // beforeUpload(file, "img");
+                        if (uploadResourceUrl.fileName) {
+                          onDeleteThumbnail(uploadResourceUrl.fileName, "course-assignments");
+                        }
+                        uploadFile(file, formData.getFieldsValue().name);
+                      }}
                     >
-                      <Button style={{ width: "100%" }} icon={<PlusOutlined rev={undefined} />}>
-                        Upload
-                      </Button>
+                      {uploadResourceUrl.fileName ? (
+                        <>
+                          <img
+                            height={"100%"}
+                            width={355}
+                            style={{ marginLeft: 20, objectFit: "cover" }}
+                            src={`https://torqbit-dev.b-cdn.net/static/course-assignments/${uploadResourceUrl.fileName}`}
+                          />
+                          {uploadResourceUrl?.fileName && (
+                            <div className={styles.camera_btn_img}>
+                              {" "}
+                              {loading ? <LoadingOutlined /> : SvgIcons.file}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <button
+                          style={{ border: 0, background: "none" }}
+                          onClick={() => {
+                            if (!formData.getFieldsValue().name) {
+                              message.warning("please enter the title of the resource");
+                            }
+                          }}
+                          type="button"
+                        >
+                          {loading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                          <div style={{ marginTop: 8 }}>Upload File</div>
+                        </button>
+                      )}
                     </Upload>
                   </Form.Item>
                 </div>

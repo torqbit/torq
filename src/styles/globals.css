@@ -430,6 +430,12 @@ input {
   float: right;
   height: 120px !important;
 }
+.wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select,
+.resource_video_uploader .ant-upload {
+  width: 320px !important;
+  float: right;
+  height: 120px !important;
+}
 
 .course_thumbnail_uploader .ant-upload {
   float: right;

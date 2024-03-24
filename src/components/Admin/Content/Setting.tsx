@@ -10,6 +10,7 @@ import { ChapterDetail } from "@/pages/add-course";
 import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
 import ProgramService from "@/services/ProgramService";
 import { postWithFile } from "@/services/request";
+import { RcFile } from "antd/es/upload";
 
 const { TextArea } = Input;
 
@@ -17,10 +18,11 @@ const Setting: FC<{
   onDiscard: () => void;
   form: FormInstance;
   onSubmit: () => void;
+  onDeleteVideo: (id: string) => void;
   setLoading: (value: boolean) => void;
-  uploadFile: (file: any, accessKey: string) => void;
+  uploadFile: (file: any, title: string) => void;
   onRefresh: () => void;
-  createVideo: (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => void;
+  onUploadTrailer: (file: RcFile, title: string) => void;
 
   loading: boolean;
   onSetCourseData: (key: string, value: string) => void;
@@ -33,16 +35,16 @@ const Setting: FC<{
     videoId?: string;
   };
   refresh: boolean;
-  onDeleteThumbnail: (name: string, accessKey: string) => void;
+  onDeleteThumbnail: (name: string, dir: string) => void;
 }> = ({
   onSubmit,
   form,
   courseData,
-  createVideo,
+  onUploadTrailer,
   setLoading,
   uploadFile,
   onDiscard,
-
+  onDeleteVideo,
   loading,
   uploadUrl,
   onSetCourseData,
@@ -54,12 +56,15 @@ const Setting: FC<{
   const [preview, setPreview] = useState<boolean>(false);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
-      // setLoading(true);
+      setLoading(true);
       return;
     }
     if (info.file.status === "done") {
+      // setLoading(false);
     }
   };
+
+  console.log(uploadUrl, "uploaded url");
 
   return (
     <section className={styles.add_course_setting}>
@@ -87,6 +92,7 @@ const Setting: FC<{
           <Form.Item label="Course Name" name="course_name" rules={[{ required: true, message: "Required!" }]}>
             <Input
               placeholder="Course Name"
+              defaultValue={form.getFieldsValue().course_name}
               onChange={(e) => {
                 onSetCourseData("name", e.currentTarget.value);
               }}
@@ -120,30 +126,13 @@ const Setting: FC<{
                 name="avatar"
                 listType="picture-card"
                 className={"course_video_uploader"}
+                disabled={!form.getFieldsValue().course_name ? true : false}
                 showUploadList={false}
                 beforeUpload={(file) => {
-                  if (router.query.id) {
-                    ProgramService.getCredentials(
-                      "bunny",
-                      async (result) => {
-                        if (uploadUrl.videoUrl) {
-                          onDeleteVideo(
-                            uploadUrl.videoUrl as string,
-                            Number(uploadUrl.videoId),
-                            result.credentials.api_key
-                          );
-                        }
-                        createVideo(
-                          `${form.getFieldsValue().course_name}_trailer`,
-                          Number(result.credentials.api_secret),
-                          result.credentials.api_key,
-                          Number(router.query.id),
-                          file
-                        );
-                      },
-                      (error) => {}
-                    );
+                  if (uploadUrl.videoUrl) {
+                    onDeleteVideo(uploadUrl.videoUrl);
                   }
+                  onUploadTrailer(file, `${form.getFieldsValue().course_name}_trailer`);
                 }}
                 onChange={handleChange}
               >
@@ -159,13 +148,13 @@ const Setting: FC<{
 
                     {uploadUrl?.videoUrl && (
                       <div style={{ width: 230 }} className={styles.camera_btn}>
-                        {loading ? <LoadingOutlined /> : SvgIcons.video}
+                        {loading && uploadUrl.uploadType === "video" ? <LoadingOutlined /> : SvgIcons.video}
                       </div>
                     )}
                   </>
                 ) : (
                   <button style={{ border: 0, background: "none" }} type="button">
-                    {loading && uploadUrl?.uploadType === "video" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                    {loading && uploadUrl.uploadType === "video" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                     <div style={{ marginTop: 8 }}>Upload Video</div>
                   </button>
                 )}
@@ -183,22 +172,15 @@ const Setting: FC<{
                 name="avatar"
                 listType="picture-card"
                 className={"course_thumbnail_uploader"}
+                disabled={!form.getFieldsValue().course_name ? true : false}
                 showUploadList={false}
                 action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                 beforeUpload={(file) => {
                   // beforeUpload(file, "img");
-                  if (router.query.id) {
-                    ProgramService.getCredentials(
-                      "bunny img",
-                      async (result) => {
-                        if (uploadUrl.thumbnailImg) {
-                          onDeleteThumbnail(uploadUrl.thumbnailImg, result.credentials.api_key);
-                        }
-                        uploadFile(file, result.credentials.api_key);
-                      },
-                      (error) => {}
-                    );
+                  if (uploadUrl.thumbnailImg) {
+                    onDeleteThumbnail(uploadUrl.thumbnailImg, "course-banners");
                   }
+                  uploadFile(file, `${form.getFieldsValue().course_name}_banner`);
                 }}
                 onChange={handleChange}
               >
@@ -210,11 +192,16 @@ const Setting: FC<{
                       style={{ marginLeft: 20, objectFit: "cover" }}
                       src={`https://torqbit-dev.b-cdn.net/static/course-banners/${uploadUrl.thumbnailImg}`}
                     />
-                    {uploadUrl?.thumbnailImg && <div className={styles.camera_btn_img}>{SvgIcons.camera}</div>}
+                    {uploadUrl?.thumbnailImg && (
+                      <div className={styles.camera_btn_img}>
+                        {" "}
+                        {loading && uploadUrl.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.camera}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <button style={{ border: 0, background: "none" }} type="button">
-                    {loading && uploadUrl?.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                    {loading && uploadUrl.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                     <div style={{ marginTop: 8 }}>Upload Image</div>
                   </button>
                 )}

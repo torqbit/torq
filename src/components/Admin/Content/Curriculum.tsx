@@ -15,11 +15,25 @@ const Label: FC<{
   onRender: (value: string[]) => void;
   render: string[];
   onFindResource: (id: number, content: ResourceContentType) => void;
+  onEditResource: (id: number) => void;
 
   icon: ReactNode;
   state: string;
   updateState: (id: number, state: string) => void;
-}> = ({ title, type, onRender, render, keyValue, icon, onFindResource, state, deleteChapter, id, updateState }) => {
+}> = ({
+  title,
+  type,
+  onRender,
+  render,
+  keyValue,
+  onEditResource,
+  icon,
+  onFindResource,
+  state,
+  deleteChapter,
+  id,
+  updateState,
+}) => {
   const onActive = (value: string[]) => {
     if (render.includes(value[0])) {
       let currentValue = render.filter((v) => v !== value[0]);
@@ -32,6 +46,9 @@ const Label: FC<{
     {
       key: "1",
       label: "Edit",
+      onClick: () => {
+        onEditResource(id);
+      },
     },
 
     {
@@ -123,6 +140,7 @@ const Curriculum: FC<{
   chapter: ChapterDetail[];
   onDiscard: () => void;
   onRefresh: () => void;
+  onEditResource: (id: number) => void;
   setOpen: (value: boolean) => void;
   onFindResource: (id: number, content: ResourceContentType) => void;
   deleteChapter: (id: number) => void;
@@ -140,6 +158,7 @@ const Curriculum: FC<{
   updateChapterState,
   updateResState,
   deleteRes,
+  onEditResource,
   onDiscard,
 }) => {
   const renderKey = chapter.map((c, i) => {
@@ -156,6 +175,7 @@ const Curriculum: FC<{
           icon={SvgIcons.folder}
           type="chapter"
           onRender={setRender}
+          onEditResource={() => {}}
           deleteChapter={deleteChapter}
           updateState={updateChapterState}
           onFindResource={onFindResource}
@@ -175,6 +195,7 @@ const Curriculum: FC<{
               id={res.resourceId}
               updateState={updateResState}
               type="resource"
+              onEditResource={onEditResource}
               onFindResource={() => {}}
               onRender={setRender}
               render={render}
