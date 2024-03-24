@@ -13,7 +13,7 @@
 <a href="https://discord.gg/kKR9TWm7">
 <img alt="Discord online members" src="https://img.shields.io/discord/1031547764020084846?color=5865F2&label=Discord&style=for-the-badge" />
 </a>
-<img alt="Commit activity per month" src="https://img.shields.io/github/commit-activity/m/makeplane/plane?style=for-the-badge" />
+<img alt="Commit activity per month" src="https://img.shields.io/github/commit-activity/m/torqbit/torq?style=for-the-badge" />
 </p>
 
 <p>
