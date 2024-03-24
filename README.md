@@ -1,23 +1,19 @@
 <br /><br />
 
 <p align="center">
-<a href="https://plane.so">
+<a href="https://torqbit.com/torq">
   <img src="public/img/dark-logo.png" alt="Plane Logo" width="180">
 </a>
 </p>
 
 <!-- <h3 align="center"><b>Torqbit</b></h3> -->
-<p align="center"><b>An open source platform for teachers, creators & educational organization</b></p>
+<p align="center"><b>An all-in-one open source platform for selling courses online</b></p>
+<p align="center"><b>Coming Soon</b></p>
 
-<p align="center">
-<a href="https://discord.gg/kKR9TWm7">
-<img alt="Discord online members" src="https://img.shields.io/discord/1031547764020084846?color=5865F2&label=Discord&style=for-the-badge" />
-</a>
-<img alt="Commit activity per month" src="https://img.shields.io/github/commit-activity/m/torqbit/torq?style=for-the-badge" />
-</p>
+
 
 <p>
-    <a href="https://dev.torqbit.com/login" target="_blank">
+    <a href="https://torqbit.com/torq" target="_blank">
       <img
         src="public/screenshot/login.jpg"
         alt="Login Screens"
