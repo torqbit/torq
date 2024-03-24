@@ -15,21 +15,14 @@
 <p>
     <a href="https://torqbit.com/torq" target="_blank">
       <img
-        src="public/screenshot/login.jpg"
-        alt="Login Screens"
-        width="100%"
-      />
-    </a>
-    <a href="https://dev.torqbit.com/" target="_blank">
-      <img
-        src="public/screenshot/course-screen.jpg"
-        alt="Plane Screens"
+        src="torq-admin-add-course-02.png"
+        alt="Course management screen"
         width="100%"
       />
     </a>
 </p>
 
-Meet [Torqbit](https://dev.torqbit.com). An open-source learning platform to manage your classess 🧘‍♀️.
+Meet [Torqbit](https://dev.torqbit.com). An open-source learning platform to manage your courses 🧘‍♀️.
 
 > Torqbit is still in its early days, not everything will be perfect yet, and hiccups may happen. Please let us know of any suggestions, ideas, or bugs that you encounter on our [Discord](https://discord.gg/kKR9TWm7) or GitHub issues, and we will use your feedback to improve on our upcoming releases.
 
