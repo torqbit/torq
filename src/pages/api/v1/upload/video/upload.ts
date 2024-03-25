@@ -47,9 +47,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       const fileData = fs.readFileSync(path);
-      console.log(fileData, "f");
 
-      if (service_provider && fileData) {
+      if (service_provider) {
         const url = `https://video.bunnycdn.com/library/${Number(service_provider.api_secret)}/videos`;
         const options = {
           method: "POST",
@@ -95,21 +94,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       .status(200)
                       .json({ success: true, message: "uploaded successfully", videoData: videoData });
                   })
-                  .catch((err: string) => {
-                    const deleteLocalFile = fs.unlinkSync(path);
-
-                    console.error("error:" + err, "thos");
-                  });
+                  .catch((err: string) => console.error("error:" + err));
               })
               .catch((err: string) => {
-                const deleteLocalFile = fs.unlinkSync(path);
-
                 console.error("error:" + err, "this is error");
               });
           })
           .catch((err: string) => {
-            const deleteLocalFile = fs.unlinkSync(path);
-
             console.error("error:" + err, "last");
           });
       }

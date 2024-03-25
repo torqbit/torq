@@ -260,8 +260,9 @@ const AddCourseForm: FC = () => {
       (result) => {
         formData.resetFields();
         setLoading(false);
-        setResourceDrawer(true);
+        !showResourceDrawer && setResourceDrawer(true);
         setUploadResUrl({});
+        setAddRes({ ...addRes, chapterId: id });
       },
       (error) => {
         message.error(error);
@@ -290,8 +291,9 @@ const AddCourseForm: FC = () => {
     ProgramService.createResource(
       resData,
       (result) => {
+        console.log(result, "created res");
         message.success(result.message);
-        onFindResource(chapterId, "Video");
+
         formData.resetFields();
         setLoading(false);
         setResourceDrawer(false);
@@ -497,7 +499,7 @@ const AddCourseForm: FC = () => {
   };
 
   const uploadAssignment = async (file: any, title: string) => {
-    setUploadUrl({ ...uploadUrl, uploadType: "img" });
+    setUploadUrl({ ...uploadUrl, uploadType: "" });
 
     if (file) {
       setLoading(true);

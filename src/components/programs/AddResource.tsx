@@ -225,11 +225,12 @@ const AddResource: FC<{
           <Form
             form={formData}
             onFinish={() => {
-              router.query.resId ? onUpdateRes(Number(router.query.resId)) : onCreateRes(chapterId);
+              // router.query.resId ? onUpdateRes(Number(router.query.resId)) : onCreateRes(chapterId);
+              onCreateRes(chapterId);
             }}
           >
             <Space className={styles.footerBtn}>
-              <Button loading={loading} type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit">
                 {router.query.resId ? "Update" : "Save"}
               </Button>
               <Button
@@ -312,6 +313,9 @@ const AddResource: FC<{
                               height={"100%"}
                               className={styles.video_container}
                               width={355}
+                              onClick={() => {
+                                console.log(uploadResourceUrl, "res");
+                              }}
                             />
                           </>
                         ) : (
