@@ -7,18 +7,15 @@ import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const { service_type, provider_name, api_key, api_secret } = body;
+    const { name, providerDetail } = body;
 
     if (body) {
-      const addCredentials = await prisma?.serviceProvider.create({
+      const add = await prisma.configProvider.create({
         data: {
-          service_type: service_type,
-          provider_name: provider_name,
-          api_key: api_key,
-          api_secret: api_secret,
+          name: name,
+          providerDetail: providerDetail,
         },
       });
-
       return res.status(200).json({ success: true, message: "credentials added successfully " });
     } else {
       return res.status(204).json({ success: false, message: "field is empty " });
@@ -28,5 +25,5 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return errorHandler(error, res);
   }
 };
-
-export default withMethods(["POST"], withUserAuthorized(handler));
+export default handler;
+// export default withMethods(["POST"], withUserAuthorized(handler));

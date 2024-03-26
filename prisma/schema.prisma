@@ -386,9 +386,8 @@ model Program {
   programRegistration programRegistration[]
   programPrice        Float?                @default(0)
   programProgress     CourseProgress[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now())
 
   @@unique([id])
 }
@@ -401,6 +400,15 @@ model ServiceProvider {
   api_key       String   @db.Text()
   api_secret    String   @db.Text()
   dt_added      DateTime @default(now())
+
+  @@unique([id])
+}
+
+model configProvider {
+  id Int @default(autoincrement()) @db.Int()
+
+  name           String @unique
+  providerDetail Json?
 
   @@unique([id])
 }
