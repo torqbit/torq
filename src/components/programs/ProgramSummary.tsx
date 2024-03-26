@@ -56,7 +56,6 @@ const ProgramSummary: FC<{
     const res = await getFetch(`/api/course/get-enrolled/${id}/checkStatus`);
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
-      console.log(result.isEnrolled, "sdf");
       if (result.isEnrolled === true) {
         setEnrolled("yes");
       } else if (result.isEnrolled === false) {

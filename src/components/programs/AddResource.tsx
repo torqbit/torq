@@ -15,7 +15,7 @@ import {
   Dropdown,
   Flex,
 } from "antd";
-import { FC } from "react";
+import { FC, useState } from "react";
 import styles from "@/styles/AddCourse.module.scss";
 import { useRouter } from "next/router";
 import { CloseOutlined, EllipsisOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
@@ -132,6 +132,7 @@ const AddResource: FC<{
   addRes: IAddResource;
   formData: FormInstance;
   onDeleteVideo: (id: string) => void;
+  isEdit: boolean;
   uploadResourceUrl: {
     fileName?: string;
     videoUrl?: string;
@@ -148,6 +149,7 @@ const AddResource: FC<{
   onUpdateRes: (resId: number) => void;
   onDeleteThumbnail: (name: string, dir: string) => void;
   uploadFile: (file: any, title: string) => void;
+  currResId?: number;
 }> = ({
   setResourceDrawer,
   showResourceDrawer,
@@ -155,6 +157,7 @@ const AddResource: FC<{
   uploadResourceUrl,
   loading,
   chapterId,
+  isEdit,
   setAddRes,
   formData,
   onDeleteVideo,
@@ -163,6 +166,7 @@ const AddResource: FC<{
   onUploadVideo,
   addRes,
   onFindRsource,
+  currResId,
   onDeleteThumbnail,
   uploadFile,
 }) => {
@@ -225,13 +229,12 @@ const AddResource: FC<{
           <Form
             form={formData}
             onFinish={() => {
-              // router.query.resId ? onUpdateRes(Number(router.query.resId)) : onCreateRes(chapterId);
-              onCreateRes(chapterId);
+              isEdit ? onUpdateRes(Number(currResId)) : onCreateRes(chapterId);
             }}
           >
             <Space className={styles.footerBtn}>
               <Button type="primary" htmlType="submit">
-                {router.query.resId ? "Update" : "Save"}
+                {isEdit ? "Update" : "Save"}
               </Button>
               <Button
                 type="default"
@@ -259,7 +262,7 @@ const AddResource: FC<{
             form={formData}
             layout="vertical"
             onFinish={() => {
-              router.query.resId ? onUpdateRes(Number(router.query.resId)) : onCreateRes(chapterId);
+              isEdit && currResId ? onUpdateRes(currResId) : onCreateRes(chapterId);
             }}
           >
             <div className={styles.formCourseName}>
@@ -294,7 +297,7 @@ const AddResource: FC<{
                     >
                       <Upload
                         name="avatar"
-                        disabled={!formData.getFieldsValue().name ? true : false}
+                        disabled={!formData.getFieldsValue().name && !isEdit ? true : false}
                         listType="picture-card"
                         className={"resource_video_uploader"}
                         showUploadList={false}
@@ -313,9 +316,7 @@ const AddResource: FC<{
                               height={"100%"}
                               className={styles.video_container}
                               width={355}
-                              onClick={() => {
-                                console.log(uploadResourceUrl, "res");
-                              }}
+                              onClick={() => {}}
                             />
                           </>
                         ) : (

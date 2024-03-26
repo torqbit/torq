@@ -26,6 +26,8 @@ const AddCourseForm: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
+  const [isEdit, setEdit] = useState<boolean>(false);
+  const [currResId, setResId] = useState<number>();
 
   const [chapterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -291,7 +293,6 @@ const AddCourseForm: FC = () => {
     ProgramService.createResource(
       resData,
       (result) => {
-        console.log(result, "created res");
         message.success(result.message);
 
         formData.resetFields();
@@ -325,9 +326,10 @@ const AddCourseForm: FC = () => {
       assignmentLang: formData.getFieldsValue().assignmentLang || [],
       videoDuration: formData.getFieldsValue().duration || 0,
       daysToSubmit: formData.getFieldsValue().submitDay || 0,
-      thumbnail: formData.getFieldsValue().VideoUrl || "",
+      thumbnail: uploadResourceUrl?.videoUrl,
       contentType: addRes.content,
-      content: addRes.assignmentFileName || "",
+      content: uploadResourceUrl?.fileName || "",
+      videoId: Number(uploadResourceUrl?.videoId),
     } as resData;
 
     ProgramService.updateResource(
@@ -346,10 +348,12 @@ const AddCourseForm: FC = () => {
           assignmentFileName: "",
         });
         formData.setFieldValue("contentType", "Video");
+        setEdit(false);
 
-        // setResourceDrawer(false);
+        setResourceDrawer(false);
       },
       (error) => {
+        onRefresh();
         message.error(error);
         setLoading(false);
       }
@@ -377,7 +381,7 @@ const AddCourseForm: FC = () => {
       throw new Error("Failed to upload file");
     }
     const res = await postRes.json();
-    console.log(res, "result");
+
     if (res.success) {
       setUploadResUrl({ videoId: res.videoData.videoLibraryId, videoUrl: res.videoData.guid });
       setLoading(false);
@@ -398,7 +402,7 @@ const AddCourseForm: FC = () => {
       throw new Error("Failed to upload file");
     }
     const res = await postRes.json();
-    console.log(res, "result");
+
     if (res.success) {
       let course = {
         name: undefined,
@@ -436,9 +440,7 @@ const AddCourseForm: FC = () => {
   const onDeleteVideo = (id: string) => {
     ProgramService.deleteVideo(
       id,
-      (result) => {
-        console.log(result.message, "delete");
-      },
+      (result) => {},
       (error) => {}
     );
   };
@@ -459,7 +461,7 @@ const AddCourseForm: FC = () => {
         throw new Error("Failed to upload file");
       }
       const res = await postRes.json();
-      console.log(res, "result");
+
       if (res.success) {
         let course = {
           name: undefined,
@@ -523,6 +525,7 @@ const AddCourseForm: FC = () => {
   };
 
   const onEditResource = (id: number) => {
+    setResId(id);
     ProgramService.getResource(
       id,
       (result) => {
@@ -535,6 +538,7 @@ const AddCourseForm: FC = () => {
         formData.setFieldValue("index", result.resource.sequenceId);
         formData.setFieldValue("assignment_file", result.resource.content);
         formData.setFieldValue("contentType", result.resource.contentType);
+        setEdit(true);
 
         setAddRes({
           ...addRes,
@@ -648,9 +652,6 @@ const AddCourseForm: FC = () => {
       (error) => {}
     );
   }, [router.query.id, refresh]);
-  setTimeout(() => {
-    console.log(uploadUrl, "upl");
-  }, 3000);
 
   return (
     <Layout2>
@@ -687,6 +688,8 @@ const AddCourseForm: FC = () => {
         addRes={addRes}
         setAddRes={setAddRes}
         onCreateRes={onCreateRes}
+        currResId={currResId}
+        isEdit={isEdit}
         uploadResourceUrl={
           uploadResourceUrl as {
             fileName?: string;

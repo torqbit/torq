@@ -64,8 +64,6 @@ const Setting: FC<{
     }
   };
 
-  console.log(uploadUrl, "uploaded url");
-
   return (
     <section className={styles.add_course_setting}>
       <Form form={form} onFinish={onSubmit} layout="vertical" requiredMark={false}>

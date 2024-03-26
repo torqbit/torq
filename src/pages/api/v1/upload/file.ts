@@ -18,8 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { fields, files } = (await readFieldWithFile(req)) as any;
     const uploadedFile: Array<{ url: string; fileId: string }> = [];
     if (files?.files) {
-      console.log(res, "res");
-
       if (files?.files?.length) {
         const allPromise = files.files.map((file: formidable.File) => {
           return new Promise(async (resolve, reject) => {

@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const currentTime = new Date().getTime();
       const fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
       const path = await saveToDir(fullName, sourcePath);
-      console.log(fullName, "name");
+
       const service_provider = await prisma?.serviceProvider.findFirst({
         where: {
           provider_name: "bunny",
@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const fileData = fs.readFileSync(path);
 
       if (service_provider) {
-        const url = `https://video.bunnycdn.com/library/${Number(service_provider.api_secret)}/videos`;
+        const url = `https://video.bunnycdn.com/library/${service_provider.api_secret}/videos`;
         const options = {
           method: "POST",
           headers: {
@@ -63,7 +63,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         fetch(url, options)
           .then((res) => res.json())
           .then(async (json: any) => {
-            console.log(json, "this is json");
+            console.log(fileData, "this is json");
+
             const url2 = `https://video.bunnycdn.com/library/${service_provider.api_secret}/videos/${json.guid}`;
             const options = {
               method: "PUT",
