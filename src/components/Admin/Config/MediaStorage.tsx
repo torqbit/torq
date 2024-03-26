@@ -26,14 +26,14 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
           <div className={styles.storage}>
             <h4>Configure Video Storage - Bunny.net</h4>
             <Form.Item name={"access_key"} label={"API Access Key"} rules={[{ required: true, message: "Required!" }]}>
-              <Input />
+              <Input placeholder="Please enter  access key" />
             </Form.Item>
             <Form.Item
               name={"library_id"}
               label={"Video Library Id"}
               rules={[{ required: true, message: "Required!" }]}
             >
-              <Input />
+              <Input placeholder="Please enter video library Id" />
             </Form.Item>
           </div>
           <div className={styles.storage}>
@@ -43,13 +43,13 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
               label={"Storage Access Password"}
               rules={[{ required: true, message: "Required!" }]}
             >
-              <Input />
+              <Input placeholder="Please enter storage access password" />
             </Form.Item>
             <Form.Item name={"storage_zone"} label={"Storage Zone"} rules={[{ required: true, message: "Required!" }]}>
-              <Input />
+              <Input placeholder="Please enter storage zone" />
             </Form.Item>
             <Form.Item name={"media_path"} label={"Media Path"} rules={[{ required: true, message: "Required!" }]}>
-              <Input />
+              <Input placeholder="Please enter media path" />
             </Form.Item>
           </div>
         </div>
