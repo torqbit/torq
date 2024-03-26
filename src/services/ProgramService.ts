@@ -1,7 +1,7 @@
 import { ICourseDetial, IProgramDetail, resData } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 import { ICourseList } from "@/pages/courses";
-import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
+import { AssignmentAndTask, Chapter, Course, Resource, configProvider } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
 
@@ -120,14 +120,7 @@ export type ApiResponse = {
       ];
     }
   ];
-  credentials: {
-    id: number;
-    service_type: string;
-    provider_name: string;
-    api_key: string;
-    api_secret: string;
-    dt_added: Date;
-  };
+  credentials: configProvider;
   allCourse: ICourseDetial[];
   course: Course;
 };
@@ -1024,6 +1017,35 @@ class ProgramService {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  addCredentials = (
+    name: string,
+    providerDetail: object,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/admin/config/service-provider/add`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, providerDetail }),
     }).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
