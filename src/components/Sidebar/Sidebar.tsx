@@ -168,7 +168,8 @@ const Sidebar: FC = () => {
       icon: SvgIcons.content,
     },
     {
-      label: "Configurations",
+      label: <Link href="/admin/config">Configurations</Link>,
+
       key: "configuration",
       icon: SvgIcons.configuration,
     },
