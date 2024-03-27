@@ -20,6 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       sequenceId,
       contentType,
       content,
+      videoId,
     } = body;
 
     // CHECK IS RESOURCE EXIST WITH THIS NAME
@@ -49,6 +50,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       contentType: contentType as ResourceContentType,
       content: content,
       assignmentLang: assignmentLang,
+      videoId: videoId,
     };
 
     if (resData) {

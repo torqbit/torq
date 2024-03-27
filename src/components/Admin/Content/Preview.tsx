@@ -100,22 +100,6 @@ const Preview: FC<{
           src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
           loop
         />
-
-        {/* <div>
-          <iframe
-            className={styles.video_container}
-            src={`https://iframe.mediadelivery.net/embed/${uploadUrl.videoId}/${uploadUrl.videoUrl}?autoplay=true`}
-            // src={`"https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/preview.webp"`}
-            // src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/thumbnail.jpg`}
-            loading="lazy"
-            // style="border: none; position: absolute; top: 0; height: 100%; width: 100%;"
-
-            height={400}
-            width={"100%"}
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;loop;"
-            allowFullScreen={true}
-          ></iframe>
-        </div> */}
       </div>
 
       <div className={styles.video_player_info}>

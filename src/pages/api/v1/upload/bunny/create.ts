@@ -9,8 +9,6 @@ export const onDeleteVideo = (id: string, libraryId: number, accessKey: string) 
 
   fetch(`https://video.bunnycdn.com/library/${libraryId}/videos/${id}`, options)
     .then((response) => response.json())
-    .then((response) => {
-      console.log(response, "dlete");
-    })
+    .then((response) => {})
     .catch((err) => console.error(err));
 };

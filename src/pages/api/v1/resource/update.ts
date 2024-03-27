@@ -19,6 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       contentType,
       content,
       resourceId,
+      videoId,
     } = body;
     let updateObj: any = {};
 
@@ -30,6 +31,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (assignment) updateObj["assignment"] = assignment;
     if (sequenceId) updateObj["sequenceId"] = sequenceId;
     if (thumbnail) updateObj["thumbnail"] = thumbnail;
+    if (videoId) updateObj["videoId"] = videoId;
+
     if (contentType) updateObj["contentType"] = contentType;
     if (content) updateObj["content"] = content;
     if (resourceId) updateObj["resourceId"] = resourceId;
