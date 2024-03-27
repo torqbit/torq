@@ -383,7 +383,7 @@ const AddCourseForm: FC = () => {
     const res = await postRes.json();
 
     if (res.success) {
-      setUploadResUrl({ videoId: res.videoData.videoLibraryId, videoUrl: res.videoData.guid });
+      setUploadResUrl({ videoId: String(res.videoDetail.videoId), videoUrl: res.videoDetail.id });
       setLoading(false);
     }
   };

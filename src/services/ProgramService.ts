@@ -1,7 +1,7 @@
 import { ICourseDetial, IProgramDetail, resData } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 import { ICourseList } from "@/pages/courses";
-import { AssignmentAndTask, Chapter, Course, Resource, configProvider } from "@prisma/client";
+import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
 
@@ -1033,6 +1033,7 @@ class ProgramService {
   };
   addCredentials = (
     name: string,
+    serviceType: string,
     providerDetail: object,
 
     onSuccess: (response: ApiResponse) => void,
@@ -1044,7 +1045,7 @@ class ProgramService {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, providerDetail }),
+      body: JSON.stringify({ name, providerDetail, serviceType }),
     }).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {

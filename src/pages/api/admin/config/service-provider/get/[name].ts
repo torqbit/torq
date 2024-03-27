@@ -10,9 +10,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const query = req.query;
     const { name } = query;
     if (name) {
-      const credentials = await prisma.configProvider.findFirst({
+      const credentials = await prisma.serviceProvider.findFirst({
         where: {
-          name: name as string,
+          service_type: name as string,
         },
       });
       if (credentials) {
