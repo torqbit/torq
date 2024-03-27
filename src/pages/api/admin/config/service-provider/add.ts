@@ -7,19 +7,37 @@ import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const { service_type, provider_name, api_key, api_secret } = body;
+    const { name, providerDetail } = body;
+    console.log(body, "provide");
 
     if (body) {
-      const addCredentials = await prisma?.serviceProvider.create({
-        data: {
-          service_type: service_type,
-          provider_name: provider_name,
-          api_key: api_key,
-          api_secret: api_secret,
+      const isConfigExist = await prisma.configProvider.findUnique({
+        where: {
+          name: name,
         },
       });
 
-      return res.status(200).json({ success: true, message: "credentials added successfully " });
+      if (isConfigExist) {
+        const add = await prisma.configProvider.update({
+          where: {
+            name: name,
+          },
+          data: {
+            name: name,
+            providerDetail: [providerDetail],
+          },
+        });
+        return res.status(200).json({ success: true, message: "credentials updated successfully " });
+      } else if (!isConfigExist) {
+        const add = await prisma.configProvider.create({
+          data: {
+            name: name,
+            providerDetail: [providerDetail],
+          },
+        });
+
+        return res.status(200).json({ success: true, message: "credentials added successfully " });
+      }
     } else {
       return res.status(204).json({ success: false, message: "field is empty " });
     }

@@ -29,6 +29,7 @@ export default {
     },
     Input: {
       borderRadius: 4,
+      activeShadow: "none",
     },
     Dropdown: {
       colorPrimary: "#666",

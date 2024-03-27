@@ -404,3 +404,11 @@ model ServiceProvider {
 
   @@unique([id])
 }
+
+model configProvider {
+  id             Int    @default(autoincrement()) @db.Int()
+  name           String @unique
+  providerDetail Json?
+
+  @@unique([id])
+}
