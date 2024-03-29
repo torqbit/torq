@@ -105,7 +105,7 @@ const Sidebar: FC = () => {
       key: "group1",
     },
     {
-      label: <Link href="dashboard">Dashboard</Link>,
+      label: <Link href="/dashboard">Dashboard</Link>,
       key: "dashboard",
       icon: SvgIcons.dashboard,
     },
@@ -154,16 +154,7 @@ const Sidebar: FC = () => {
       icon: SvgIcons.userGroup,
     },
     {
-      label: (
-        <div
-          // href="/admin/content/settings"
-          onClick={() => {
-            onCreateDraftCourse();
-          }}
-        >
-          Content
-        </div>
-      ),
+      label: <Link href="/admin/content">Content</Link>,
       key: "content",
       icon: SvgIcons.content,
     },
@@ -201,9 +192,9 @@ const Sidebar: FC = () => {
         <div className={styles.logo}>
           <Link href="/programs">
             {collapsed ? (
-              <Image src="/icon/torq-logo.svg" alt="torqbit" width={40} height={30} />
+              <Image src="/icon/torq-logo.svg" alt="torq" width={40} height={30} />
             ) : (
-              <Image src="/icon/torq-long-logo.svg" alt="torqbit" width={130} height={30} />
+              <Image src="/icon/torq-long-logo.svg" alt="torq" width={130} height={30} />
             )}
           </Link>
         </div>

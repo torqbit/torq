@@ -1,12 +1,8 @@
+import { VideoAPIResponse } from "@/types/courses/Course";
 import { BunnyConfig, BunnyMediaProvider, GetVideo } from "./BunnyMediaProvider";
 
 export interface ContentServiceProvider {
-  uploadVideo(
-    title: string,
-    file: Buffer,
-    courseId: number,
-    chapterId: number
-  ): Promise<{ id: string; videoId: string }>;
+  uploadVideo(title: string, file: Buffer, courseId: number, chapterId: number): Promise<VideoAPIResponse>;
 
   uploadFile(name: string, file: Buffer, courseId: number, chapterId?: number): Promise<void>;
 }

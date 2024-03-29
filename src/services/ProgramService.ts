@@ -1,6 +1,7 @@
 import { ICourseDetial, IProgramDetail, resData } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 import { ICourseList } from "@/pages/courses";
+import { ChapterDetail } from "@/types/courses/Course";
 import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
@@ -60,30 +61,7 @@ export type ApiResponse = {
     videoId: string;
     thumbnail: string;
     videoUrl: string;
-    chapter: [
-      {
-        sequenceId: number;
-
-        chapterId: number;
-        courseId: number;
-        createdAt: string;
-        description: string;
-        isActive: boolean;
-        name: string;
-        resource: [
-          {
-            resourceId: number;
-            resourceTitle: string;
-            resourceDescripton: string;
-            contentType: string;
-            videoDuration: number;
-            videoUrl: string;
-            submitDay: number;
-            languages: string[];
-          }
-        ];
-      }
-    ];
+    chapters: ChapterDetail[];
 
     courseId: number;
     coursePrice: number;
@@ -1011,7 +989,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/admin/config/service-provider/get/${provider_name}`, {
+    fetch(`/api/v1/admin/config/service-provider/get/${provider_name}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -1039,7 +1017,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/admin/config/service-provider/add`, {
+    fetch(`/api/v1/admin/config/service-provider/add`, {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -42,7 +42,7 @@ const LoginPage: NextPage = () => {
   return (
     <div className={styles.login_page_wrapper}>
       <div className={styles.login_img}>
-        <img src='/img/login-right-img.svg' alt='' />
+        <img src="/img/login-right-img.svg" alt="" />
       </div>
       <div className={styles.social_login_container}>
         <h3>Welcome to Torqbit</h3>
@@ -52,10 +52,11 @@ const LoginPage: NextPage = () => {
             setGoogleLoading(true);
             signIn("google");
           }}
-          icon={<img src='./img/google.svg' width={25} />}
-          type='primary'
+          icon={<img src="./img/google.svg" width={25} />}
+          type="primary"
           loading={googleLoading}
-          className={styles.google_btn}>
+          className={styles.google_btn}
+        >
           Login with Google
         </Button>
         <Button
@@ -64,12 +65,13 @@ const LoginPage: NextPage = () => {
             signIn("github");
           }}
           loading={gitHubLoading}
-          icon={<img src='./img/github.svg' width={35} />}
-          type='primary'
-          className={styles.github_btn}>
+          icon={<img src="./img/github.svg" width={35} />}
+          type="primary"
+          className={styles.github_btn}
+        >
           Login with GitHub
         </Button>
-        {loginError && <Alert message='Login Failed!' description={loginError} type='error' showIcon closable />}
+        {loginError && <Alert message="Login Failed!" description={loginError} type="error" showIcon closable />}
       </div>
     </div>
   );
@@ -82,7 +84,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/programs",
+        destination: "/dashboard",
       },
     };
   }

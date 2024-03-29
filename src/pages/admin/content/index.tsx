@@ -1,11 +1,13 @@
-import React, { FC } from "react";
-import styles from "../../styles/Dashboard.module.scss";
-import { Button, Dropdown, MenuProps, Table, Tabs, TabsProps, Tag } from "antd";
+import React, { FC, useState } from "react";
+import styles from "../../../styles/Dashboard.module.scss";
+import { Button, Dropdown, MenuProps, Modal, Space, Table, Tabs, TabsProps, Tag } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { ISiderMenu, useAppContext } from "../../components/ContextApi/AppContext";
+import { ISiderMenu, useAppContext } from "../../../components/ContextApi/AppContext";
 import Layout2 from "@/components/Layout2/Layout2";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import ProgramService from "@/services/ProgramService";
+import { useRouter } from "next/router";
 
 const EnrolledCourseList: FC = () => {
   const dropdownMenu: MenuProps["items"] = [
@@ -102,8 +104,14 @@ const EnrolledCourseList: FC = () => {
 
 const Content: FC = () => {
   const { data: user } = useSession();
-
+  const [modal, contextWrapper] = Modal.useModal();
   const { globalState, dispatch } = useAppContext();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -126,6 +134,56 @@ const Content: FC = () => {
     },
   ];
 
+  const previousDraft = (id: number) => {
+    router.push(`/admin/content/course/${id}/edit`);
+    setIsModalOpen(false);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    ProgramService.createDraftCourses(
+      undefined,
+      (result) => {
+        router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  };
+
+  const onCreateDraftCourse = () => {
+    showModal();
+    console.log(`inside creatind the draft course`);
+
+    if (router.query.id) {
+      router.push(`/admin/content/course/${router.query.id}/edit`);
+    } else {
+      ProgramService.getLatesDraftCourse(
+        (result) => {
+          if (result.getCourse) {
+            modal.confirm({
+              title: "Would you like to use?",
+              content: (
+                <>
+                  <Space>
+                    <Button onClick={() => previousDraft(result.getCourse.courseId)}>Previous draft course</Button>
+                    or
+                    <Button onClick={handleOk}>Create a new course</Button>
+                  </Space>
+                </>
+              ),
+              footer: null,
+            });
+          } else {
+            handleOk();
+          }
+        },
+        (error) => {}
+      );
+    }
+  };
+
   return (
     <Layout2>
       <section className={styles.dashboard_content}>
@@ -137,22 +195,23 @@ const Content: FC = () => {
             borderColor: "gray",
           }}
           tabBarExtraContent={
-            <Link href="addCourseForm">
-              <Button
-                size="small"
-                type="primary"
-                onClick={() => dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "content" as ISiderMenu })}
-                className={styles.add_user_btn}
-              >
-                <span>Add Course</span>
-                {SvgIcons.arrowRight}
-              </Button>
-            </Link>
+            <Button
+              type="primary"
+              onClick={() => {
+                //dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "content" as ISiderMenu });
+                onCreateDraftCourse();
+              }}
+              className={styles.add_user_btn}
+            >
+              <span>Add Course</span>
+              {SvgIcons.arrowRight}
+            </Button>
           }
           defaultActiveKey="1"
           items={items}
           onChange={onChange}
         />
+        {contextWrapper}
       </section>
     </Layout2>
   );

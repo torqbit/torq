@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import Preview from "./Preview";
 
 import ProgramService from "@/services/ProgramService";
-import { ChapterDetail } from "@/pages/add-course";
+import { ChapterDetail, UploadedResourceDetail } from "@/types/courses/Course";
 import AddCourseChapter from "@/components/programs/AddCourseChapter";
 import { Resource, ResourceContentType } from "@prisma/client";
 import { IAddResource, resData } from "@/lib/types/program";
@@ -70,19 +70,15 @@ const AddCourseForm: FC = () => {
     name: string;
     description: string;
     duration: number;
-    chapter: ChapterDetail[];
+    chapters: ChapterDetail[];
   }>({
     name: "",
     description: "",
     duration: 0,
-    chapter: [],
+    chapters: [],
   });
 
-  const [uploadResourceUrl, setUploadResUrl] = useState<{
-    fileName?: string;
-    videoUrl?: string;
-    videoId?: string;
-  }>();
+  const [uploadResourceUrl, setUploadResUrl] = useState<UploadedResourceDetail>();
   const onDiscard = () => {
     ProgramService.getCourses(
       Number(router.query.id),
@@ -143,7 +139,7 @@ const AddCourseForm: FC = () => {
     setCourseData({ ...courseData, [key]: value });
   };
 
-  let currentSeqIds = courseData.chapter.map((c) => {
+  let currentSeqIds = courseData.chapters.map((c) => {
     return c.sequenceId;
   });
 
@@ -210,10 +206,8 @@ const AddCourseForm: FC = () => {
       name: chapterForm.getFieldsValue().name,
       description: chapterForm.getFieldsValue().description,
       duration: chapterForm.getFieldsValue().duration,
-
       courseId: courseId,
-      // sequenceId: Number(chapterForm.getFieldsValue().index),
-      sequenceId: Number(currentSeqIds[0] + 1),
+      sequenceId: Number(courseData.chapters.length + 1),
     };
 
     ProgramService.createChapter(
@@ -383,7 +377,11 @@ const AddCourseForm: FC = () => {
     const res = await postRes.json();
 
     if (res.success) {
-      setUploadResUrl({ videoId: String(res.videoDetail.videoId), videoUrl: res.videoDetail.id });
+      setUploadResUrl({
+        videoId: String(res.videoDetail.videoId),
+        videoUrl: res.videoDetail.videoUrl,
+        thumbnail: res.videoDetail.thumbnail,
+      });
       setLoading(false);
     }
   };
@@ -412,8 +410,8 @@ const AddCourseForm: FC = () => {
         description: undefined,
         thumbnail: undefined,
         thumbnailId: undefined,
-        videoUrl: res.videoData.guid,
-        videoId: `${res.videoData.videoLibraryId}`,
+        videoUrl: res.videoDetail.id,
+        videoId: `${res.videoDetail.videoId}`,
         programId: 0,
         authorId: 0,
         sequenceId: undefined,
@@ -422,8 +420,7 @@ const AddCourseForm: FC = () => {
       ProgramService.updateCourse(
         course,
         (result) => {
-          setUploadUrl({ ...uploadUrl, videoId: res.videoData.videoLibraryId, videoUrl: res.videoData.guid });
-
+          setUploadUrl({ ...uploadUrl, videoId: res.videoDetail.videoId, videoUrl: res.videoDetail.id });
           setRefresh(!refresh);
           message.success("file uploaded");
           setLoading(false);
@@ -519,7 +516,7 @@ const AddCourseForm: FC = () => {
       const res = await postRes.json();
 
       if (res.success) {
-        setUploadResUrl({ ...uploadResourceUrl, fileName: res.fileName });
+        setUploadResUrl({ fileName: res.fileName as string });
       }
     }
   };
@@ -593,7 +590,7 @@ const AddCourseForm: FC = () => {
 
       children: (
         <Curriculum
-          chapter={courseData.chapter}
+          chapter={courseData.chapters}
           onRefresh={onRefresh}
           setOpen={setOpen}
           onFindResource={onFindResource}
@@ -622,35 +619,37 @@ const AddCourseForm: FC = () => {
               videoId?: string;
             }
           }
-          chapter={courseData.chapter}
+          chapter={courseData.chapters}
         />
       ),
     },
   ];
 
   useEffect(() => {
-    ProgramService.getCourses(
-      Number(router.query.id),
-      (result) => {
-        form.setFieldValue("course_name", result.getCourse.name);
-        form.setFieldValue("course_description", result.getCourse.description);
-        form.setFieldValue("course_duration", result.getCourse.durationInMonths);
+    console.log(`query id : ${router.query.id}`);
+    router.query.id &&
+      ProgramService.getCourses(
+        Number(router.query.id),
+        (result) => {
+          form.setFieldValue("course_name", result.getCourse.name);
+          form.setFieldValue("course_description", result.getCourse.description);
+          form.setFieldValue("course_duration", result.getCourse.durationInMonths);
 
-        setCourseData({
-          ...courseData,
-          duration: result.getCourse.durationInMonths,
-          chapter: result.getCourse.chapter as any,
-        });
-        setUploadUrl({
-          ...uploadUrl,
-          thumbnailId: result.getCourse.thumbnailId,
-          thumbnailImg: result.getCourse.thumbnail,
-          videoId: result.getCourse.videoId,
-          videoUrl: result.getCourse.videoUrl,
-        });
-      },
-      (error) => {}
-    );
+          setCourseData({
+            ...courseData,
+            duration: result.getCourse.durationInMonths,
+            chapters: result.getCourse.chapters,
+          });
+          setUploadUrl({
+            ...uploadUrl,
+            thumbnailId: result.getCourse.thumbnailId,
+            thumbnailImg: result.getCourse.thumbnail,
+            videoId: result.getCourse.videoId,
+            videoUrl: result.getCourse.videoUrl,
+          });
+        },
+        (error) => {}
+      );
   }, [router.query.id, refresh]);
 
   return (
@@ -695,6 +694,7 @@ const AddCourseForm: FC = () => {
             fileName?: string;
             videoUrl?: string;
             videoId?: string;
+            thumbnail?: string;
           }
         }
         onUpdateRes={onUpdateRes}

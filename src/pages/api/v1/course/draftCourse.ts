@@ -26,16 +26,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // CHECK IS COURSE EXIST WITH THIS NAME
     if (id) {
-      const isCrouseExist = await prisma.course.findUnique({
+      const isCourseExist = await prisma.course.findUnique({
         where: {
           courseId: id,
         },
       });
-      if (isCrouseExist) {
-        return res.status(403).json({
+      if (isCourseExist) {
+        return res.status(400).json({
           info: true,
           success: false,
-          message: `Crouse already exist `,
+          message: `Course already exist `,
         });
       }
     }

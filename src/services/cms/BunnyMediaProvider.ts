@@ -1,5 +1,5 @@
-import { error } from "console";
 import { ContentServiceProvider } from "./ContentManagementService";
+import { VideoAPIResponse } from "@/types/courses/Course";
 export type GetVideo = {
   guid: string;
   libraryId: number;
@@ -11,12 +11,25 @@ export type BunnyConfig = {
   storageZone: string;
   mediaPath: string;
 };
+
+type BunnyVideoAPIResponse = {
+  videoLibraryId: number;
+  guid: string;
+  title: string;
+  dateUploaded: Date;
+  views: number;
+  isPublic: boolean;
+  length: number;
+  status: string;
+  thumbnailFileName: string;
+};
 export class BunnyMediaProvider implements ContentServiceProvider {
   accessKey: string;
   libraryId: string;
   accessPassword: string;
   storageZone: string;
   mediaPath: string;
+  cdnHostname: string = "vz-bb827f5e-131.b-cdn.net";
 
   constructor(accessKey: string, libraryId: string, accessPassword: string, storageZone: string, mediaPath: string) {
     (this.accessKey = accessKey),
@@ -66,12 +79,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
 
-  uploadVideo(
-    title: string,
-    file: Buffer,
-    courseId: number,
-    chapterId: number
-  ): Promise<{ id: string; videoId: string }> {
+  uploadVideo(title: string, file: Buffer, courseId: number, chapterId: number): Promise<VideoAPIResponse> {
     let guid: string;
     return fetch(this.createVideoUrl(this.libraryId), this.getPostOption(title, this.accessKey))
       .then((res) => res.json())
@@ -82,9 +90,13 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       .then((res) => res.json())
       .then((uploadedData) => fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey)))
       .then((res) => res.json())
-      .then((videoData: any) => {
-        console.log(videoData, "video data");
-        return { id: videoData.guid as string, videoId: this.libraryId };
+      .then((videoData: BunnyVideoAPIResponse) => {
+        return {
+          videoId: videoData.guid as string,
+          thumbnail: `https://${this.cdnHostname}/${videoData.guid}/${videoData.thumbnailFileName}`,
+          previewUrl: `https://${this.cdnHostname}/${videoData.guid}/preview.webp`,
+          videoUrl: `https://iframe.mediadelivery.net/play/${this.libraryId}/${videoData.guid}`,
+        };
       });
   }
 

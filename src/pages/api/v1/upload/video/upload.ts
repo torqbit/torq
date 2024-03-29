@@ -60,9 +60,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               return cms.uploadVideo(fullName, fileBuffer, 1, 1, serviceProvider);
             })
             .then((videoDetail) => {
-              console.log(videoDetail, "video detail");
-              console.log(path, "video path");
-
               fs.unlinkSync(path);
               res.status(200).json({ success: true, message: "uploaded successfully", videoDetail });
             });

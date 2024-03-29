@@ -1,5 +1,5 @@
 import SvgIcons from "@/components/SvgIcons";
-import { ChapterDetail } from "@/pages/add-course";
+import { ChapterDetail } from "@/types/courses/Course";
 import styles from "@/styles/Curriculum.module.scss";
 import { ResourceContentType } from "@prisma/client";
 import { Button, Collapse, Dropdown, Flex, Form, MenuProps, Popconfirm, Space, Tag, message } from "antd";
@@ -88,14 +88,14 @@ const Label: FC<{
                     items: [
                       {
                         key: 1,
-                        label: "VIDEO",
+                        label: "Video",
                         onClick: () => {
                           onFindResource(id, "Video");
                         },
                       },
                       {
                         key: 2,
-                        label: "ASSIGNMENT",
+                        label: "Assignment",
                         onClick: () => {
                           onFindResource(id, "Assignment");
                         },

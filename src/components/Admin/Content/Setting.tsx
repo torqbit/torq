@@ -6,11 +6,11 @@ import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 import { useRouter } from "next/router";
-import { ChapterDetail } from "@/pages/add-course";
 import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
 import ProgramService from "@/services/ProgramService";
 import { postWithFile } from "@/services/request";
 import { RcFile } from "antd/es/upload";
+import { ChapterDetail } from "@/types/courses/Course";
 
 const { TextArea } = Input;
 
@@ -26,7 +26,7 @@ const Setting: FC<{
 
   loading: boolean;
   onSetCourseData: (key: string, value: string) => void;
-  courseData: { name: string; description: string; duration: number; chapter: ChapterDetail[] };
+  courseData: { name: string; description: string; duration: number; chapters: ChapterDetail[] };
   uploadUrl: {
     uploadType?: string;
     thumbnailImg?: string;

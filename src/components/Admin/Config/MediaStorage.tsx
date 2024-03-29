@@ -16,7 +16,7 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
           <Space>
             <Button>Discard</Button>
             <Button className={styles.submit_btn} type="primary" htmlType="submit">
-              <div>{form.getFieldsValue() ? "Update Config" : "Save Config"} </div>
+              <div>{form.getFieldValue("accessKey") ? "Update Config" : "Save Config"} </div>
               {SvgIcons.arrowRight}
             </Button>
           </Space>
@@ -25,11 +25,19 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
         <div className={styles.form_wrapper}>
           <div className={styles.storage}>
             <h4>Configure Video Storage - Bunny.net</h4>
-            <Form.Item name={"accessKey"} label={"API Access Key"} rules={[{ required: true, message: "Required!" }]}>
+            <Form.Item
+              name={"accessKey"}
+              label={"API Access Key"}
+              rules={[{ required: true, message: "Enter API Access Key" }]}
+            >
               <Input.Password placeholder="Please enter  access key" />
             </Form.Item>
-            <Form.Item name={"libraryId"} label={"Video Library Id"} rules={[{ required: true, message: "Required!" }]}>
-              <Input.Password placeholder="Please enter video library Id" />
+            <Form.Item
+              name={"libraryId"}
+              label={"Video Library Id"}
+              rules={[{ required: true, message: "Video Library Id is required" }]}
+            >
+              <Input placeholder="Please enter video library Id" />
             </Form.Item>
           </div>
           <div className={styles.storage}>
@@ -42,10 +50,10 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
               <Input.Password placeholder="Please enter storage access password" />
             </Form.Item>
             <Form.Item name={"storageZone"} label={"Storage Zone"} rules={[{ required: true, message: "Required!" }]}>
-              <Input.Password placeholder="Please enter storage zone" />
+              <Input placeholder="Please enter storage zone" />
             </Form.Item>
             <Form.Item name={"mediaPath"} label={"Media Path"} rules={[{ required: true, message: "Required!" }]}>
-              <Input.Password placeholder="Please enter media path" />
+              <Input placeholder="Please enter media path" />
             </Form.Item>
           </div>
         </div>

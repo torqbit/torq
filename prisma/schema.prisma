@@ -125,7 +125,7 @@ model Course {
   durationInMonths Int        @default(12)
   state            StateType
   videoDuration    Int        @default(600)
-  chapter          Chapter[]
+  chapters          Chapter[]
   program          Program?   @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, name])
