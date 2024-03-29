@@ -27,7 +27,8 @@ const Config: FC = () => {
     setLoading(true);
     console.log(form.getFieldsValue(), "sdf");
     ProgramService.addCredentials(
-      "bunny.net",
+      "bunny",
+      "media",
       form.getFieldsValue(),
       (result) => {
         console.log(result, "cred");
@@ -53,7 +54,7 @@ const Config: FC = () => {
 
   useEffect(() => {
     ProgramService.getCredentials(
-      "bunny.net",
+      "media",
       (result) => {
         console.log(result.credentials);
         if (result.credentials.providerDetail) {

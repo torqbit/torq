@@ -7,32 +7,34 @@ import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const { name, providerDetail } = body;
+    const { name, serviceType, providerDetail } = body;
     console.log(body, "provide");
 
     if (body) {
-      const isConfigExist = await prisma.configProvider.findUnique({
+      const isConfigExist = await prisma.serviceProvider.findUnique({
         where: {
-          name: name,
+          service_type: serviceType,
         },
       });
 
       if (isConfigExist) {
-        const add = await prisma.configProvider.update({
+        const add = await prisma.serviceProvider.update({
           where: {
-            name: name,
+            service_type: serviceType as string,
           },
           data: {
-            name: name,
+            provider_name: name,
+            service_type: serviceType,
             providerDetail: [providerDetail],
           },
         });
-        return res.status(200).json({ success: true, message: "credentials updated successfully " });
+        return res.status(200).json({ success: true, message: "credentials updated successfully" });
       } else if (!isConfigExist) {
-        const add = await prisma.configProvider.create({
+        const add = await prisma.serviceProvider.create({
           data: {
-            name: name,
-            providerDetail: [providerDetail],
+            provider_name: name,
+            service_type: serviceType,
+            providerDetail: providerDetail,
           },
         });
 

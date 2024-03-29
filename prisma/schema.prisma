@@ -167,17 +167,17 @@ model Resource {
 
   description String? @db.Text()
 
-  assignment     Json?
-  videoDuration  Int
-  chapterId      Int
-  sequenceId     Int
-  daysToSubmit   Int?
-  assignmentLang Json?
-  contentType    ResourceContentType
-  content        String?             @db.Text()
-  isActive       Boolean             @default(true)
-  state          StateType           @default(ACTIVE)
-
+  assignment         Json?
+  videoDuration      Int
+  chapterId          Int
+  sequenceId         Int
+  daysToSubmit       Int?
+  assignmentLang     Json?
+  contentType        ResourceContentType
+  content            String?             @db.Text()
+  isActive           Boolean             @default(true)
+  state              StateType           @default(ACTIVE)
+  videoId            Int?
   thumbnail          String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -394,21 +394,11 @@ model Program {
 }
 
 model ServiceProvider {
-  id Int @default(autoincrement()) @db.Int()
-
-  service_type  String   @db.Text()
-  provider_name String   @db.Text()
-  api_key       String   @db.Text()
-  api_secret    String   @db.Text()
-  dt_added      DateTime @default(now())
-
-  @@unique([id])
-}
-
-model configProvider {
-  id             Int    @default(autoincrement()) @db.Int()
-  name           String @unique
+  id             Int      @default(autoincrement()) @db.Int()
+  service_type   String   @unique @db.VarChar(20)
+  provider_name  String   @db.Text()
   providerDetail Json?
+  dt_added       DateTime @default(now())
 
   @@unique([id])
 }

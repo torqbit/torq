@@ -18,12 +18,16 @@ import AddCourseChapter from "@/components/programs/AddCourseChapter";
 import { Resource, ResourceContentType } from "@prisma/client";
 import { IAddResource, resData } from "@/lib/types/program";
 import AddResource from "@/components/programs/AddResource";
-import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
+
+import { RcFile } from "antd/es/upload";
+import { postWithFile } from "@/services/request";
 
 const AddCourseForm: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
+  const [isEdit, setEdit] = useState<boolean>(false);
+  const [currResId, setResId] = useState<number>();
 
   const [chapterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -74,32 +78,22 @@ const AddCourseForm: FC = () => {
     chapter: [],
   });
 
+  const [uploadResourceUrl, setUploadResUrl] = useState<{
+    fileName?: string;
+    videoUrl?: string;
+    videoId?: string;
+  }>();
   const onDiscard = () => {
     ProgramService.getCourses(
       Number(router.query.id),
       (result) => {
-        ProgramService.getCredentials(
-          "bunny",
-          async (videoData) => {
-            if (uploadUrl?.videoUrl) {
-              onDeleteVideo(uploadUrl.videoUrl as string, Number(uploadUrl.videoId), videoData.credentials.api_key);
-            }
-            ProgramService.getCredentials(
-              "bunny img",
-              async (imgData) => {
-                onDeleteThumbnail(result.getCourse?.thumbnail, imgData.credentials.api_key);
+        onDeleteVideo(result.getCourse.videoUrl);
 
-                ProgramService.deleteCourse(
-                  Number(router.query.id),
+        ProgramService.deleteCourse(
+          Number(router.query.id),
 
-                  (result) => {
-                    message.success(result.message);
-                  },
-                  (error) => {}
-                );
-              },
-              (error) => {}
-            );
+          (result) => {
+            message.success(result.message);
           },
           (error) => {}
         );
@@ -168,11 +162,20 @@ const AddCourseForm: FC = () => {
     );
   };
   const deleteRes = (id: number) => {
-    ProgramService.deleteResource(
+    ProgramService.getResource(
       id,
       (result) => {
-        message.success(result.message);
-        onRefresh();
+        onDeleteVideo(String(result.resource.thumbnail));
+        onDeleteThumbnail(String(result.resource.content), "course-assignments");
+
+        ProgramService.deleteResource(
+          id,
+          (result) => {
+            message.success(result.message);
+            onRefresh();
+          },
+          (error) => {}
+        );
       },
       (error) => {}
     );
@@ -257,17 +260,11 @@ const AddCourseForm: FC = () => {
     ProgramService.getResources(
       id,
       (result) => {
-        setAvailableRes(result.allResource);
+        formData.resetFields();
+        setLoading(false);
         !showResourceDrawer && setResourceDrawer(true);
-        !showResourceDrawer
-          ? setAddRes({ ...addRes, chapterId: id, content: content })
-          : setAddRes({
-              content: content,
-              chapterId: 0,
-              name: "",
-              duration: 0,
-              assignmentFileName: "",
-            });
+        setUploadResUrl({});
+        setAddRes({ ...addRes, chapterId: id });
       },
       (error) => {
         message.error(error);
@@ -288,7 +285,8 @@ const AddCourseForm: FC = () => {
       assignmentLang: formData.getFieldsValue().assignmentLang || [],
       videoDuration: formData.getFieldsValue().duration || 0,
       daysToSubmit: formData.getFieldsValue().submitDay || 0,
-      thumbnail: formData.getFieldsValue().VideoUrl || "",
+      thumbnail: uploadResourceUrl?.videoUrl,
+      videoId: Number(uploadResourceUrl?.videoId),
       contentType: addRes.content,
       content: addRes.assignmentFileName || "",
     } as resData;
@@ -296,7 +294,7 @@ const AddCourseForm: FC = () => {
       resData,
       (result) => {
         message.success(result.message);
-        onFindResource(chapterId, "Video");
+
         formData.resetFields();
         setLoading(false);
         setResourceDrawer(false);
@@ -328,9 +326,10 @@ const AddCourseForm: FC = () => {
       assignmentLang: formData.getFieldsValue().assignmentLang || [],
       videoDuration: formData.getFieldsValue().duration || 0,
       daysToSubmit: formData.getFieldsValue().submitDay || 0,
-      thumbnail: formData.getFieldsValue().VideoUrl || "",
+      thumbnail: uploadResourceUrl?.videoUrl,
       contentType: addRes.content,
-      content: addRes.assignmentFileName || "",
+      content: uploadResourceUrl?.fileName || "",
+      videoId: Number(uploadResourceUrl?.videoId),
     } as resData;
 
     ProgramService.updateResource(
@@ -349,168 +348,214 @@ const AddCourseForm: FC = () => {
           assignmentFileName: "",
         });
         formData.setFieldValue("contentType", "Video");
+        setEdit(false);
 
-        // setResourceDrawer(false);
+        setResourceDrawer(false);
       },
       (error) => {
+        onRefresh();
         message.error(error);
         setLoading(false);
       }
     );
   };
 
-  const createVideo = async (title: string, libraryId: number, accessKey: string, courseId: number, file: any) => {
-    setLoading(true);
-    const fetch = require("node-fetch");
-    const url = `https://video.bunnycdn.com/library/${Number(libraryId)}/videos`;
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        AccessKey: accessKey as string,
-      },
-      body: JSON.stringify({ title: title }),
-    };
-
-    fetch(url, options)
-      .then((res: { json: () => JSON }) => res.json())
-      .then((json: any) => {
-        let uploadedData = uploadVideo(json.guid, accessKey, libraryId, courseId, file);
-        return uploadedData;
-      })
-      .catch((err: string) => {
-        console.error("error:" + err);
-      });
+  const onDeleteThumbnail = (name: string, dir: string) => {
+    ProgramService.deleteFile(
+      name,
+      dir,
+      (result) => {},
+      (error) => {}
+    );
   };
 
-  const uploadVideo = (id: string, accessKey: string, libraryId: number, courseId: number, file: any) => {
-    const fetch = require("node-fetch");
+  const onUploadVideo = async (file: RcFile, title: string) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("title", title);
 
-    const url = `https://video.bunnycdn.com/library/${libraryId}/videos/${id}`;
-    const options = {
-      method: "PUT",
-      headers: { accept: "application/json", AccessKey: accessKey },
-      body: file,
-    };
+    const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
+    if (!postRes.ok) {
+      setLoading(false);
+      throw new Error("Failed to upload file");
+    }
+    const res = await postRes.json();
 
-    fetch(url, options)
-      .then((res: { json: () => JSON }) => res.json())
-      .then((json: any) => {
+    if (res.success) {
+      setUploadResUrl({ videoId: String(res.videoDetail.videoId), videoUrl: res.videoDetail.id });
+      setLoading(false);
+    }
+  };
+
+  const onUploadTrailer = async (file: RcFile, title: string) => {
+    setUploadUrl({ ...uploadUrl, uploadType: "video" });
+    setLoading(true);
+    const name = title.replace(/\s+/g, "-");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("title", name);
+
+    const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
+    if (!postRes.ok) {
+      setLoading(false);
+      throw new Error("Failed to upload file");
+    }
+    const res = await postRes.json();
+
+    if (res.success) {
+      let course = {
+        name: undefined,
+        duration: undefined,
+        state: "DRAFT",
+        skills: [],
+        description: undefined,
+        thumbnail: undefined,
+        thumbnailId: undefined,
+        videoUrl: res.videoData.guid,
+        videoId: `${res.videoData.videoLibraryId}`,
+        programId: 0,
+        authorId: 0,
+        sequenceId: undefined,
+        courseId: Number(router.query.id),
+      };
+      ProgramService.updateCourse(
+        course,
+        (result) => {
+          setUploadUrl({ ...uploadUrl, videoId: res.videoData.videoLibraryId, videoUrl: res.videoData.guid });
+
+          setRefresh(!refresh);
+          message.success("file uploaded");
+          setLoading(false);
+        },
+        (error) => {
+          setLoading(false);
+
+          message.error(error);
+        }
+      );
+    }
+  };
+
+  const onDeleteVideo = (id: string) => {
+    ProgramService.deleteVideo(
+      id,
+      (result) => {},
+      (error) => {}
+    );
+  };
+  const uploadFile = async (file: any, title: string) => {
+    setUploadUrl({ ...uploadUrl, uploadType: "img" });
+
+    if (file) {
+      setLoading(true);
+      const name = title.replace(/\s+/g, "-");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("title", name);
+      formData.append("dir", "course-banners");
+
+      const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
+      if (!postRes.ok) {
+        setLoading(false);
+        throw new Error("Failed to upload file");
+      }
+      const res = await postRes.json();
+
+      if (res.success) {
         let course = {
           name: undefined,
           duration: undefined,
           state: "DRAFT",
           skills: [],
           description: undefined,
-          thumbnail: undefined,
+          thumbnail: res.fileName,
           thumbnailId: undefined,
-          videoUrl: id,
-          videoId: `${libraryId}`,
+          videoUrl: undefined,
+          videoId: undefined,
           programId: 0,
           authorId: 0,
           sequenceId: undefined,
-          courseId: courseId,
+          courseId: Number(router.query.id),
         };
         ProgramService.updateCourse(
           course,
           (result) => {
+            setUploadUrl({
+              ...uploadUrl,
+              thumbnailImg: res.fileName,
+            });
+
             setRefresh(!refresh);
             message.success("file uploaded");
             setLoading(false);
-            router.reload();
           },
           (error) => {
-            setLoading(true);
+            setLoading(false);
 
             message.error(error);
           }
         );
-      })
-      .catch((err: string) => {
-        console.error("error:" + err);
-      });
-  };
-
-  const uploadFile = async (file: any, accessKey: string) => {
-    if (file) {
-      setLoading(true);
-      const fileExtention = function getFileExtension(filename: string) {
-        const extension = filename.split(".").pop();
-        return extension;
-      };
-      let extension = fileExtention(file.name);
-      let dashed = form.getFieldsValue().course_name.replace(/\s+/g, "-").toLowerCase();
-      let currentTime = new Date().getTime();
-      const fileName = `${dashed}-${currentTime}.${extension}`;
-      const BASE_HOSTNAME = "storage.bunnycdn.com";
-
-      const url = `https://storage.bunnycdn.com/torqbit-files/static/course-banners/${fileName}`;
-
-      const options = {
-        method: "PUT",
-        host: BASE_HOSTNAME,
-        headers: {
-          AccessKey: accessKey,
-          "Content-Type": "application/json",
-        },
-        body: file,
-      };
-
-      fetch(url, options)
-        .then((res: { json: () => any }) => res.json())
-        .then((json: any) => {
-          let course = {
-            name: undefined,
-            duration: undefined,
-            state: "DRAFT",
-            skills: [],
-            description: undefined,
-            thumbnail: fileName,
-            thumbnailId: "",
-            videoUrl: undefined,
-            videoId: undefined,
-            programId: 0,
-            authorId: 0,
-            sequenceId: undefined,
-            courseId: Number(router.query.id),
-          };
-          ProgramService.updateCourse(
-            course,
-            (result) => {
-              setRefresh(!refresh);
-              message.success("file uploaded");
-              setLoading(false);
-            },
-            (error) => {
-              setLoading(true);
-
-              message.error(error);
-            }
-          );
-        })
-        .catch((err: string) => {
-          console.error("error:" + err);
-        });
+      }
     }
   };
-  const onDeleteThumbnail = (name: string, accessKey: string) => {
-    const fetch = require("node-fetch");
 
-    const url = `https://storage.bunnycdn.com/torqbit-files/static/course-banners/${name}`;
+  const uploadAssignment = async (file: any, title: string) => {
+    setUploadUrl({ ...uploadUrl, uploadType: "" });
 
-    const options = {
-      method: "DELETE",
-      headers: { AccessKey: accessKey },
-    };
+    if (file) {
+      setLoading(true);
+      const name = title.replace(/\s+/g, "-");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("title", name);
+      formData.append("dir", "course-assignments");
 
-    fetch(url, options)
-      .then((res: { json: () => any }) => res.json())
-      .then((json: any) => {
-        onRefresh();
-      })
-      .catch((err: string) => console.error("error:" + err));
+      const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
+      if (!postRes.ok) {
+        setLoading(false);
+        throw new Error("Failed to upload file");
+      }
+      const res = await postRes.json();
+
+      if (res.success) {
+        setUploadResUrl({ ...uploadResourceUrl, fileName: res.fileName });
+      }
+    }
   };
+
+  const onEditResource = (id: number) => {
+    setResId(id);
+    ProgramService.getResource(
+      id,
+      (result) => {
+        formData.setFieldValue("name", result.resource?.name);
+        formData.setFieldValue("description", result.resource?.description);
+        formData.setFieldValue("assignmentLang", result.resource.assignmentLang);
+        formData.setFieldValue("submitDay", result.resource.daysToSubmit);
+        formData.setFieldValue("VideoUrl", result.resource.thumbnail);
+        formData.setFieldValue("duration", result.resource.videoDuration);
+        formData.setFieldValue("index", result.resource.sequenceId);
+        formData.setFieldValue("assignment_file", result.resource.content);
+        formData.setFieldValue("contentType", result.resource.contentType);
+        setEdit(true);
+
+        setAddRes({
+          ...addRes,
+          content: result.resource.contentType,
+          chapterId: result.resource.chapterId,
+        });
+        setUploadResUrl({
+          fileName: String(result.resource.content),
+          videoId: String(result.resource.videoId),
+          videoUrl: String(result.resource.thumbnail),
+        });
+        setResourceDrawer(true);
+      },
+      (error) => {}
+    );
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -524,9 +569,10 @@ const AddCourseForm: FC = () => {
           courseData={courseData}
           setLoading={setLoading}
           onRefresh={onRefresh}
-          createVideo={createVideo}
+          onUploadTrailer={onUploadTrailer}
           uploadFile={uploadFile}
           onDeleteThumbnail={onDeleteThumbnail}
+          onDeleteVideo={onDeleteVideo}
           uploadUrl={
             uploadUrl as {
               uploadType?: string;
@@ -555,6 +601,7 @@ const AddCourseForm: FC = () => {
           updateChapterState={updateChapterState}
           updateResState={updateResState}
           deleteRes={deleteRes}
+          onEditResource={onEditResource}
           onSave={onChange}
           onDiscard={onDiscard}
         />
@@ -641,13 +688,26 @@ const AddCourseForm: FC = () => {
         addRes={addRes}
         setAddRes={setAddRes}
         onCreateRes={onCreateRes}
+        currResId={currResId}
+        isEdit={isEdit}
+        uploadResourceUrl={
+          uploadResourceUrl as {
+            fileName?: string;
+            videoUrl?: string;
+            videoId?: string;
+          }
+        }
         onUpdateRes={onUpdateRes}
         availableRes={availableRes}
+        onUploadVideo={onUploadVideo}
         formData={formData}
         setResourceDrawer={setResourceDrawer}
+        onDeleteVideo={onDeleteVideo}
         showResourceDrawer={showResourceDrawer}
         loading={loading}
         onFindRsource={onFindResource}
+        uploadFile={uploadAssignment}
+        onDeleteThumbnail={onDeleteThumbnail}
       />
     </Layout2>
   );
