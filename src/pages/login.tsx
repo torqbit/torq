@@ -42,10 +42,13 @@ const LoginPage: NextPage = () => {
   return (
     <div className={styles.login_page_wrapper}>
       <div className={styles.login_img}>
-        <img src="/img/login-right-img.svg" alt="" />
+        <img src="/img/login-screen.png" alt="Login image" />
+        <h3>Learn to Lead</h3>
+        <p>Transform into the most competitive individual who drives changes for the betterment.</p>
       </div>
       <div className={styles.social_login_container}>
-        <h3>Welcome to Torqbit</h3>
+        <img src="/icon/torq-logo.svg" alt="" />
+        <h3>Login to Torq</h3>
 
         <Button
           onClick={() => {
@@ -53,7 +56,7 @@ const LoginPage: NextPage = () => {
             signIn("google");
           }}
           icon={<img src="./img/google.svg" width={25} />}
-          type="primary"
+          type="default"
           loading={googleLoading}
           className={styles.google_btn}
         >
@@ -65,7 +68,7 @@ const LoginPage: NextPage = () => {
             signIn("github");
           }}
           loading={gitHubLoading}
-          icon={<img src="./img/github.svg" width={35} />}
+          icon={<img src="./icon/github.png" width={35} />}
           type="primary"
           className={styles.github_btn}
         >
