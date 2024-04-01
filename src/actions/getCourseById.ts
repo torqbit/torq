@@ -193,3 +193,13 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
     throw new Error(error);
   }
 }
+
+export const getAllCoursesById = async (id: number) => {
+  const res = await prisma.course.findMany({
+    where: {
+      authorId: id,
+    },
+  });
+
+  return JSON.stringify(res);
+};

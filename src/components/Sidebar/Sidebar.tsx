@@ -110,7 +110,7 @@ const Sidebar: FC = () => {
       icon: SvgIcons.dashboard,
     },
     {
-      label: <Link href="courses">Courses</Link>,
+      label: <Link href="/courses">Courses</Link>,
       key: "courses",
       icon: SvgIcons.courses,
     },
