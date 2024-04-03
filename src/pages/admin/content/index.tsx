@@ -140,10 +140,13 @@ const Content: FC = () => {
   };
 
   const handleOk = () => {
+    console.log("create draft course clicked");
     setIsModalOpen(false);
+
     ProgramService.createDraftCourses(
       undefined,
       (result) => {
+        console.log(result);
         router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
       },
       (error) => {
@@ -163,17 +166,21 @@ const Content: FC = () => {
         (result) => {
           if (result.getCourse) {
             modal.confirm({
-              title: "Would you like to use?",
+              title: "Choose from the below options?",
               content: (
                 <>
-                  <Space>
-                    <Button onClick={() => previousDraft(result.getCourse.courseId)}>Previous draft course</Button>
-                    or
-                    <Button onClick={handleOk}>Create a new course</Button>
-                  </Space>
+                  <p>You currently have unsaved changes that you had made while creating the course.</p>
                 </>
               ),
-              footer: null,
+              footer: (
+                <Space>
+                  <Button type="primary" onClick={() => previousDraft(result.getCourse.courseId)}>
+                    Previous draft course
+                  </Button>
+                  or
+                  <Button onClick={handleOk}>Create a new course</Button>
+                </Space>
+              ),
             });
           } else {
             handleOk();

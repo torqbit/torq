@@ -270,6 +270,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
+    console.log("sending the draft course request");
     fetch(`/api/v1/course/draftCourse`, {
       method: "POST",
       headers: {
@@ -279,14 +280,16 @@ class ProgramService {
       body: JSON.stringify({
         courseId: courseId,
       }),
-    }).then((result) => {
+    }).then((result: any) => {
+      console.log(result);
       if (result.status == 400) {
-        result.json().then((r) => {
+        result.json().then((r: any) => {
           const failedResponse = r as FailedApiResponse;
           onFailure(failedResponse.error);
         });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
+      } else if (result.status == 201) {
+        result.json().then((r: any) => {
+          console.log(r);
           const apiResponse = r as ApiResponse;
           onSuccess(apiResponse);
         });

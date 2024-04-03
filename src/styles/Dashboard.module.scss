@@ -144,6 +144,13 @@
           gap: 10px;
         }
       }
+      .upload__thumbnail {
+        & > div {
+          height: 150px;
+          width: 150px;
+          position: relative;
+        }
+      }
       .course_info {
         padding: 10px 15px;
         background-color: #fff;
@@ -170,10 +177,25 @@
         }
         .camera_btn_img,
         .camera_btn {
-          position: relative;
-          z-index: 100;
-          right: 120px;
-          color: #fff;
+          background-color: #000;
+          opacity: 0.4;
+          border-radius: 4px;
+
+          &:hover {
+            opacity: 1;
+          }
+
+          & > span {
+            position: absolute;
+            top: 60px;
+            right: 60px;
+          }
+
+          & > svg {
+            position: absolute;
+            top: 60px;
+            right: 60px;
+          }
         }
         .camera_btn_img {
           right: 110px;

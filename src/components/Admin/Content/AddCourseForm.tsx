@@ -461,18 +461,7 @@ const AddCourseForm: FC = () => {
 
       if (res.success) {
         let course = {
-          name: undefined,
-          duration: undefined,
-          state: "DRAFT",
-          skills: [],
-          description: undefined,
-          thumbnail: res.fileName,
-          thumbnailId: undefined,
-          videoUrl: undefined,
-          videoId: undefined,
-          programId: 0,
-          authorId: 0,
-          sequenceId: undefined,
+          thumbnail: res.fileCDNPath,
           courseId: Number(router.query.id),
         };
         ProgramService.updateCourse(
@@ -480,7 +469,7 @@ const AddCourseForm: FC = () => {
           (result) => {
             setUploadUrl({
               ...uploadUrl,
-              thumbnailImg: res.fileName,
+              thumbnailImg: res.fileCDNPath,
             });
 
             setRefresh(!refresh);
@@ -489,7 +478,6 @@ const AddCourseForm: FC = () => {
           },
           (error) => {
             setLoading(false);
-
             message.error(error);
           }
         );
@@ -516,7 +504,7 @@ const AddCourseForm: FC = () => {
       const res = await postRes.json();
 
       if (res.success) {
-        setUploadResUrl({ fileName: res.fileName as string });
+        setUploadResUrl({ fileName: res.fileCDNPath as string });
       }
     }
   };

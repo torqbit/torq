@@ -1,10 +1,10 @@
-import { VideoAPIResponse } from "@/types/courses/Course";
+import { FileUploadResponse, VideoAPIResponse } from "@/types/courses/Course";
 import { BunnyConfig, BunnyMediaProvider, GetVideo } from "./BunnyMediaProvider";
 
 export interface ContentServiceProvider {
   uploadVideo(title: string, file: Buffer, courseId: number, chapterId: number): Promise<VideoAPIResponse>;
 
-  uploadFile(name: string, file: Buffer, courseId: number, chapterId?: number): Promise<void>;
+  uploadFile(name: string, file: Buffer, courseId: number, chapterId?: number): Promise<FileUploadResponse>;
 }
 
 export class ContentManagementService {
@@ -22,5 +22,9 @@ export class ContentManagementService {
 
   uploadVideo = (title: string, file: Buffer, courseId: number, chapterId: number, csp: ContentServiceProvider) => {
     return csp.uploadVideo(title, file, courseId, chapterId);
+  };
+
+  uploadFile = (fileName: string, file: Buffer, courseId: number, chapterId: number, csp: ContentServiceProvider) => {
+    return csp.uploadFile(fileName, file, courseId, chapterId);
   };
 }

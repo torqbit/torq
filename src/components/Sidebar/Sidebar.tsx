@@ -33,55 +33,8 @@ const Sidebar: FC = () => {
   };
   const [modal, contextWrapper] = Modal.useModal();
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-    ProgramService.createDraftCourses(
-      undefined,
-      (result) => {
-        router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-  const previousDraft = (id: number) => {
-    router.push(`/admin/content/course/${id}/edit`);
-
-    setIsModalOpen(false);
-  };
   const handleCancel = () => {
     setIsModalOpen(false);
-  };
-  const onCreateDraftCourse = () => {
-    showModal();
-
-    if (router.query.id) {
-      router.push(`/admin/content/course/${router.query.id}/edit`);
-    } else {
-      ProgramService.getLatesDraftCourse(
-        (result) => {
-          if (result.getCourse) {
-            modal.confirm({
-              title: "would you like to use?",
-              content: (
-                <>
-                  <Space>
-                    <Button onClick={() => previousDraft(result.getCourse.courseId)}>previous draft course</Button>
-                    or
-                    <Button onClick={handleOk}>Create a new course</Button>
-                  </Space>
-                </>
-              ),
-              footer: null,
-            });
-          } else {
-            handleOk();
-          }
-        },
-        (error) => {}
-      );
-    }
   };
 
   const getNewNotification = async (userId: number) => {

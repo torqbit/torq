@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await req.body;
     const { id } = body;
 
-    // CHECK IS COURSE EXIST WITH THIS NAME
+    // CHECK IF COURSE EXIST WITH THIS NAME
     if (id) {
       const isCourseExist = await prisma.course.findUnique({
         where: {
@@ -40,44 +40,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
-    let courseData = {
-      name: "",
-      description: "",
-      durationInMonths: 0,
-      thumbnail: "",
-      state: "DRAFT",
-      authorId: authorId,
-      skills: [],
-      about: "",
-      sequenceId: 0,
-      icon: "",
-    };
-
-    const [updateCourse, draftCourse] = await prisma.$transaction([
-      prisma.$executeRaw`UPDATE Course SET sequenceId = sequenceId + 1  WHERE sequenceId >= ${courseData.sequenceId};`,
-      prisma.course.create({
-        data: {
-          name: "",
-          description: "",
-          durationInMonths: 0,
-          thumbnail: "",
-          state: "DRAFT",
-          authorId: authorId,
-          skills: [],
-          about: "",
-          sequenceId: 0,
-          icon: "",
-        },
-      }),
-    ]);
-
-    return res.status(200).json({
+    let response = await prisma.course.create({
+      data: {
+        name: "Untitled",
+        description: "Description about the Untitled Course",
+        durationInMonths: 1,
+        thumbnail: "",
+        state: "DRAFT",
+        authorId: authorId,
+        skills: [],
+        about: "",
+        sequenceId: 0,
+        icon: "",
+      },
+    });
+    return res.status(201).json({
       success: true,
-      message: "Draft course added ",
-      getCourse: draftCourse,
+      message: "Draft course created",
+      getCourse: response,
     });
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

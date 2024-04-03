@@ -443,8 +443,8 @@ input {
   height: 120px !important;
 }
 
-.course_thumbnail_uploader .ant-upload {
-  float: right;
-  height: 160px !important;
-  width: 190px !important;
+.course_thumbnail_uploader > div.ant-upload {
+  display: block;
+  height: 150px;
+  width: 150px;
 }

@@ -19,6 +19,13 @@ export interface VideoAPIResponse {
   videoUrl: string;
 }
 
+export interface FileUploadResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  fileCDNPath: string;
+}
+
 export interface UploadedResourceDetail {
   fileName?: string;
   videoUrl?: string;

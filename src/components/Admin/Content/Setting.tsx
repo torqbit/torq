@@ -14,7 +14,7 @@ import { ChapterDetail } from "@/types/courses/Course";
 
 const { TextArea } = Input;
 
-const Setting: FC<{
+const CourseSetting: FC<{
   onDiscard: () => void;
   form: FormInstance;
   onSubmit: () => void;
@@ -169,10 +169,10 @@ const Setting: FC<{
               <Upload
                 name="avatar"
                 listType="picture-card"
-                className={"course_thumbnail_uploader"}
-                disabled={!form.getFieldsValue().course_name ? true : false}
+                className={styles.upload__thumbnail}
+                disabled={loading}
                 showUploadList={false}
-                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                style={{ width: 118, height: 118 }}
                 beforeUpload={(file) => {
                   // beforeUpload(file, "img");
                   if (uploadUrl.thumbnailImg) {
@@ -184,21 +184,16 @@ const Setting: FC<{
               >
                 {uploadUrl?.thumbnailImg ? (
                   <>
-                    <img
-                      height={"100%"}
-                      width={"100%"}
-                      style={{ marginLeft: 20, objectFit: "cover" }}
-                      src={`https://torqbit-dev.b-cdn.net/static/course-banners/${uploadUrl.thumbnailImg}`}
-                    />
                     {uploadUrl?.thumbnailImg && (
                       <div className={styles.camera_btn_img}>
-                        {" "}
+                        <img style={{ objectFit: "cover", width: 148, height: 148 }} src={uploadUrl.thumbnailImg} />
+
                         {loading && uploadUrl.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.camera}
                       </div>
                     )}
                   </>
                 ) : (
-                  <button style={{ border: 0, background: "none" }} type="button">
+                  <button style={{ border: 0, background: "none", width: 150, height: 150 }} type="button">
                     {loading && uploadUrl.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                     <div style={{ marginTop: 8 }}>Upload Image</div>
                   </button>
@@ -260,4 +255,4 @@ const Setting: FC<{
   );
 };
 
-export default Setting;
+export default CourseSetting;
