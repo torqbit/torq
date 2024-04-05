@@ -58,11 +58,11 @@ const Config: FC = () => {
       (result) => {
         console.log(result.credentials);
         if (result.credentials.providerDetail) {
-          form.setFieldValue("accessKey", result.credentials.providerDetail[0].accessKey);
-          form.setFieldValue("libraryId", result.credentials.providerDetail[0].libraryId);
-          form.setFieldValue("storageZone", result.credentials.providerDetail[0].storageZone);
-          form.setFieldValue("mediaPath", result.credentials.providerDetail[0].mediaPath);
-          form.setFieldValue("accessPassword", result.credentials.providerDetail[0].accessPassword);
+          form.setFieldValue("accessKey", result.credentials.providerDetail.accessKey);
+          form.setFieldValue("libraryId", result.credentials.providerDetail.libraryId);
+          form.setFieldValue("storageZone", result.credentials.providerDetail.storageZone);
+          form.setFieldValue("mediaPath", result.credentials.providerDetail.mediaPath);
+          form.setFieldValue("accessPassword", result.credentials.providerDetail.accessPassword);
         }
       },
       (eroor) => {}

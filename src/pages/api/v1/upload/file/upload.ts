@@ -53,10 +53,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             });
         });
 
-      console.log(path, "path of file");
-      if (path! == "") {
+      if (path != "") {
         console.log(`deleting the file: ${path}`);
         fs.unlinkSync(path);
+      } else {
+        console.log(path, "path of file");
       }
       return res.status(200).json({ ...fileUploadResponse });
     }
