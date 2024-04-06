@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
 
 import { Button, Form, FormInstance, Input, Popconfirm, Radio, Space, Upload, UploadProps, message } from "antd";
@@ -10,7 +10,7 @@ import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
 import ProgramService from "@/services/ProgramService";
 import { postWithFile } from "@/services/request";
 import { RcFile } from "antd/es/upload";
-import { ChapterDetail } from "@/types/courses/Course";
+import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
 
 const { TextArea } = Input;
 
@@ -19,21 +19,15 @@ const CourseSetting: FC<{
   form: FormInstance;
   onSubmit: () => void;
   onDeleteVideo: (id: string) => void;
-  setLoading: (value: boolean) => void;
   uploadFile: (file: any, title: string) => void;
   onRefresh: () => void;
   onUploadTrailer: (file: RcFile, title: string) => void;
-
-  loading: boolean;
+  courseBannerUploading: boolean;
+  courseTrailerUploading: boolean;
   onSetCourseData: (key: string, value: string) => void;
   courseData: { name: string; description: string; duration: number; chapters: ChapterDetail[] };
-  uploadUrl: {
-    uploadType?: string;
-    thumbnailImg?: string;
-    thumbnailId?: string;
-    videoUrl?: string;
-    videoId?: string;
-  };
+  courseBanner?: string;
+  uploadVideo?: VideoInfo;
   refresh: boolean;
   onDeleteThumbnail: (name: string, dir: string) => void;
 }> = ({
@@ -41,13 +35,14 @@ const CourseSetting: FC<{
   form,
   courseData,
   onUploadTrailer,
-  setLoading,
   uploadFile,
   onDiscard,
   onDeleteVideo,
-  loading,
-  uploadUrl,
+  courseBannerUploading,
+  courseTrailerUploading,
+  uploadVideo,
   onSetCourseData,
+  courseBanner,
   onDeleteThumbnail,
   refresh,
   onRefresh,
@@ -56,13 +51,16 @@ const CourseSetting: FC<{
   const [preview, setPreview] = useState<boolean>(false);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
-      setLoading(true);
+      console.log("uploading");
       return;
     }
     if (info.file.status === "done") {
       // setLoading(false);
     }
   };
+  useEffect(() => {
+    console.log(courseTrailerUploading, "course trailer uploading");
+  }, [courseTrailerUploading]);
 
   return (
     <section className={styles.add_course_setting}>
@@ -116,7 +114,6 @@ const CourseSetting: FC<{
           <div className={styles.row_1}>
             <div>
               <h4>Course trailer video</h4>
-              <p>Displayed on the course details page</p>
               <p>Upload a video of upto 30 sec duration in 16:9 aspect ratio</p>
             </div>
             <div className={styles.video_container}>
@@ -127,32 +124,32 @@ const CourseSetting: FC<{
                 disabled={!form.getFieldsValue().course_name ? true : false}
                 showUploadList={false}
                 beforeUpload={(file) => {
-                  if (uploadUrl.videoUrl) {
-                    onDeleteVideo(uploadUrl.videoUrl);
+                  if (uploadVideo && uploadVideo.videoUrl) {
+                    onDeleteVideo(uploadVideo.videoUrl);
                   }
                   onUploadTrailer(file, `${form.getFieldsValue().course_name}_trailer`);
                 }}
                 onChange={handleChange}
               >
-                {uploadUrl?.videoUrl ? (
+                {uploadVideo?.videoUrl ? (
                   <>
                     <img
-                      src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/thumbnail.jpg`}
+                      src={uploadVideo?.thumbnail}
                       alt=""
-                      height={"100%"}
+                      height={180}
                       className={styles.video_container}
-                      width={"100%"}
+                      width={320}
                     />
 
-                    {uploadUrl?.videoUrl && (
+                    {uploadVideo?.videoUrl && (
                       <div style={{ width: 230 }} className={styles.camera_btn}>
-                        {loading && uploadUrl.uploadType === "video" ? <LoadingOutlined /> : SvgIcons.video}
+                        {courseTrailerUploading ? <LoadingOutlined /> : SvgIcons.video}
                       </div>
                     )}
                   </>
                 ) : (
                   <button style={{ border: 0, background: "none" }} type="button">
-                    {loading && uploadUrl.uploadType === "video" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                    {courseTrailerUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                     <div style={{ marginTop: 8 }}>Upload Video</div>
                   </button>
                 )}
@@ -170,31 +167,30 @@ const CourseSetting: FC<{
                 name="avatar"
                 listType="picture-card"
                 className={styles.upload__thumbnail}
-                disabled={loading}
+                disabled={courseTrailerUploading}
                 showUploadList={false}
                 style={{ width: 118, height: 118 }}
                 beforeUpload={(file) => {
-                  // beforeUpload(file, "img");
-                  if (uploadUrl.thumbnailImg) {
-                    onDeleteThumbnail(uploadUrl.thumbnailImg, "course-banners");
+                  if (courseBanner) {
+                    onDeleteThumbnail(courseBanner, "course-banners");
                   }
                   uploadFile(file, `${form.getFieldsValue().course_name}_banner`);
                 }}
                 onChange={handleChange}
               >
-                {uploadUrl?.thumbnailImg ? (
+                {courseBanner ? (
                   <>
-                    {uploadUrl?.thumbnailImg && (
+                    {courseBanner && (
                       <div className={styles.camera_btn_img}>
-                        <img style={{ objectFit: "cover", width: 148, height: 148 }} src={uploadUrl.thumbnailImg} />
+                        <img style={{ objectFit: "cover", width: 148, height: 148 }} src={courseBanner} />
 
-                        {loading && uploadUrl.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.camera}
+                        {courseBannerUploading && courseBanner ? <LoadingOutlined /> : SvgIcons.camera}
                       </div>
                     )}
                   </>
                 ) : (
                   <button style={{ border: 0, background: "none", width: 150, height: 150 }} type="button">
-                    {loading && uploadUrl.uploadType === "img" ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                    {courseBannerUploading && courseBanner ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                     <div style={{ marginTop: 8 }}>Upload Image</div>
                   </button>
                 )}

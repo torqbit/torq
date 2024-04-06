@@ -109,7 +109,7 @@ model Course {
   name             String
   about            String     @db.Text()
   description      String     @db.Text()
-  thumbnailId      String?
+  videoThumbnail   String?    @db.VarChar(200)
   videoUrl         String?
   videoId          String?
   thumbnail        String?

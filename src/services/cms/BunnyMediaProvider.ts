@@ -7,8 +7,10 @@ export type GetVideo = {
 export type BunnyConfig = {
   accessKey: string;
   libraryId: string;
-  accessPassword: string;
+  streamCDNHostname: string;
+  storagePassword: string;
   storageZone: string;
+  connectedCDNHostname: string;
   mediaPath: string;
 };
 
@@ -26,18 +28,28 @@ type BunnyVideoAPIResponse = {
 export class BunnyMediaProvider implements ContentServiceProvider {
   accessKey: string;
   libraryId: string;
-  accessPassword: string;
+  streamCDNHostname: string;
+  storagePassword: string;
   storageZone: string;
   mediaPath: string;
-  videoCDNHostname: string = "vz-bb827f5e-131.b-cdn.net";
-  fileCDN: string = "torqbit-dev.b-cdn.net";
+  connectedCDNHostname: string;
 
-  constructor(accessKey: string, libraryId: string, accessPassword: string, storageZone: string, mediaPath: string) {
-    (this.accessKey = accessKey),
-      (this.libraryId = libraryId),
-      (this.storageZone = storageZone),
-      (this.accessPassword = accessPassword),
-      (this.mediaPath = mediaPath);
+  constructor(
+    accessKey: string,
+    libraryId: string,
+    streamCDNHostname: string,
+    storagePassword: string,
+    connectedCDNHostname: string,
+    storageZone: string,
+    mediaPath: string
+  ) {
+    this.accessKey = accessKey;
+    this.libraryId = libraryId;
+    this.streamCDNHostname = streamCDNHostname;
+    this.storageZone = storageZone;
+    this.storagePassword = storagePassword;
+    this.connectedCDNHostname = connectedCDNHostname;
+    this.mediaPath = mediaPath;
   }
 
   createVideoUrl(key: string) {
@@ -71,6 +83,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
   getUploadOption(file: Buffer, key: string) {
+    console.log({ headers: { accept: "application/json", AccessKey: key } });
     return {
       method: "PUT",
       headers: { accept: "application/json", AccessKey: key },
@@ -97,12 +110,16 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     const uploadedData = await res_1.json();
     const res_2 = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
     const videoData = await res_2.json();
-    console.log(videoData);
     return {
-      videoId: videoData.guid as string,
-      thumbnail: `https://${this.videoCDNHostname}/${videoData.guid}/${videoData.thumbnailFileName}`,
-      previewUrl: `https://${this.videoCDNHostname}/${videoData.guid}/preview.webp`,
-      videoUrl: `https://iframe.mediadelivery.net/play/${this.libraryId}/${videoData.guid}`,
+      statusCode: res_2.status,
+      success: res_2.status == 200,
+      message: res_2.statusText,
+      video: {
+        videoId: videoData.guid as string,
+        thumbnail: `https://${this.streamCDNHostname}/${videoData.guid}/${videoData.thumbnailFileName}`,
+        previewUrl: `https://${this.streamCDNHostname}/${videoData.guid}/preview.webp`,
+        videoUrl: `https://iframe.mediadelivery.net/play/${this.libraryId}/${videoData.guid}`,
+      },
     };
   }
 
@@ -112,7 +129,9 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     courseId: number,
     chapterId?: number | undefined
   ): Promise<FileUploadResponse> {
-    return fetch(this.getUploadFileUrl(name), this.getUploadOption(file, this.accessPassword))
+    let uploadFileUrl = this.getUploadFileUrl(name);
+    console.log(uploadFileUrl, "upload file url");
+    return fetch(uploadFileUrl, this.getUploadOption(file, this.storagePassword))
       .then((res) => {
         return res.json();
       })
@@ -122,7 +141,8 @@ export class BunnyMediaProvider implements ContentServiceProvider {
           statusCode: uploadRes.HttpCode,
           message: uploadRes.Message,
           success: uploadRes.HttpCode == 201,
-          fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.fileCDN}/${this.mediaPath}/${name}` : "",
+          fileCDNPath:
+            uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${this.mediaPath}/${name}` : "",
         };
       });
   }

@@ -59,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               return cms.uploadVideo(fullName, fileBuffer, 1, 1, serviceProvider);
             });
         });
-      res.status(200).json({ success: true, message: "uploaded successfully", videoUploadResponse });
+      res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
       if (path! == "undefined") {
         fs.unlinkSync(path);
       }

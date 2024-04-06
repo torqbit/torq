@@ -84,9 +84,10 @@ input {
 * {
   box-sizing: border-box;
 }
-
-.content_tab .ant-tabs-tab-btn {
+.ant-tabs-tab-btn {
   text-shadow: none !important;
+}
+.content_tab .ant-tabs-tab-btn {
   display: flex;
   align-items: flex-start;
 }
@@ -432,9 +433,8 @@ input {
 /* **************** Add Course ******************** */
 .wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select,
 .course_video_uploader .ant-upload {
-  width: 225px !important;
-  float: right;
-  height: 120px !important;
+  width: 320px !important;
+  height: 180px !important;
 }
 .wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select,
 .resource_video_uploader .ant-upload {

@@ -13,22 +13,30 @@ import { useRouter } from "next/router";
 import Preview from "./Preview";
 
 import ProgramService from "@/services/ProgramService";
-import { ChapterDetail, UploadedResourceDetail } from "@/types/courses/Course";
+import {
+  ChapterDetail,
+  CourseAPIResponse,
+  UploadedResourceDetail,
+  VideoAPIResponse,
+  VideoInfo,
+} from "@/types/courses/Course";
 import AddCourseChapter from "@/components/programs/AddCourseChapter";
 import { Resource, ResourceContentType } from "@prisma/client";
-import { IAddResource, resData } from "@/lib/types/program";
+import { IAddResource, ResourceDetails } from "@/lib/types/program";
 import AddResource from "@/components/programs/AddResource";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
+import upload from "@/pages/api/program/upload";
 
 const AddCourseForm: FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
+  const [courseTrailerUploading, setCourseTrailerUploading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
   const [isEdit, setEdit] = useState<boolean>(false);
   const [currResId, setResId] = useState<number>();
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [chapterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
@@ -58,13 +66,8 @@ const AddCourseForm: FC = () => {
 
   const router = useRouter();
 
-  const [uploadUrl, setUploadUrl] = useState<{
-    uploadType?: string;
-    thumbnailImg?: string;
-    thumbnailId?: string;
-    videoUrl?: string;
-    videoId?: string;
-  }>();
+  const [uploadVideo, setUploadVideo] = useState<VideoInfo>();
+  const [courseThumbnail, setCourseThumbnail] = useState<string>();
 
   const [courseData, setCourseData] = useState<{
     name: string;
@@ -79,15 +82,14 @@ const AddCourseForm: FC = () => {
   });
 
   const [uploadResourceUrl, setUploadResUrl] = useState<UploadedResourceDetail>();
+
   const onDiscard = () => {
     ProgramService.getCourses(
       Number(router.query.id),
-      (result) => {
-        onDeleteVideo(result.getCourse.videoUrl);
-
+      (result: CourseAPIResponse) => {
+        onDeleteVideo(result.courseDetails.videoUrl);
         ProgramService.deleteCourse(
           Number(router.query.id),
-
           (result) => {
             message.success(result.message);
           },
@@ -101,17 +103,17 @@ const AddCourseForm: FC = () => {
   const onSubmit = () => {
     ProgramService.getCourses(
       Number(router.query.id),
-      (result) => {
+      (result: CourseAPIResponse) => {
         let course = {
           name: courseData?.name || form.getFieldsValue().course_name,
           duration: courseData?.duration,
           state: "ACTIVE",
           skills: [],
           description: courseData?.description || form.getFieldsValue().course_description,
-          thumbnail: result.getCourse.thumbnail || "",
-          thumbnailId: result.getCourse.thumbnailId || "",
-          videoUrl: result.getCourse.videoUrl || "",
-          videoId: result.getCourse.videoId || "",
+          thumbnail: result.courseDetails.thumbnail || "",
+          videoThumbnail: result.courseDetails.videoThumbnail || "",
+          videoUrl: result.courseDetails.videoUrl || "",
+          videoId: result.courseDetails.videoId || "",
           programId: 0,
           authorId: 0,
           sequenceId: undefined,
@@ -268,24 +270,9 @@ const AddCourseForm: FC = () => {
 
   const onCreateRes = (chapterId: number) => {
     setLoading(true);
-    let resData = {
-      name: formData.getFieldsValue().name,
-
-      description: formData.getFieldsValue().description,
-      chapterId: chapterId,
-      // sequenceId: Number(formData.getFieldsValue().index),
-      sequenceId: Number(currentSeqIds[0] + 1),
-
-      assignmentLang: formData.getFieldsValue().assignmentLang || [],
-      videoDuration: formData.getFieldsValue().duration || 0,
-      daysToSubmit: formData.getFieldsValue().submitDay || 0,
-      thumbnail: uploadResourceUrl?.videoUrl,
-      videoId: Number(uploadResourceUrl?.videoId),
-      contentType: addRes.content,
-      content: addRes.assignmentFileName || "",
-    } as resData;
+    let rs = formData.getFieldsValue() as ResourceDetails;
     ProgramService.createResource(
-      resData,
+      rs,
       (result) => {
         message.success(result.message);
 
@@ -324,7 +311,7 @@ const AddCourseForm: FC = () => {
       contentType: addRes.content,
       content: uploadResourceUrl?.fileName || "",
       videoId: Number(uploadResourceUrl?.videoId),
-    } as resData;
+    } as ResourceDetails;
 
     ProgramService.updateResource(
       resData,
@@ -333,7 +320,6 @@ const AddCourseForm: FC = () => {
         onFindResource(addRes.chapterId, "Video");
         formData.resetFields();
         setLoading(false);
-        // router.query.resId && router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
         setAddRes({
           content: "Video",
           chapterId: 0,
@@ -364,14 +350,14 @@ const AddCourseForm: FC = () => {
   };
 
   const onUploadVideo = async (file: RcFile, title: string) => {
-    setLoading(true);
+    setCourseTrailerUploading(true);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("title", title);
 
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
     if (!postRes.ok) {
-      setLoading(false);
+      setCourseTrailerUploading(false);
       throw new Error("Failed to upload file");
     }
     const res = await postRes.json();
@@ -382,13 +368,12 @@ const AddCourseForm: FC = () => {
         videoUrl: res.videoDetail.videoUrl,
         thumbnail: res.videoDetail.thumbnail,
       });
-      setLoading(false);
+      setCourseTrailerUploading(false);
     }
   };
 
   const onUploadTrailer = async (file: RcFile, title: string) => {
-    setUploadUrl({ ...uploadUrl, uploadType: "video" });
-    setLoading(true);
+    setCourseTrailerUploading(true);
     const name = title.replace(/\s+/g, "-");
     const formData = new FormData();
     formData.append("file", file);
@@ -399,35 +384,31 @@ const AddCourseForm: FC = () => {
       setLoading(false);
       throw new Error("Failed to upload file");
     }
-    const res = await postRes.json();
+    const res = (await postRes.json()) as VideoAPIResponse;
 
     if (res.success) {
-      let course = {
-        name: undefined,
-        duration: undefined,
-        state: "DRAFT",
-        skills: [],
-        description: undefined,
-        thumbnail: undefined,
-        thumbnailId: undefined,
-        videoUrl: res.videoDetail.id,
-        videoId: `${res.videoDetail.videoId}`,
-        programId: 0,
-        authorId: 0,
-        sequenceId: undefined,
+      let courseVideo = {
+        videoThumbnail: res.video.thumbnail,
+        videoUrl: res.video.videoUrl,
+        videoId: `${res.video.videoId}`,
         courseId: Number(router.query.id),
       };
       ProgramService.updateCourse(
-        course,
+        courseVideo,
         (result) => {
-          setUploadUrl({ ...uploadUrl, videoId: res.videoDetail.videoId, videoUrl: res.videoDetail.id });
+          setUploadVideo({
+            ...uploadVideo,
+            videoId: res.video.videoId,
+            videoUrl: res.video.videoUrl,
+            thumbnail: res.video.thumbnail,
+            previewUrl: res.video.previewUrl,
+          });
           setRefresh(!refresh);
-          message.success("file uploaded");
-          setLoading(false);
+          message.success("Course trailer video has been uploaded");
+          setCourseTrailerUploading(false);
         },
         (error) => {
-          setLoading(false);
-
+          setCourseTrailerUploading(false);
           message.error(error);
         }
       );
@@ -442,8 +423,6 @@ const AddCourseForm: FC = () => {
     );
   };
   const uploadFile = async (file: any, title: string) => {
-    setUploadUrl({ ...uploadUrl, uploadType: "img" });
-
     if (file) {
       setLoading(true);
       const name = title.replace(/\s+/g, "-");
@@ -467,17 +446,13 @@ const AddCourseForm: FC = () => {
         ProgramService.updateCourse(
           course,
           (result) => {
-            setUploadUrl({
-              ...uploadUrl,
-              thumbnailImg: res.fileCDNPath,
-            });
-
+            setCourseThumbnail(res.fileCDNPath);
             setRefresh(!refresh);
             message.success("file uploaded");
-            setLoading(false);
+            setCourseBannerUploading(false);
           },
           (error) => {
-            setLoading(false);
+            setCourseBannerUploading(false);
             message.error(error);
           }
         );
@@ -486,8 +461,6 @@ const AddCourseForm: FC = () => {
   };
 
   const uploadAssignment = async (file: any, title: string) => {
-    setUploadUrl({ ...uploadUrl, uploadType: "" });
-
     if (file) {
       setLoading(true);
       const name = title.replace(/\s+/g, "-");
@@ -552,22 +525,15 @@ const AddCourseForm: FC = () => {
           onSubmit={onSubmit}
           onDiscard={onDiscard}
           courseData={courseData}
-          setLoading={setLoading}
           onRefresh={onRefresh}
           onUploadTrailer={onUploadTrailer}
           uploadFile={uploadFile}
           onDeleteThumbnail={onDeleteThumbnail}
           onDeleteVideo={onDeleteVideo}
-          uploadUrl={
-            uploadUrl as {
-              uploadType?: string;
-              thumbnailImg?: string;
-              thumbnailId?: string;
-              videoUrl?: string;
-              videoId?: string;
-            }
-          }
-          loading={loading}
+          uploadVideo={uploadVideo}
+          courseBannerUploading={courseBannerUploading}
+          courseTrailerUploading={courseTrailerUploading}
+          courseBanner={courseThumbnail}
           refresh={refresh}
         />
       ),
@@ -596,44 +562,31 @@ const AddCourseForm: FC = () => {
     {
       key: "3",
       label: "Preview",
-      children: (
-        <Preview
-          uploadUrl={
-            uploadUrl as {
-              uploadType?: string;
-              thumbnailImg?: string;
-              thumbnailId?: string;
-              videoUrl?: string;
-              videoId?: string;
-            }
-          }
-          chapter={courseData.chapters}
-        />
-      ),
+      children: <Preview uploadVideo={uploadVideo} chapter={courseData.chapters} />,
     },
   ];
 
   useEffect(() => {
-    console.log(`query id : ${router.query.id}`);
     router.query.id &&
       ProgramService.getCourses(
         Number(router.query.id),
         (result) => {
-          form.setFieldValue("course_name", result.getCourse.name);
-          form.setFieldValue("course_description", result.getCourse.description);
-          form.setFieldValue("course_duration", result.getCourse.durationInMonths);
+          form.setFieldValue("course_name", result.courseDetails.name);
+          form.setFieldValue("course_description", result.courseDetails.description);
+          form.setFieldValue("course_duration", result.courseDetails.durationInMonths);
 
           setCourseData({
             ...courseData,
-            duration: result.getCourse.durationInMonths,
-            chapters: result.getCourse.chapters,
+            duration: result.courseDetails.durationInMonths,
+            chapters: result.courseDetails.chapters,
           });
-          setUploadUrl({
-            ...uploadUrl,
-            thumbnailId: result.getCourse.thumbnailId,
-            thumbnailImg: result.getCourse.thumbnail,
-            videoId: result.getCourse.videoId,
-            videoUrl: result.getCourse.videoUrl,
+          setCourseThumbnail(result.courseDetails.thumbnail);
+          setUploadVideo({
+            ...uploadVideo,
+            previewUrl: "",
+            thumbnail: result.courseDetails.videoThumbnail,
+            videoId: result.courseDetails.videoId,
+            videoUrl: result.courseDetails.videoUrl,
           });
         },
         (error) => {}

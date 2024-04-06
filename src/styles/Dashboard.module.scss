@@ -169,7 +169,9 @@
         padding: 10px 20px;
         margin-top: 20px;
         .video_container {
-          margin-left: 27px;
+          height: 178px;
+          width: 318px;
+          border-radius: 4px;
         }
         h3 {
           margin: 0;
@@ -204,6 +206,7 @@
         .row_2 {
           display: flex;
           justify-content: space-between;
+          flex-direction: column;
           div:first-child {
             h4 {
               margin-bottom: 10px;
@@ -214,7 +217,9 @@
             flex-basis: 35%;
             p {
               margin-bottom: 10px;
-              color: #666;
+              font-size: 13px;
+              color: var(--font-secondary);
+              margin: 4px;
             }
           }
           div:last-child {

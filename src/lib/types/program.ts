@@ -46,7 +46,7 @@ export interface IAddResource {
   chapterId: number;
 }
 
-export interface resData {
+export interface ResourceDetails {
   name: string;
   resourceId: number | undefined;
   description: string;
@@ -55,7 +55,7 @@ export interface resData {
   assignmentLang: string[];
   videoDuration: number;
   daysToSubmit: number;
-  thumbnail: string;
+  thumbnail?: string;
   contentType: string;
   content: string;
   videoId: number;

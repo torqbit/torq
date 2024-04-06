@@ -12,11 +12,47 @@ export interface ChapterDetail {
   resource: [Resource];
 }
 
-export interface VideoAPIResponse {
+export interface CourseAPIResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  courseDetails: CourseInfo;
+}
+
+export interface CourseInfo {
+  about: string;
+  authorId: number;
+  sequenceId: number;
+  skills: string[];
+  videoThumbnail: string;
+  videoId: string;
+  thumbnail: string;
+  videoUrl: string;
+  chapters: ChapterDetail[];
+  courseId: number;
+  coursePrice: number;
+  courseType: string;
+  createdAt: string;
+  description: string;
+  durationInMonths: number;
+  name: string;
+  programId: number;
+  state: string;
+  tags: string[];
+}
+
+export interface VideoInfo {
   videoId: string;
   thumbnail: string;
   previewUrl: string;
   videoUrl: string;
+}
+
+export interface VideoAPIResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  video: VideoInfo;
 }
 
 export interface FileUploadResponse {

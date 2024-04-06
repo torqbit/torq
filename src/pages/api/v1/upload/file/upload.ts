@@ -59,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       } else {
         console.log(path, "path of file");
       }
-      return res.status(200).json({ ...fileUploadResponse });
+      return res.status(fileUploadResponse?.statusCode || 200).json({ ...fileUploadResponse });
     }
 
     if (!files) {

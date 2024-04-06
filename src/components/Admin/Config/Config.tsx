@@ -25,13 +25,11 @@ const Config: FC = () => {
   const [form] = Form.useForm();
   const onFinish = () => {
     setLoading(true);
-    console.log(form.getFieldsValue(), "sdf");
-    ProgramService.addCredentials(
+    ProgramService.addServiceProvider(
       "bunny",
       "media",
       form.getFieldsValue(),
       (result) => {
-        console.log(result, "cred");
         message.success(result.message);
 
         setLoading(false);

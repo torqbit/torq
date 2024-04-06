@@ -1,7 +1,7 @@
-import { ICourseDetial, IProgramDetail, resData } from "@/lib/types/program";
+import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 import { ICourseList } from "@/pages/courses";
-import { ChapterDetail } from "@/types/courses/Course";
+import { ChapterDetail, CourseAPIResponse } from "@/types/courses/Course";
 import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
@@ -25,33 +25,6 @@ export type ApiResponse = {
   resource: Resource;
   allResource: Resource[];
   getProgram: IProgramDetail;
-
-  allProgram: [
-    {
-      aboutProgram: string;
-      banner: string;
-      description: string;
-      durationInMonths: number;
-      id: number;
-      skills: string[];
-      state: string;
-      authorId: number;
-      course: [
-        {
-          description: string;
-          durationInMonths: number;
-          authorId: number;
-          id: number;
-          programId: number;
-          skills: string[];
-          title: string;
-          videoDuration: number;
-        }
-      ];
-      thumbnail: string;
-      title: string;
-    }
-  ];
   getCourse: {
     about: string;
     authorId: number;
@@ -330,8 +303,7 @@ class ProgramService {
 
   getCourses = (
     courseId: number,
-
-    onSuccess: (response: ApiResponse) => void,
+    onSuccess: (response: CourseAPIResponse) => void,
     onFailure: (message: string) => void
   ) => {
     fetch(`/api/v1/course/${courseId}`, {
@@ -348,7 +320,7 @@ class ProgramService {
         });
       } else if (result.status == 200) {
         result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
+          const apiResponse = r as CourseAPIResponse;
           onSuccess(apiResponse);
         });
       }
@@ -774,8 +746,7 @@ class ProgramService {
   };
 
   createResource = (
-    resData: resData,
-
+    resData: ResourceDetails,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -907,8 +878,7 @@ class ProgramService {
     });
   };
   updateResource = (
-    resData: resData,
-
+    resData: ResourceDetails,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -1012,7 +982,7 @@ class ProgramService {
       }
     });
   };
-  addCredentials = (
+  addServiceProvider = (
     name: string,
     serviceType: string,
     providerDetail: object,

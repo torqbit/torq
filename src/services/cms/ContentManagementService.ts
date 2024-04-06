@@ -13,7 +13,15 @@ export class ContentManagementService {
     switch (name) {
       case "bunny":
         let c = config as BunnyConfig;
-        return new BunnyMediaProvider(c.accessKey, c.libraryId, c.accessPassword, c.storageZone, c.mediaPath);
+        return new BunnyMediaProvider(
+          c.accessKey,
+          c.libraryId,
+          c.streamCDNHostname,
+          c.storagePassword,
+          c.connectedCDNHostname,
+          c.storageZone,
+          c.mediaPath
+        );
 
       default:
         throw new Error("something went wrong");
