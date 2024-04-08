@@ -60,7 +60,9 @@ const Config: FC = () => {
           form.setFieldValue("libraryId", result.credentials.providerDetail.libraryId);
           form.setFieldValue("storageZone", result.credentials.providerDetail.storageZone);
           form.setFieldValue("mediaPath", result.credentials.providerDetail.mediaPath);
-          form.setFieldValue("accessPassword", result.credentials.providerDetail.accessPassword);
+          form.setFieldValue("storagePassword", result.credentials.providerDetail.storagePassword);
+          form.setFieldValue("connectedCDNHostname", result.credentials.providerDetail.connectedCDNHostname);
+          form.setFieldValue("streamCDNHostname", result.credentials.providerDetail.streamCDNHostname);
         }
       },
       (eroor) => {}

@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { fields, files } = (await readFieldWithFile(req)) as any;
     if (files.file) {
-      let path: string;
+      let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             });
         });
       res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
-      if (path! == "undefined") {
+      if (videoUploadResponse && videoUploadResponse.statusCode == 201 && path != "undefined") {
         fs.unlinkSync(path);
       }
     }

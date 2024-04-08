@@ -72,12 +72,12 @@ const AddCourseForm: FC = () => {
   const [courseData, setCourseData] = useState<{
     name: string;
     description: string;
-    duration: number;
+    expiryInDays: number;
     chapters: ChapterDetail[];
   }>({
     name: "",
     description: "",
-    duration: 0,
+    expiryInDays: 365,
     chapters: [],
   });
 
@@ -93,10 +93,10 @@ const AddCourseForm: FC = () => {
           (result) => {
             message.success(result.message);
           },
-          (error) => { }
+          (error) => {}
         );
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -106,17 +106,13 @@ const AddCourseForm: FC = () => {
       (result: CourseAPIResponse) => {
         let course = {
           name: courseData?.name || form.getFieldsValue().course_name,
-          duration: courseData?.duration,
+          expiryInDays: Number(courseData?.expiryInDays),
           state: "ACTIVE",
-          skills: [],
           description: courseData?.description || form.getFieldsValue().course_description,
           thumbnail: result.courseDetails.thumbnail || "",
           videoThumbnail: result.courseDetails.videoThumbnail || "",
           videoUrl: result.courseDetails.videoUrl || "",
           videoId: result.courseDetails.videoId || "",
-          programId: 0,
-          authorId: 0,
-          sequenceId: undefined,
           courseId: Number(router.query.id),
         };
 
@@ -133,7 +129,7 @@ const AddCourseForm: FC = () => {
           }
         );
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -156,7 +152,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => { }
+      (error) => {}
     );
   };
   const deleteRes = (id: number) => {
@@ -172,10 +168,10 @@ const AddCourseForm: FC = () => {
             message.success(result.message);
             onRefresh();
           },
-          (error) => { }
+          (error) => {}
         );
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -188,7 +184,7 @@ const AddCourseForm: FC = () => {
 
         onRefresh();
       },
-      (error) => { }
+      (error) => {}
     );
   };
   const updateResState = (id: number, state: string) => {
@@ -199,7 +195,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => { }
+      (error) => {}
     );
   };
   const createChapter = async (courseId: number) => {
@@ -344,8 +340,8 @@ const AddCourseForm: FC = () => {
     ProgramService.deleteFile(
       name,
       dir,
-      (result) => { },
-      (error) => { }
+      (result) => {},
+      (error) => {}
     );
   };
 
@@ -418,8 +414,8 @@ const AddCourseForm: FC = () => {
   const onDeleteVideo = (id: string) => {
     ProgramService.deleteVideo(
       id,
-      (result) => { },
-      (error) => { }
+      (result) => {},
+      (error) => {}
     );
   };
   const uploadFile = async (file: any, title: string) => {
@@ -510,7 +506,7 @@ const AddCourseForm: FC = () => {
         });
         setResourceDrawer(true);
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -577,7 +573,7 @@ const AddCourseForm: FC = () => {
 
           setCourseData({
             ...courseData,
-            duration: result.courseDetails.expiryInDays,
+            expiryInDays: result.courseDetails.expiryInDays,
             chapters: result.courseDetails.chapters,
           });
           setCourseThumbnail(result.courseDetails.thumbnail);
@@ -589,7 +585,7 @@ const AddCourseForm: FC = () => {
             videoUrl: result.courseDetails.videoUrl,
           });
         },
-        (error) => { }
+        (error) => {}
       );
   }, [router.query.id, refresh]);
 

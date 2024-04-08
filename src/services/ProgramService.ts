@@ -549,6 +549,7 @@ class ProgramService {
       thumbnail?: string;
       thumbnailId?: string;
       videoUrl?: string;
+      expiryInDays?: number;
       videoId?: string;
       programId?: number;
       authorId?: number | undefined;

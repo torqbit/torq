@@ -144,6 +144,15 @@
           gap: 10px;
         }
       }
+
+      .upload__trailer {
+        & > div {
+          width: 320px;
+          height: 180px;
+          position: relative;
+        }
+      }
+
       .upload__thumbnail {
         & > div {
           height: 150px;
@@ -179,11 +188,22 @@
         }
         .camera_btn_img,
         .camera_btn {
-          opacity: 0.4;
+          background-color: var(--font-secondary);
+          height: 36px;
+          width: 36px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          transition: background-color 0.3s;
 
           &:hover {
-            opacity: 1;
+            background-color: var(--font-label);
           }
 
           & > span {
@@ -194,8 +214,6 @@
 
           & > svg {
             position: absolute;
-            top: 60px;
-            right: 60px;
           }
         }
         .camera_btn_img {

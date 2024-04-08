@@ -71,6 +71,10 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     return `https://storage.bunnycdn.com/${this.storageZone}/${path}/${file}`;
   }
 
+  delay(time: number): Promise<void> {
+    return new Promise<void>((resolve) => setTimeout(resolve, time * 1000));
+  }
+
   getPostOption(title: string, key: string) {
     return {
       method: "POST",
@@ -101,6 +105,22 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
 
+  async tryNTimes<T>(toTry: () => Promise<Response>, times: number, interval: number): Promise<any> {
+    if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
+    let attemptCount: number;
+    for (attemptCount = 1; attemptCount <= times; attemptCount++) {
+      let error: boolean = false;
+      const result = await toTry();
+      let vresult = await result.json();
+      console.log(`video progress status: ${vresult.status}`);
+
+      if (vresult.status != 4) {
+        if (attemptCount < times) await this.delay(interval);
+        else return Promise.reject(result);
+      } else return result;
+    }
+  }
+
   async uploadVideo(title: string, file: Buffer, courseId: number, chapterId: number): Promise<VideoAPIResponse> {
     let guid: string;
     const res = await fetch(this.createVideoUrl(this.libraryId), this.getPostOption(title, this.accessKey));
@@ -108,12 +128,21 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     guid = json.guid;
     const res_1 = await fetch(this.getUploadUrl(json.guid, this.libraryId), this.getUploadOption(file, this.accessKey));
     const uploadedData = await res_1.json();
-    const res_2 = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
-    const videoData = await res_2.json();
+    //const res_2 = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
+    const videoResult = await this.tryNTimes(
+      () => {
+        return fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
+      },
+      60,
+      5
+    );
+    let videoData = await videoResult.json();
+
+    console.log(videoResult);
     return {
-      statusCode: res_2.status,
-      success: res_2.status == 200,
-      message: res_2.statusText,
+      statusCode: videoResult.status,
+      success: videoResult.status == 200,
+      message: videoResult.statusText,
       video: {
         videoId: videoData.guid as string,
         thumbnail: `https://${this.streamCDNHostname}/${videoData.guid}/${videoData.thumbnailFileName}`,
