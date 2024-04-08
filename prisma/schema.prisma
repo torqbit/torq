@@ -122,6 +122,7 @@ model Course {
   isActive         Boolean    @default(true)
   coursePrice      Float?     @default(0)
   sequenceId       Int?
+  expiryInDays     Int        @default(365)
   durationInMonths Int        @default(12)
   state            StateType
   videoDuration    Int        @default(600)

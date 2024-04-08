@@ -34,6 +34,7 @@ export interface CourseInfo {
   courseType: string;
   createdAt: string;
   description: string;
+  expiryInDays: number;
   durationInMonths: number;
   name: string;
   programId: number;

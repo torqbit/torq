@@ -93,10 +93,10 @@ const AddCourseForm: FC = () => {
           (result) => {
             message.success(result.message);
           },
-          (error) => {}
+          (error) => { }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -133,7 +133,7 @@ const AddCourseForm: FC = () => {
           }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -156,7 +156,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const deleteRes = (id: number) => {
@@ -172,10 +172,10 @@ const AddCourseForm: FC = () => {
             message.success(result.message);
             onRefresh();
           },
-          (error) => {}
+          (error) => { }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -188,7 +188,7 @@ const AddCourseForm: FC = () => {
 
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const updateResState = (id: number, state: string) => {
@@ -199,7 +199,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const createChapter = async (courseId: number) => {
@@ -344,8 +344,8 @@ const AddCourseForm: FC = () => {
     ProgramService.deleteFile(
       name,
       dir,
-      (result) => {},
-      (error) => {}
+      (result) => { },
+      (error) => { }
     );
   };
 
@@ -418,8 +418,8 @@ const AddCourseForm: FC = () => {
   const onDeleteVideo = (id: string) => {
     ProgramService.deleteVideo(
       id,
-      (result) => {},
-      (error) => {}
+      (result) => { },
+      (error) => { }
     );
   };
   const uploadFile = async (file: any, title: string) => {
@@ -510,7 +510,7 @@ const AddCourseForm: FC = () => {
         });
         setResourceDrawer(true);
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -573,11 +573,11 @@ const AddCourseForm: FC = () => {
         (result) => {
           form.setFieldValue("course_name", result.courseDetails.name);
           form.setFieldValue("course_description", result.courseDetails.description);
-          form.setFieldValue("course_duration", result.courseDetails.durationInMonths);
+          form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
 
           setCourseData({
             ...courseData,
-            duration: result.courseDetails.durationInMonths,
+            duration: result.courseDetails.expiryInDays,
             chapters: result.courseDetails.chapters,
           });
           setCourseThumbnail(result.courseDetails.thumbnail);
@@ -589,7 +589,7 @@ const AddCourseForm: FC = () => {
             videoUrl: result.courseDetails.videoUrl,
           });
         },
-        (error) => {}
+        (error) => { }
       );
   }, [router.query.id, refresh]);
 
