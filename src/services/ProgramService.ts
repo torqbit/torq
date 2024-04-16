@@ -1,6 +1,7 @@
-import { ICourseDetial, IProgramDetail, resData } from "@/lib/types/program";
+import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 import { ICourseList } from "@/pages/courses";
+import { ChapterDetail, CourseAPIResponse } from "@/types/courses/Course";
 import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
@@ -24,33 +25,6 @@ export type ApiResponse = {
   resource: Resource;
   allResource: Resource[];
   getProgram: IProgramDetail;
-
-  allProgram: [
-    {
-      aboutProgram: string;
-      banner: string;
-      description: string;
-      durationInMonths: number;
-      id: number;
-      skills: string[];
-      state: string;
-      authorId: number;
-      course: [
-        {
-          description: string;
-          durationInMonths: number;
-          authorId: number;
-          id: number;
-          programId: number;
-          skills: string[];
-          title: string;
-          videoDuration: number;
-        }
-      ];
-      thumbnail: string;
-      title: string;
-    }
-  ];
   getCourse: {
     about: string;
     authorId: number;
@@ -60,30 +34,7 @@ export type ApiResponse = {
     videoId: string;
     thumbnail: string;
     videoUrl: string;
-    chapter: [
-      {
-        sequenceId: number;
-
-        chapterId: number;
-        courseId: number;
-        createdAt: string;
-        description: string;
-        isActive: boolean;
-        name: string;
-        resource: [
-          {
-            resourceId: number;
-            resourceTitle: string;
-            resourceDescripton: string;
-            contentType: string;
-            videoDuration: number;
-            videoUrl: string;
-            submitDay: number;
-            languages: string[];
-          }
-        ];
-      }
-    ];
+    chapters: ChapterDetail[];
 
     courseId: number;
     coursePrice: number;
@@ -292,6 +243,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
+    console.log("sending the draft course request");
     fetch(`/api/v1/course/draftCourse`, {
       method: "POST",
       headers: {
@@ -301,14 +253,16 @@ class ProgramService {
       body: JSON.stringify({
         courseId: courseId,
       }),
-    }).then((result) => {
+    }).then((result: any) => {
+      console.log(result);
       if (result.status == 400) {
-        result.json().then((r) => {
+        result.json().then((r: any) => {
           const failedResponse = r as FailedApiResponse;
           onFailure(failedResponse.error);
         });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
+      } else if (result.status == 201) {
+        result.json().then((r: any) => {
+          console.log(r);
           const apiResponse = r as ApiResponse;
           onSuccess(apiResponse);
         });
@@ -349,8 +303,7 @@ class ProgramService {
 
   getCourses = (
     courseId: number,
-
-    onSuccess: (response: ApiResponse) => void,
+    onSuccess: (response: CourseAPIResponse) => void,
     onFailure: (message: string) => void
   ) => {
     fetch(`/api/v1/course/${courseId}`, {
@@ -367,7 +320,7 @@ class ProgramService {
         });
       } else if (result.status == 200) {
         result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
+          const apiResponse = r as CourseAPIResponse;
           onSuccess(apiResponse);
         });
       }
@@ -596,6 +549,7 @@ class ProgramService {
       thumbnail?: string;
       thumbnailId?: string;
       videoUrl?: string;
+      expiryInDays?: number;
       videoId?: string;
       programId?: number;
       authorId?: number | undefined;
@@ -793,8 +747,7 @@ class ProgramService {
   };
 
   createResource = (
-    resData: resData,
-
+    resData: ResourceDetails,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -926,8 +879,7 @@ class ProgramService {
     });
   };
   updateResource = (
-    resData: resData,
-
+    resData: ResourceDetails,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -1011,7 +963,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/admin/config/service-provider/get/${provider_name}`, {
+    fetch(`/api/v1/admin/config/service-provider/get/${provider_name}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -1031,7 +983,7 @@ class ProgramService {
       }
     });
   };
-  addCredentials = (
+  addServiceProvider = (
     name: string,
     serviceType: string,
     providerDetail: object,
@@ -1039,7 +991,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/admin/config/service-provider/add`, {
+    fetch(`/api/v1/admin/config/service-provider/add`, {
       method: "POST",
       headers: {
         Accept: "application/json",

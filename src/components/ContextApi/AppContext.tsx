@@ -4,7 +4,7 @@ import { Session } from "next-auth";
 
 export type ISiderMenu =
   | "dashboard"
-  | "coursed"
+  | "courses"
   | "certifications"
   | "guides"
   | "quiz"

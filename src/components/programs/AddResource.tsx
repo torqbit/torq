@@ -26,6 +26,7 @@ import ProgramService from "@/services/ProgramService";
 import { error } from "console";
 import { RcFile } from "antd/es/upload";
 import SvgIcons from "../SvgIcons";
+import { UploadedResourceDetail } from "@/types/courses/Course";
 
 const ResourceList: FC<{
   name: string;
@@ -133,11 +134,7 @@ const AddResource: FC<{
   formData: FormInstance;
   onDeleteVideo: (id: string) => void;
   isEdit: boolean;
-  uploadResourceUrl: {
-    fileName?: string;
-    videoUrl?: string;
-    videoId?: string;
-  };
+  uploadResourceUrl: UploadedResourceDetail;
   loading: boolean | undefined;
   chapterId: number;
   onUploadVideo: (file: RcFile, title: string) => void;
@@ -196,19 +193,6 @@ const AddResource: FC<{
         className={styles.newResDetails}
         title={
           <div className={styles.drawerHeader}>
-            {/* <div>
-              <ResourceList
-                chapterId={0}
-                resId={0}
-                formData={formData}
-                onFindRsource={onFindRsource}
-                name={addRes.name}
-                duration={addRes.duration}
-                contentType={addRes.content}
-                setAddRes={setAddRes}
-                addRes={addRes}
-              />
-            </div> */}
             <Space className={styles.drawerTitle}>
               <CloseOutlined
                 onClick={() => {
@@ -311,7 +295,7 @@ const AddResource: FC<{
                         {uploadResourceUrl?.videoUrl ? (
                           <>
                             <img
-                              src={`https://vz-bb827f5e-131.b-cdn.net/${uploadResourceUrl.videoUrl}/thumbnail.jpg`}
+                              src={uploadResourceUrl.thumbnail}
                               alt=""
                               height={"100%"}
                               className={styles.video_container}
@@ -329,19 +313,6 @@ const AddResource: FC<{
                       {uploadResourceUrl?.videoUrl && (
                         <div className={styles.camera_btn}>{loading ? <LoadingOutlined /> : SvgIcons.video}</div>
                       )}
-                    </Form.Item>
-                  </div>
-                  <div>
-                    <Form.Item
-                      name="duration"
-                      label="Video Duration(in minutes)"
-                      rules={[{ required: true, message: "Please Enter Description" }]}
-                    >
-                      <InputNumber
-                        onChange={(e) => !router.query.resId && setAddRes({ ...addRes, duration: Number(e) })}
-                        style={{ width: 330 }}
-                        placeholder="Enter the Duration"
-                      />
                     </Form.Item>
                   </div>
                 </div>

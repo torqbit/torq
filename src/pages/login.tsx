@@ -42,20 +42,24 @@ const LoginPage: NextPage = () => {
   return (
     <div className={styles.login_page_wrapper}>
       <div className={styles.login_img}>
-        <img src='/img/login-right-img.svg' alt='' />
+        <img src="/img/login-screen.png" alt="Login image" />
+        <h3>Learn to Lead</h3>
+        <p>Transform into the most competitive individual who drives changes for the betterment.</p>
       </div>
       <div className={styles.social_login_container}>
-        <h3>Welcome to Torqbit</h3>
+        <img src="/icon/torq-logo.svg" alt="" />
+        <h3>Login to Torq</h3>
 
         <Button
           onClick={() => {
             setGoogleLoading(true);
             signIn("google");
           }}
-          icon={<img src='./img/google.svg' width={25} />}
-          type='primary'
+          icon={<img src="./img/google.svg" width={25} />}
+          type="default"
           loading={googleLoading}
-          className={styles.google_btn}>
+          className={styles.google_btn}
+        >
           Login with Google
         </Button>
         <Button
@@ -64,12 +68,13 @@ const LoginPage: NextPage = () => {
             signIn("github");
           }}
           loading={gitHubLoading}
-          icon={<img src='./img/github.svg' width={35} />}
-          type='primary'
-          className={styles.github_btn}>
+          icon={<img src="./icon/github.png" width={35} />}
+          type="primary"
+          className={styles.github_btn}
+        >
           Login with GitHub
         </Button>
-        {loginError && <Alert message='Login Failed!' description={loginError} type='error' showIcon closable />}
+        {loginError && <Alert message="Login Failed!" description={loginError} type="error" showIcon closable />}
       </div>
     </div>
   );
@@ -82,7 +87,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       redirect: {
         permanent: false,
-        destination: "/programs",
+        destination: "/dashboard",
       },
     };
   }

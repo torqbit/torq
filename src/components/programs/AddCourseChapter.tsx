@@ -2,8 +2,6 @@ import { Button, Drawer, Form, FormInstance, Input, Select, Space, message } fro
 import { FC, useState } from "react";
 import styles from "@/styles/ProgramCourse.module.scss";
 import { useRouter } from "next/router";
-import AddResource from "./AddResource";
-import { CloseCircleFilled } from "@ant-design/icons";
 
 const AddCourseChapter: FC<{
   showChapterDrawer: (value: boolean) => void;
@@ -31,7 +29,6 @@ const AddCourseChapter: FC<{
   const onClose = () => {
     showChapterDrawer(false);
     form.resetFields();
-    // router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
   };
 
   return (
@@ -53,7 +50,7 @@ const AddCourseChapter: FC<{
             }}
           >
             <Space className={styles.footerBtn}>
-              <Button loading={loading} onClick={() => {}} type="primary" htmlType="submit">
+              <Button onClick={() => {}} type="primary" htmlType="submit">
                 {router.query.chapterId ? "Update" : "Save"}
               </Button>
               <Button

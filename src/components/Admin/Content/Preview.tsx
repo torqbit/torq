@@ -1,7 +1,7 @@
 import SvgIcons from "@/components/SvgIcons";
-import { ChapterDetail } from "@/pages/add-course";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
+import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Collapse, Dropdown, Flex, MenuProps, Popconfirm, Tag } from "antd";
 
@@ -46,15 +46,9 @@ const Label: FC<{
 };
 
 const Preview: FC<{
-  uploadUrl: {
-    uploadType?: string;
-    thumbnailImg?: string;
-    thumbnailId?: string;
-    videoUrl?: string;
-    videoId?: string;
-  };
+  uploadVideo?: VideoInfo;
   chapter: ChapterDetail[];
-}> = ({ uploadUrl, chapter }) => {
+}> = ({ uploadVideo, chapter }) => {
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
@@ -73,7 +67,7 @@ const Preview: FC<{
           keyValue={`${i + 1}`}
         />
       ),
-      children: content.resource.map((res, i) => {
+      children: content.resource.map((res: any, i: any) => {
         return (
           <div className={styles.resContainer}>
             <Label
@@ -93,14 +87,7 @@ const Preview: FC<{
 
   return (
     <section className={styles.preview_container}>
-      <div>
-        <video
-          className={styles.video_container}
-          autoPlay
-          src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/play_720p.mp4`}
-          loop
-        />
-      </div>
+      <div>{uploadVideo && <video className={styles.video_container} autoPlay src={uploadVideo.videoUrl} loop />}</div>
 
       <div className={styles.video_player_info}>
         <div>

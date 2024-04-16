@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         courseId: Number(courseId),
       },
       include: {
-        chapter: {
+        chapters: {
           where: {
             courseId: Number(courseId),
           },
@@ -23,10 +23,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     return res.status(200).json({
-      info: false,
       success: true,
-      message: "Crouse found",
-      getCourse: course,
+      statusCode: 200,
+      message: "Fetched course",
+      courseDetails: course,
     });
   } catch (error) {
     return errorHandler(error, res);
