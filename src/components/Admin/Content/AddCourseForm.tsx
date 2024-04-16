@@ -32,6 +32,8 @@ import upload from "@/pages/api/program/upload";
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
   const [courseTrailerUploading, setCourseTrailerUploading] = useState<boolean>(false);
+  const [resourceVideoUploading, setResourceVideoUploading] = useState<boolean>(false);
+
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
   const [isEdit, setEdit] = useState<boolean>(false);
@@ -159,8 +161,8 @@ const AddCourseForm: FC = () => {
     ProgramService.getResource(
       id,
       (result) => {
-        onDeleteVideo(String(result.resource.thumbnail));
-        onDeleteThumbnail(String(result.resource.content), "course-assignments");
+        onDeleteVideo(String(result.resource.video.videoId));
+        // onDeleteThumbnail(String(result.resource.content), "course-assignments");
 
         ProgramService.deleteResource(
           id,
@@ -266,23 +268,35 @@ const AddCourseForm: FC = () => {
 
   const onCreateRes = (chapterId: number) => {
     setLoading(true);
-    let rs = formData.getFieldsValue() as ResourceDetails;
+    let rs = { ...formData.getFieldsValue(), chapterId, contentType: "Video" } as ResourceDetails;
+    console.log(rs, "res", uploadResourceUrl, "ds");
     ProgramService.createResource(
       rs,
       (result) => {
-        message.success(result.message);
-
-        formData.resetFields();
-        setLoading(false);
-        setResourceDrawer(false);
-        setAddRes({
-          content: "Video",
-          chapterId: 0,
-          name: "",
-          duration: 0,
-          assignmentFileName: "",
-        });
-        onRefresh();
+        ProgramService.AddResourceVideo(
+          {
+            thumbnail: uploadResourceUrl?.thumbnail,
+            videoId: Number(uploadResourceUrl?.videoId),
+            videoUrl: uploadResourceUrl?.videoUrl,
+            id: result.resource.resourceId,
+            videoDuration: 10,
+          },
+          (result) => {
+            message.success(result.message);
+            formData.resetFields();
+            setLoading(false);
+            setResourceDrawer(false);
+            setAddRes({
+              content: "Video",
+              chapterId: 0,
+              name: "",
+              duration: 0,
+              assignmentFileName: "",
+            });
+            onRefresh();
+          },
+          (error) => {}
+        );
       },
       (error) => {
         message.error(error);
@@ -336,6 +350,10 @@ const AddCourseForm: FC = () => {
     );
   };
 
+  setTimeout(() => {
+    setEdit(false);
+  }, 1000);
+
   const onDeleteThumbnail = (name: string, dir: string) => {
     ProgramService.deleteFile(
       name,
@@ -346,25 +364,25 @@ const AddCourseForm: FC = () => {
   };
 
   const onUploadVideo = async (file: RcFile, title: string) => {
-    setCourseTrailerUploading(true);
+    setResourceVideoUploading(true);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("title", title);
 
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
     if (!postRes.ok) {
-      setCourseTrailerUploading(false);
+      setResourceVideoUploading(false);
       throw new Error("Failed to upload file");
     }
     const res = await postRes.json();
-
+    console.log(res.video, "video detail response");
     if (res.success) {
       setUploadResUrl({
-        videoId: String(res.videoDetail.videoId),
-        videoUrl: res.videoDetail.videoUrl,
-        thumbnail: res.videoDetail.thumbnail,
+        videoId: String(res.video.videoId),
+        videoUrl: res.video.videoUrl,
+        thumbnail: res.video.thumbnail,
       });
-      setCourseTrailerUploading(false);
+      setResourceVideoUploading(false);
     }
   };
 
@@ -485,12 +503,8 @@ const AddCourseForm: FC = () => {
       (result) => {
         formData.setFieldValue("name", result.resource?.name);
         formData.setFieldValue("description", result.resource?.description);
-        formData.setFieldValue("assignmentLang", result.resource.assignmentLang);
         formData.setFieldValue("submitDay", result.resource.daysToSubmit);
-        formData.setFieldValue("VideoUrl", result.resource.thumbnail);
-        formData.setFieldValue("duration", result.resource.videoDuration);
         formData.setFieldValue("index", result.resource.sequenceId);
-        formData.setFieldValue("assignment_file", result.resource.content);
         formData.setFieldValue("contentType", result.resource.contentType);
         setEdit(true);
 
@@ -499,10 +513,11 @@ const AddCourseForm: FC = () => {
           content: result.resource.contentType,
           chapterId: result.resource.chapterId,
         });
+        console.log(result.resource.video);
         setUploadResUrl({
-          fileName: String(result.resource.content),
-          videoId: String(result.resource.videoId),
-          videoUrl: String(result.resource.thumbnail),
+          thumbnail: result.resource.video.thumbnail,
+          videoId: String(result.resource.video.videoId),
+          videoUrl: String(result.resource.video.videoUrl),
         });
         setResourceDrawer(true);
       },
@@ -540,7 +555,7 @@ const AddCourseForm: FC = () => {
 
       children: (
         <Curriculum
-          chapter={courseData.chapters}
+          chapters={courseData.chapters}
           onRefresh={onRefresh}
           setOpen={setOpen}
           onFindResource={onFindResource}
@@ -641,7 +656,7 @@ const AddCourseForm: FC = () => {
         setResourceDrawer={setResourceDrawer}
         onDeleteVideo={onDeleteVideo}
         showResourceDrawer={showResourceDrawer}
-        loading={loading}
+        loading={resourceVideoUploading}
         onFindRsource={onFindResource}
         uploadFile={uploadAssignment}
         onDeleteThumbnail={onDeleteThumbnail}

@@ -42,26 +42,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       chapterId: chapterId,
       name: name,
       description: description,
-      videoDuration: Number(videoDuration),
-      thumbnail: thumbnail,
-      daysToSubmit: Number(daysToSubmit),
-      assignment: assignment,
-      sequenceId: sequenceId,
+      sequenceId: ((await prisma.resource.count()) + 1) | 1,
       contentType: contentType as ResourceContentType,
-      content: content,
-      assignmentLang: assignmentLang,
-      videoId: videoId,
     };
 
     if (resData) {
-      const [updateCourse, createResource] = await prisma.$transaction([
-        prisma.$executeRaw`UPDATE Resource SET sequenceId = sequenceId + 1  WHERE sequenceId >= ${Number(
-          resData.sequenceId
-        )} AND chapterId = ${Number(resData.chapterId)};`,
-        prisma.resource.create({
-          data: resData,
-        }),
-      ]);
+      const createResource = await prisma.resource.create({
+        data: resData,
+      });
 
       return res.status(200).json({
         info: false,

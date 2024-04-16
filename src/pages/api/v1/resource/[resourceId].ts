@@ -11,6 +11,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       where: {
         resourceId: Number(resourceId),
       },
+      include: {
+        video: {},
+      },
     });
     return res.status(200).json({
       info: false,

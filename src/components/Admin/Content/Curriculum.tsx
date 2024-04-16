@@ -99,6 +99,7 @@ const Label: FC<{
                         onClick: () => {
                           onFindResource(id, "Assignment");
                         },
+                        disabled: true,
                       },
                     ],
                   }}
@@ -137,7 +138,7 @@ const Label: FC<{
 };
 
 const Curriculum: FC<{
-  chapter: ChapterDetail[];
+  chapters: ChapterDetail[];
   onDiscard: () => void;
   onRefresh: () => void;
   onEditResource: (id: number) => void;
@@ -150,7 +151,7 @@ const Curriculum: FC<{
   onSave: (value: string) => void;
 }> = ({
   onSave,
-  chapter,
+  chapters,
   onRefresh,
   setOpen,
   onFindResource,
@@ -161,12 +162,12 @@ const Curriculum: FC<{
   onEditResource,
   onDiscard,
 }) => {
-  const renderKey = chapter.map((c, i) => {
+  const renderKey = chapters.map((c, i) => {
     return `${i + 1}`;
   });
   const [render, setRender] = useState(renderKey);
 
-  const items = chapter.map((content, i) => {
+  const items = chapters.map((content, i) => {
     return {
       key: `${i + 1}`,
       label: (
@@ -208,72 +209,86 @@ const Curriculum: FC<{
       showArrow: false,
     };
   });
-
+  console.log(chapters, "chapter");
   return (
     <section className={styles.curriculum}>
       <div className={styles.curriculum_container}>
         <Flex justify="space-between" align="center">
           <h1>Curriculum</h1>
 
-          <Space>
-            <Popconfirm
-              title={`Delete this course`}
-              description={`Are you sure to delete this entire course?`}
-              onConfirm={() => onDiscard()}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button>Discard</Button>
-            </Popconfirm>
+          {chapters.length > 0 && (
+            <Space>
+              <Popconfirm
+                title={`Delete this course`}
+                description={`Are you sure to delete this entire course?`}
+                onConfirm={() => onDiscard()}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button>Discard</Button>
+              </Popconfirm>
 
-            <Button
-              type="primary"
-              onClick={() => {
-                onRefresh();
-                onSave("3");
-              }}
-            >
-              Save Curriculum <img style={{ marginLeft: 5 }} src="/img/program/arrow-right.png" alt="arrow" />
-            </Button>
-          </Space>
+              <Button
+                type="primary"
+                onClick={() => {
+                  onRefresh();
+                  onSave("3");
+                }}
+              >
+                Save Curriculum <img style={{ marginLeft: 5 }} src="/img/program/arrow-right.png" alt="arrow" />
+              </Button>
+            </Space>
+          )}
         </Flex>
       </div>
       <div>
-        <Flex justify="space-between" align="center">
-          <h2>{chapter.length ? chapter.length : 0} Chapters</h2>
+        {chapters.length > 0 && (
+          <Flex justify="space-between" align="center">
+            <h2>{chapters.length ? chapters.length : 0} Chapters</h2>
+            <Space>
+              <Button className={styles.add_btn} onClick={() => setOpen(true)}>
+                {SvgIcons.plusBtn}
+                <div> Add Chapter</div>
+              </Button>
 
-          <Space>
-            <Button className={styles.add_btn} onClick={() => setOpen(true)}>
-              {SvgIcons.plusBtn}
-              <div> Add Chapter</div>
-            </Button>
-
-            <Button className={styles.add_btn} onClick={() => setRender([""])}>
-              {SvgIcons.barsArrowDown}Collapse All
-            </Button>
-          </Space>
-        </Flex>
+              <Button className={styles.add_btn} onClick={() => setRender([""])}>
+                {SvgIcons.barsArrowDown}Collapse All
+              </Button>
+            </Space>
+          </Flex>
+        )}
       </div>
-      {items.map((item, i) => {
-        return (
-          <div key={i} className={styles.chapter_list}>
-            <Collapse
-              defaultActiveKey={"1"}
-              size="small"
-              accordion={false}
-              activeKey={render}
-              items={[
-                {
-                  key: item.key,
-                  label: item.label,
-                  children: item.children,
-                  showArrow: false,
-                },
-              ]}
-            />
-          </div>
-        );
-      })}
+      {chapters.length > 0 ? (
+        <div>
+          {items.map((item, i) => {
+            return (
+              <div key={i} className={styles.chapter_list}>
+                <Collapse
+                  defaultActiveKey={"1"}
+                  size="small"
+                  accordion={false}
+                  activeKey={render}
+                  items={[
+                    {
+                      key: item.key,
+                      label: item.label,
+                      children: item.children,
+                      showArrow: false,
+                    },
+                  ]}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className={styles.no_chapter_btn}>
+          <h4>No chapters available</h4>
+          <Button onClick={() => setOpen(true)} type="primary">
+            Add Chapter
+          </Button>
+        </div>
+      )}
     </section>
   );
 };

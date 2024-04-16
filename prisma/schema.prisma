@@ -124,9 +124,9 @@ model Course {
   sequenceId       Int?
   expiryInDays     Int        @default(365)
   durationInMonths Int        @default(12)
-  state            StateType
+  state            StateType  @default(DRAFT)
   videoDuration    Int        @default(600)
-  chapters          Chapter[]
+  chapters         Chapter[]
   program          Program?   @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, name])
@@ -144,7 +144,7 @@ model Chapter {
   description String?    @db.Text()
   sequenceId  Int
   isActive    Boolean    @default(true)
-  state       StateType  @default(ACTIVE)
+  state       StateType  @default(DRAFT)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   course      Course     @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
@@ -168,18 +168,16 @@ model Resource {
 
   description String? @db.Text()
 
-  assignment         Json?
-  videoDuration      Int
-  chapterId          Int
-  sequenceId         Int
-  daysToSubmit       Int?
-  assignmentLang     Json?
-  contentType        ResourceContentType
-  content            String?             @db.Text()
-  isActive           Boolean             @default(true)
-  state              StateType           @default(ACTIVE)
-  videoId            Int?
-  thumbnail          String?
+  assignment   Json?
+  chapterId    Int
+  sequenceId   Int
+  daysToSubmit Int?
+
+  contentType ResourceContentType
+
+  isActive Boolean   @default(true)
+  state    StateType @default(DRAFT)
+
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   chapter            Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
@@ -187,9 +185,19 @@ model Resource {
   discussion         Discussion[]
   resourceAssignInfo AssignmentAndTask[]
   notification       Notification[]
+  video              Video[]
 
   @@unique([resourceId])
   @@index([chapterId])
+}
+
+model Video {
+  id            Int      @id @default(autoincrement())
+  videoUrl      String   @db.VarChar(200)
+  videoId       String?  @db.VarChar(200)
+  videoDuration Int
+  resource      Resource @relation(fields: [id], references: [resourceId], onDelete: Cascade)
+  thumbnail     String   @db.VarChar(200)
 }
 
 //****** Reource Schema End ******//

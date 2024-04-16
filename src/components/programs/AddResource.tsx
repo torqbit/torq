@@ -60,12 +60,12 @@ const ResourceList: FC<{
       (result) => {
         formData.setFieldValue("name", result.resource?.name);
         formData.setFieldValue("description", result.resource?.description);
-        formData.setFieldValue("assignmentLang", result.resource.assignmentLang);
+        // formData.setFieldValue("assignmentLang", result.resource.assignmentLang);
         formData.setFieldValue("submitDay", result.resource.daysToSubmit);
-        formData.setFieldValue("VideoUrl", result.resource.thumbnail);
-        formData.setFieldValue("duration", result.resource.videoDuration);
+        // formData.setFieldValue("VideoUrl", result.resource.thumbnail);
+        // formData.setFieldValue("duration", result.resource.videoDuration);
         formData.setFieldValue("index", result.resource.sequenceId);
-        formData.setFieldValue("assignment_file", result.resource.content);
+        // formData.setFieldValue("assignment_file", result.resource.content);
         formData.setFieldValue("contentType", result.resource.contentType);
 
         setAddRes({

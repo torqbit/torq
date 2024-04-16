@@ -33,6 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           description: description,
           courseId: courseId,
           sequenceId: sequenceId,
+          state: "DRAFT",
         },
       }),
     ]);
