@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             });
         });
       res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
-      if (videoUploadResponse && videoUploadResponse.statusCode == 201 && path != "undefined") {
+      if (videoUploadResponse && videoUploadResponse.statusCode == 201 && path != "") {
         fs.unlinkSync(path);
       }
     }

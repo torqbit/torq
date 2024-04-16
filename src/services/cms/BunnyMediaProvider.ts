@@ -128,17 +128,9 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     guid = json.guid;
     const res_1 = await fetch(this.getUploadUrl(json.guid, this.libraryId), this.getUploadOption(file, this.accessKey));
     const uploadedData = await res_1.json();
-    //const res_2 = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
-    const videoResult = await this.tryNTimes(
-      () => {
-        return fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
-      },
-      60,
-      5
-    );
+    const videoResult = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
     let videoData = await videoResult.json();
 
-    console.log(videoResult);
     return {
       statusCode: videoResult.status,
       success: videoResult.status == 200,
