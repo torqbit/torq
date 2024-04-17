@@ -191,13 +191,21 @@ model Resource {
   @@index([chapterId])
 }
 
+enum VideoState {
+  PROCESSING
+  FAILED
+  READY
+}
+
 model Video {
-  id            Int      @id @default(autoincrement())
-  videoUrl      String   @db.VarChar(200)
-  videoId       String?  @db.VarChar(200)
+  id            Int        @id @default(autoincrement())
+  videoUrl      String     @db.VarChar(200)
+  videoId       String?    @db.VarChar(200)
   videoDuration Int
-  resource      Resource @relation(fields: [id], references: [resourceId], onDelete: Cascade)
-  thumbnail     String   @db.VarChar(200)
+  resource      Resource   @relation(fields: [id], references: [resourceId], onDelete: Cascade)
+  thumbnail     String     @db.VarChar(200)
+  state         VideoState @default(PROCESSING)
+  mediaProvider String?
 }
 
 //****** Reource Schema End ******//

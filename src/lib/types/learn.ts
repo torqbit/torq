@@ -55,9 +55,11 @@ export interface IResourceDetail extends Resource {
 export interface VideoDetails {
   id: number;
   videoUrl?: string;
-  videoId?: number;
+  videoId?: string;
   thumbnail?: string;
   videoDuration?: number;
+  state?: string;
+  mediaProvider?: string;
 }
 
 export interface IResource {

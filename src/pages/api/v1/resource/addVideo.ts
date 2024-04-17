@@ -8,14 +8,7 @@ import { ResourceContentType } from "@prisma/client";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const {
-      id,
-      videoDuration,
-      videoUrl,
-      thumbnail,
-
-      videoId,
-    } = body;
+    const { id, videoDuration, videoUrl, thumbnail, state, mediaProvider, videoId } = body;
 
     console.log(body, "body of video");
 
@@ -28,6 +21,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         videoUrl: videoUrl,
         videoId: videoId,
         thumbnail: thumbnail,
+        state: state,
+        mediaProvider: mediaProvider,
       },
     });
     return res.status(200).json({

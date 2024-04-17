@@ -46,6 +46,9 @@ export interface VideoInfo {
   videoId: string;
   thumbnail: string;
   previewUrl: string;
+  mediaProviderName: string;
+  videoDuration: number;
+  state: string;
   videoUrl: string;
 }
 
@@ -68,4 +71,7 @@ export interface UploadedResourceDetail {
   videoUrl?: string;
   videoId?: string;
   thumbnail?: string;
+  state?: string;
+  mediaProvider?: string;
+  videoDuration?: number;
 }

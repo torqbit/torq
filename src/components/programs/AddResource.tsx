@@ -31,14 +31,14 @@ import { UploadedResourceDetail } from "@/types/courses/Course";
 const ResourceList: FC<{
   name: string;
   contentType: ResourceContentType;
-  setAddRes: (value: IAddResource) => void;
+  setAddResource: (value: IAddResource) => void;
   addRes: IAddResource;
   duration: number | null;
   resId: number;
   onFindRsource: (id: number, content: ResourceContentType) => void;
   formData: FormInstance;
   chapterId: number;
-}> = ({ name, contentType, duration, setAddRes, addRes, resId, chapterId, onFindRsource, formData }) => {
+}> = ({ name, contentType, duration, setAddResource, addRes, resId, chapterId, onFindRsource, formData }) => {
   const router = useRouter();
 
   const onDeleteResource = () => {
@@ -68,7 +68,7 @@ const ResourceList: FC<{
         // formData.setFieldValue("assignment_file", result.resource.content);
         formData.setFieldValue("contentType", result.resource.contentType);
 
-        setAddRes({
+        setAddResource({
           ...addRes,
           content: result.resource.contentType,
           chapterId: result.resource.chapterId,
@@ -129,8 +129,8 @@ const ResourceList: FC<{
 };
 
 const AddResource: FC<{
-  setAddRes: (value: IAddResource) => void;
-  addRes: IAddResource;
+  setAddResource: (value: IAddResource) => void;
+  addResource: IAddResource;
   formData: FormInstance;
   onDeleteVideo: (id: string) => void;
   isEdit: boolean;
@@ -155,13 +155,13 @@ const AddResource: FC<{
   loading,
   chapterId,
   isEdit,
-  setAddRes,
+  setAddResource,
   formData,
   onDeleteVideo,
   onCreateRes,
   availableRes,
   onUploadVideo,
-  addRes,
+  addResource,
   onFindRsource,
   currResId,
   onDeleteThumbnail,
@@ -174,7 +174,7 @@ const AddResource: FC<{
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
       const res = info.file.response; // TODO
-      setAddRes({ ...addRes, assignmentFileName: res.fileName });
+      setAddResource({ ...addResource, assignmentFileName: res.fileName });
     } else if (info.file.status === "error") {
       message.error(`${info.file.name} file upload failed.`);
     }
@@ -226,7 +226,7 @@ const AddResource: FC<{
                   setResourceDrawer(false);
 
                   formData.resetFields();
-                  setAddRes({
+                  setAddResource({
                     content: "Video",
                     chapterId: 0,
                     name: "",
@@ -253,7 +253,7 @@ const AddResource: FC<{
               <Form.Item label="Title" name="name" rules={[{ required: true, message: "Please Enter Title" }]}>
                 <Input
                   onChange={(e) => {
-                    !router.query.resId && setAddRes({ ...addRes, name: e.target.value });
+                    !router.query.resId && setAddResource({ ...addResource, name: e.target.value });
                   }}
                   value={formData.getFieldsValue().name}
                   placeholder="Set the title of the resource"
@@ -271,7 +271,7 @@ const AddResource: FC<{
                 </div>
               </div>
 
-              {addRes.content === "Video" && (
+              {addResource.content === "Video" && (
                 <div>
                   <div>
                     <Form.Item
@@ -317,7 +317,7 @@ const AddResource: FC<{
                   </div>
                 </div>
               )}
-              {addRes.content === "Assignment" && (
+              {addResource.content === "Assignment" && (
                 <div>
                   <Form.Item
                     label="Hours To Submit "
@@ -325,7 +325,7 @@ const AddResource: FC<{
                     rules={[{ required: true, message: "Required Days" }]}
                   >
                     <InputNumber
-                      onChange={(e) => !router.query.resId && setAddRes({ ...addRes, duration: Number(e) })}
+                      onChange={(e) => !router.query.resId && setAddResource({ ...addResource, duration: Number(e) })}
                       style={{ width: 330 }}
                       min={1}
                       placeholder="Enter submit hours"

@@ -130,7 +130,16 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     const uploadedData = await res_1.json();
     const videoResult = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
     let videoData = await videoResult.json();
-
+    let state: string = "";
+    if (videoData.status === 0 || videoData.status === 1 || videoData.status === 2 || videoData.status === 3) {
+      state = "PROCESSING";
+    }
+    if (videoData.status === 4) {
+      state = "READY";
+    }
+    if (videoData.status === 5 || videoData.status === 6) {
+      state = "FAILED";
+    }
     return {
       statusCode: videoResult.status,
       success: videoResult.status == 200,
@@ -140,6 +149,9 @@ export class BunnyMediaProvider implements ContentServiceProvider {
         thumbnail: `https://${this.streamCDNHostname}/${videoData.guid}/${videoData.thumbnailFileName}`,
         previewUrl: `https://${this.streamCDNHostname}/${videoData.guid}/preview.webp`,
         videoUrl: `https://iframe.mediadelivery.net/play/${this.libraryId}/${videoData.guid}`,
+        mediaProviderName: "bunny",
+        state: state,
+        videoDuration: videoData.length,
       },
     };
   }
