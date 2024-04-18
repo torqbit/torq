@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           data: {
             provider_name: name,
             service_type: serviceType,
-            providerDetail: [providerDetail],
+            providerDetail: providerDetail,
           },
         });
         return res.status(200).json({ success: true, message: "credentials updated successfully" });

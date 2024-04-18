@@ -148,6 +148,22 @@
           gap: 10px;
         }
       }
+
+      .upload__trailer {
+        & > div {
+          width: 320px;
+          height: 180px;
+          position: relative;
+        }
+      }
+
+      .upload__thumbnail {
+        & > div {
+          height: 150px;
+          width: 150px;
+          position: relative;
+        }
+      }
       .course_info {
         padding: 10px 15px;
         background-color: #fff;
@@ -155,7 +171,7 @@
         h3 {
           margin: 0;
           margin-bottom: 10px;
-          // color: #000;
+
         }
         ::placeholder {
           color: #dfdcdce6;
@@ -167,19 +183,44 @@
         padding: 10px 20px;
         margin-top: 20px;
         .video_container {
-          margin-left: 27px;
+          height: 178px;
+          width: 318px;
+          border-radius: 4px;
         }
         h3 {
           margin: 0;
           margin-bottom: 20px;
-          // color: #eee;
+
         }
         .camera_btn_img,
         .camera_btn {
-          position: relative;
-          z-index: 100;
-          right: 120px;
-          color: #fff;
+          background-color: var(--font-secondary);
+          height: 36px;
+          width: 36px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: var(--font-label);
+          }
+
+          & > span {
+            position: absolute;
+            top: 60px;
+            right: 60px;
+          }
+
+          & > svg {
+            position: absolute;
+          }
         }
         .camera_btn_img {
           right: 110px;
@@ -189,6 +230,7 @@
         .row_2 {
           display: flex;
           justify-content: space-between;
+          flex-direction: column;
           div:first-child {
             h4 {
               margin-bottom: 10px;
@@ -199,7 +241,9 @@
             flex-basis: 35%;
             p {
               margin-bottom: 10px;
-              color: #666;
+              font-size: 13px;
+              color: var(--font-secondary);
+              margin: 4px;
             }
           }
           div:last-child {

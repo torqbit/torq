@@ -31,12 +31,8 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   return (
     <>
       <Head>
-        <title>Torqbit | Dedicated Software Development team for your next venture</title>
-        <meta
-          name="description"
-          content="We are team of highly focused and passionate software engineers who transform businesses and 
-        turn graduates into software professionals"
-        />
+        <title>Torq | Learn to lead</title>
+        <meta name="description" content="Learn, build and solve the problems that matters the most" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

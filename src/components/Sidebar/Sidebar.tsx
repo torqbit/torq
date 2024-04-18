@@ -33,55 +33,8 @@ const Sidebar: FC = () => {
   };
   const [modal, contextWrapper] = Modal.useModal();
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-    ProgramService.createDraftCourses(
-      undefined,
-      (result) => {
-        router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  };
-  const previousDraft = (id: number) => {
-    router.push(`/admin/content/course/${id}/edit`);
-
-    setIsModalOpen(false);
-  };
   const handleCancel = () => {
     setIsModalOpen(false);
-  };
-  const onCreateDraftCourse = () => {
-    showModal();
-
-    if (router.query.id) {
-      router.push(`/admin/content/course/${router.query.id}/edit`);
-    } else {
-      ProgramService.getLatesDraftCourse(
-        (result) => {
-          if (result.getCourse) {
-            modal.confirm({
-              title: "would you like to use?",
-              content: (
-                <>
-                  <Space>
-                    <Button onClick={() => previousDraft(result.getCourse.courseId)}>previous draft course</Button>
-                    or
-                    <Button onClick={handleOk}>Create a new course</Button>
-                  </Space>
-                </>
-              ),
-              footer: null,
-            });
-          } else {
-            handleOk();
-          }
-        },
-        (error) => {}
-      );
-    }
   };
 
   const getNewNotification = async (userId: number) => {
@@ -105,7 +58,7 @@ const Sidebar: FC = () => {
       key: "group1",
     },
     {
-      label: <Link href="dashboard">Dashboard</Link>,
+      label: <Link href="/dashboard">Dashboard</Link>,
       key: "dashboard",
       icon: SvgIcons.dashboard,
     },
@@ -154,16 +107,7 @@ const Sidebar: FC = () => {
       icon: SvgIcons.userGroup,
     },
     {
-      label: (
-        <div
-          // href="/admin/content/settings"
-          onClick={() => {
-            onCreateDraftCourse();
-          }}
-        >
-          Content
-        </div>
-      ),
+      label: <Link href="/admin/content">Content</Link>,
       key: "content",
       icon: SvgIcons.content,
     },
@@ -201,9 +145,9 @@ const Sidebar: FC = () => {
         <div className={styles.logo}>
           <Link href="/programs">
             {collapsed ? (
-              <Image src="/icon/torq-logo.svg" alt="torqbit" width={40} height={30} />
+              <Image src="/icon/torq-logo.svg" alt="torq" width={40} height={30} />
             ) : (
-              <Image src="/icon/torq-long-logo.svg" alt="torqbit" width={130} height={30} />
+              <Image src="/icon/torq-long-logo.svg" alt="torq" width={130} height={30} />
             )}
           </Link>
         </div>

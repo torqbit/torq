@@ -109,7 +109,7 @@ model Course {
   name             String
   about            String     @db.Text()
   description      String     @db.Text()
-  thumbnailId      String?
+  videoThumbnail   String?    @db.VarChar(200)
   videoUrl         String?
   videoId          String?
   thumbnail        String?
@@ -122,10 +122,11 @@ model Course {
   isActive         Boolean    @default(true)
   coursePrice      Float?     @default(0)
   sequenceId       Int?
+  expiryInDays     Int        @default(365)
   durationInMonths Int        @default(12)
   state            StateType
   videoDuration    Int        @default(600)
-  chapter          Chapter[]
+  chapters          Chapter[]
   program          Program?   @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, name])

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import styles from "../../styles/Dashboard.module.scss";
+import styles from "../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
 import { List, Space, Tabs, TabsProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
