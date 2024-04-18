@@ -163,29 +163,23 @@ enum ResourceContentType {
 }
 
 model Resource {
-  resourceId Int    @id @default(autoincrement())
-  name       String
-
-  description String? @db.Text()
-
-  assignment   Json?
-  chapterId    Int
-  sequenceId   Int
-  daysToSubmit Int?
-
-  contentType ResourceContentType
-
-  isActive Boolean   @default(true)
-  state    StateType @default(DRAFT)
-
+  resourceId         Int                 @id @default(autoincrement())
+  name               String
+  description        String?             @db.Text()
+  chapterId          Int
+  sequenceId         Int
+  daysToSubmit       Int?
+  contentType        ResourceContentType
+  isActive           Boolean             @default(true)
+  state              StateType           @default(DRAFT)
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   chapter            Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
   courseProgress     CourseProgress[]
-  discussion         Discussion[]
+  discussions        Discussion[]
   resourceAssignInfo AssignmentAndTask[]
-  notification       Notification[]
-  video              Video[]
+  notifications      Notification[]
+  videos             Video[]
 
   @@unique([resourceId])
   @@index([chapterId])

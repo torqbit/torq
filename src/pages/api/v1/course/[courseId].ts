@@ -17,7 +17,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             courseId: Number(courseId),
           },
           include: {
-            resource: {},
+            resource: {
+              include: {
+                videos: {},
+              },
+            },
           },
         },
       },

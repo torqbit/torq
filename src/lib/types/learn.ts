@@ -49,7 +49,7 @@ export interface IChapter extends Chapter {
 }
 
 export interface IResourceDetail extends Resource {
-  video: Video;
+  videos: Video[];
 }
 
 export interface VideoDetails {

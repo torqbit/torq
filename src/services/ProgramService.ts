@@ -1,11 +1,16 @@
 import { IResourceDetail, VideoDetails } from "@/lib/types/learn";
 import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
-import { ICourseList } from "@/pages/courses";
+
 import { ChapterDetail, CourseAPIResponse } from "@/types/courses/Course";
 import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
+export interface ICourseList extends Course {
+  courseId: number;
+  tags: string[];
+  enrollCourses: string[];
+}
 
 export type ApiResponse = {
   success: boolean;

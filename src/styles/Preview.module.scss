@@ -2,15 +2,18 @@
   padding: 40px;
   .video_container {
     width: 800px;
+    height: 450px;
+
+    position: relative;
   }
 
   .video_player_info {
+    position: absolute;
+    bottom: 0;
     background-image: linear-gradient(to bottom, rgba(4, 0, 0, 0.2), rgba(4, 0, 0, 2), rgba(0, 0, 0, 5));
-    margin-top: -120px;
 
     width: 800px;
-    position: relative;
-    margin-bottom: 20px;
+
     h2,
     p {
       margin: 0;

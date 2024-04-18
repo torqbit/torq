@@ -1,9 +1,8 @@
 import SvgIcons from "@/components/SvgIcons";
-import ProgramService from "@/services/ProgramService";
+import { IResourceDetail } from "@/lib/types/learn";
 import styles from "@/styles/Preview.module.scss";
 import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Collapse, Dropdown, Flex, MenuProps, Popconfirm, Tag } from "antd";
+import { Button, Collapse, Flex, Tag } from "antd";
 
 import { FC, ReactNode, useEffect, useState } from "react";
 
@@ -67,13 +66,13 @@ const Preview: FC<{
           keyValue={`${i + 1}`}
         />
       ),
-      children: content.resource.map((res: any, i: any) => {
+      children: content.resource.map((res: IResourceDetail, i: any) => {
         return (
           <div className={styles.resContainer}>
             <Label
               title={res.name}
               icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.videoDuration} min` : `${res.daysToSubmit} days`}
+              time={res.contentType === "Video" ? `${res.videos[0].videoDuration} min` : `${res.daysToSubmit} days`}
               onRender={setRender}
               render={render}
               keyValue={`${i + 1}`}
@@ -84,20 +83,35 @@ const Preview: FC<{
       showArrow: false,
     };
   });
-
+  console.log(uploadVideo, "video url for preview");
   return (
     <section className={styles.preview_container}>
-      <div>{uploadVideo && <video className={styles.video_container} autoPlay src={uploadVideo.videoUrl} loop />}</div>
-
-      <div className={styles.video_player_info}>
-        <div>
-          <h2>Code Collaboration with Git & Github</h2>
-          <p>Learn to Collaborate with team using Git & Github, and work on projects that span to multiple teams ...</p>
+      {/* <div>{uploadVideo && <video className={styles.video_container} autoPlay src={uploadVideo.videoUrl} loop />}</div> */}
+      <div className={styles.video_container}>
+        {uploadVideo && (
+          <iframe
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              outline: "none",
+              border: "none",
+            }}
+            src="https://iframe.mediadelivery.net/embed/227219/2439794d-6042-4459-9bfe-509c5f5a6ece"
+          ></iframe>
+        )}
+        <div className={styles.video_player_info}>
+          <div>
+            <h2>Code Collaboration with Git & Github</h2>
+            <p>
+              Learn to Collaborate with team using Git & Github, and work on projects that span to multiple teams ...
+            </p>
+          </div>
+          <Button className={styles.save_btn}>
+            <div> Enroll Now</div>
+            {SvgIcons.arrowRight}
+          </Button>
         </div>
-        <Button className={styles.save_btn}>
-          <div> Enroll Now</div>
-          {SvgIcons.arrowRight}
-        </Button>
       </div>
 
       <h2>Table of Contents</h2>

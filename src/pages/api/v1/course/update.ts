@@ -23,6 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         data: {
           ...body,
           about: "",
+          state: "DRAFT",
         },
       });
 

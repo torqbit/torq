@@ -137,6 +137,7 @@ const AddResource: FC<{
   uploadResourceUrl: UploadedResourceDetail;
   loading: boolean | undefined;
   chapterId: number;
+  onRefresh: () => void;
   onUploadVideo: (file: RcFile, title: string) => void;
   onCreateRes: (chapterId: number) => void;
   setResourceDrawer: (value: boolean) => void;
@@ -151,6 +152,7 @@ const AddResource: FC<{
   setResourceDrawer,
   showResourceDrawer,
   onUpdateRes,
+  onRefresh,
   uploadResourceUrl,
   loading,
   chapterId,
@@ -206,7 +208,9 @@ const AddResource: FC<{
         placement="right"
         onClose={() => {
           setResourceDrawer(false);
+
           formData.resetFields();
+          onRefresh();
         }}
         open={showResourceDrawer}
         footer={

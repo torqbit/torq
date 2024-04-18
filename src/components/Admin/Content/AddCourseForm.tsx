@@ -27,7 +27,6 @@ import AddResource from "@/components/programs/AddResource";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
-import upload from "@/pages/api/program/upload";
 
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
@@ -161,7 +160,7 @@ const AddCourseForm: FC = () => {
     ProgramService.getResource(
       id,
       (result) => {
-        onDeleteVideo(String(result.resource.video.videoId));
+        onDeleteVideo(String(result.resource.videos[0].videoId));
 
         ProgramService.deleteResource(
           id,
@@ -250,6 +249,7 @@ const AddCourseForm: FC = () => {
   };
 
   const onFindResource = (id: number, content: ResourceContentType) => {
+    setEdit(false);
     ProgramService.getResources(
       id,
       (result) => {
@@ -349,10 +349,6 @@ const AddCourseForm: FC = () => {
       }
     );
   };
-
-  setTimeout(() => {
-    setEdit(false);
-  }, 1000);
 
   const onDeleteThumbnail = (name: string, dir: string) => {
     ProgramService.deleteFile(
@@ -518,10 +514,11 @@ const AddCourseForm: FC = () => {
           content: result.resource.contentType,
           chapterId: result.resource.chapterId,
         });
+        console.log(result.resource.videos[0], "resource video data");
         setUploadResUrl({
-          thumbnail: result.resource.video.thumbnail,
-          videoId: String(result.resource.video.videoId),
-          videoUrl: String(result.resource.video.videoUrl),
+          thumbnail: result.resource.videos[0]?.thumbnail,
+          videoId: String(result.resource.videos[0]?.videoId),
+          videoUrl: String(result.resource.videos[0]?.videoUrl),
         });
         setResourceDrawer(true);
       },
@@ -644,6 +641,7 @@ const AddCourseForm: FC = () => {
       <AddResource
         chapterId={addResource.chapterId}
         addResource={addResource}
+        onRefresh={onRefresh}
         setAddResource={setAddResource}
         onCreateRes={onCreateRes}
         currResId={currResId}
