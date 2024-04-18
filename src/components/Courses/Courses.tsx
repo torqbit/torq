@@ -16,10 +16,8 @@ interface ICourseCard {
 }
 
 const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescription, courseId, duration }) => {
-  console.log(duration, "days", courseName);
   const daysToMonth = Math.floor(Number(duration) / 30);
   const days = Math.floor(Number(duration) % 30);
-  console.log(daysToMonth, "month");
 
   return (
     <div className={styles.course_card}>
@@ -36,7 +34,6 @@ const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescr
         <div className={styles.card_footer}>
           <div className={styles.course_duration}>
             {daysToMonth} months {days} days
-            {/* {duration} */}
           </div>
           <Button type="primary">Start Course</Button>
         </div>
@@ -49,7 +46,6 @@ const Courses: FC<{
   allCourses: Course[];
 }> = ({ allCourses }) => {
   const { data: user } = useSession();
-  //   src={`https://vz-bb827f5e-131.b-cdn.net/${uploadUrl.videoUrl}/thumbnail.jpg`}
   return (
     <Layout2>
       {allCourses.length ? (
