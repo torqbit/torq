@@ -1,10 +1,16 @@
+import { IResourceDetail, VideoDetails } from "@/lib/types/learn";
 import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
-import { ICourseList } from "@/pages/courses";
+
 import { ChapterDetail, CourseAPIResponse } from "@/types/courses/Course";
 import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
+export interface ICourseList extends Course {
+  courseId: number;
+  tags: string[];
+  enrollCourses: string[];
+}
 
 export type ApiResponse = {
   success: boolean;
@@ -22,7 +28,7 @@ export type ApiResponse = {
     ChapterId: number;
   };
   deadline: number;
-  resource: Resource;
+  resource: IResourceDetail;
   allResource: Resource[];
   getProgram: IProgramDetail;
   getCourse: {
@@ -751,6 +757,7 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
+    console.log(resData, "resData");
     fetch(`/api/v1/resource/add`, {
       method: "POST",
       headers: {
@@ -758,6 +765,32 @@ class ProgramService {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(resData),
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200 || result.status == 403) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+  AddResourceVideo = (
+    videoData: VideoDetails,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/resource/addVideo`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(videoData),
     }).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {

@@ -1,3 +1,5 @@
+import { Resource, Video } from "@prisma/client";
+
 export interface Chapter {
   chapterId: number;
   courseId: number;
@@ -44,6 +46,20 @@ export interface IChapter extends Chapter {
       sequenceId: number;
     }
   ];
+}
+
+export interface IResourceDetail extends Resource {
+  videos: Video[];
+}
+
+export interface VideoDetails {
+  id: number;
+  videoUrl?: string;
+  videoId?: string;
+  thumbnail?: string;
+  videoDuration?: number;
+  state?: string;
+  mediaProvider?: string;
 }
 
 export interface IResource {

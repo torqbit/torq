@@ -1,3 +1,4 @@
+import { IResourceDetail } from "@/lib/types/learn";
 import { Resource, ResourceContentType } from "@prisma/client";
 
 export interface ChapterDetail {
@@ -9,7 +10,7 @@ export interface ChapterDetail {
   description: string;
   isActive: boolean;
   name: string;
-  resource: [Resource];
+  resource: IResourceDetail[];
 }
 
 export interface CourseAPIResponse {
@@ -46,6 +47,9 @@ export interface VideoInfo {
   videoId: string;
   thumbnail: string;
   previewUrl: string;
+  mediaProviderName: string;
+  videoDuration: number;
+  state: string;
   videoUrl: string;
 }
 
@@ -68,4 +72,7 @@ export interface UploadedResourceDetail {
   videoUrl?: string;
   videoId?: string;
   thumbnail?: string;
+  state?: string;
+  mediaProvider?: string;
+  videoDuration?: number;
 }

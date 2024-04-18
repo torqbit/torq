@@ -7,7 +7,7 @@ export const getTotalAssignment = async (courseId: number) => {
       courseId: courseId,
     },
     select: {
-      chapter: {
+      chapters: {
         where: {
           isActive: true,
         },
@@ -27,7 +27,7 @@ export const getTotalAssignment = async (courseId: number) => {
   });
 
   let totalAssig: any[] = [];
-  res?.chapter.map((c, i) =>
+  res?.chapters.map((c, i) =>
     c.resource.map((r, i) => {
       totalAssig.push(r.contentType);
     })
@@ -42,7 +42,7 @@ export const getTotalVideoLength = async (courseId: number) => {
       courseId: courseId,
     },
     select: {
-      chapter: {
+      chapters: {
         where: {
           isActive: true,
         },
@@ -52,7 +52,7 @@ export const getTotalVideoLength = async (courseId: number) => {
               isActive: true,
             },
             select: {
-              videoDuration: true,
+              videos: true,
             },
           },
         },
@@ -61,9 +61,9 @@ export const getTotalVideoLength = async (courseId: number) => {
   });
 
   let totalMin: number[] = [];
-  res?.chapter.map((c, i) =>
+  res?.chapters.map((c, i) =>
     c.resource.map((r, i) => {
-      totalMin.push(r.videoDuration);
+      totalMin.push(r.videos[0].videoDuration);
     })
   );
 
@@ -88,7 +88,7 @@ export const getCourseDetailById = async (courseId: number, programId: number) =
       courseId: courseId,
     },
     include: {
-      chapter: {
+      chapters: {
         include: {
           resource: {},
         },
@@ -122,7 +122,7 @@ export default async function getCoursById(programId: number, checkIsEnrolled = 
       include: {
         course: {
           include: {
-            chapter: {
+            chapters: {
               where: {
                 isActive: true,
               },
@@ -171,7 +171,7 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
             state: "ACTIVE",
           },
           include: {
-            chapter: {
+            chapters: {
               where: {
                 isActive: true,
               },
@@ -193,3 +193,13 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
     throw new Error(error);
   }
 }
+
+export const getAllCoursesById = async (id: number) => {
+  const res = await prisma.course.findMany({
+    where: {
+      authorId: id,
+    },
+  });
+
+  return JSON.stringify(res);
+};

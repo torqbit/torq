@@ -4,26 +4,20 @@ import { Button, Dropdown, MenuProps, Modal, Space, Table, Tabs, TabsProps, Tag 
 import SvgIcons from "@/components/SvgIcons";
 import { ISiderMenu, useAppContext } from "../../../components/ContextApi/AppContext";
 import Layout2 from "@/components/Layout2/Layout2";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
+import { getAllCoursesById } from "@/actions/getCourseById";
+import { GetServerSidePropsContext } from "next";
+import { Course } from "@prisma/client";
+interface IProps {
+  author: string;
+  allCourses: Course[] | undefined;
+}
 
-const EnrolledCourseList: FC = () => {
-  const dropdownMenu: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "Edit",
-    },
-    {
-      key: "2",
-      label: "Hide",
-    },
-    {
-      key: "3",
-      label: "Delete",
-    },
-  ];
+const EnrolledCourseList: FC<{ allCourses: Course[] | undefined; author: string }> = ({ allCourses, author }) => {
+  const router = useRouter();
 
   const columns: any = [
     {
@@ -41,12 +35,7 @@ const EnrolledCourseList: FC = () => {
       dataIndex: "state",
       key: "state",
     },
-    {
-      title: "LEARNERS",
-      align: "center",
-      dataIndex: "learners",
-      key: "learners",
-    },
+
     {
       title: "CONTENT DURATION",
       align: "center",
@@ -59,7 +48,29 @@ const EnrolledCourseList: FC = () => {
       dataIndex: "actions",
       render: (_: any, user: any) => (
         <>
-          <Dropdown menu={{ items: dropdownMenu }} placement="bottomRight" arrow={{ pointAtCenter: true }}>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "1",
+                  label: "Edit",
+                  onClick: () => {
+                    router.replace(`/admin/content/course/${user?.key}/edit`);
+                  },
+                },
+                {
+                  key: "2",
+                  label: "Hide",
+                },
+                {
+                  key: "3",
+                  label: "Delete",
+                },
+              ],
+            }}
+            placement="bottomRight"
+            arrow={{ pointAtCenter: true }}
+          >
             {SvgIcons.threeDots}
           </Dropdown>
         </>
@@ -68,32 +79,15 @@ const EnrolledCourseList: FC = () => {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "Foundation of web dev",
-      author: "Vijay",
-      state: "Published",
-      learners: "120",
+  const data = allCourses?.map((course, i) => {
+    return {
+      key: course.courseId,
+      name: course.name,
+      author: author,
+      state: course.state,
       contentDuration: "4h 30m",
-    },
-    {
-      key: "2",
-      name: "Introduction to Git",
-      author: "Arjun",
-      state: "Draft",
-      learners: "NA",
-      contentDuration: "1h 25m",
-    },
-    {
-      key: "3",
-      name: "Introduction to JS",
-      author: "Aaron",
-      state: "Published",
-      learners: "4509",
-      contentDuration: "12h 45m",
-    },
-  ];
+    };
+  });
 
   return (
     <div>
@@ -102,7 +96,7 @@ const EnrolledCourseList: FC = () => {
   );
 };
 
-const Content: FC = () => {
+const Content = (props: IProps) => {
   const { data: user } = useSession();
   const [modal, contextWrapper] = Modal.useModal();
   const { globalState, dispatch } = useAppContext();
@@ -120,7 +114,7 @@ const Content: FC = () => {
     {
       key: "1",
       label: "Courses",
-      children: <EnrolledCourseList />,
+      children: <EnrolledCourseList allCourses={props.allCourses} author={props.author} />,
     },
     {
       key: "2",
@@ -225,3 +219,17 @@ const Content: FC = () => {
 };
 
 export default Content;
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const user = await getSession(ctx);
+  if (user) {
+    const allCourses = await getAllCoursesById(user?.id);
+
+    return {
+      props: {
+        author: user.user?.name,
+        allCourses: JSON.parse(allCourses),
+      },
+    };
+  }
+};

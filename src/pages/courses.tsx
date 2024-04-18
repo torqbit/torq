@@ -1,40 +1,40 @@
 import type { GetServerSidePropsContext } from "next";
 import styles from "@/styles/LandingPage.module.scss";
-import CourseListPage from "../components/CoursesListPage";
-import { getSession } from "next-auth/react";
-import { ICourseInfo } from "./add-course";
-import React from "react";
-import { signOut, useSession } from "next-auth/react";
-import { Role } from "@prisma/client";
 
+import { getSession } from "next-auth/react";
+
+import React from "react";
+
+import { Course } from "@prisma/client";
+import Courses from "@/components/Courses/Courses";
+import { getAllCoursesById } from "@/actions/getCourseById";
+import { Spin } from "antd";
 
 interface IProps {
   userId: number;
-  role: Role;
-}
-
-export interface ICourseList extends ICourseInfo {
-  courseId: number;
-  tags: string[];
-  enrollCourses: string[];
+  allCourses: Course[] | undefined;
 }
 
 const Home = (props: IProps) => {
   return (
     <div className={styles.container}>
-      <CourseListPage userId={props.userId} role={props.role} />
+      {props.allCourses ? <Courses allCourses={props.allCourses} /> : <Spin fullscreen tip />}
     </div>
   );
 };
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getSession(ctx);
-  return {
-    props: {
-      role: user?.role ?? "",
-      userId: user?.id ?? "",
-    },
-  };
+  if (user) {
+    const allCourses = await getAllCoursesById(user?.id);
+
+    return {
+      props: {
+        userId: user.id,
+        allCourses: JSON.parse(allCourses),
+      },
+    };
+  }
 };
 
 export default Home;
