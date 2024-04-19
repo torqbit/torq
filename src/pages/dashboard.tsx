@@ -55,12 +55,6 @@ const Dashboard: FC = () => {
       icon: SvgIcons.courses,
       children: <EnrolledCourseList />,
     },
-    {
-      key: "3",
-      label: "Quiz",
-      children: "Content of Tab Pane 3",
-      icon: SvgIcons.quiz,
-    },
   ];
 
   return (

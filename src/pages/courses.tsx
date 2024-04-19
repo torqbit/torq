@@ -1,8 +1,6 @@
 import type { GetServerSidePropsContext } from "next";
 import styles from "@/styles/LandingPage.module.scss";
-
 import { getSession } from "next-auth/react";
-
 import React from "react";
 
 import { Course } from "@prisma/client";
@@ -15,7 +13,7 @@ interface IProps {
   allCourses: Course[] | undefined;
 }
 
-const Home = (props: IProps) => {
+const CoursesPage = (props: IProps) => {
   return (
     <div className={styles.container}>
       {props.allCourses ? <Courses allCourses={props.allCourses} /> : <Spin fullscreen tip />}
@@ -37,4 +35,4 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 };
 
-export default Home;
+export default CoursesPage;
