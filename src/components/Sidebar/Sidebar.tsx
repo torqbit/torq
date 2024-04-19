@@ -9,19 +9,12 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-
-import ProgramService from "@/services/ProgramService";
-import { useRouter } from "next/router";
-import { error } from "console";
-
 import { IResponse, getFetch } from "@/services/request";
 
 const { Sider } = Layout;
 
 const Sidebar: FC = () => {
   const [collapsed, setCollapsed] = React.useState(false);
-
-  const router = useRouter();
 
   const [isNewNotifi, setNewNotifi] = React.useState(false);
 
@@ -68,12 +61,12 @@ const Sidebar: FC = () => {
       icon: SvgIcons.courses,
     },
     {
-      label: "Guides",
+      label: <Link href="/guides">Guides</Link>,
       key: "guides",
       icon: SvgIcons.guides,
     },
     {
-      label: "Quiz",
+      label: <Link href="/quizzes">Quizzes</Link>,
       key: "quiz",
       icon: SvgIcons.quiz,
     },
