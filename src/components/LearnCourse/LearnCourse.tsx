@@ -8,6 +8,9 @@ import ProgramService from "@/services/ProgramService";
 import { ChapterDetail } from "@/types/courses/Course";
 import { IResourceDetail } from "@/lib/types/learn";
 import { number } from "zod";
+import Link from "next/link";
+import CourseDiscussion from "./AboutCourse/CourseDiscussion/CourseDiscussion";
+import { useSession } from "next-auth/react";
 
 const Label: FC<{
   title: string;
@@ -62,6 +65,7 @@ const LearnCourse: FC<{}> = () => {
   const [chapterId, setChapterId] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
+  const { data: session } = useSession();
 
   const router = useRouter();
   const items: TabsProps["items"] = [
@@ -74,7 +78,9 @@ const LearnCourse: FC<{}> = () => {
       key: "2",
       label: "Q & A",
 
-      children: "Q And A page",
+      children: session && selectedLesson && (
+        <CourseDiscussion loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />
+      ),
     },
   ];
 
@@ -154,7 +160,10 @@ const LearnCourse: FC<{}> = () => {
     <Layout2>
       {!loading ? (
         <section className={styles.learn_course_page}>
-          <div className={styles.learn_breadcrumb}>Courses {SvgIcons.chevronRight} Into to git</div>
+          <div className={styles.learn_breadcrumb}>
+            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 6 }}>{SvgIcons.chevronRight} </div>Into to
+            git
+          </div>
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>
