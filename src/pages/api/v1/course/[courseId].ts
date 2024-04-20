@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           include: {
             resource: {
               include: {
-                videos: {},
+                video: {},
               },
             },
           },

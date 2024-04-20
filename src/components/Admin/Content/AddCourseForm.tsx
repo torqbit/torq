@@ -160,7 +160,7 @@ const AddCourseForm: FC = () => {
     ProgramService.getResource(
       id,
       (result) => {
-        onDeleteVideo(String(result.resource.videos[0].videoId));
+        onDeleteVideo(String(result.resource.video.videoId));
 
         ProgramService.deleteResource(
           id,
@@ -514,11 +514,11 @@ const AddCourseForm: FC = () => {
           content: result.resource.contentType,
           chapterId: result.resource.chapterId,
         });
-        console.log(result.resource.videos[0], "resource video data");
+        console.log(result.resource.video, "resource video data");
         setUploadResUrl({
-          thumbnail: result.resource.videos[0]?.thumbnail,
-          videoId: String(result.resource.videos[0]?.videoId),
-          videoUrl: String(result.resource.videos[0]?.videoUrl),
+          thumbnail: result.resource.video?.thumbnail,
+          videoId: String(result.resource.video?.videoId),
+          videoUrl: String(result.resource.video?.videoUrl),
         });
         setResourceDrawer(true);
       },

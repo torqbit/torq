@@ -97,7 +97,7 @@ const LearnCourse: FC<{}> = () => {
   const lessonItems = courseData.chapters.map((content, i) => {
     let totalTime = 0;
     content.resource.forEach((data) => {
-      totalTime = totalTime + data.videos[0]?.videoDuration;
+      totalTime = totalTime + data.video?.videoDuration;
     });
     return {
       key: `${content.chapterId}`,
@@ -120,7 +120,7 @@ const LearnCourse: FC<{}> = () => {
             <Label
               title={res.name}
               icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.videos[0]?.videoDuration} min` : `${res.daysToSubmit} days`}
+              time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
               onSelectResource={onSelectResource}
               resourceId={res.resourceId}
               setChapterId={() => {}}
@@ -143,6 +143,7 @@ const LearnCourse: FC<{}> = () => {
         (result) => {
           setCourseData({
             ...courseData,
+            name: result.courseDetails.name,
             expiryInDays: result.courseDetails.expiryInDays,
             chapters: result.courseDetails.chapters,
           });
@@ -161,13 +162,13 @@ const LearnCourse: FC<{}> = () => {
       {!loading ? (
         <section className={styles.learn_course_page}>
           <div className={styles.learn_breadcrumb}>
-            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 6 }}>{SvgIcons.chevronRight} </div>Into to
-            git
+            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 6 }}>{SvgIcons.chevronRight} </div>{" "}
+            {courseData.name}
           </div>
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>
-                {selectedLesson?.videos[0].videoUrl && !loadingLesson ? (
+                {selectedLesson?.video?.videoUrl && !loadingLesson ? (
                   <iframe
                     style={{
                       position: "absolute",
@@ -177,7 +178,7 @@ const LearnCourse: FC<{}> = () => {
                       outline: "none",
                       border: "none",
                     }}
-                    src={selectedLesson.videos[0].videoUrl}
+                    src={selectedLesson.video.videoUrl}
                   ></iframe>
                 ) : (
                   <div

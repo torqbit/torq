@@ -126,7 +126,7 @@ model Course {
   state             StateType            @default(DRAFT)
   videoDuration     Int                  @default(600)
   chapters          Chapter[]
-  program           Program?             @relation(fields: [programId], references: [id], onDelete: Cascade)
+  program           Program?             @relation(fields: [programId], references: [id])
   CourseRegistraion CourseRegistration[]
 
   @@unique([courseId, name])
@@ -179,7 +179,7 @@ model Resource {
   discussions        Discussion[]
   resourceAssignInfo AssignmentAndTask[]
   notifications      Notification[]
-  videos             Video[]
+  video              Video?
 
   @@unique([resourceId])
   @@index([chapterId])
@@ -205,25 +205,26 @@ model Video {
 //****** Reource Schema End ******//
 
 //****** CourseRegistration Schema  ******//
-enum ProgramState {
+enum CourseState {
   ENROLLED
   STARTED
   COMPLETED
 }
 
 model CourseRegistration {
-  registrationId Int          @id @default(autoincrement())
+  registrationId Int         @id @default(autoincrement())
   courseId       Int
   studentId      Int
-  programState   ProgramState @default(ENROLLED)
+  courseState    CourseState @default(ENROLLED)
+  courseType     CourseType  @default(FREE)
   image          String?
-  isActive       Boolean      @default(true)
-  dateJoined     DateTime     @default(now())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  isActive       Boolean     @default(true)
+  dateJoined     DateTime    @default(now())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   expireIn       DateTime?
-  user           User         @relation(fields: [studentId], references: [id])
-  course         Course       @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  user           User        @relation(fields: [studentId], references: [id])
+  course         Course      @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   @@unique([registrationId])
   @@index([studentId])
