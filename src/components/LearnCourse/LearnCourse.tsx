@@ -1,4 +1,4 @@
-import { Collapse, Flex, Spin, Tabs, TabsProps, Tag } from "antd";
+import { Button, Collapse, Flex, Skeleton, Spin, Tabs, TabsProps, Tag, message } from "antd";
 import Layout2 from "../Layout2/Layout2";
 import styles from "@/styles/LearnCourses.module.scss";
 import { FC, ReactNode, useEffect, useState } from "react";
@@ -7,10 +7,12 @@ import { useRouter } from "next/router";
 import ProgramService from "@/services/ProgramService";
 import { ChapterDetail } from "@/types/courses/Course";
 import { IResourceDetail } from "@/lib/types/learn";
-import { number } from "zod";
+
 import Link from "next/link";
 import CourseDiscussion from "./AboutCourse/CourseDiscussion/CourseDiscussion";
 import { useSession } from "next-auth/react";
+import { IResponse, getFetch, postFetch } from "@/services/request";
+import appConstant from "@/services/appConstant";
 
 const Label: FC<{
   title: string;
@@ -68,6 +70,54 @@ const LearnCourse: FC<{}> = () => {
   const { data: session } = useSession();
 
   const router = useRouter();
+
+  const [isCompleted, setCompleted] = useState<string>();
+  const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
+
+  const checkIsCompleted = async () => {
+    setLoadingBtn(true);
+    const res = await getFetch(`/api/progress/get/${selectedLesson?.resourceId}/checkStatus`);
+    const result = (await res.json()) as IResponse;
+
+    if (res.ok && result.success) {
+      result.isCompleted ? setCompleted("completed") : setCompleted("notCompleted");
+    }
+    setLoadingBtn(false);
+  };
+
+  useEffect(() => {
+    if (selectedLesson?.resourceId) {
+      checkIsCompleted();
+    }
+  }, [selectedLesson, refresh]);
+
+  const onMarkAsCompleted = async () => {
+    try {
+      if (isCompleted === "completed") return;
+
+      const res = await postFetch(
+        {
+          chapterId: selectedLesson?.chapterId,
+          courseId: Number(router.query.courseId),
+          userId: session?.id,
+          sequenceId: selectedLesson?.sequenceId,
+
+          resourceId: selectedLesson?.resourceId,
+        },
+        `/api/progress/create`
+      );
+      const result = (await res.json()) as IResponse;
+      if (res.ok && result.success) {
+        message.success(result.message);
+        setRefresh(!refresh);
+      } else {
+        message.error(result.error);
+      }
+    } catch (err) {
+      message.error(appConstant.cmnErrorMsg);
+    }
+  };
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -94,7 +144,7 @@ const LearnCourse: FC<{}> = () => {
     setLessonLoading(false);
   };
 
-  const lessonItems = courseData.chapters.map((content, i) => {
+  const lessonItems = courseData.chapters?.map((content, i) => {
     let totalTime = 0;
     content.resource.forEach((data) => {
       totalTime = totalTime + data.video?.videoDuration;
@@ -143,12 +193,14 @@ const LearnCourse: FC<{}> = () => {
         (result) => {
           setCourseData({
             ...courseData,
-            name: result.courseDetails.name,
-            expiryInDays: result.courseDetails.expiryInDays,
-            chapters: result.courseDetails.chapters,
+            name: result.courseDetails?.name,
+            expiryInDays: result.courseDetails?.expiryInDays,
+            chapters: result.courseDetails?.chapters,
           });
-          setSelectedLesson(result.courseDetails.chapters[0]?.resource[0]);
-          setChapterId(result.courseDetails.chapters[0]?.chapterId);
+          setSelectedLesson(result.courseDetails?.chapters[0]?.resource[0]);
+          setChapterId(result.courseDetails?.chapters[0]?.chapterId);
+          checkIsCompleted();
+
           setLoading(false);
         },
         (error) => {
@@ -174,7 +226,6 @@ const LearnCourse: FC<{}> = () => {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-
                       outline: "none",
                       border: "none",
                     }}
@@ -186,7 +237,6 @@ const LearnCourse: FC<{}> = () => {
                       position: "absolute",
                       width: "100%",
                       height: "100%",
-
                       outline: "none",
                       border: "none",
                     }}
@@ -196,10 +246,34 @@ const LearnCourse: FC<{}> = () => {
                 )}
               </div>
 
-              <Tabs tabBarGutter={40} className={styles.add_course_tabs} items={items} />
+              <Tabs
+                tabBarExtraContent={
+                  <>
+                    {isCompleted ? (
+                      <>
+                        {isCompleted === "completed" && (
+                          <Button>
+                            <Flex gap={5}>{SvgIcons.check} Completed </Flex>
+                          </Button>
+                        )}
+                        {isCompleted === "notCompleted" && (
+                          <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
+                            Mark as Completed
+                          </Button>
+                        )}
+                      </>
+                    ) : (
+                      <Skeleton.Button />
+                    )}
+                  </>
+                }
+                tabBarGutter={40}
+                className={styles.add_course_tabs}
+                items={items}
+              />
             </div>
             <div className={styles.lessons_container}>
-              {lessonItems.map((item, i) => {
+              {lessonItems?.map((item, i) => {
                 return (
                   <div key={i} className={styles.lessons_list_wrapper}>
                     <Collapse
