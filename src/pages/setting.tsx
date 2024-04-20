@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import styleLayout from "../../styles/Dashboard.module.scss";
+import styleLayout from "../styles/Dashboard.module.scss";
 import styles from "@/styles/Profile.module.scss";
 import { getSession, useSession } from "next-auth/react";
 import Layout2 from "@/components/Layout2/Layout2";

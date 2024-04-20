@@ -43,12 +43,17 @@ export const config = {
   matcher: [
     "/",
     "/courses",
+    "/guides",
+    "/quizzes",
     "/add-course",
     "/learn/course/:path*",
     "/enroll-courses/",
     "/course/about/:path*",
+    "/dashboard",
     "/profile",
+    "/admin/:path*",
     "/program/:path*/course/:path*",
     "/program/add-program",
+    "/setting",
   ],
 };

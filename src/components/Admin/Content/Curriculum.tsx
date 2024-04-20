@@ -209,7 +209,6 @@ const Curriculum: FC<{
       showArrow: false,
     };
   });
-  console.log(chapters, "chapter");
   return (
     <section className={styles.curriculum}>
       <div className={styles.curriculum_container}>
