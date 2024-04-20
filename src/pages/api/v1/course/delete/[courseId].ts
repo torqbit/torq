@@ -14,14 +14,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (findCourse) {
-      const [updateSeq, deleteCourse] = await prisma.$transaction([
-        prisma.$executeRaw`UPDATE Course SET sequenceId = sequenceId - 1  WHERE sequenceId > ${findCourse.sequenceId};`,
-        prisma.course.delete({
-          where: {
-            courseId: Number(courseId),
-          },
-        }),
-      ]);
+      const courseDeleted = await prisma.course.delete({
+        where: {
+          courseId: Number(courseId),
+        },
+      });
+
       return res.status(200).json({
         info: false,
         success: true,

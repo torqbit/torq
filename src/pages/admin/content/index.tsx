@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../../styles/Dashboard.module.scss";
-import { Button, Dropdown, MenuProps, Modal, Space, Table, Tabs, TabsProps, Tag } from "antd";
+import { Button, Dropdown, MenuProps, Modal, Space, Table, Tabs, TabsProps, Tag, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { ISiderMenu, useAppContext } from "../../../components/ContextApi/AppContext";
 import Layout2 from "@/components/Layout2/Layout2";
@@ -11,13 +11,20 @@ import { useRouter } from "next/router";
 import { getAllCoursesById } from "@/actions/getCourseById";
 import { GetServerSidePropsContext } from "next";
 import { Course } from "@prisma/client";
+
 interface IProps {
   author: string;
   allCourses: Course[] | undefined;
 }
 
-const EnrolledCourseList: FC<{ allCourses: Course[] | undefined; author: string }> = ({ allCourses, author }) => {
+const EnrolledCourseList: FC<{
+  allCourses: Course[] | undefined;
+  author: string;
+  handleCourseStatusUpdate: (courseId: number, newState: string) => void;
+  handleCourseDelete: (courseId: number) => void;
+}> = ({ allCourses, author, handleCourseStatusUpdate, handleCourseDelete }) => {
   const router = useRouter();
+  const [modal, contextHolder] = Modal.useModal();
 
   const columns: any = [
     {
@@ -46,7 +53,7 @@ const EnrolledCourseList: FC<{ allCourses: Course[] | undefined; author: string 
       title: "ACTIONS",
       align: "center",
       dataIndex: "actions",
-      render: (_: any, user: any) => (
+      render: (_: any, courseInfo: any) => (
         <>
           <Dropdown
             menu={{
@@ -55,16 +62,31 @@ const EnrolledCourseList: FC<{ allCourses: Course[] | undefined; author: string 
                   key: "1",
                   label: "Edit",
                   onClick: () => {
-                    router.replace(`/admin/content/course/${user?.key}/edit`);
+                    router.push(`/admin/content/course/${courseInfo?.key}/edit`);
                   },
                 },
                 {
                   key: "2",
-                  label: "Hide",
+                  label: courseInfo.state == "DRAFT" ? "Publish" : "Move to Draft",
+                  onClick: () => {
+                    handleCourseStatusUpdate(Number(courseInfo.key), courseInfo.state == "DRAFT" ? "ACTIVE" : "DRAFT");
+                  },
                 },
                 {
                   key: "3",
                   label: "Delete",
+                  onClick: () => {
+                    console.log("clicked on delete");
+                    modal.confirm({
+                      title: "Are you sure you want to delete the course?",
+                      okText: "Yes",
+                      cancelText: "No",
+                      onOk: () => {
+                        console.log("deleting the course");
+                        handleCourseDelete(Number(courseInfo.key));
+                      },
+                    });
+                  },
                 },
               ],
             }}
@@ -92,6 +114,7 @@ const EnrolledCourseList: FC<{ allCourses: Course[] | undefined; author: string 
   return (
     <div>
       <Table size="small" className="users_table" columns={columns} dataSource={data} />
+      {contextHolder}
     </div>
   );
 };
@@ -101,6 +124,10 @@ const Content = (props: IProps) => {
   const [modal, contextWrapper] = Modal.useModal();
   const { globalState, dispatch } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [coursesAuthored, setCoursesAuthored] = useState<{ fetchCourses: boolean; courses: Course[] | undefined }>({
+    fetchCourses: false,
+    courses: props.allCourses,
+  });
   const router = useRouter();
 
   const showModal = () => {
@@ -109,12 +136,68 @@ const Content = (props: IProps) => {
   const onChange = (key: string) => {
     console.log(key);
   };
+  const onCourseDelete = (courseId: number) => {
+    ProgramService.deleteCourse(
+      courseId,
+      (res) => {
+        if (res.success) {
+          setCoursesAuthored({ ...coursesAuthored, fetchCourses: true });
+          message.success("Course has been deleted");
+        } else {
+          message.error(`Course deletion failed due to ${res.error}`);
+        }
+      },
+      (err) => {
+        message.error(`Course deletion failed due to ${err}`);
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (coursesAuthored.fetchCourses) {
+      ProgramService.getCoursesByAuthor(
+        (res) => {
+          console.log(res.courses);
+          setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, courses: res.courses });
+        },
+        (err) => {
+          setCoursesAuthored({ ...coursesAuthored, fetchCourses: false });
+          message.error(`Unable to get the courses due to ${err}`);
+        }
+      );
+    }
+  }, [coursesAuthored.fetchCourses]);
+
+  const onCourseUpdate = (courseId: number, newState: string) => {
+    ProgramService.updateCourseState(
+      courseId,
+      newState,
+      (res) => {
+        if (res.success) {
+          message.success(`Course status has been updated`);
+          setCoursesAuthored({ ...coursesAuthored, fetchCourses: true });
+        } else {
+          message.error(`Course status update failed due to ${res.error}`);
+        }
+      },
+      (err) => {
+        message.error(`Course status update failed due to ${err}`);
+      }
+    );
+  };
 
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "Courses",
-      children: <EnrolledCourseList allCourses={props.allCourses} author={props.author} />,
+      children: (
+        <EnrolledCourseList
+          allCourses={coursesAuthored.courses}
+          author={props.author}
+          handleCourseDelete={onCourseDelete}
+          handleCourseStatusUpdate={onCourseUpdate}
+        />
+      ),
     },
     {
       key: "2",
@@ -151,8 +234,6 @@ const Content = (props: IProps) => {
 
   const onCreateDraftCourse = () => {
     showModal();
-    console.log(`inside creatind the draft course`);
-
     if (router.query.id) {
       router.push(`/admin/content/course/${router.query.id}/edit`);
     } else {

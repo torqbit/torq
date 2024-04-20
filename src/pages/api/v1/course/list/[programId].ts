@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({
       info: false,
       success: true,
-      message: "Crouse Loaded",
+      message: "Courses Loaded",
       allCourse: allCourse,
     });
   } catch (error) {
