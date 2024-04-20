@@ -7,11 +7,18 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const userId = req.query?.userId;
-    const programId = req.query.programId
+    const chapterId = req.query?.chapterId;
+
+    const resourceId = req.query?.resourceId;
+
+    const courseId = req.query.programId;
+
     const progress = await prisma.courseProgress.findMany({
       where: {
         studentId: Number(userId),
-        programId:Number(programId)
+        courseId: Number(courseId),
+        chapterId: Number(chapterId),
+        resourceId: Number(resourceId),
       },
     });
 

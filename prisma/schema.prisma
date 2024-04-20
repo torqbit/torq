@@ -235,20 +235,19 @@ model CourseRegistration {
 
 //****** CourseProgress Schema  ******//
 model CourseProgress {
-  courseProgressId Int @id @default(autoincrement())
-  programId        Int
+  courseProgressId Int      @id @default(autoincrement())
+  courseId         Int
+  chapterId        Int
   sequenceId       Int
   resourceId       Int
-
-  studentId Int      @map("user_id")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
-  resource  Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
+  studentId        Int      @map("user_id")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
 
   @@unique([courseProgressId, resourceId])
   @@index([resourceId])
-  @@index([programId])
+  @@index([courseId])
 }
 
 //****** CourseProgress Schema  End******//
@@ -396,8 +395,7 @@ model Program {
   course           Course[]
   programType      ProgramType @default(FREE)
 
-  programPrice    Float?           @default(0)
-  programProgress CourseProgress[]
+  programPrice Float? @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
