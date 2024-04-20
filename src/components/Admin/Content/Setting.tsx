@@ -63,7 +63,6 @@ const CourseSetting: FC<{
   const [preview, setPreview] = useState<boolean>(false);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
-      console.log("uploading");
       return;
     }
     if (info.file.status === "done") {

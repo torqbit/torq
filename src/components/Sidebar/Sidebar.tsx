@@ -1,12 +1,12 @@
 import React, { FC, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
 
-import { Avatar, Badge, Button, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
+import { Avatar, Badge, Button, Dropdown, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { IResponse, getFetch } from "@/services/request";
@@ -76,7 +76,7 @@ const Sidebar: FC = () => {
       key: "group",
     },
     {
-      label: <Link href="/torq/setting">Setting</Link>,
+      label: <Link href="/setting">Setting</Link>,
       key: "setting",
       icon: SvgIcons.setting,
     },
@@ -167,7 +167,30 @@ const Sidebar: FC = () => {
             </div>
           )}
         </Space>
-        {!collapsed && SvgIcons.threeDots}
+        {!collapsed && (
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "0",
+                  label: <Link href={`/setting`}>Setting</Link>,
+                },
+                {
+                  key: "1",
+                  label: "Logout",
+                  onClick: () => {
+                    signOut();
+                  },
+                },
+              ],
+            }}
+            trigger={["click"]}
+            placement="bottomRight"
+            arrow={{ pointAtCenter: true }}
+          >
+            {SvgIcons.threeDots}
+          </Dropdown>
+        )}
       </Space>
     </Sider>
   );

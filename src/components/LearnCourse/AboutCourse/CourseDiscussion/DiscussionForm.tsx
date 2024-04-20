@@ -48,7 +48,6 @@ const QAForm: FC<{
       attachModal.fileList.forEach(async (file: any) => {
         formData.append("files", file);
       });
-      console.log(comment);
       formData.append("comment", comment);
       formData.append("resourceId", resourceId.toString());
       formData.append("parentCommentId", `${parentCommentId}`);
