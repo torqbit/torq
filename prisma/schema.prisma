@@ -19,24 +19,24 @@ enum Role {
 }
 
 model User {
-  id                   Int                   @id @default(autoincrement()) @db.Int()
+  id                   Int                  @id @default(autoincrement()) @db.Int()
   name                 String?
-  email                String?               @unique
+  email                String?              @unique
   phone                String?
   image                String?
   emailVerified        DateTime?
-  isActive             Boolean               @default(true)
-  role                 Role                  @default(STUDENT)
-  dateJoined           DateTime              @default(now())
-  createdAt            DateTime              @default(now())
-  programRegistration  programRegistration[]
+  isActive             Boolean              @default(true)
+  role                 Role                 @default(STUDENT)
+  dateJoined           DateTime             @default(now())
+  createdAt            DateTime             @default(now())
+  CourseRegistration   CourseRegistration[]
   account              Account[]
   sessions             Session[]
   discussion           Discussion[]
-  fromUserNotification Notification[]        @relation("fromUser")
-  toUserNotification   Notification[]        @relation("toUser")
-  submissionTask       SubmissionTask[]      @relation("user")
-  evaluatedAssignment  SubmissionTask[]      @relation("evaluatedByUser")
+  fromUserNotification Notification[]       @relation("fromUser")
+  toUserNotification   Notification[]       @relation("toUser")
+  submissionTask       SubmissionTask[]     @relation("user")
+  evaluatedAssignment  SubmissionTask[]     @relation("evaluatedByUser")
 }
 
 //****** User Schema End ******//
@@ -103,31 +103,31 @@ enum StateType {
 }
 
 model Course {
-  courseId Int @id @default(autoincrement())
-
-  programId        Int?       @default(1)
-  name             String
-  about            String     @db.Text()
-  description      String     @db.Text()
-  videoThumbnail   String?    @db.VarChar(200)
-  videoUrl         String?
-  videoId          String?
-  thumbnail        String?
-  icon             String?
-  authorId         Int        @map("user_id")
-  skills           Json?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @default(now())
-  courseType       CourseType @default(FREE)
-  isActive         Boolean    @default(true)
-  coursePrice      Float?     @default(0)
-  sequenceId       Int?
-  expiryInDays     Int        @default(365)
-  durationInMonths Int        @default(12)
-  state            StateType  @default(DRAFT)
-  videoDuration    Int        @default(600)
-  chapters         Chapter[]
-  program          Program?   @relation(fields: [programId], references: [id], onDelete: Cascade)
+  courseId          Int                  @id @default(autoincrement())
+  programId         Int?                 @default(1)
+  name              String
+  about             String               @db.Text()
+  description       String               @db.Text()
+  videoThumbnail    String?              @db.VarChar(200)
+  videoUrl          String?
+  videoId           String?
+  thumbnail         String?
+  icon              String?
+  authorId          Int                  @map("user_id")
+  skills            Json?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @default(now())
+  courseType        CourseType           @default(FREE)
+  isActive          Boolean              @default(true)
+  coursePrice       Float?               @default(0)
+  sequenceId        Int?
+  expiryInDays      Int                  @default(365)
+  durationInMonths  Int                  @default(12)
+  state             StateType            @default(DRAFT)
+  videoDuration     Int                  @default(600)
+  chapters          Chapter[]
+  program           Program?             @relation(fields: [programId], references: [id])
+  CourseRegistraion CourseRegistration[]
 
   @@unique([courseId, name])
   @@index([programId])
@@ -179,7 +179,7 @@ model Resource {
   discussions        Discussion[]
   resourceAssignInfo AssignmentAndTask[]
   notifications      Notification[]
-  videos             Video[]
+  video              Video?
 
   @@unique([resourceId])
   @@index([chapterId])
@@ -205,29 +205,30 @@ model Video {
 //****** Reource Schema End ******//
 
 //****** CourseRegistration Schema  ******//
-enum ProgramState {
+enum CourseState {
   ENROLLED
   STARTED
   COMPLETED
 }
 
-model programRegistration {
-  registrationId Int          @id @default(autoincrement())
-  programId      Int
+model CourseRegistration {
+  registrationId Int         @id @default(autoincrement())
+  courseId       Int
   studentId      Int
-  programState   ProgramState @default(ENROLLED)
+  courseState    CourseState @default(ENROLLED)
+  courseType     CourseType  @default(FREE)
   image          String?
-  isActive       Boolean      @default(true)
-  dateJoined     DateTime     @default(now())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  isActive       Boolean     @default(true)
+  dateJoined     DateTime    @default(now())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   expireIn       DateTime?
-  user           User         @relation(fields: [studentId], references: [id])
-  program        Program      @relation(fields: [programId], references: [id], onDelete: Cascade)
+  user           User        @relation(fields: [studentId], references: [id])
+  course         Course      @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   @@unique([registrationId])
   @@index([studentId])
-  @@index([programId])
+  @@index([courseId])
 }
 
 //****** CourseRegistration Schema End******//
@@ -382,21 +383,21 @@ enum ProgramType {
 }
 
 model Program {
-  id                  Int                   @default(autoincrement()) @db.Int()
-  authorId            Int                   @map("user_id")
-  title               String                @db.Text()
-  description         String?               @db.Text()
-  durationInMonths    Int
-  thumbnail           String?               @db.Text()
-  banner              String?               @db.Text()
-  skills              Json?
-  aboutProgram        String?               @db.Text()
-  state               StateType
-  course              Course[]
-  programType         ProgramType           @default(FREE)
-  programRegistration programRegistration[]
-  programPrice        Float?                @default(0)
-  programProgress     CourseProgress[]
+  id               Int         @default(autoincrement()) @db.Int()
+  authorId         Int         @map("user_id")
+  title            String      @db.Text()
+  description      String?     @db.Text()
+  durationInMonths Int
+  thumbnail        String?     @db.Text()
+  banner           String?     @db.Text()
+  skills           Json?
+  aboutProgram     String?     @db.Text()
+  state            StateType
+  course           Course[]
+  programType      ProgramType @default(FREE)
+
+  programPrice    Float?           @default(0)
+  programProgress CourseProgress[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

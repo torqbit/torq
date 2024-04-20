@@ -1,0 +1,47 @@
+.learn_course_page {
+  padding: 20px 40px;
+  overflow-y: hidden;
+  .video_container {
+    width: 800px;
+    height: 450px;
+
+    position: relative;
+  }
+  .learn_breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+
+  .lessons_container {
+    overflow: hidden;
+    height: 100%;
+    .lessons_list_wrapper {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.labelContainer {
+  min-width: 300px;
+
+  .time_tag {
+    color: var(--font-seconadary);
+    background-color: var(--bg-secondary);
+  }
+}
+.selectedLable {
+  min-width: 300px;
+
+  background-color: var(--font-label);
+  .time_tag {
+    background-color: var(--bg-primary);
+  }
+  .title_container {
+    color: var(--bg-primary);
+  }
+}

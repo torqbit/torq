@@ -5,6 +5,7 @@ import { Button, Space, Tag } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";
 import { Course } from "@prisma/client";
+import { useRouter } from "next/router";
 
 interface ICourseCard {
   badge: "Beginner" | "Intermidiate" | "Advanced";
@@ -16,6 +17,7 @@ interface ICourseCard {
 }
 
 const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescription, courseId, duration }) => {
+  const router = useRouter();
   const daysToMonth = Math.floor(Number(duration) / 30);
   const days = Math.floor(Number(duration) % 30);
 
@@ -35,7 +37,9 @@ const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescr
           <div className={styles.course_duration}>
             {daysToMonth} months {days} days
           </div>
-          <Button type="primary">Start Course</Button>
+          <Button type="primary" onClick={() => router.replace(`/courses/${courseId}`)}>
+            Start Course
+          </Button>
         </div>
       </div>
     </div>

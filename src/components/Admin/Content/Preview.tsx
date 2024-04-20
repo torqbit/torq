@@ -72,7 +72,7 @@ const Preview: FC<{
             <Label
               title={res.name}
               icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.videos[0].videoDuration} min` : `${res.daysToSubmit} days`}
+              time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
               onRender={setRender}
               render={render}
               keyValue={`${i + 1}`}
