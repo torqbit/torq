@@ -1,4 +1,4 @@
-import { IResourceDetail, VideoDetails } from "@/lib/types/learn";
+import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/learn";
 import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 
@@ -16,6 +16,11 @@ export type ApiResponse = {
   success: boolean;
   error: string;
   message: string;
+  registerCourses: IRegisteredCourses[];
+  progress: {
+    courseName: string;
+    progress: string;
+  }[];
   program: {
     aboutProgram: string;
     banner: string;
@@ -384,6 +389,28 @@ class ProgramService {
 
   getCoursesByAuthor = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
     fetch(`/api/v1/course/list/coursesByAuthor`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  getRegisterCourses = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    fetch(`/api/v1/course/list/registerCourses`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -831,11 +858,11 @@ class ProgramService {
 
   deleteResource = (
     resourceId: number,
-
+    courseId: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/resource/delete/${resourceId}`, {
+    fetch(`/api/v1/resource/delete/${resourceId}?courseId=${courseId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -987,6 +1014,32 @@ class ProgramService {
     });
   };
 
+  getProgress = (
+    courseId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/course/getProgress/${courseId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
   getAssignmentDeadline = (
     resourceId: number,
     onSuccess: (response: ApiResponse) => void,

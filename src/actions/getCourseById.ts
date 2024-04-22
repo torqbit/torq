@@ -52,7 +52,7 @@ export const getTotalVideoLength = async (courseId: number) => {
               isActive: true,
             },
             select: {
-              videos: true,
+              video: true,
             },
           },
         },
@@ -63,7 +63,7 @@ export const getTotalVideoLength = async (courseId: number) => {
   let totalMin: number[] = [];
   res?.chapters.map((c, i) =>
     c.resource.map((r, i) => {
-      totalMin.push(r.videos[0].videoDuration);
+      totalMin.push(r.video.videoDuration);
     })
   );
 
@@ -103,14 +103,14 @@ export default async function getCoursById(programId: number, checkIsEnrolled = 
   try {
     if (checkIsEnrolled) {
       const currentUser = await getCurrentUser();
-      const isEnrolled = await prisma.programRegistration.findFirst({
+      const isEnrolled = await prisma.courseRegistration.findFirst({
         where: {
-          programId: programId,
+          courseId: programId,
           studentId: currentUser?.id,
         },
       });
 
-      if (!isEnrolled?.programId) {
+      if (!isEnrolled?.courseId) {
         throw new Error("Sorry, you are not enrolled in this course");
       }
     }
@@ -149,14 +149,14 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
   try {
     if (checkIsEnrolled) {
       const currentUser = await getCurrentUser();
-      const isEnrolled = await prisma.programRegistration.findFirst({
+      const isEnrolled = await prisma.courseRegistration.findFirst({
         where: {
-          programId: programId,
+          courseId: programId,
           studentId: currentUser?.id,
         },
       });
 
-      if (!isEnrolled?.programId) {
+      if (!isEnrolled?.courseId) {
         throw new Error("Sorry, you are not enrolled in this course");
       }
     }
@@ -202,4 +202,17 @@ export const getAllCoursesById = async (id: number) => {
   });
 
   return JSON.stringify(res);
+};
+
+export const getAllRegisterCoursesById = async (id: number) => {
+  const res = await prisma.courseRegistration.findMany({
+    where: {
+      studentId: id,
+    },
+    include: {
+      course: {},
+    },
+  });
+
+  return JSON.stringify(res.map((c) => c.course));
 };

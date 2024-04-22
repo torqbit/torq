@@ -1,0 +1,84 @@
+import prisma from "@/lib/prisma";
+import { NextApiResponse, NextApiRequest } from "next";
+import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import { withMethods } from "@/lib/api-middlewares/with-method";
+import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
+import { getToken } from "next-auth/jwt";
+import appConstant from "@/services/appConstant";
+export let cookieName = appConstant.development.cookieName;
+if (process.env.NODE_ENV === "production") {
+  cookieName = appConstant.production.cookieName;
+}
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
+    const percentage = (partialValue?: number, totalValue?: number) => {
+      console.log((100 * Number(partialValue)) / Number(totalValue), "course percentage function");
+
+      return (100 * Number(partialValue)) / Number(totalValue);
+    };
+
+    const authorId = Number(token?.id);
+    const allRegisterCourse = await prisma.courseRegistration.findMany({
+      orderBy: [{ createdAt: "asc" }],
+      where: {
+        studentId: Number(authorId),
+      },
+      include: {
+        course: {
+          include: {
+            courseProgress: {
+              orderBy: [{ createdAt: "asc" }],
+
+              where: {
+                studentId: Number(authorId),
+              },
+            },
+          },
+        },
+      },
+    });
+    const courseListData = allRegisterCourse.map((courseData) => {
+      const latestProgress = prisma.courseProgress
+        .findMany({
+          orderBy: [{ createdAt: "asc" }],
+          where: {
+            studentId: Number(authorId),
+            courseId: Number(courseData.courseId),
+          },
+        })
+        .then((data) => {
+          let progressPercentage = percentage(data.pop()?.lessonsCompleted, courseData.course.totalResources);
+
+          return {
+            courseName: courseData.course.name,
+            completed: Math.floor(progressPercentage),
+          };
+        });
+
+      return {
+        courseName: courseData.course.name,
+        progress: `${Math.floor(
+          percentage(courseData.course.courseProgress.pop()?.lessonsCompleted, courseData.course.totalResources)
+        )}%`,
+      };
+    });
+    console.log(courseListData);
+    return res.status(200).json({
+      info: false,
+      success: true,
+      message: "registered courses successfully fetched",
+
+      progress: courseListData,
+    });
+  } catch (error) {
+    return errorHandler(error, res);
+  }
+};
+
+export default withMethods(["GET"], withAuthentication(handler));
