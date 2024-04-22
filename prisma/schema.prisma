@@ -108,9 +108,11 @@ model Course {
   name              String
   about             String               @db.Text()
   description       String               @db.Text()
-  videoThumbnail    String?              @db.VarChar(200)
-  videoUrl          String?
-  videoId           String?
+  tvProviderId      String?
+  tvProviderName    String?
+  tvUrl             String?
+  tvThumbnail       String?
+  tvState           VideoState?        
   thumbnail         String?
   icon              String?
   authorId          Int                  @map("user_id")
@@ -124,7 +126,6 @@ model Course {
   expiryInDays      Int                  @default(365)
   durationInMonths  Int                  @default(12)
   state             StateType            @default(DRAFT)
-  videoDuration     Int                  @default(600)
   chapters          Chapter[]
   program           Program?             @relation(fields: [programId], references: [id])
   CourseRegistraion CourseRegistration[]
@@ -194,9 +195,10 @@ enum VideoState {
 model Video {
   id            Int        @id @default(autoincrement())
   videoUrl      String     @db.VarChar(200)
-  videoId       String?    @db.VarChar(200)
+  providerVideoId   String?    @db.VarChar(500)
   videoDuration Int
-  resource      Resource   @relation(fields: [id], references: [resourceId], onDelete: Cascade)
+  resourceId    Int        @unique
+  resource      Resource   @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
   thumbnail     String     @db.VarChar(200)
   state         VideoState @default(PROCESSING)
   mediaProvider String?

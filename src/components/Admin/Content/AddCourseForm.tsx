@@ -94,10 +94,10 @@ const AddCourseForm: FC = () => {
           (result) => {
             message.success(result.message);
           },
-          (error) => {}
+          (error) => { }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -111,9 +111,9 @@ const AddCourseForm: FC = () => {
           state: "ACTIVE",
           description: courseData?.description || form.getFieldsValue().course_description,
           thumbnail: result.courseDetails.thumbnail || "",
-          videoThumbnail: result.courseDetails.videoThumbnail || "",
-          videoUrl: result.courseDetails.videoUrl || "",
-          videoId: result.courseDetails.videoId || "",
+          tvThumbnail: result.courseDetails.tvThumbnail || "",
+          tvUrl: result.courseDetails.videoUrl || "",
+          tvProviderId: result.courseDetails.tvProviderId || "",
           courseId: Number(router.query.id),
         };
 
@@ -123,14 +123,14 @@ const AddCourseForm: FC = () => {
             setActiveKey("2");
             form.resetFields();
             setRefresh(!refresh);
-            message.success("course created");
+            message.success("course has been updated");
           },
           (error) => {
             message.error(error);
           }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -153,14 +153,14 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const deleteRes = (id: number) => {
     ProgramService.getResource(
       id,
       (result) => {
-        onDeleteVideo(String(result.resource.video.videoId));
+        onDeleteVideo(String(result.resource.video.id));
 
         ProgramService.deleteResource(
           id,
@@ -168,10 +168,10 @@ const AddCourseForm: FC = () => {
             message.success(result.message);
             onRefresh();
           },
-          (error) => {}
+          (error) => { }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -184,7 +184,7 @@ const AddCourseForm: FC = () => {
 
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const updateResState = (id: number, state: string) => {
@@ -195,7 +195,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const createChapter = async (courseId: number) => {
@@ -295,7 +295,7 @@ const AddCourseForm: FC = () => {
             });
             onRefresh();
           },
-          (error) => {}
+          (error) => { }
         );
       },
       (error) => {
@@ -354,8 +354,8 @@ const AddCourseForm: FC = () => {
     ProgramService.deleteFile(
       name,
       dir,
-      (result) => {},
-      (error) => {}
+      (result) => { },
+      (error) => { }
     );
   };
 
@@ -387,9 +387,12 @@ const AddCourseForm: FC = () => {
   const onUploadTrailer = async (file: RcFile, title: string) => {
     setCourseTrailerUploading(true);
     const name = title.replace(/\s+/g, "-");
+    let courseIdStr = router.query.id?.toString();
     const formData = new FormData();
     formData.append("file", file);
     formData.append("title", name);
+    formData.append("objectId", courseIdStr || "");
+    formData.append("objectType", "course")
 
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
     if (!postRes.ok) {
@@ -402,7 +405,7 @@ const AddCourseForm: FC = () => {
       let courseVideo = {
         videoThumbnail: res.video.thumbnail,
         videoUrl: res.video.videoUrl,
-        videoId: `${res.video.videoId}`,
+        tvProviderId: `${res.video.videoId}`,
         courseId: Number(router.query.id),
       };
       ProgramService.updateCourse(
@@ -433,8 +436,8 @@ const AddCourseForm: FC = () => {
   const onDeleteVideo = (id: string) => {
     ProgramService.deleteVideo(
       id,
-      (result) => {},
-      (error) => {}
+      (result) => { },
+      (error) => { }
     );
   };
   const uploadFile = async (file: any, title: string) => {
@@ -517,12 +520,12 @@ const AddCourseForm: FC = () => {
         console.log(result.resource.video, "resource video data");
         setUploadResUrl({
           thumbnail: result.resource.video?.thumbnail,
-          videoId: String(result.resource.video?.videoId),
+          videoId: String(result.resource.video?.providerVideoId),
           videoUrl: String(result.resource.video?.videoUrl),
         });
         setResourceDrawer(true);
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -596,15 +599,15 @@ const AddCourseForm: FC = () => {
           setUploadVideo({
             ...uploadVideo,
             previewUrl: "",
-            thumbnail: result.courseDetails.videoThumbnail,
-            videoId: result.courseDetails.videoId,
+            thumbnail: result.courseDetails.tvThumbnail,
+            videoId: result.courseDetails.tvProviderId,
             videoUrl: result.courseDetails.videoUrl,
             videoDuration: result.courseDetails.durationInMonths,
-            state: "",
+            state: result.courseDetails.tvState,
             mediaProviderName: "",
           });
         },
-        (error) => {}
+        (error) => { }
       );
   }, [router.query.id, refresh]);
 

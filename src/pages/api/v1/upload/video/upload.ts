@@ -8,6 +8,7 @@ import path from "path";
 import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
+import { UploadVideoObjectType } from "@/types/courses/Course";
 
 export const config = {
   api: {
@@ -38,6 +39,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (files.file) {
       let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
+      const objectId = Number(fields.objectId[0]);
+      const objectType = fields.objectType[0] as UploadVideoObjectType
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
@@ -56,7 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             })
             .then((provider: any) => {
               const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-              return cms.uploadVideo(fullName, fileBuffer, 1, 1, serviceProvider);
+              return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
             });
         });
       res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });

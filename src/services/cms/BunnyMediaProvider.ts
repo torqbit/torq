@@ -1,5 +1,5 @@
 import { ContentServiceProvider } from "./ContentManagementService";
-import { FileUploadResponse, VideoAPIResponse } from "@/types/courses/Course";
+import { FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
 export type GetVideo = {
   guid: string;
   libraryId: number;
@@ -26,6 +26,7 @@ type BunnyVideoAPIResponse = {
   thumbnailFileName: string;
 };
 export class BunnyMediaProvider implements ContentServiceProvider {
+  name: string = "bunny"
   accessKey: string;
   libraryId: string;
   streamCDNHostname: string;
@@ -105,7 +106,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
 
-  async tryNTimes<T>(toTry: () => Promise<Response>, times: number, interval: number): Promise<any> {
+  async tryNTimes<T>(times: number, interval: number, toTry: () => Promise<Response>, onCompletion: () => Promise<string>,): Promise<any> {
     if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
     let attemptCount: number;
     for (attemptCount = 1; attemptCount <= times; attemptCount++) {
@@ -117,17 +118,26 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       if (vresult.status != 4) {
         if (attemptCount < times) await this.delay(interval);
         else return Promise.reject(result);
-      } else return result;
+      } else {
+        return onCompletion();
+      };
     }
   }
 
-  async uploadVideo(title: string, file: Buffer, courseId: number, chapterId: number): Promise<VideoAPIResponse> {
+  trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string> {
+    return this.tryNTimes(60, 5, () => {
+      return fetch(this.getVideoUrl(videoInfo.videoId, this.libraryId), this.getVideoOption(this.accessKey))
+    }, onCompletion)
+  }
+
+  async uploadVideo(title: string, file: Buffer, resourceId?: number): Promise<VideoAPIResponse> {
     let guid: string;
     const res = await fetch(this.createVideoUrl(this.libraryId), this.getPostOption(title, this.accessKey));
     const json = await res.json();
     guid = json.guid;
     const res_1 = await fetch(this.getUploadUrl(json.guid, this.libraryId), this.getUploadOption(file, this.accessKey));
     const uploadedData = await res_1.json();
+
     const videoResult = await fetch(this.getVideoUrl(guid, this.libraryId), this.getVideoOption(this.accessKey));
     let videoData = await videoResult.json();
     let state: string = "";
@@ -159,8 +169,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   uploadFile(
     name: string,
     file: Buffer,
-    courseId: number,
-    chapterId?: number | undefined
   ): Promise<FileUploadResponse> {
     let uploadFileUrl = this.getUploadFileUrl(name);
     console.log(uploadFileUrl, "upload file url");

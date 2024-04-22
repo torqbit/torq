@@ -1,5 +1,5 @@
 import { IResourceDetail } from "@/lib/types/learn";
-import { Resource, ResourceContentType } from "@prisma/client";
+import { Resource, ResourceContentType, VideoState } from "@prisma/client";
 
 export interface ChapterDetail {
   sequenceId: number;
@@ -25,8 +25,9 @@ export interface CourseInfo {
   authorId: number;
   sequenceId: number;
   skills: string[];
-  videoThumbnail: string;
-  videoId: string;
+  tvThumbnail: string;
+  tvProviderId: string;
+  tvState: VideoState;
   thumbnail: string;
   videoUrl: string;
   chapters: ChapterDetail[];
@@ -49,7 +50,7 @@ export interface VideoInfo {
   previewUrl: string;
   mediaProviderName: string;
   videoDuration: number;
-  state: string;
+  state: VideoState;
   videoUrl: string;
 }
 
@@ -66,6 +67,8 @@ export interface FileUploadResponse {
   message: string;
   fileCDNPath: string;
 }
+
+export type UploadVideoObjectType = "lesson" | "course"
 
 export interface UploadedResourceDetail {
   fileName?: string;
