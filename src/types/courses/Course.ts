@@ -28,6 +28,7 @@ export interface CourseInfo {
   tvThumbnail: string;
   tvProviderId: string;
   tvState: VideoState;
+  tvUrl: string;
   thumbnail: string;
   videoUrl: string;
   chapters: ChapterDetail[];
@@ -68,7 +69,7 @@ export interface FileUploadResponse {
   fileCDNPath: string;
 }
 
-export type UploadVideoObjectType = "lesson" | "course"
+export type UploadVideoObjectType = "lesson" | "course";
 
 export interface UploadedResourceDetail {
   fileName?: string;

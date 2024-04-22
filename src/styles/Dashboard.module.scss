@@ -179,7 +179,7 @@
       }
 
       .upload__trailer {
-        &>div {
+        & > div {
           width: 320px;
           height: 180px;
           position: relative;
@@ -187,7 +187,7 @@
       }
 
       .upload__thumbnail {
-        &>div {
+        & > div {
           height: 150px;
           width: 150px;
           position: relative;
@@ -225,6 +225,25 @@
           margin-bottom: 20px;
         }
 
+        .video_status {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 4px;
+          text-align: center;
+          padding: 8px;
+        }
+
+        .video_status_ready {
+          color: var(--bg-primary);
+          background-color: var(--font-primary);
+        }
+
+        .video_status_loading {
+          color: var(--font-secondary);
+        }
+
         .camera_btn_img,
         .camera_btn {
           background-color: var(--font-secondary);
@@ -245,13 +264,13 @@
             background-color: var(--font-label);
           }
 
-          &>span {
+          & > span {
             position: absolute;
             top: 60px;
             right: 60px;
           }
 
-          &>svg {
+          & > svg {
             position: absolute;
           }
         }
@@ -315,20 +334,20 @@
               display: flex;
               align-items: center;
 
-              >div {
+              > div {
                 border: 1px solid #eee;
                 padding: 2px 10px;
                 border-radius: 4px;
               }
 
-              >input {
+              > input {
                 width: 70px;
                 border-top-right-radius: 0px;
 
                 border-bottom-right-radius: 0px;
               }
 
-              >div:last-child {
+              > div:last-child {
                 height: 32px;
 
                 background-color: #eee;
@@ -354,13 +373,13 @@
                 display: flex;
                 align-items: center;
 
-                >div {
+                > div {
                   border: 1px solid #eee;
                   padding: 2px 10px;
                   border-radius: 4px;
                 }
 
-                >input {
+                > input {
                   width: 70px;
 
                   border-top-right-radius: 0px;
@@ -368,7 +387,7 @@
                   border-bottom-right-radius: 0px;
                 }
 
-                >div:last-child {
+                > div:last-child {
                   height: 32px;
 
                   background-color: #eee;

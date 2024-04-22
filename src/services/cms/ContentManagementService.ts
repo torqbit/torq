@@ -6,11 +6,9 @@ import { VideoState } from "@prisma/client";
 export interface ContentServiceProvider {
   name: string;
   uploadVideo(title: string, file: Buffer): Promise<VideoAPIResponse>;
-  trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string>
+  trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string>;
   uploadFile(name: string, file: Buffer): Promise<FileUploadResponse>;
 }
-
-
 
 export class ContentManagementService {
   getServiceProvider = (name: string, config: any): ContentServiceProvider => {
@@ -33,9 +31,15 @@ export class ContentManagementService {
     }
   };
 
-  uploadVideo = async (title: string, file: Buffer, csp: ContentServiceProvider, id: number, objectType: UploadVideoObjectType): Promise<VideoAPIResponse> => {
+  uploadVideo = async (
+    title: string,
+    file: Buffer,
+    csp: ContentServiceProvider,
+    id: number,
+    objectType: UploadVideoObjectType
+  ): Promise<VideoAPIResponse> => {
     const videoResponse = await csp.uploadVideo(title, file);
-    if (objectType == 'lesson') {
+    if (objectType == "lesson") {
       const newVideo = await prisma.video.create({
         data: {
           videoDuration: videoResponse.video.videoDuration,
@@ -53,24 +57,25 @@ export class ContentManagementService {
             id: newVideo.id,
           },
           data: {
-            state: "READY"
+            state: "READY",
           },
         });
         const r = await updatedVideo;
         return r.state;
-      })
+      });
     }
-    if (objectType == 'course') {
+    if (objectType == "course") {
       await prisma.course.update({
         where: {
-          courseId: id
+          courseId: id,
         },
         data: {
           tvProviderId: videoResponse.video.videoId,
           tvProviderName: csp.name,
           tvUrl: videoResponse.video.videoUrl,
-          tvThumbnail: videoResponse.video.thumbnail
-        }
+          tvState: "PROCESSING",
+          tvThumbnail: videoResponse.video.thumbnail,
+        },
       });
       csp.trackVideo(videoResponse.video, async () => {
         const updatedVideo = prisma.course.update({
@@ -78,12 +83,12 @@ export class ContentManagementService {
             courseId: id,
           },
           data: {
-            tvState: "READY"
+            tvState: "READY",
           },
         });
         const r = await updatedVideo;
         return r.state;
-      })
+      });
     }
     return videoResponse;
   };

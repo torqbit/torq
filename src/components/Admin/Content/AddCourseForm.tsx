@@ -94,10 +94,10 @@ const AddCourseForm: FC = () => {
           (result) => {
             message.success(result.message);
           },
-          (error) => { }
+          (error) => {}
         );
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -130,7 +130,7 @@ const AddCourseForm: FC = () => {
           }
         );
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -153,7 +153,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => { }
+      (error) => {}
     );
   };
   const deleteRes = (id: number) => {
@@ -168,10 +168,10 @@ const AddCourseForm: FC = () => {
             message.success(result.message);
             onRefresh();
           },
-          (error) => { }
+          (error) => {}
         );
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -184,7 +184,7 @@ const AddCourseForm: FC = () => {
 
         onRefresh();
       },
-      (error) => { }
+      (error) => {}
     );
   };
   const updateResState = (id: number, state: string) => {
@@ -195,7 +195,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => { }
+      (error) => {}
     );
   };
   const createChapter = async (courseId: number) => {
@@ -238,7 +238,6 @@ const AddCourseForm: FC = () => {
         onRefresh();
         showChapterDrawer(false);
         chapterForm.resetFields();
-
         router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
       },
       (error) => {
@@ -295,7 +294,7 @@ const AddCourseForm: FC = () => {
             });
             onRefresh();
           },
-          (error) => { }
+          (error) => {}
         );
       },
       (error) => {
@@ -354,8 +353,8 @@ const AddCourseForm: FC = () => {
     ProgramService.deleteFile(
       name,
       dir,
-      (result) => { },
-      (error) => { }
+      (result) => {},
+      (error) => {}
     );
   };
 
@@ -392,7 +391,7 @@ const AddCourseForm: FC = () => {
     formData.append("file", file);
     formData.append("title", name);
     formData.append("objectId", courseIdStr || "");
-    formData.append("objectType", "course")
+    formData.append("objectType", "course");
 
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
     if (!postRes.ok) {
@@ -402,42 +401,30 @@ const AddCourseForm: FC = () => {
     const res = (await postRes.json()) as VideoAPIResponse;
 
     if (res.success) {
-      let courseVideo = {
-        videoThumbnail: res.video.thumbnail,
+      setUploadVideo({
+        ...uploadVideo,
+        videoId: res.video.videoId,
         videoUrl: res.video.videoUrl,
-        tvProviderId: `${res.video.videoId}`,
-        courseId: Number(router.query.id),
-      };
-      ProgramService.updateCourse(
-        courseVideo,
-        (result) => {
-          setUploadVideo({
-            ...uploadVideo,
-            videoId: res.video.videoId,
-            videoUrl: res.video.videoUrl,
-            thumbnail: res.video.thumbnail,
-            previewUrl: res.video.previewUrl,
-            videoDuration: res.video.videoDuration,
-            state: res.video.state,
-            mediaProviderName: res.video.mediaProviderName,
-          });
-          setRefresh(!refresh);
-          message.success("Course trailer video has been uploaded");
-          setCourseTrailerUploading(false);
-        },
-        (error) => {
-          setCourseTrailerUploading(false);
-          message.error(error);
-        }
-      );
+        thumbnail: res.video.thumbnail,
+        previewUrl: res.video.previewUrl,
+        videoDuration: res.video.videoDuration,
+        state: res.video.state,
+        mediaProviderName: res.video.mediaProviderName,
+      });
+      setRefresh(!refresh);
+      message.success("Course trailer video has been uploaded");
+      setCourseTrailerUploading(false);
+    } else {
+      setCourseTrailerUploading(false);
+      message.error(res.message);
     }
   };
 
   const onDeleteVideo = (id: string) => {
     ProgramService.deleteVideo(
       id,
-      (result) => { },
-      (error) => { }
+      (result) => {},
+      (error) => {}
     );
   };
   const uploadFile = async (file: any, title: string) => {
@@ -525,7 +512,7 @@ const AddCourseForm: FC = () => {
         });
         setResourceDrawer(true);
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -582,6 +569,19 @@ const AddCourseForm: FC = () => {
   ];
 
   useEffect(() => {
+    let intervalId: NodeJS.Timer | undefined;
+    if (uploadVideo && uploadVideo.state == "PROCESSING" && typeof intervalId === "undefined") {
+      intervalId = setInterval(() => {
+        onRefresh();
+      }, 1000 * 5); // in milliseconds
+    }
+    if (intervalId && uploadVideo && uploadVideo.state == "READY") {
+      clearInterval(intervalId);
+    }
+    return () => intervalId && clearInterval(intervalId);
+  }, [uploadVideo]);
+
+  useEffect(() => {
     router.query.id &&
       ProgramService.getCourses(
         Number(router.query.id),
@@ -601,13 +601,13 @@ const AddCourseForm: FC = () => {
             previewUrl: "",
             thumbnail: result.courseDetails.tvThumbnail,
             videoId: result.courseDetails.tvProviderId,
-            videoUrl: result.courseDetails.videoUrl,
+            videoUrl: result.courseDetails.tvUrl,
             videoDuration: result.courseDetails.durationInMonths,
             state: result.courseDetails.tvState,
             mediaProviderName: "",
           });
         },
-        (error) => { }
+        (error) => {}
       );
   }, [router.query.id, refresh]);
 
