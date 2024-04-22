@@ -20,7 +20,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const percentage = (partialValue?: number, totalValue?: number) => {
       console.log((100 * Number(partialValue)) / Number(totalValue), "course percentage function");
 
-      return (100 * Number(partialValue)) / Number(totalValue);
+      return (100 * Number(partialValue)) / Number(totalValue) > 0
+        ? (100 * Number(partialValue)) / Number(totalValue)
+        : 0;
     };
 
     const authorId = Number(token?.id);
@@ -44,23 +46,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     const courseListData = allRegisterCourse.map((courseData) => {
-      const latestProgress = prisma.courseProgress
-        .findMany({
-          orderBy: [{ createdAt: "asc" }],
-          where: {
-            studentId: Number(authorId),
-            courseId: Number(courseData.courseId),
-          },
-        })
-        .then((data) => {
-          let progressPercentage = percentage(data.pop()?.lessonsCompleted, courseData.course.totalResources);
-
-          return {
-            courseName: courseData.course.name,
-            completed: Math.floor(progressPercentage),
-          };
-        });
-
       return {
         courseName: courseData.course.name,
         progress: `${Math.floor(
