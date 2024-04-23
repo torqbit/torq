@@ -78,6 +78,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           already: false,
         });
       }
+      if (courseType === "PAID") {
+        return res.status(200).json({
+          success: false,
+          already: false,
+          error: "Paid course not condigured",
+        });
+      }
 
       return res.status(200).json({
         success: true,

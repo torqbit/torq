@@ -38,13 +38,13 @@ const Label: FC<{
   resourceId,
   chapterId,
 }) => {
-  const [completed, setCompleted] = useState<string>();
+  const [completed, setCompleted] = useState<boolean>();
   const checkIsCompleted = async () => {
     const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
     const result = (await res.json()) as IResponse;
 
     if (res.ok && result.success) {
-      result.isCompleted ? setCompleted("completed") : setCompleted("notCompleted");
+      setCompleted(result.isCompleted);
     }
   };
   useEffect(() => {
@@ -63,7 +63,7 @@ const Label: FC<{
       <Flex justify="space-between" align="center">
         <div className={styles.title_container}>
           <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
-            {completed === "completed" ? SvgIcons.check : icon}
+            {completed ? SvgIcons.check : icon}
             <div style={{ cursor: "pointer" }}>{title}</div>
           </Flex>
         </div>
@@ -97,7 +97,7 @@ const LearnCourse: FC<{}> = () => {
 
   const router = useRouter();
 
-  const [isCompleted, setCompleted] = useState<string>();
+  const [isCompleted, setCompleted] = useState<boolean>();
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
@@ -107,7 +107,7 @@ const LearnCourse: FC<{}> = () => {
     const result = (await res.json()) as IResponse;
 
     if (res.ok && result.success) {
-      result.isCompleted ? setCompleted("completed") : setCompleted("notCompleted");
+      setCompleted(result.isCompleted);
     }
     setLoadingBtn(false);
   };
@@ -120,7 +120,7 @@ const LearnCourse: FC<{}> = () => {
 
   const onMarkAsCompleted = async () => {
     try {
-      if (isCompleted === "completed") return;
+      if (isCompleted) return;
 
       const res = await postFetch(
         {
@@ -278,12 +278,12 @@ const LearnCourse: FC<{}> = () => {
                   <>
                     {isCompleted ? (
                       <>
-                        {isCompleted === "completed" && (
+                        {isCompleted && (
                           <Button>
                             <Flex gap={5}>{SvgIcons.check} Completed </Flex>
                           </Button>
                         )}
-                        {isCompleted === "notCompleted" && (
+                        {!isCompleted && (
                           <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
                             Mark as Completed
                           </Button>

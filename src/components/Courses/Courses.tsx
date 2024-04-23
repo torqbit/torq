@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 
 interface ICourseCard {
-  badge: "Beginner" | "Intermidiate" | "Advanced";
   thumbnail: string;
   courseName: string;
   courseDescription: string;
@@ -18,15 +17,7 @@ interface ICourseCard {
   courseType: string;
 }
 
-const CourseCard: FC<ICourseCard> = ({
-  badge,
-  thumbnail,
-  courseName,
-  courseDescription,
-  courseId,
-  duration,
-  courseType,
-}) => {
+const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription, courseId, duration, courseType }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [enrolled, setEnroll] = useState<string>();
@@ -64,20 +55,13 @@ const CourseCard: FC<ICourseCard> = ({
           router.replace(`/courses/${courseId}`);
           setLoading(false);
         } else {
-          if (courseType === "PAID") {
-            Modal.info({
-              title: "PAID Course not configured",
-            });
-            return;
-          } else {
-            Modal.info({
-              title: result.message,
-              onOk: () => {
-                router.replace(`/courses/${courseId}`);
-                setLoading(false);
-              },
-            });
-          }
+          Modal.info({
+            title: result.message,
+            onOk: () => {
+              router.replace(`/courses/${courseId}`);
+              setLoading(false);
+            },
+          });
         }
       } else {
         message.error(result.error);
@@ -100,7 +84,6 @@ const CourseCard: FC<ICourseCard> = ({
       </div>
       <div className={styles.card_content}>
         <div>
-          <Tag className={styles.badge}>{badge}</Tag>
           <h3 className={styles.card_title}>{courseName}</h3>
           <p className={styles.card_description}>{courseDescription}</p>
         </div>
@@ -133,7 +116,6 @@ const Courses: FC<{
               return (
                 <CourseCard
                   thumbnail={course.thumbnail as string}
-                  badge="Beginner"
                   courseName={course.name}
                   courseDescription={course.description}
                   duration={String(course.expiryInDays)}
