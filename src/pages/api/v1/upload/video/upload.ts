@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
       const objectId = Number(fields.objectId[0]);
-      const objectType = fields.objectType[0] as UploadVideoObjectType
+      const objectType = fields.objectType[0] as UploadVideoObjectType;
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
@@ -62,10 +62,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
             });
         });
-      res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
-      if (videoUploadResponse && videoUploadResponse.statusCode == 201 && path != "") {
+      if (videoUploadResponse && videoUploadResponse?.statusCode == 200 && path != "") {
+        console.log(`deleting the file - ${path}`);
         fs.unlinkSync(path);
+      } else {
+        console.log(`unable to delete video : ${path} . response ${videoUploadResponse?.statusCode}`);
       }
+      return res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
     }
 
     if (!files) {

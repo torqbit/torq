@@ -49,11 +49,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             })
             .then((provider: any) => {
               const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-              return cms.uploadFile(fullName, fileBuffer, 1, 1, serviceProvider);
+              return cms.uploadFile(fullName, fileBuffer, serviceProvider);
             });
         });
 
-      if (path != "") {
+      if (path != "" && fileUploadResponse?.statusCode) {
         console.log(`deleting the file: ${path}`);
         fs.unlinkSync(path);
       } else {
@@ -65,7 +65,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!files) {
       return res.status(400).json({ success: false, message: "file not recieved" });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default withMethods(["POST"], withUserAuthorized(handler));

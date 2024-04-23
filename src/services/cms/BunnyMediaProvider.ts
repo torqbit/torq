@@ -1,3 +1,4 @@
+import { VideoState } from "@prisma/client";
 import { ContentServiceProvider } from "./ContentManagementService";
 import { FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
 export type GetVideo = {
@@ -26,7 +27,7 @@ type BunnyVideoAPIResponse = {
   thumbnailFileName: string;
 };
 export class BunnyMediaProvider implements ContentServiceProvider {
-  name: string = "bunny"
+  name: string = "bunny";
   accessKey: string;
   libraryId: string;
   streamCDNHostname: string;
@@ -106,7 +107,12 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
 
-  async tryNTimes<T>(times: number, interval: number, toTry: () => Promise<Response>, onCompletion: () => Promise<string>,): Promise<any> {
+  async tryNTimes<T>(
+    times: number,
+    interval: number,
+    toTry: () => Promise<Response>,
+    onCompletion: () => Promise<string>
+  ): Promise<any> {
     if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
     let attemptCount: number;
     for (attemptCount = 1; attemptCount <= times; attemptCount++) {
@@ -120,14 +126,19 @@ export class BunnyMediaProvider implements ContentServiceProvider {
         else return Promise.reject(result);
       } else {
         return onCompletion();
-      };
+      }
     }
   }
 
   trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string> {
-    return this.tryNTimes(60, 5, () => {
-      return fetch(this.getVideoUrl(videoInfo.videoId, this.libraryId), this.getVideoOption(this.accessKey))
-    }, onCompletion)
+    return this.tryNTimes(
+      60,
+      5,
+      () => {
+        return fetch(this.getVideoUrl(videoInfo.videoId, this.libraryId), this.getVideoOption(this.accessKey));
+      },
+      onCompletion
+    );
   }
 
   async uploadVideo(title: string, file: Buffer, resourceId?: number): Promise<VideoAPIResponse> {
@@ -160,31 +171,22 @@ export class BunnyMediaProvider implements ContentServiceProvider {
         previewUrl: `https://${this.streamCDNHostname}/${videoData.guid}/preview.webp`,
         videoUrl: `https://iframe.mediadelivery.net/play/${this.libraryId}/${videoData.guid}`,
         mediaProviderName: "bunny",
-        state: state,
+        state: state as VideoState,
         videoDuration: videoData.length,
       },
     };
   }
 
-  uploadFile(
-    name: string,
-    file: Buffer,
-  ): Promise<FileUploadResponse> {
+  async uploadFile(name: string, file: Buffer): Promise<FileUploadResponse> {
     let uploadFileUrl = this.getUploadFileUrl(name);
-    console.log(uploadFileUrl, "upload file url");
-    return fetch(uploadFileUrl, this.getUploadOption(file, this.storagePassword))
-      .then((res) => {
-        return res.json();
-      })
-      .then((uploadRes: any) => {
-        console.log(uploadRes);
-        return {
-          statusCode: uploadRes.HttpCode,
-          message: uploadRes.Message,
-          success: uploadRes.HttpCode == 201,
-          fileCDNPath:
-            uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${this.mediaPath}/${name}` : "",
-        };
-      });
+    const res = await fetch(uploadFileUrl, this.getUploadOption(file, this.storagePassword));
+    const uploadRes = await res.json();
+    console.log(uploadRes, "Upload response");
+    return {
+      statusCode: uploadRes.HttpCode,
+      message: uploadRes.Message,
+      success: uploadRes.HttpCode == 201,
+      fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${this.mediaPath}/${name}` : "",
+    };
   }
 }
