@@ -1,25 +1,81 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
-import { Button, Space, Tag } from "antd";
+import { Button, Modal, Space, Tag, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";
 import { Course } from "@prisma/client";
 import { useRouter } from "next/router";
+import { IResponse, getFetch, postFetch } from "@/services/request";
 
 interface ICourseCard {
-  badge: "Beginner" | "Intermidiate" | "Advanced";
   thumbnail: string;
   courseName: string;
   courseDescription: string;
   duration: string;
   courseId: number;
+  courseType: string;
 }
 
-const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescription, courseId, duration }) => {
+const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription, courseId, duration, courseType }) => {
   const router = useRouter();
+  const { data: session } = useSession();
+  const [enrolled, setEnroll] = useState<string>();
+  const [loading, setLoading] = useState<boolean>();
+
   const daysToMonth = Math.floor(Number(duration) / 30);
   const days = Math.floor(Number(duration) % 30);
+
+  const onCheckErollment = async () => {
+    const res = await getFetch(`/api/course/get-enrolled/${courseId}/checkStatus`);
+    const result = (await res.json()) as IResponse;
+    if (res.ok && result.success) {
+      result.isEnrolled ? setEnroll("enrolled") : setEnroll("notEnrolled");
+    }
+  };
+
+  const onEnrollCourse = async () => {
+    setLoading(true);
+    try {
+      if (enrolled === "enrolled") {
+        router.replace(`/courses/${courseId}`);
+        return;
+      }
+      const res = await postFetch(
+        {
+          userId: session?.id,
+          courseId: Number(courseId),
+          courseType: courseType,
+        },
+        "/api/v1/course/enroll"
+      );
+      const result = (await res.json()) as IResponse;
+      if (res.ok && result.success) {
+        if (result.already) {
+          router.replace(`/courses/${courseId}`);
+          setLoading(false);
+        } else {
+          Modal.info({
+            title: result.message,
+            onOk: () => {
+              router.replace(`/courses/${courseId}`);
+              setLoading(false);
+            },
+          });
+        }
+      } else {
+        message.error(result.error);
+        setLoading(false);
+      }
+    } catch (err: any) {
+      message.error("Error while enrolling course ", err?.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    onCheckErollment();
+  }, []);
 
   return (
     <div className={styles.course_card}>
@@ -28,7 +84,6 @@ const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescr
       </div>
       <div className={styles.card_content}>
         <div>
-          <Tag className={styles.badge}>{badge}</Tag>
           <h3 className={styles.card_title}>{courseName}</h3>
           <p className={styles.card_description}>{courseDescription}</p>
         </div>
@@ -37,8 +92,8 @@ const CourseCard: FC<ICourseCard> = ({ badge, thumbnail, courseName, courseDescr
           <div className={styles.course_duration}>
             {daysToMonth} months {days} days
           </div>
-          <Button type="primary" onClick={() => router.replace(`/courses/${courseId}`)}>
-            Start Course
+          <Button loading={!enrolled && true} type="primary" onClick={onEnrollCourse}>
+            {enrolled === "enrolled" ? "Resume" : "Enroll Course"}
           </Button>
         </div>
       </div>
@@ -61,11 +116,11 @@ const Courses: FC<{
               return (
                 <CourseCard
                   thumbnail={course.thumbnail as string}
-                  badge="Beginner"
                   courseName={course.name}
                   courseDescription={course.description}
                   duration={String(course.expiryInDays)}
                   courseId={course.courseId}
+                  courseType={course.courseType}
                 />
               );
             })}

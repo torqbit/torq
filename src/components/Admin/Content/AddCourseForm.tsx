@@ -164,6 +164,7 @@ const AddCourseForm: FC = () => {
 
         ProgramService.deleteResource(
           id,
+          Number(router.query.id),
           (result) => {
             message.success(result.message);
             onRefresh();
@@ -267,7 +268,12 @@ const AddCourseForm: FC = () => {
 
   const onCreateRes = (chapterId: number) => {
     setLoading(true);
-    let rs = { ...formData.getFieldsValue(), chapterId, contentType: "Video" } as ResourceDetails;
+    let rs = {
+      ...formData.getFieldsValue(),
+      chapterId,
+      contentType: "Video",
+      courseId: Number(router.query.id),
+    } as ResourceDetails;
     ProgramService.createResource(
       rs,
       (result) => {
@@ -514,7 +520,6 @@ const AddCourseForm: FC = () => {
           content: result.resource.contentType,
           chapterId: result.resource.chapterId,
         });
-        console.log(result.resource.video, "resource video data");
         setUploadResUrl({
           thumbnail: result.resource.video?.thumbnail,
           videoId: String(result.resource.video?.videoId),

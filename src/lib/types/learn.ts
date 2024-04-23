@@ -1,4 +1,4 @@
-import { Resource, Video } from "@prisma/client";
+import { CourseRegistration, Resource, Video } from "@prisma/client";
 
 export interface Chapter {
   chapterId: number;
@@ -60,6 +60,10 @@ export interface VideoDetails {
   videoDuration?: number;
   state?: string;
   mediaProvider?: string;
+}
+
+export interface IRegisteredCourses extends CourseRegistration {
+  course: Course;
 }
 
 export interface IResource {

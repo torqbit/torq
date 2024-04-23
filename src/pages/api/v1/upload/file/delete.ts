@@ -8,7 +8,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
     const { name, dir } = body;
-    console.log(body);
 
     const service_provider = await prisma.serviceProvider.findFirst({
       where: {
@@ -20,13 +19,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const options = {
         method: "DELETE",
-        headers: { AccessKey: service_provider.api_key },
+        // headers: { AccessKey: service_provider.api_key },
       };
 
       fetch(url, options)
         .then((res) => res.json())
         .then((json: any) => {
-          console.log(json, "dele");
           return res.status(200).json({ success: true, message: "file deleted" });
         })
         .catch((err: string) => console.error("error:" + err));

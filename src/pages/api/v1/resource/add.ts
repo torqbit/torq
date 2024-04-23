@@ -8,21 +8,7 @@ import { ResourceContentType } from "@prisma/client";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const {
-      name,
-      description,
-      assignmentLang,
-      videoDuration,
-      daysToSubmit,
-      thumbnail,
-      assignment,
-      chapterId,
-      sequenceId,
-      contentType,
-      content,
-      videoId,
-    } = body;
-
+    const { name, description, chapterId, contentType, courseId } = body;
     // CHECK IS RESOURCE EXIST WITH THIS NAME
     const isResourceExist = await prisma.resource.findFirst({
       where: {
@@ -42,13 +28,35 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       chapterId: chapterId,
       name: name,
       description: description,
-      sequenceId: ((await prisma.resource.count()) + 1) | 1,
+      sequenceId:
+        ((await prisma.resource.count({
+          where: {
+            chapterId: chapterId,
+          },
+        })) +
+          1) |
+        1,
       contentType: contentType as ResourceContentType,
     };
+
+    const findCourse = await prisma.course.findUnique({
+      where: {
+        courseId: courseId,
+      },
+    });
 
     if (resData) {
       const createResource = await prisma.resource.create({
         data: resData,
+      });
+
+      const updateCourse = await prisma.course.update({
+        where: {
+          courseId: courseId,
+        },
+        data: {
+          totalResources: findCourse?.totalResources ? findCourse?.totalResources + 1 : 1,
+        },
       });
 
       return res.status(200).json({

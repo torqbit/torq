@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-    const programId = req.query?.programId;
+    const courseId = req.query?.programId;
     const resourceId = req.query?.resourceId;
 
     const resourceDetail = await prisma.resource.findFirst({
@@ -29,16 +29,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    const getRegistraionInfo = await prisma.programRegistration.findFirst({
+    const getRegistraionInfo = await prisma.courseRegistration.findFirst({
       where: {
-        programId: Number(programId),
+        courseId: Number(courseId),
         studentId: Number(token?.id),
       },
     });
 
     if (getRegistraionInfo || token?.role === "AUTHOR") {
-      if (resourceDetail?.contentType === "Assignment" && resourceDetail.content) {
-        let filePath = path.join(process.env.PDF_DIRECTORY, `/${resourceDetail.content}`);
+      if (resourceDetail?.contentType === "Assignment" && resourceDetail) {
+        let filePath = path.join(process.env.PDF_DIRECTORY, `/${resourceDetail}`);
 
         fs.readFile(filePath, { encoding: "utf-8" }, function (err: any, data: string) {
           if (!err) {
@@ -57,7 +57,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
     }
   } catch (err) {
-    console.log(err);
     return errorHandler(err, res);
   }
 };

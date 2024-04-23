@@ -12,7 +12,6 @@ const handler = async (req, res) => {
     });
     res.status(200).json({ success: true, message: "You have successfully enrolled" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, error: "something wrong" });
   }
 };

@@ -228,9 +228,7 @@ const Users: FC = () => {
 
   const [form] = Form.useForm();
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
 
   const items: TabsProps["items"] = [
     {

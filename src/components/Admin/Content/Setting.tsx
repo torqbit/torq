@@ -69,9 +69,7 @@ const CourseSetting: FC<{
       // setLoading(false);
     }
   };
-  useEffect(() => {
-    console.log(courseTrailerUploading, "course trailer uploading");
-  }, [courseTrailerUploading]);
+  useEffect(() => {}, [courseTrailerUploading]);
 
   return (
     <section className={styles.add_course_setting}>

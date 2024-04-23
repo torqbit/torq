@@ -9,7 +9,6 @@ export interface ContentServiceProvider {
 
 export class ContentManagementService {
   getServiceProvider = (name: string, config: any): ContentServiceProvider => {
-    console.log(config, "config info");
     switch (name) {
       case "bunny":
         let c = config as BunnyConfig;

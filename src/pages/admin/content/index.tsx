@@ -219,9 +219,7 @@ const Content = (props: IProps) => {
       (result) => {
         router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
       },
-      (error) => {
-        console.log(error);
-      }
+      (error) => {}
     );
   };
 

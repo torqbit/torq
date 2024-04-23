@@ -8,7 +8,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
     const { videoId } = body;
-    console.log(videoId);
 
     const service_provider = await prisma.serviceProvider.findFirst({
       where: {
@@ -27,7 +26,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       fetch(`https://video.bunnycdn.com/library/${service_provider.api_secret}/videos/${videoId}`, options)
         .then((response: { json: () => any }) => response.json())
         .then((response: any) => {
-          console.log(response, "res");
           return res.status(200).json({ success: true, message: "successfully deleted" });
         })
         .catch((err: any) => console.error(err));

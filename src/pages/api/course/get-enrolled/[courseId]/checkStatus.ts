@@ -18,16 +18,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     cookieName,
   });
   const userId = Number(token?.id);
-  const { programId } = req.query;
+  const { courseId } = req.query;
   try {
-    const program = await prisma.programRegistration.findFirst({
+    const course = await prisma.courseRegistration.findFirst({
       where: {
         studentId: Number(userId),
-        programId: Number(programId),
+        courseId: Number(courseId),
       },
     });
     let isEnrolled = false;
-    if (program) {
+    if (course) {
       isEnrolled = true;
     }
 
