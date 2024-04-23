@@ -28,7 +28,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       chapterId: chapterId,
       name: name,
       description: description,
-      sequenceId: ((await prisma.resource.count()) + 1) | 1,
+      sequenceId:
+        ((await prisma.resource.count({
+          where: {
+            chapterId: chapterId,
+          },
+        })) +
+          1) |
+        1,
       contentType: contentType as ResourceContentType,
     };
 

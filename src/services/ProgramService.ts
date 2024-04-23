@@ -2,8 +2,8 @@ import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/l
 import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 
-import { ChapterDetail, CourseAPIResponse } from "@/types/courses/Course";
-import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
+import { ChapterDetail, CourseAPIResponse, CourseInfo } from "@/types/courses/Course";
+import { AssignmentAndTask, Chapter, Course, CourseProgress, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
 export interface ICourseList extends Course {
@@ -17,6 +17,11 @@ export type ApiResponse = {
   error: string;
   message: string;
   registerCourses: IRegisteredCourses[];
+  courseDetails: CourseInfo;
+  latestProgress: {
+    nextChap: ChapterDetail;
+    nextLesson: IResourceDetail;
+  };
   progress: {
     courseName: string;
     progress: string;

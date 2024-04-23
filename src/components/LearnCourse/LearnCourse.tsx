@@ -64,6 +64,7 @@ const LearnCourse: FC<{}> = () => {
   });
 
   const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
+
   const [chapterId, setChapterId] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
@@ -111,6 +112,7 @@ const LearnCourse: FC<{}> = () => {
       if (res.ok && result.success) {
         message.success(result.message);
         setRefresh(!refresh);
+        getProgressDetail();
       } else {
         message.error(result.error);
       }
@@ -185,6 +187,17 @@ const LearnCourse: FC<{}> = () => {
     };
   });
 
+  const getProgressDetail = () => {
+    ProgramService.getProgress(
+      Number(router.query.courseId),
+      (result) => {
+        setSelectedLesson(result.latestProgress.nextLesson);
+        setChapterId(result.latestProgress.nextLesson?.chapterId);
+      },
+      (error) => {}
+    );
+  };
+
   useEffect(() => {
     setLoading(true);
     router.query.courseId &&
@@ -197,9 +210,7 @@ const LearnCourse: FC<{}> = () => {
             expiryInDays: result.courseDetails?.expiryInDays,
             chapters: result.courseDetails?.chapters,
           });
-          setSelectedLesson(result.courseDetails?.chapters[0]?.resource[0]);
-          setChapterId(result.courseDetails?.chapters[0]?.chapterId);
-          checkIsCompleted();
+          getProgressDetail();
 
           setLoading(false);
         },
@@ -208,7 +219,6 @@ const LearnCourse: FC<{}> = () => {
         }
       );
   }, [router.query.courseId]);
-
   return (
     <Layout2>
       {!loading ? (
