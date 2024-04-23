@@ -25,6 +25,7 @@ export type ApiResponse = {
   progress: {
     courseName: string;
     progress: string;
+    courseId: number;
   }[];
   program: {
     aboutProgram: string;

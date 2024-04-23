@@ -48,6 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const courseListData = allRegisterCourse.map((courseData) => {
       return {
         courseName: courseData.course.name,
+        courseId: courseData.courseId,
         progress: `${Math.floor(
           percentage(courseData.course.courseProgress.pop()?.lessonsCompleted, courseData.course.totalResources)
         )}%`,

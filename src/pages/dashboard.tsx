@@ -10,8 +10,11 @@ import { Course } from "@prisma/client";
 import ProgramService from "@/services/ProgramService";
 import { CourseInfo } from "@/types/courses/Course";
 import { IRegisteredCourses } from "@/lib/types/learn";
+import Link from "next/link";
 
-const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: string }[] }> = ({ courseData }) => {
+const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: string; courseId: number }[] }> = ({
+  courseData,
+}) => {
   return (
     <List
       size="small"
@@ -21,12 +24,14 @@ const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: strin
       dataSource={courseData}
       className={styles.enrolled_course_list}
       renderItem={(item) => (
-        <List.Item className={styles.enroll_course_item}>
-          <div>{item.courseName}</div>
-          <Space className={styles.completed_course} size={5}>
-            <span>{item.progress}</span> <span>Completed</span>
-          </Space>
-        </List.Item>
+        <Link href={`/courses/${item.courseId}`}>
+          <List.Item className={styles.enroll_course_item}>
+            <div>{item.courseName}</div>
+            <Space className={styles.completed_course} size={5}>
+              <span>{item.progress}</span> <span>Completed</span>
+            </Space>
+          </List.Item>
+        </Link>
       )}
     />
   );
@@ -34,7 +39,9 @@ const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: strin
 
 const Dashboard = () => {
   const { data: user } = useSession();
-  const [allRegisterCourse, setAllRegisterCourse] = useState<{ courseName: string; progress: string }[]>([]);
+  const [allRegisterCourse, setAllRegisterCourse] = useState<
+    { courseName: string; progress: string; courseId: number }[]
+  >([]);
 
   const onChange = (key: string) => {
     console.log(key);
