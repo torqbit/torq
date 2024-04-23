@@ -23,8 +23,33 @@ const Label: FC<{
   setChapterId: (value: number) => void;
   resourceId: number;
   chapterId: number;
+  refresh: boolean;
+
   icon: ReactNode;
-}> = ({ title, time, onSelectResource, selectedLesson, setChapterId, keyValue, icon, resourceId, chapterId }) => {
+}> = ({
+  title,
+  time,
+  onSelectResource,
+  refresh,
+  selectedLesson,
+  setChapterId,
+  keyValue,
+  icon,
+  resourceId,
+  chapterId,
+}) => {
+  const [completed, setCompleted] = useState<string>();
+  const checkIsCompleted = async () => {
+    const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
+    const result = (await res.json()) as IResponse;
+
+    if (res.ok && result.success) {
+      result.isCompleted ? setCompleted("completed") : setCompleted("notCompleted");
+    }
+  };
+  useEffect(() => {
+    checkIsCompleted();
+  }, [refresh]);
   return (
     <div
       style={{ padding: resourceId > 0 ? "5px 0px" : 0, paddingLeft: resourceId > 0 ? "20px" : 0 }}
@@ -38,7 +63,7 @@ const Label: FC<{
       <Flex justify="space-between" align="center">
         <div className={styles.title_container}>
           <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
-            {icon}
+            {completed === "completed" ? SvgIcons.check : icon}
             <div style={{ cursor: "pointer" }}>{title}</div>
           </Flex>
         </div>
@@ -164,6 +189,7 @@ const LearnCourse: FC<{}> = () => {
           setChapterId={setChapterId}
           selectedLesson={undefined}
           keyValue={`${content.chapterId}`}
+          refresh={refresh}
         />
       ),
       children: content.resource.map((res: IResourceDetail, i: any) => {
@@ -179,6 +205,7 @@ const LearnCourse: FC<{}> = () => {
               selectedLesson={selectedLesson}
               chapterId={0}
               keyValue={`${i + 1}`}
+              refresh={refresh}
             />
           </div>
         );
@@ -193,6 +220,7 @@ const LearnCourse: FC<{}> = () => {
       (result) => {
         setSelectedLesson(result.latestProgress.nextLesson);
         setChapterId(result.latestProgress.nextLesson?.chapterId);
+        setRefresh(!refresh);
       },
       (error) => {}
     );
@@ -230,29 +258,18 @@ const LearnCourse: FC<{}> = () => {
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>
-                {selectedLesson?.video?.videoUrl && !loadingLesson ? (
+                {selectedLesson?.video?.videoUrl && !loadingLesson && (
                   <iframe
                     style={{
                       position: "absolute",
-                      width: "100%",
-                      height: "100%",
+
+                      width: 800,
+                      height: 450,
                       outline: "none",
                       border: "none",
                     }}
                     src={selectedLesson.video.videoUrl}
                   ></iframe>
-                ) : (
-                  <div
-                    style={{
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      outline: "none",
-                      border: "none",
-                    }}
-                  >
-                    <img src="https://placehold.co/800x450" alt="" />
-                  </div>
                 )}
               </div>
 
