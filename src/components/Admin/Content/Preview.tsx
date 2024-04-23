@@ -83,7 +83,6 @@ const Preview: FC<{
       showArrow: false,
     };
   });
-  console.log(uploadVideo, "video url for preview");
   return (
     <section className={styles.preview_container}>
       {/* <div>{uploadVideo && <video className={styles.video_container} autoPlay src={uploadVideo.videoUrl} loop />}</div> */}

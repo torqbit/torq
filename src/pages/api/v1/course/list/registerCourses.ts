@@ -18,8 +18,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
     const percentage = (partialValue?: number, totalValue?: number) => {
-      console.log((100 * Number(partialValue)) / Number(totalValue), "course percentage function");
-
       return (100 * Number(partialValue)) / Number(totalValue) > 0
         ? (100 * Number(partialValue)) / Number(totalValue)
         : 0;
@@ -54,7 +52,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         )}%`,
       };
     });
-    console.log(courseListData);
     return res.status(200).json({
       info: false,
       success: true,

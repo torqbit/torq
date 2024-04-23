@@ -70,8 +70,6 @@ export const getVideo = async (libraryId: number, accessKey: string, id: string,
   fetch(url, options)
     .then((res: { json: () => any }) => res.json())
     .then(async (videoData: any) => {
-      console.log(videoData, "get video");
-      //   return res.status(200).json({ success: true, message: "uploaded successfully", videoData: videoData });
       return videoData;
     })
     .catch((err: string) => console.error("error:" + err));

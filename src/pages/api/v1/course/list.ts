@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       allCourse = await prisma.course.findMany({
         orderBy: [{ sequenceId: "asc" }],
         include: {
-          chapter: {
+          chapters: {
             where: {
               isActive: true,
             },
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({
       info: false,
       success: true,
-      message: "Crouse Loaded",
+      message: "Course Loaded",
       allCourse: allCourse,
     });
   } catch (error) {

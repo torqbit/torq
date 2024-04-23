@@ -38,7 +38,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       upFiles: upFiles,
     });
   } catch (err) {
-    console.log(err);
     return errorHandler(err, res);
   }
 };

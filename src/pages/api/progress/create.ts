@@ -25,7 +25,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         courseId: Number(courseId),
       },
     });
-    console.log(findTotalResourceCompleted, "find");
     const newProgress = await prisma.courseProgress.create({
       data: {
         courseId: Number(courseId),
@@ -39,7 +38,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json({ success: true, message: "Resource updated successfully" });
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

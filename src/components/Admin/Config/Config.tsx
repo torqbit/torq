@@ -54,7 +54,6 @@ const Config: FC = () => {
     ProgramService.getCredentials(
       "media",
       (result) => {
-        console.log(result.credentials);
         if (result.credentials.providerDetail) {
           form.setFieldValue("accessKey", result.credentials.providerDetail.accessKey);
           form.setFieldValue("libraryId", result.credentials.providerDetail.libraryId);

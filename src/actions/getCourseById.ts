@@ -203,16 +203,3 @@ export const getAllCoursesById = async (id: number) => {
 
   return JSON.stringify(res);
 };
-
-export const getAllRegisterCoursesById = async (id: number) => {
-  const res = await prisma.courseRegistration.findMany({
-    where: {
-      studentId: id,
-    },
-    include: {
-      course: {},
-    },
-  });
-
-  return JSON.stringify(res.map((c) => c.course));
-};

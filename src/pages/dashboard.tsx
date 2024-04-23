@@ -5,7 +5,7 @@ import { List, Space, Tabs, TabsProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";
 import { GetServerSidePropsContext } from "next";
-import { getAllCoursesById, getAllRegisterCoursesById } from "@/actions/getCourseById";
+import { getAllCoursesById } from "@/actions/getCourseById";
 import { Course } from "@prisma/client";
 import ProgramService from "@/services/ProgramService";
 import { CourseInfo } from "@/types/courses/Course";
@@ -43,9 +43,7 @@ const Dashboard = () => {
     { courseName: string; progress: string; courseId: number }[]
   >([]);
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
 
   const items: TabsProps["items"] = [
     {
@@ -78,18 +76,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const user = await getSession(ctx);
-
-  if (user) {
-    const allCourses = (await getAllRegisterCoursesById(user?.id)) as any;
-
-    return {
-      props: {
-        userId: user.id,
-        allCourses: JSON.parse(allCourses),
-      },
-    };
-  }
-};

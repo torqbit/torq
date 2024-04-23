@@ -40,7 +40,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       program: addProgram,
     });
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

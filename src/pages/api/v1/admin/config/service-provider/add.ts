@@ -8,7 +8,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
     const { name, serviceType, providerDetail } = body;
-    console.log(body, "provide");
 
     if (body) {
       const isConfigExist = await prisma.serviceProvider.findUnique({
@@ -44,7 +43,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(204).json({ success: false, message: "field is empty " });
     }
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

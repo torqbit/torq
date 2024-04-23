@@ -52,22 +52,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(201).json({
           success: true,
           message: "You have already enrolled in this course",
-          already: true,
         });
       }
 
       // IF COURSE IS FREE
       if (courseType === "FREE") {
         // set expire duration in course
-        let expireIn;
-        if (currentUser.role === "STUDENT") {
-          expireIn = createCourseExpiry(1); // after 1 year
-        }
+
         await prisma.courseRegistration.create({
           data: {
             studentId: userId,
             courseId: courseId,
-            expireIn: currentUser.role === "STUDENT" ? expiryDate : undefined,
+            expireIn: expiryDate,
             courseState: "ENROLLED",
           },
         });
@@ -75,24 +71,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(200).json({
           success: true,
           message: "Congratulations you have successfully enrolled this course",
-          already: false,
         });
       }
       if (courseType === "PAID") {
-        return res.status(200).json({
+        return res.status(400).json({
           success: false,
-          already: false,
-          error: "Paid course not condigured",
+
+          error: "Paid course not configured",
         });
       }
-
-      return res.status(200).json({
-        success: true,
-        already: false,
-      });
     }
   } catch (error: any) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

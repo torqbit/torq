@@ -76,13 +76,11 @@ const EnrolledCourseList: FC<{
                   key: "3",
                   label: "Delete",
                   onClick: () => {
-                    console.log("clicked on delete");
                     modal.confirm({
                       title: "Are you sure you want to delete the course?",
                       okText: "Yes",
                       cancelText: "No",
                       onOk: () => {
-                        console.log("deleting the course");
                         handleCourseDelete(Number(courseInfo.key));
                       },
                     });
@@ -133,9 +131,7 @@ const Content = (props: IProps) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
   const onCourseDelete = (courseId: number) => {
     ProgramService.deleteCourse(
       courseId,
@@ -157,7 +153,6 @@ const Content = (props: IProps) => {
     if (coursesAuthored.fetchCourses) {
       ProgramService.getCoursesByAuthor(
         (res) => {
-          console.log(res.courses);
           setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, courses: res.courses });
         },
         (err) => {
@@ -217,18 +212,14 @@ const Content = (props: IProps) => {
   };
 
   const handleOk = () => {
-    console.log("create draft course clicked");
     setIsModalOpen(false);
 
     ProgramService.createDraftCourses(
       undefined,
       (result) => {
-        console.log(result);
         router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
       },
-      (error) => {
-        console.log(error);
-      }
+      (error) => {}
     );
   };
 

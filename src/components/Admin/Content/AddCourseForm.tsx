@@ -520,7 +520,6 @@ const AddCourseForm: FC = () => {
           content: result.resource.contentType,
           chapterId: result.resource.chapterId,
         });
-        console.log(result.resource.video, "resource video data");
         setUploadResUrl({
           thumbnail: result.resource.video?.thumbnail,
           videoId: String(result.resource.video?.videoId),

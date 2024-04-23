@@ -50,10 +50,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         courseId: Number(courseId),
       },
     });
-    console.log("progress", findProgress);
 
     if (findProgress.length) {
-      console.log("hit progress", findProgress);
       let lastIndex = findProgress.length > 0 ? findProgress.length - 1 : 0;
 
       const currentResource = await prisma.resource.findUnique({
@@ -105,10 +103,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         latestProgress: progressData,
       });
     } else {
-      console.log({
-        nextChap: course?.chapters[0],
-        nextLesson: course?.chapters[0].resource[0],
-      });
       return res.status(200).json({
         info: false,
         success: true,
@@ -121,7 +115,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

@@ -40,7 +40,7 @@ const Sidebar: FC = () => {
         message.error(result.error);
       }
     } catch (err: any) {
-      console.log("Error while fetching Notification status");
+      message.error(err);
     }
   };
 

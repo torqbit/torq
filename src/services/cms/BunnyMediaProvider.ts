@@ -87,7 +87,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
   getUploadOption(file: Buffer, key: string) {
-    console.log({ headers: { accept: "application/json", AccessKey: key } });
     return {
       method: "PUT",
       headers: { accept: "application/json", AccessKey: key },
@@ -112,7 +111,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       let error: boolean = false;
       const result = await toTry();
       let vresult = await result.json();
-      console.log(`video progress status: ${vresult.status}`);
 
       if (vresult.status != 4) {
         if (attemptCount < times) await this.delay(interval);
@@ -163,13 +161,11 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     chapterId?: number | undefined
   ): Promise<FileUploadResponse> {
     let uploadFileUrl = this.getUploadFileUrl(name);
-    console.log(uploadFileUrl, "upload file url");
     return fetch(uploadFileUrl, this.getUploadOption(file, this.storagePassword))
       .then((res) => {
         return res.json();
       })
       .then((uploadRes: any) => {
-        console.log(uploadRes);
         return {
           statusCode: uploadRes.HttpCode,
           message: uploadRes.Message,

@@ -10,8 +10,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await req.body;
     const { id, videoDuration, videoUrl, thumbnail, state, mediaProvider, videoId } = body;
 
-    console.log(body, "body of video");
-
     // CHECK IS RESOURCE EXIST WITH THIS NAME
 
     const addVideo = await prisma.video.create({

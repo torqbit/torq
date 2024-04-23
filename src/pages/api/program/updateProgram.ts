@@ -2,10 +2,7 @@ import prisma from "@/lib/prisma";
 
 import { NextApiResponse, NextApiRequest } from "next";
 import appConstant from "@/services/appConstant";
-import {
-  readFieldWithFile,
-  uploadFileToImgKit,
-} from "../qa-discussion/add/[id]";
+import { readFieldWithFile, uploadFileToImgKit } from "../qa-discussion/add/[id]";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
@@ -26,10 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    if (
-      findProgramAbout?.aboutProgram === aboutProgram &&
-      findProgramAbout?.banner === bannerImg
-    ) {
+    if (findProgramAbout?.aboutProgram === aboutProgram && findProgramAbout?.banner === bannerImg) {
       res.status(200).json({ success: true, message: "Already updated" });
     } else {
       if (bannerImg) {
@@ -78,7 +72,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };
