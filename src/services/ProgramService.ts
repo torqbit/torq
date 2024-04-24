@@ -21,6 +21,7 @@ export type ApiResponse = {
   latestProgress: {
     nextChap: ChapterDetail;
     nextLesson: IResourceDetail;
+    completed: boolean;
   };
   progress: {
     courseName: string;

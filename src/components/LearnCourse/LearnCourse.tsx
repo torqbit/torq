@@ -1,4 +1,4 @@
-import { Button, Collapse, Flex, Skeleton, Spin, Tabs, TabsProps, Tag, message } from "antd";
+import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
 import Layout2 from "../Layout2/Layout2";
 import styles from "@/styles/LearnCourses.module.scss";
 import { FC, ReactNode, useEffect, useState } from "react";
@@ -71,6 +71,7 @@ const Label: FC<{
           <Tag className={styles.time_tag}>{time}</Tag>
         </div>
       </Flex>
+      <div className={styles.selected_bar}></div>
     </div>
   );
 };
@@ -98,6 +99,8 @@ const LearnCourse: FC<{}> = () => {
   const router = useRouter();
 
   const [isCompleted, setCompleted] = useState<boolean>();
+  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
+
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
@@ -138,6 +141,13 @@ const LearnCourse: FC<{}> = () => {
         message.success(result.message);
         setRefresh(!refresh);
         getProgressDetail();
+        ProgramService.getProgress(
+          Number(router.query.courseId),
+          (result) => {
+            setCourseCompleted(result.latestProgress.completed);
+          },
+          (error) => {}
+        );
       } else {
         message.error(result.error);
       }
@@ -258,25 +268,65 @@ const LearnCourse: FC<{}> = () => {
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>
-                {selectedLesson?.video?.videoUrl && !loadingLesson && (
-                  <iframe
+                {selectedLesson?.video?.videoUrl && !loadingLesson ? (
+                  <>
+                    {isCourseCompleted ? (
+                      <div
+                        className={styles.video_completed_screen}
+                        style={{
+                          position: "absolute",
+
+                          width: 800,
+                          height: 450,
+                          outline: "none",
+                          border: "none",
+                        }}
+                      >
+                        <div>Congratulations! You have successfully completed the course</div>
+                        <Space>
+                          <Link href={"/dashboard"}>
+                            <Button>Go Home</Button>
+                          </Link>
+                          <Button
+                            type="primary"
+                            onClick={() => {
+                              getProgressDetail();
+                              setCourseCompleted(false);
+                            }}
+                          >
+                            Rewatch
+                          </Button>
+                        </Space>
+                      </div>
+                    ) : (
+                      <iframe
+                        style={{
+                          position: "absolute",
+
+                          width: 800,
+                          height: 450,
+                          outline: "none",
+                          border: "none",
+                        }}
+                        src={selectedLesson.video.videoUrl}
+                      ></iframe>
+                    )}
+                  </>
+                ) : (
+                  <Skeleton.Image
                     style={{
                       position: "absolute",
-
                       width: 800,
                       height: 450,
-                      outline: "none",
-                      border: "none",
                     }}
-                    src={selectedLesson.video.videoUrl}
-                  ></iframe>
+                  />
                 )}
               </div>
 
               <Tabs
                 tabBarExtraContent={
                   <>
-                    {isCompleted ? (
+                    {!loadingBtn && isCompleted !== undefined ? (
                       <>
                         {isCompleted && (
                           <Button>
