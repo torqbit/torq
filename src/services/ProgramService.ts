@@ -802,7 +802,7 @@ class ProgramService {
       }
     });
   };
-  AddResourceVideo = (
+  addResourceVideo = (
     videoData: VideoDetails,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void

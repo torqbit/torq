@@ -116,16 +116,20 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
     let attemptCount: number;
     for (attemptCount = 1; attemptCount <= times; attemptCount++) {
-      let error: boolean = false;
-      const result = await toTry();
-      let vresult = await result.json();
-      console.log(`video progress status: ${vresult.status}`);
+      try {
+        const result = await toTry();
+        let vresult = await result.json();
+        console.log(`video progress status: ${vresult.status}`);
 
-      if (vresult.status != 4) {
-        if (attemptCount < times) await this.delay(interval);
-        else return Promise.reject(result);
-      } else {
-        return onCompletion();
+        if (vresult.status != 4) {
+          if (attemptCount < times) await this.delay(interval);
+          else return Promise.reject(result);
+        } else {
+          return onCompletion();
+        }
+      } catch (error) {
+        console.log(`failed due to : ${error}`);
+        console.log("this will be retried");
       }
     }
   }
