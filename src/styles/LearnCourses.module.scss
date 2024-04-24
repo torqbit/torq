@@ -1,11 +1,24 @@
 .learn_course_page {
   padding: 20px 40px;
   overflow-y: hidden;
-  .video_container {
+  .video_container,
+  .video_completed_screen {
     width: 800px;
     height: 450px;
 
     position: relative;
+  }
+  .video_completed_screen {
+    background-color: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 20px;
+    color: var(--font-label);
+    > div {
+      margin-bottom: 20px;
+    }
   }
   .learn_breadcrumb {
     display: flex;
@@ -28,20 +41,31 @@
 
 .labelContainer {
   min-width: 300px;
-
+  .selected_bar {
+    display: none;
+  }
   .time_tag {
     color: var(--font-seconadary);
     background-color: var(--bg-secondary);
   }
 }
 .selectedLable {
+  position: relative;
   min-width: 300px;
 
-  background-color: var(--font-label);
+  background-color: var(--bg-selected);
   .time_tag {
     background-color: var(--bg-primary);
   }
   .title_container {
-    color: var(--bg-primary);
+    color: var(--font-primary);
+  }
+  .selected_bar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 3px;
+    height: 33px;
+    background-color: var(--section-light);
   }
 }

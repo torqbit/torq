@@ -74,13 +74,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       let nextLesson;
       let nextChap;
+      let completed;
       if (currentResource && currChapter && currChapter?.resource.length > currentResource?.sequenceId) {
         nextChap = currChapter;
         nextLesson = currChapter.resource.find((r) => r.sequenceId === currentResource.sequenceId + 1);
+        completed = false;
       }
       if (currentResource && currChapter && currChapter?.resource.length === currentResource?.sequenceId) {
         nextChap = course?.chapters.find((chapter) => chapter.sequenceId === currChapter.sequenceId + 1);
         nextLesson = nextChap?.resource[0];
+        completed = false;
       }
       if (
         course?.chapters.length === currChapter?.sequenceId &&
@@ -88,10 +91,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       ) {
         nextChap = course?.chapters[0];
         nextLesson = nextChap?.resource[0];
+        completed = true;
       }
       let progressData = {
         nextChap: nextChap,
         nextLesson: nextLesson,
+        completed: completed,
       };
 
       return res.status(200).json({

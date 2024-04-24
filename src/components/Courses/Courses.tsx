@@ -7,6 +7,8 @@ import Layout2 from "@/components/Layout2/Layout2";
 import { Course } from "@prisma/client";
 import { useRouter } from "next/router";
 import { IResponse, getFetch, postFetch } from "@/services/request";
+import ProgramService from "@/services/ProgramService";
+import Link from "next/link";
 
 interface ICourseCard {
   thumbnail: string;
@@ -22,6 +24,7 @@ const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription,
   const { data: session } = useSession();
   const [enrolled, setEnroll] = useState<string>();
   const [loading, setLoading] = useState<boolean>();
+  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
   const daysToMonth = Math.floor(Number(duration) / 30);
   const days = Math.floor(Number(duration) % 30);
@@ -75,6 +78,14 @@ const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription,
 
   useEffect(() => {
     onCheckErollment();
+
+    ProgramService.getProgress(
+      Number(courseId),
+      (result) => {
+        setCourseCompleted(result.latestProgress.completed);
+      },
+      (error) => {}
+    );
   }, []);
 
   return (
@@ -92,9 +103,15 @@ const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription,
           <div className={styles.course_duration}>
             {daysToMonth} months {days} days
           </div>
-          <Button loading={!enrolled && true} type="primary" onClick={onEnrollCourse}>
-            {enrolled === "enrolled" ? "Resume" : "Enroll Course"}
-          </Button>
+          {isCourseCompleted ? (
+            <Link href={`/courses/${courseId}`}>
+              <Button type="primary">Rewatch</Button>
+            </Link>
+          ) : (
+            <Button loading={!enrolled && true} type="primary" onClick={onEnrollCourse}>
+              {enrolled === "enrolled" ? "Resume" : "Enroll Course"}
+            </Button>
+          )}
         </div>
       </div>
     </div>
@@ -105,6 +122,7 @@ const Courses: FC<{
   allCourses: Course[];
 }> = ({ allCourses }) => {
   const { data: user } = useSession();
+
   return (
     <Layout2>
       {allCourses.length ? (
