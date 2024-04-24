@@ -262,9 +262,13 @@ const LearnCourse: FC<{}> = () => {
       {!loading ? (
         <section className={styles.learn_course_page}>
           <div className={styles.learn_breadcrumb}>
-            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 6 }}>{SvgIcons.chevronRight} </div>{" "}
-            {courseData.name}
+            <Flex style={{ fontSize: 20 }}>
+              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
+              <Link href={`/courses/${router.query.courseId}`}> {courseData.name}</Link>
+              <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Play
+            </Flex>
           </div>
+
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>
