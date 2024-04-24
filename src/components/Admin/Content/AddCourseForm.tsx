@@ -28,6 +28,7 @@ import AddResource from "@/components/programs/AddResource";
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
 
+
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
   const [courseTrailerUploading, setCourseTrailerUploading] = useState<boolean>(false);
@@ -42,6 +43,7 @@ const AddCourseForm: FC = () => {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [formData] = Form.useForm();
+
   const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
   const [availableRes, setAvailableRes] = useState<Resource[]>();
   const onRefresh = () => {
@@ -94,10 +96,10 @@ const AddCourseForm: FC = () => {
           (result) => {
             message.success(result.message);
           },
-          (error) => {}
+          (error) => { }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -130,7 +132,7 @@ const AddCourseForm: FC = () => {
           }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -153,7 +155,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const deleteRes = (id: number) => {
@@ -168,10 +170,10 @@ const AddCourseForm: FC = () => {
             message.success(result.message);
             onRefresh();
           },
-          (error) => {}
+          (error) => { }
         );
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -184,7 +186,7 @@ const AddCourseForm: FC = () => {
 
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const updateResState = (id: number, state: string) => {
@@ -195,7 +197,7 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => { }
     );
   };
   const createChapter = async (courseId: number) => {
@@ -294,7 +296,7 @@ const AddCourseForm: FC = () => {
             });
             onRefresh();
           },
-          (error) => {}
+          (error) => { }
         );
       },
       (error) => {
@@ -353,8 +355,8 @@ const AddCourseForm: FC = () => {
     ProgramService.deleteFile(
       name,
       dir,
-      (result) => {},
-      (error) => {}
+      (result) => { },
+      (error) => { }
     );
   };
 
@@ -367,7 +369,7 @@ const AddCourseForm: FC = () => {
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
     if (!postRes.ok) {
       setResourceVideoUploading(false);
-      throw new Error("Failed to upload file");
+
     }
     const res = await postRes.json();
     if (res.success) {
@@ -396,11 +398,12 @@ const AddCourseForm: FC = () => {
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
     if (!postRes.ok) {
       setLoading(false);
-      throw new Error("Failed to upload file");
+      const response = (await postRes.json()) as VideoAPIResponse
+      message.error(response.message);
+      setCourseTrailerUploading(false);
     }
-    const res = (await postRes.json()) as VideoAPIResponse;
-
-    if (res.success) {
+    else {
+      const res = (await postRes.json()) as VideoAPIResponse;
       setUploadVideo({
         ...uploadVideo,
         videoId: res.video.videoId,
@@ -414,17 +417,14 @@ const AddCourseForm: FC = () => {
       setRefresh(!refresh);
       message.success("Course trailer video has been uploaded");
       setCourseTrailerUploading(false);
-    } else {
-      setCourseTrailerUploading(false);
-      message.error(res.message);
     }
   };
 
   const onDeleteVideo = (id: string) => {
     ProgramService.deleteVideo(
       id,
-      (result) => {},
-      (error) => {}
+      (result) => { },
+      (error) => { }
     );
   };
   const uploadFile = async (file: any, title: string) => {
@@ -512,7 +512,7 @@ const AddCourseForm: FC = () => {
         });
         setResourceDrawer(true);
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -607,7 +607,7 @@ const AddCourseForm: FC = () => {
             mediaProviderName: "",
           });
         },
-        (error) => {}
+        (error) => { }
       );
   }, [router.query.id, refresh]);
 

@@ -8,7 +8,7 @@ import path from "path";
 import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
-import { UploadVideoObjectType } from "@/types/courses/Course";
+import { UploadVideoObjectType, VideoAPIResponse } from "@/types/courses/Course";
 
 export const config = {
   api: {
@@ -58,11 +58,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               },
             })
             .then((provider: any) => {
-              const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-              return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
+              if (provider?.provider_name) {
+                const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
+                return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
+              } else {
+                const failedPromise: Promise<VideoAPIResponse> = new Promise((resolve, _) => {
+                  resolve({
+                    success: false,
+                    statusCode: 400,
+                    message: "No Media Provder has been configured"
+                  } as VideoAPIResponse)
+                })
+                return failedPromise;
+              }
+
             });
         });
-      if (videoUploadResponse && videoUploadResponse?.statusCode == 200 && path != "") {
+      if (videoUploadResponse && path != "") {
         console.log(`deleting the file - ${path}`);
         fs.unlinkSync(path);
       } else {
