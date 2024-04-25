@@ -1,13 +1,8 @@
-import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/learn";
-import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
-import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
+import { Course, Discussion } from "@prisma/client";
 
-import { ChapterDetail, CourseAPIResponse, CourseInfo } from "@/types/courses/Course";
-import { AssignmentAndTask, Chapter, Course, CourseProgress, Discussion, Resource } from "@prisma/client";
-import { UploadFile } from "antd";
-import { number } from "zod";
-import { getFetch, postFetch } from "./request";
+import { getFetch, postFetch, postWithFile } from "./request";
 import { ICommentInfo } from "@/lib/types/discussions";
+import { IComments } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 export interface ICourseList extends Course {
   courseId: number;
   tags: string[];
@@ -18,9 +13,10 @@ export type ApiResponse = {
   success: boolean;
   error: string;
   newComment: Discussion;
-  comment: ICommentInfo;
-  allComments: ICommentInfo[];
-  allReplyComments: ICommentInfo[];
+  comment: IComments;
+  allComments: IComments[];
+  allReplyComments: IComments[];
+  total: number;
   allReplyCmts: number;
   message: string;
 };
@@ -29,8 +25,13 @@ type FailedApiResponse = {
   error: string;
 };
 class DiscussionsSerivice {
-  addComment = (userId: number, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    postFetch({}, `/api/v1/discussions/add/${userId}`).then((result) => {
+  addComment = (
+    userId: number,
+    formData: any,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    postWithFile(formData, `/api/v1/discussions/add/${userId}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -77,12 +78,13 @@ class DiscussionsSerivice {
   };
 
   getCommentsList = (
+    userId: number,
     resourceId: number,
     pageSize: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    getFetch(`/api/v1/discussions/get-list/${pageSize}/${resourceId}`).then((result) => {
+    getFetch(`/api/v1/discussions/get-list/${userId}/${resourceId}?pageSize=${pageSize}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -102,7 +104,7 @@ class DiscussionsSerivice {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    getFetch(`/api/v1/discussions/reply/count/${parentCmtId}`).then((result) => {
+    getFetch(`/api/v1/discussions/get-list/reply/count/${parentCmtId}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -123,7 +125,7 @@ class DiscussionsSerivice {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    getFetch(`/api/v1/discussions/reply/${parentCmtId}`).then((result) => {
+    getFetch(`/api/v1/discussions/get-list/reply/${parentCmtId}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -138,8 +140,13 @@ class DiscussionsSerivice {
     });
   };
 
-  updateComment = (id: number, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    postFetch({}, `/api/v1/discussions/update/${id}`).then((result) => {
+  updateComment = (
+    id: number,
+    comment: string,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    postFetch({ comment: comment }, `/api/v1/discussions/update/${id}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;

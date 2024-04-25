@@ -8,6 +8,8 @@ import { IResponse, postWithFile } from "@/services/request";
 import { useSession } from "next-auth/react";
 import { bytesToSize } from "@/services/helper";
 import appConstant from "@/services/appConstant";
+import DiscussionsService from "@/services/DiscussionsService";
+import { error } from "console";
 const { Dragger } = Upload;
 
 const QAForm: FC<{
@@ -54,16 +56,19 @@ const QAForm: FC<{
       formData.append("tagCommentId", `${tagCommentId}`);
       formData.append("caption", attachModal.caption);
       formData.append("toUserId", `${toUserId}`);
-      const postRes = await postWithFile(formData, `/api/qa-discussion/add/${session?.id}`);
-      const result = (await postRes.json()) as IResponse;
-      if (postRes.ok && result.success) {
-        message.success("Comment Added");
-        onRefresh();
-        setComment("");
-        onCloseModal();
-      } else {
-        message.error(result.error);
-      }
+      DiscussionsService.addComment(
+        Number(session?.id),
+        formData,
+        (result) => {
+          message.success("Comment Added");
+          onRefresh();
+          setComment("");
+          onCloseModal();
+        },
+        (error) => {
+          message.error(error);
+        }
+      );
       setLoading(false);
     } catch (err) {
       setLoading(false);

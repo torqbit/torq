@@ -9,6 +9,7 @@ import moment from "moment";
 import { IComments } from "./CourseDiscussion";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { customFromNow } from "@/services/momentConfig";
+import DiscussionsService from "@/services/DiscussionsService";
 moment.locale("en", { ...customFromNow });
 
 export interface IAttachedFiles {
@@ -36,13 +37,15 @@ const CommentBox: FC<{
   const attachedFiles = comment.attachedFiles as any;
 
   const getTotalReplyCmt = async (id: number) => {
-    const res = await getFetch(`/api/qa-discussion/get-list/reply/count/${id}`);
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      setAllReplyCmtCount(result.allReplyCmts);
-    } else {
-      message.error(result.error);
-    }
+    DiscussionsService.getAllReplyCount(
+      id,
+      (result) => {
+        setAllReplyCmtCount(result.allReplyCmts);
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
   };
 
   React.useEffect(() => {
@@ -52,15 +55,17 @@ const CommentBox: FC<{
   }, [comment.id, refresh, replyRefresh]);
 
   const onDeleteComment = async (cmtId: number) => {
-    const deleteRes = await getFetch(`/api/qa-discussion/delete/${cmtId}`);
-    const result = (await deleteRes.json()) as IResponse;
-    if (deleteRes.ok && result.success) {
-      message.success(result.message);
-      onRefresh();
-      setRefresh(!refresh);
-    } else {
-      message.error(result.error);
-    }
+    DiscussionsService.deleteComment(
+      cmtId,
+      (result) => {
+        message.success(result.message);
+        onRefresh();
+        setRefresh(!refresh);
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
   };
 
   const onEditComment = async () => {
@@ -69,16 +74,20 @@ const CommentBox: FC<{
       return;
     }
     setLoading(true);
-    const editRes = await postFetch({ comment: editComment }, `/api/qa-discussion/update/${comment.id}`);
-    const result = (await editRes.json()) as IResponse;
-    if (editRes.ok && result.success) {
-      onRefresh();
-      message.success(result.message);
-      setEditComment(result.comment.comment);
-      setEdited(false);
-    } else {
-      message.error(result.error);
-    }
+    DiscussionsService.updateComment(
+      comment.id,
+      editComment,
+      (result) => {
+        onRefresh();
+        message.success(result.message);
+        setEditComment(result.comment.comment);
+        setEdited(false);
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
+
     setLoading(false);
   };
 
