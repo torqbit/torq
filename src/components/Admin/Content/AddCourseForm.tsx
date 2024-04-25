@@ -159,23 +159,17 @@ const AddCourseForm: FC = () => {
       (error) => {}
     );
   };
-  const deleteRes = (id: number) => {
-    ProgramService.getResource(
+  const onDeleteResource = (id: number) => {
+    ProgramService.deleteResource(
       id,
+      Number(router.query.id),
       (result) => {
-        onDeleteVideo(String(result.resource.video.id));
-
-        ProgramService.deleteResource(
-          id,
-          Number(router.query.id),
-          (result) => {
-            message.success(result.message);
-            onRefresh();
-          },
-          (error) => {}
-        );
+        message.success(result.message);
+        onRefresh();
       },
-      (error) => {}
+      (error) => {
+        message.error(error);
+      }
     );
   };
 
@@ -296,7 +290,9 @@ const AddCourseForm: FC = () => {
         contentType: content,
       } as ResourceDetails,
       (result) => {
-        formData.resetFields();
+        formData.setFieldValue("name", result.resource.name);
+        formData.setFieldValue("description", result.resource.description);
+        setResId(result.resource.resourceId);
         setLoading(false);
         !showResourceDrawer && setResourceDrawer(true);
         setUploadResUrl({});
@@ -610,7 +606,7 @@ const AddCourseForm: FC = () => {
           updateChapterState={updateChapterState}
           handleEditChapter={handleChapterEdit}
           updateResState={updateResState}
-          deleteRes={deleteRes}
+          deleteRes={onDeleteResource}
           onEditResource={onEditResource}
           onSave={onChange}
           onDiscard={onDiscard}
@@ -707,6 +703,7 @@ const AddCourseForm: FC = () => {
         setAddResource={setAddResource}
         onCreateRes={onCreateRes}
         currResId={currResId}
+        onDeleteResource={onDeleteResource}
         isEdit={isEdit}
         uploadResourceUrl={
           uploadResourceUrl as {

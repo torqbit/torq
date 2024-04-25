@@ -86,26 +86,6 @@ const AddCourseChapter: FC<{
                 </Form.Item>
               </div>
             </div>
-
-            {/* <div>
-              <Form.Item label="Set Index" name="index" rules={[{ required: true, message: "Please Enter Index" }]}>
-                <Select placeholder="Choose index">
-                  {currentSeqIds.length >= 1 &&
-                    currentSeqIds.map((seq) => {
-                      return <Select.Option value={`${seq}`}>{seq}</Select.Option>;
-                    })}
-                  {!router.query.chapterId && (
-                    <>
-                      {currentSeqIds.length >= 1 ? (
-                        <Select.Option value={`${currentSeqIds.length + 1}`}>{currentSeqIds.length + 1}</Select.Option>
-                      ) : (
-                        <Select.Option value="1">1</Select.Option>
-                      )}
-                    </>
-                  )}
-                </Select>
-              </Form.Item>
-            </div> */}
           </div>
         </Form>
       </Drawer>

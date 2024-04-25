@@ -22,111 +22,9 @@ import { CloseOutlined, EllipsisOutlined, LoadingOutlined, PlusOutlined } from "
 import { Resource, ResourceContentType } from "@prisma/client";
 import appConstant from "@/services/appConstant";
 import { IAddResource } from "@/lib/types/program";
-import ProgramService from "@/services/ProgramService";
-import { error } from "console";
 import { RcFile } from "antd/es/upload";
 import SvgIcons from "../SvgIcons";
 import { UploadedResourceDetail } from "@/types/courses/Course";
-
-const ResourceList: FC<{
-  name: string;
-  contentType: ResourceContentType;
-  setAddResource: (value: IAddResource) => void;
-  addRes: IAddResource;
-  duration: number | null;
-  resId: number;
-  onFindRsource: (id: number, content: ResourceContentType) => void;
-  formData: FormInstance;
-  chapterId: number;
-}> = ({ name, contentType, duration, setAddResource, addRes, resId, chapterId, onFindRsource, formData }) => {
-  const router = useRouter();
-
-  const onDeleteResource = () => {
-    ProgramService.deleteResource(
-      Number(resId),
-      (result) => {
-        message.success(result.message);
-        onFindRsource(chapterId, "Video");
-      },
-      (error) => {
-        message.error(error);
-      }
-    );
-  };
-
-  const onEditResource = () => {
-    ProgramService.getResource(
-      resId,
-      (result) => {
-        formData.setFieldValue("name", result.resource?.name);
-        formData.setFieldValue("description", result.resource?.description);
-        // formData.setFieldValue("assignmentLang", result.resource.assignmentLang);
-        formData.setFieldValue("submitDay", result.resource.daysToSubmit);
-        // formData.setFieldValue("VideoUrl", result.resource.thumbnail);
-        // formData.setFieldValue("duration", result.resource.videoDuration);
-        formData.setFieldValue("index", result.resource.sequenceId);
-        // formData.setFieldValue("assignment_file", result.resource.content);
-        formData.setFieldValue("contentType", result.resource.contentType);
-
-        setAddResource({
-          ...addRes,
-          content: result.resource.contentType,
-          chapterId: result.resource.chapterId,
-        });
-      },
-      (error) => {}
-    );
-  };
-
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "Edit",
-
-      onClick: () => {
-        onEditResource();
-      },
-      style: { textAlign: "center" },
-    },
-    {
-      key: "2",
-
-      label: (
-        <Popconfirm
-          title="Delete the Resource"
-          description="Are you sure to delete this resource?"
-          onConfirm={onDeleteResource}
-          okText="Yes"
-          cancelText="No"
-        >
-          Delete
-        </Popconfirm>
-      ),
-      onClick: () => {},
-      style: { textAlign: "center" },
-    },
-  ];
-  return (
-    <div className={`${styles.resorceListWrapper}  ${Number(router.query.resId) === resId && `${styles.resSelected}`}`}>
-      <div className={styles.resourceListContent}>
-        <div>
-          {contentType === "Video" ? (
-            <img height={30} width={30} src="/img/about-course/playcircle.svg" alt="Video" />
-          ) : (
-            <img height={30} width={30} src="/img/about-course/assignment.svg" alt="Assignment" />
-          )}
-        </div>
-        <div>
-          <div>{name ? name : <>{contentType === "Video" ? "New Video" : "New Assignment"}</>}</div>
-          {contentType === "Assignment" ? <div>{duration} hrs</div> : <div>{duration} min</div>}
-        </div>
-      </div>
-      <Dropdown menu={{ items }} trigger={["click"]} placement="bottom" arrow>
-        <EllipsisOutlined className={styles.ellipsisOutlined} />
-      </Dropdown>
-    </div>
-  );
-};
 
 const AddResource: FC<{
   setAddResource: (value: IAddResource) => void;
@@ -143,6 +41,7 @@ const AddResource: FC<{
   setResourceDrawer: (value: boolean) => void;
   showResourceDrawer: boolean;
   availableRes: Resource[] | undefined;
+  onDeleteResource: (id: number) => void;
   onFindRsource: (id: number, content: ResourceContentType) => void;
   onUpdateRes: (resId: number) => void;
   onDeleteThumbnail: (name: string, dir: string) => void;
@@ -157,6 +56,7 @@ const AddResource: FC<{
   loading,
   chapterId,
   isEdit,
+  onDeleteResource,
   setAddResource,
   formData,
   onDeleteVideo,
@@ -208,7 +108,7 @@ const AddResource: FC<{
         placement="right"
         onClose={() => {
           setResourceDrawer(false);
-
+          currResId && !isEdit && onDeleteResource(currResId);
           formData.resetFields();
           onRefresh();
         }}
@@ -228,15 +128,8 @@ const AddResource: FC<{
                 type="default"
                 onClick={() => {
                   setResourceDrawer(false);
-
+                  currResId && !isEdit && onDeleteResource(currResId);
                   formData.resetFields();
-                  setAddResource({
-                    content: "Video",
-                    chapterId: 0,
-                    name: "",
-                    duration: 0,
-                    assignmentFileName: "",
-                  });
                 }}
               >
                 Cancel
