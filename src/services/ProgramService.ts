@@ -825,7 +825,7 @@ class ProgramService {
           const failedResponse = r as FailedApiResponse;
           onFailure(failedResponse.error);
         });
-      } else if (result.status == 200 || result.status == 403) {
+      } else if (result.status == 201) {
         result.json().then((r) => {
           const apiResponse = r as ApiResponse;
           onSuccess(apiResponse);

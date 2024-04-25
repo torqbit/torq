@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         resourceId: Number(resourceId),
       },
       include: {
-        videos: {},
+        video: {},
       },
     });
     return res.status(200).json({
