@@ -9,6 +9,7 @@ import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import DiscussionsService from "@/services/DiscussionsService";
+import NotificationService from "@/services/NotificationService";
 
 export interface IComments extends Discussion {
   comment: string;
@@ -86,9 +87,16 @@ const QADiscssionTab: FC<{ resourceId: number; userId: number; loading: boolean 
 
   const updateNotification = async () => {
     try {
-      const res = await getFetch(`/api/notification/update/${query.notifi}?userId=${userId}`);
-      const result = (await res.json()) as IResponse;
-      dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+      NotificationService.updateNotification(
+        Number(query.notifi),
+        userId,
+        (result) => {
+          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+        },
+        (error) => {
+          message.error(error);
+        }
+      );
     } catch (err) {}
   };
 

@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import styles from "../../styles/Dashboard.module.scss";
+import styles from "@/styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
 import { Avatar, Badge, List, Space, Tabs, TabsProps, message } from "antd";
 import Layout2 from "@/components/Layout2/Layout2";
@@ -8,36 +8,77 @@ import { useAppContext } from "@/components/ContextApi/AppContext";
 import Link from "next/link";
 import { truncateString } from "@/services/helper";
 import moment from "moment";
+import NotificationService from "@/services/NotificationService";
+import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/ReplyDrawer";
+import { IComments, IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
+import { INotification } from "@/components/Header/Header";
+import { useRouter } from "next/router";
 
 const NotificationList: FC = () => {
   const { data: user } = useSession();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { globalState, dispatch } = useAppContext();
+  const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
+    isOpen: false,
+    sltCommentId: 0,
+  });
   const { notifications } = globalState;
+  console.log(notifications, "no");
+  const [selectedNotification, setSelectedNotification] = useState<INotification>();
+
+  const showReplyDrawer = () => {
+    console.log("hit eee");
+    !replyDrawer.isOpen &&
+      setReplyDrawer({
+        isOpen: true,
+        sltCommentId: Number(selectedNotification?.tagCommentId),
+      });
+  };
+
+  const onCloseDrawer = () => {
+    setReplyDrawer({ isOpen: false, sltCommentId: 0 });
+  };
 
   const getNotification = async (userId: number) => {
     try {
       setLoading(true);
-      const res = await getFetch(`/api/notification/get/${user?.id}`);
-      const result = (await res.json()) as IResponse;
-      if (res.ok && result.success) {
-        dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
-        setLoading(false);
-      } else {
-        message.error(result.error);
-        setLoading(false);
-      }
+
+      NotificationService.getNotification(
+        userId,
+        (result) => {
+          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          setLoading(false);
+        },
+        (error) => {
+          setLoading(false);
+        }
+      );
     } catch (err: any) {
-      message.error("Something went wrong. Please try again");
+      console.log(err);
+
       setLoading(false);
     }
+  };
+
+  const updateNotification = async () => {
+    try {
+      NotificationService.updateNotification(
+        Number(selectedNotification?.id),
+        Number(user?.id),
+        (result) => {
+          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+        },
+        (error) => {}
+      );
+    } catch (err) {}
   };
 
   React.useEffect(() => {
     if (user?.id) {
       getNotification(user.id);
     }
-  }, [user]);
+  }, [user?.id]);
   return (
     <List
       size="small"
@@ -48,7 +89,12 @@ const NotificationList: FC = () => {
       dataSource={notifications}
       className={styles.enrolled_course_list}
       renderItem={(item, index) => (
-        <List.Item>
+        <List.Item
+          onClick={() => {
+            setSelectedNotification(item);
+            showReplyDrawer();
+          }}
+        >
           <List.Item.Meta
             avatar={
               <Badge color="blue" dot={!item.isView}>
@@ -57,8 +103,7 @@ const NotificationList: FC = () => {
             }
             title={
               <Link href="#">
-                {item.fromUser.name}
-
+                {item.fromUser.name}{" "}
                 {item.notificationType === "COMMENT" ? (
                   <span>
                     replied on Question {" : "}
@@ -72,6 +117,13 @@ const NotificationList: FC = () => {
             description={item.comment.comment}
           />
           <span style={{ color: "#68696d" }}>{moment(new Date(item.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}</span>
+          <ReplyDrawer
+            replyDrawer={replyDrawer}
+            onCloseDrawer={onCloseDrawer}
+            resourceId={Number(selectedNotification?.resourceId)}
+            onReplyRefresh={() => {}}
+            updateNotification={updateNotification}
+          />
         </List.Item>
       )}
     />

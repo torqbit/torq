@@ -10,6 +10,7 @@ import { signOut, useSession } from "next-auth/react";
 import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { IResponse, getFetch } from "@/services/request";
+import NotificationService from "@/services/NotificationService";
 
 const { Sider } = Layout;
 
@@ -21,6 +22,8 @@ const Sidebar: FC = () => {
   const { data: user } = useSession();
   const { globalState, dispatch } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newNotificationLength, setNotificationLength] = useState<number>(0);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -30,19 +33,23 @@ const Sidebar: FC = () => {
     setIsModalOpen(false);
   };
 
-  const getNewNotification = async (userId: number) => {
-    try {
-      const res = await getFetch(`/api/notification/check/${user?.id}`);
-      const result = (await res.json()) as IResponse;
-      if (res.ok && result.success) {
-        setNewNotifi(result.notifications);
-      } else {
-        message.error(result.error);
-      }
-    } catch (err: any) {
-      message.error(err);
-    }
-  };
+  // const getNewNotification = async (userId: number) => {
+  //   try {
+  //     NotificationService.checkNotification(
+  //       userId,
+  //       (result) => {
+  //         console.log(result, "side");
+  //         setNewNotifi(result.isNew);
+  //         setNotificationLength(result.length);
+  //       },
+  //       (error) => {
+  //         message.error(error);
+  //       }
+  //     );
+  //   } catch (err: any) {
+  //     message.error(err);
+  //   }
+  // };
 
   const siderMenu: MenuProps["items"] = [
     {
@@ -84,7 +91,12 @@ const Sidebar: FC = () => {
       label: <Link href="/torq/notifications">Notifications</Link>,
       key: "notification",
       icon: (
-        <Badge color="blue" dot={!isNewNotifi}>
+        <Badge
+          color="blue"
+          count={globalState?.notifications?.length}
+          style={{ fontSize: 10, paddingTop: 1.5 }}
+          size="small"
+        >
           {SvgIcons.nottification}
         </Badge>
       ),
@@ -112,11 +124,11 @@ const Sidebar: FC = () => {
     },
   ];
 
-  React.useEffect(() => {
-    if (user?.id) {
-      getNewNotification(user.id);
-    }
-  }, [user?.id]);
+  // React.useEffect(() => {
+  //   if (user?.id) {
+  //     getNewNotification(user.id);
+  //   }
+  // }, [user?.id]);
 
   return (
     <Sider

@@ -21,6 +21,7 @@ const QAForm: FC<{
   toUserId?: number;
   parentCommentId?: number;
   tagCommentId?: number;
+  updateNotification?: () => void;
 }> = ({
   parentCommentId,
   loadingPage,
@@ -28,6 +29,7 @@ const QAForm: FC<{
   style,
   onRefresh,
   resourceId,
+  updateNotification,
   tagCommentId,
   toUserId,
 }) => {
@@ -64,6 +66,9 @@ const QAForm: FC<{
           onRefresh();
           setComment("");
           onCloseModal();
+          if (updateNotification && parentCommentId) {
+            updateNotification();
+          }
         },
         (error) => {
           message.error(error);
