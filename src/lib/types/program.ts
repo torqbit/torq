@@ -51,15 +51,11 @@ export interface ResourceDetails {
   resourceId: number | undefined;
   description: string;
   chapterId: number;
-  sequenceId: number;
-  assignmentLang: string[];
-  videoDuration: number;
-  daysToSubmit: number;
-  thumbnail?: string;
   contentType: string;
   content: string;
   videoId: number;
   courseId?: number;
+
 }
 
 export interface allProgram {

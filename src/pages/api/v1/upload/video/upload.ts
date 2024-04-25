@@ -8,6 +8,7 @@ import path from "path";
 import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
+import { UploadVideoObjectType, VideoAPIResponse } from "@/types/courses/Course";
 
 export const config = {
   api: {
@@ -38,6 +39,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (files.file) {
       let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
+      const objectId = Number(fields.objectId[0]);
+      const objectType = fields.objectType[0] as UploadVideoObjectType;
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
@@ -55,14 +58,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               },
             })
             .then((provider: any) => {
-              const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-              return cms.uploadVideo(fullName, fileBuffer, 1, 1, serviceProvider);
+              if (provider?.provider_name) {
+                const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
+                return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
+              } else {
+                const failedPromise: Promise<VideoAPIResponse> = new Promise((resolve, _) => {
+                  resolve({
+                    success: false,
+                    statusCode: 400,
+                    message: "No Media Provder has been configured"
+                  } as VideoAPIResponse)
+                })
+                return failedPromise;
+              }
+
             });
         });
-      res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
-      if (videoUploadResponse && videoUploadResponse.statusCode == 201 && path != "") {
+      if (videoUploadResponse && path != "") {
+        console.log(`deleting the file - ${path}`);
         fs.unlinkSync(path);
+      } else {
+        console.log(`unable to delete video : ${path} . response ${videoUploadResponse?.statusCode}`);
       }
+      return res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
     }
 
     if (!files) {

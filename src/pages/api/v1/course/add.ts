@@ -9,20 +9,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await req.body;
     const { name, duration, state, skills, description, thumbnail, authorId, sequenceId, courseId } = body;
 
-    // CHECK IS COURSE EXIST WITH THIS NAME
-    const isCourseExist = await prisma.course.findFirst({
-      where: {
-        courseId: courseId,
-      },
-    });
-
-    if (isCourseExist) {
-      return res.status(403).json({
-        info: true,
-        success: false,
-        message: `Course already exist with this name : ${name} `,
-      });
-    }
 
     let courseData = {
       name: name,

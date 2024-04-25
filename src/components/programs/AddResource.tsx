@@ -222,7 +222,7 @@ const AddResource: FC<{
           >
             <Space className={styles.footerBtn}>
               <Button type="primary" htmlType="submit">
-                {isEdit ? "Update" : "Save"}
+                {isEdit ? "Update" : "Save Lesson"}
               </Button>
               <Button
                 type="default"

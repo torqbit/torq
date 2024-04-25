@@ -67,7 +67,6 @@ const CourseSetting: FC<{
       // setLoading(false);
     }
   };
-  useEffect(() => {}, [courseTrailerUploading]);
 
   return (
     <section className={styles.add_course_setting}>
@@ -84,7 +83,12 @@ const CourseSetting: FC<{
             >
               <Button>Discard</Button>
             </Popconfirm>
-            <Button type="primary" htmlType="submit" className={styles.save_setting_btn}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.save_setting_btn}
+              disabled={courseTrailerUploading || uploadVideo?.state == "PROCESSING"}
+            >
               Save Settings <img style={{ marginLeft: 5 }} src="/img/program/arrow-right.png" alt="arrow" />
             </Button>
           </Space>
@@ -128,7 +132,7 @@ const CourseSetting: FC<{
                 name="avatar"
                 listType="picture-card"
                 className={styles.upload__trailer}
-                disabled={!form.getFieldsValue().course_name ? true : false}
+                disabled={courseTrailerUploading || uploadVideo?.state == "PROCESSING"}
                 showUploadList={false}
                 beforeUpload={(file) => {
                   if (uploadVideo && uploadVideo.videoUrl) {
@@ -138,8 +142,8 @@ const CourseSetting: FC<{
                 }}
                 onChange={handleChange}
               >
-                {uploadVideo?.videoUrl ? (
-                  <>
+                {uploadVideo?.state == "READY" && !courseTrailerUploading && (
+                  <Tooltip title="Upload new trailer video">
                     <img
                       src={uploadVideo?.thumbnail}
                       alt=""
@@ -147,20 +151,31 @@ const CourseSetting: FC<{
                       className={styles.video_container}
                       width={320}
                     />
-
-                    {uploadVideo?.videoUrl && (
-                      <Tooltip title="Upload trailer video">
-                        <div className={styles.camera_btn}>
-                          {courseTrailerUploading ? <LoadingOutlined /> : SvgIcons.video}
-                        </div>
-                      </Tooltip>
-                    )}
-                  </>
-                ) : (
-                  <button style={{ border: 0, background: "none" }} type="button">
-                    {courseTrailerUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
-                    <div style={{ marginTop: 8 }}>Upload Video</div>
-                  </button>
+                    <div
+                      style={{ height: 50, width: 50, fontSize: "1.4rem" }}
+                      className={`${styles.video_status} ${styles.video_status_ready}`}
+                    >
+                      {SvgIcons.video}
+                    </div>
+                  </Tooltip>
+                )}
+                {(uploadVideo?.state == "PROCESSING" || courseTrailerUploading) && (
+                  <div
+                    style={{ height: 50, width: 80 }}
+                    className={`${styles.video_status} ${styles.video_status_loading}`}
+                  >
+                    <LoadingOutlined />
+                    <span>{courseTrailerUploading ? "Uploading" : "Processing"}</span>
+                  </div>
+                )}
+                {!uploadVideo?.state && !courseTrailerUploading && (
+                  <div
+                    style={{ height: 50, width: 150 }}
+                    className={`${styles.video_status} ${styles.video_status_loading}`}
+                  >
+                    <i style={{ display: "block" }}>{SvgIcons.video}</i>
+                    <span>Upload Video</span>
+                  </div>
                 )}
               </Upload>
             </div>

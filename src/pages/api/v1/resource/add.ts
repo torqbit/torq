@@ -8,34 +8,19 @@ import { ResourceContentType } from "@prisma/client";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const { name, description, chapterId, contentType, courseId } = body;
-    // CHECK IS RESOURCE EXIST WITH THIS NAME
-    const isResourceExist = await prisma.resource.findFirst({
+    const { name, description, chapterId, sequenceId, contentType } = body;
+
+    const resourceCount = await prisma.resource.count({
       where: {
-        AND: [{ name: name }, { chapterId: Number(chapterId) }],
+        chapterId: chapterId,
       },
     });
-
-    if (isResourceExist) {
-      return res.status(403).json({
-        info: true,
-        success: false,
-        message: `Resource already exist with this name : ${name} `,
-      });
-    }
 
     let resData = {
       chapterId: chapterId,
       name: name,
       description: description,
-      sequenceId:
-        ((await prisma.resource.count({
-          where: {
-            chapterId: chapterId,
-          },
-        })) +
-          1) |
-        1,
+      sequenceId: resourceCount + 1,
       contentType: contentType as ResourceContentType,
     };
 

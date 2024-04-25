@@ -14,7 +14,7 @@ const Label: FC<{
   keyValue: string;
   onRender: (value: string[]) => void;
   render: string[];
-  onFindResource: (id: number, content: ResourceContentType) => void;
+  onAddResource: (id: number, content: ResourceContentType) => void;
   onEditResource: (id: number) => void;
 
   icon: ReactNode;
@@ -28,7 +28,7 @@ const Label: FC<{
   keyValue,
   onEditResource,
   icon,
-  onFindResource,
+  onAddResource,
   state,
   deleteChapter,
   id,
@@ -90,14 +90,14 @@ const Label: FC<{
                         key: 1,
                         label: "Video",
                         onClick: () => {
-                          onFindResource(id, "Video");
+                          onAddResource(id, "Video");
                         },
                       },
                       {
                         key: 2,
                         label: "Assignment",
                         onClick: () => {
-                          onFindResource(id, "Assignment");
+                          onAddResource(id, "Assignment");
                         },
                         disabled: true,
                       },
@@ -143,7 +143,7 @@ const Curriculum: FC<{
   onRefresh: () => void;
   onEditResource: (id: number) => void;
   setOpen: (value: boolean) => void;
-  onFindResource: (id: number, content: ResourceContentType) => void;
+  onAddResource: (id: number, content: ResourceContentType) => void;
   deleteChapter: (id: number) => void;
   updateChapterState: (id: number, state: string) => void;
   updateResState: (id: number, state: string) => void;
@@ -154,7 +154,7 @@ const Curriculum: FC<{
   chapters,
   onRefresh,
   setOpen,
-  onFindResource,
+  onAddResource,
   deleteChapter,
   updateChapterState,
   updateResState,
@@ -179,7 +179,7 @@ const Curriculum: FC<{
           onEditResource={() => {}}
           deleteChapter={deleteChapter}
           updateState={updateChapterState}
-          onFindResource={onFindResource}
+          onAddResource={onAddResource}
           id={content.chapterId}
           render={render}
           keyValue={`${i + 1}`}
@@ -197,7 +197,7 @@ const Curriculum: FC<{
               updateState={updateResState}
               type="resource"
               onEditResource={onEditResource}
-              onFindResource={() => {}}
+              onAddResource={() => {}}
               onRender={setRender}
               render={render}
               keyValue={`${i + 1}`}
