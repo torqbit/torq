@@ -100,7 +100,6 @@ const EnrolledCourseList: FC<{
   ];
 
   const data = allCourses?.map((course) => {
-    console.log(allCourses, "all");
     return {
       key: course.courseId,
       name: course.name,

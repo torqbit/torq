@@ -67,7 +67,6 @@ const Preview: FC<{
   isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
 }> = ({ uploadVideo, chapter, videoUrl, onEnrollCourse, enrolled, isCourseCompleted, courseDetail }) => {
-  console.log(enrolled, "en");
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });

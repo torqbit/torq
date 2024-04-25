@@ -26,7 +26,6 @@ const LearnCoursesPage: NextPage = () => {
     const res = await getFetch(`/api/course/get-enrolled/${router.query.courseId}/checkStatus`);
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
-      console.log(result.isEnrolled, "s");
       setEnroll(result.isEnrolled);
     }
   };
@@ -88,7 +87,6 @@ const LearnCoursesPage: NextPage = () => {
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
-          console.log(result, "result");
           setCourseDetail(result.courseDetails);
           setVideoUrl(result.courseDetails.videoUrl);
           setChapterList(result.courseDetails.chapters.filter((c) => c.state === "ACTIVE"));
