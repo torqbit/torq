@@ -532,7 +532,7 @@ const AddCourseForm: FC = () => {
         });
         setUploadResUrl({
           thumbnail: result.resource.video?.thumbnail,
-          videoId: String(result.resource.video?.providerVideoId),
+          videoId: String(result.resource.video?.videoId),
           videoUrl: String(result.resource.video?.videoUrl),
         });
         setResourceDrawer(true);
