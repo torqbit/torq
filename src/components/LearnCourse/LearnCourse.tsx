@@ -202,24 +202,26 @@ const LearnCourse: FC<{}> = () => {
           refresh={refresh}
         />
       ),
-      children: content.resource.map((res: IResourceDetail, i: any) => {
-        return (
-          <div className={styles.resContainer}>
-            <Label
-              title={res.name}
-              icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
-              onSelectResource={onSelectResource}
-              resourceId={res.resourceId}
-              setChapterId={() => {}}
-              selectedLesson={selectedLesson}
-              chapterId={0}
-              keyValue={`${i + 1}`}
-              refresh={refresh}
-            />
-          </div>
-        );
-      }),
+      children: content.resource
+        .filter((r) => r.state === "ACTIVE")
+        .map((res: IResourceDetail, i: any) => {
+          return (
+            <div className={styles.resContainer}>
+              <Label
+                title={res.name}
+                icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
+                time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
+                onSelectResource={onSelectResource}
+                resourceId={res.resourceId}
+                setChapterId={() => {}}
+                selectedLesson={selectedLesson}
+                chapterId={0}
+                keyValue={`${i + 1}`}
+                refresh={refresh}
+              />
+            </div>
+          );
+        }),
       showArrow: false,
     };
   });
@@ -242,11 +244,14 @@ const LearnCourse: FC<{}> = () => {
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
+          if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {
+            router.push("/courses");
+          }
           setCourseData({
             ...courseData,
             name: result.courseDetails?.name,
             expiryInDays: result.courseDetails?.expiryInDays,
-            chapters: result.courseDetails?.chapters,
+            chapters: result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE"),
           });
           getProgressDetail();
 

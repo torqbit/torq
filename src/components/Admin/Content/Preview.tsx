@@ -86,89 +86,95 @@ const Preview: FC<{
           keyValue={`${i + 1}`}
         />
       ),
-      children: content.resource.map((res: IResourceDetail, i: any) => {
-        return (
-          <div className={styles.resContainer}>
-            <Label
-              title={res.name}
-              icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
-              onRender={setRender}
-              resourceId={res.resourceId}
-              render={render}
-              keyValue={`${i + 1}`}
-            />
-          </div>
-        );
-      }),
+      children: content.resource
+        .filter((r) => r.state === "ACTIVE")
+        .map((res: IResourceDetail, i: any) => {
+          return (
+            <div className={styles.resContainer}>
+              <Label
+                title={res.name}
+                icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
+                time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
+                onRender={setRender}
+                resourceId={res.resourceId}
+                render={render}
+                keyValue={`${i + 1}`}
+              />
+            </div>
+          );
+        }),
       showArrow: false,
     };
   });
 
   return (
     <section className={styles.preview_container}>
-      <div style={{ fontSize: 20 }}>
-        {courseDetail && (
-          <Flex>
-            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
-            <div>{courseDetail.name}</div>
-          </Flex>
-        )}
-      </div>
-      <div className={styles.video_container}>
-        {uploadVideo?.videoUrl ||
-          (videoUrl && (
-            <iframe
-              style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                outline: "none",
-                border: "none",
-              }}
-              src={videoUrl}
-            ></iframe>
-          ))}
-        <div className={styles.video_player_info}>
-          <Space direction="vertical">
-            <h2>{courseDetail?.name}</h2>
-            <p>{courseDetail?.description}</p>
-          </Space>
-
-          {enrolled && isCourseCompleted ? (
-            <Link href={`/courses/${chapter[0]?.courseId}/play`}>
-              <Button>Rewatch</Button>
-            </Link>
-          ) : (
-            <Button className={styles.save_btn} type="primary" onClick={onEnrollCourse}>
-              {enrolled ? "Resume" : "Enroll Course"}
-              {SvgIcons.arrowRight}
-            </Button>
+      <Space direction="vertical">
+        <div style={{ fontSize: 20 }}>
+          {courseDetail && (
+            <Flex>
+              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
+              <div>{courseDetail.name}</div>
+            </Flex>
           )}
         </div>
-      </div>
+        <div className={styles.video_container}>
+          {uploadVideo?.videoUrl ||
+            (videoUrl && (
+              <iframe
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  outline: "none",
+                  border: "none",
+                }}
+                src={videoUrl}
+              ></iframe>
+            ))}
+          <div className={styles.video_player_info}>
+            <Space direction="vertical">
+              <h2>{courseDetail?.name}</h2>
+              <p>{courseDetail?.description}</p>
+            </Space>
 
-      <h2>Table of Contents</h2>
-      {items.map((item, i) => {
-        return (
-          <div key={i} className={styles.chapter_list}>
-            <Collapse
-              defaultActiveKey={"1"}
-              size="small"
-              accordion={false}
-              activeKey={render}
-              items={[
-                {
-                  key: item.key,
-                  label: item.label,
-                  children: item.children,
-                  showArrow: false,
-                },
-              ]}
-            />
+            {enrolled && isCourseCompleted ? (
+              <Link href={`/courses/${chapter[0]?.courseId}/play`}>
+                <Button>Rewatch</Button>
+              </Link>
+            ) : (
+              <Button className={styles.save_btn} onClick={onEnrollCourse}>
+                {enrolled ? "Resume" : "Enroll Course"}
+                {SvgIcons.arrowRight}
+              </Button>
+            )}
           </div>
-        );
-      })}
+        </div>
+
+        <h2>Table of Contents</h2>
+        <div>
+          {items.map((item, i) => {
+            return (
+              <div key={i} className={styles.chapter_list}>
+                <Collapse
+                  defaultActiveKey={"1"}
+                  size="small"
+                  accordion={false}
+                  activeKey={render}
+                  items={[
+                    {
+                      key: item.key,
+                      label: item.label,
+                      children: item.children,
+                      showArrow: false,
+                    },
+                  ]}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </Space>
     </section>
   );
 };

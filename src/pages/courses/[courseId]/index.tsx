@@ -91,7 +91,7 @@ const LearnCoursesPage: NextPage = () => {
           console.log(result, "result");
           setCourseDetail(result.courseDetails);
           setVideoUrl(result.courseDetails.videoUrl);
-          setChapterList(result.courseDetails.chapters);
+          setChapterList(result.courseDetails.chapters.filter((c) => c.state === "ACTIVE"));
           setCourseType(result.courseDetails.courseType);
         },
         (error) => {}

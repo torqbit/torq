@@ -16,7 +16,11 @@ interface IProps {
 const CoursesPage = (props: IProps) => {
   return (
     <div className={styles.container}>
-      {props.allCourses ? <Courses allCourses={props.allCourses} /> : <Spin fullscreen tip />}
+      {props.allCourses ? (
+        <Courses allCourses={props.allCourses.filter((c) => c.state === "ACTIVE")} />
+      ) : (
+        <Spin fullscreen tip />
+      )}
     </div>
   );
 };
