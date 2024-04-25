@@ -568,7 +568,7 @@ const AddCourseForm: FC = () => {
           chapters={courseData.chapters}
           onRefresh={onRefresh}
           setOpen={setOpen}
-          onFindResource={onFindResource}
+          onAddResource={onAddResource}
           deleteChapter={deleteChapter}
           updateChapterState={updateChapterState}
           updateResState={updateResState}
