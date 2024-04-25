@@ -61,50 +61,74 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Comment Data
     const { comment, resourceId, parentCommentId, tagCommentId, caption, toUserId } = fields;
-    const upFiles: Array<{ url: string; fileId: string }> = [];
-
-    if (files?.files) {
-      if (files?.files?.length) {
-        const allPromise = files.files.map((file: formidable.File) => {
-          return new Promise(async (resolve, reject) => {
-            const res = await uploadFileToImgKit(file, appConstant.attachmentFileFolder);
-            upFiles.push({ url: res.url, fileId: res.fileId });
-            resolve({});
-          });
-        });
-        await Promise.all(allPromise);
-      } else {
-        const res = await uploadFileToImgKit(files.files, appConstant.attachmentFileFolder);
-        upFiles.push({ url: res.url, fileId: res.fileId });
-      }
-    }
-
-    const commentData: ICommentData = {
-      comment: comment[0],
-      userId: Number(req.query.id),
-      resourceId: Number(resourceId),
-      attachedFiles: { fileCaption: caption[0], upFiles: upFiles },
-    };
-
-    if (parentCommentId && parentCommentId !== "undefined") commentData["parentCommentId"] = Number(parentCommentId);
-    if (tagCommentId && tagCommentId !== "undefined") commentData["tagCommentId"] = Number(tagCommentId);
-    //if (caption && caption !== "undefined") commentData["caption"] = caption;
-
-    const newComment = await prisma.discussion.create({
-      data: commentData,
-    });
-    if (commentData?.parentCommentId) {
-      const newNotification = await prisma.notification.create({
-        data: {
-          notificationType: "COMMENT",
-          toUserId: Number(toUserId),
-          commentId: newComment.id,
-          fromUserId: Number(req.query.id),
-          tagCommentId: commentData.parentCommentId,
+    const resourceDetail = await prisma.resource.findUnique({
+      where: {
+        resourceId: Number(resourceId),
+      },
+      include: {
+        chapter: {
+          select: {
+            courseId: true,
+          },
         },
+      },
+    });
+
+    const isEnrolled = await prisma.courseRegistration.findFirst({
+      where: {
+        courseId: resourceDetail?.chapter.courseId,
+        studentId: Number(req.query.id),
+      },
+    });
+
+    if (isEnrolled) {
+      const upFiles: Array<{ url: string; fileId: string }> = [];
+
+      if (files?.files) {
+        if (files?.files?.length) {
+          const allPromise = files.files.map((file: formidable.File) => {
+            return new Promise(async (resolve, reject) => {
+              const res = await uploadFileToImgKit(file, appConstant.attachmentFileFolder);
+              upFiles.push({ url: res.url, fileId: res.fileId });
+              resolve({});
+            });
+          });
+          await Promise.all(allPromise);
+        } else {
+          const res = await uploadFileToImgKit(files.files, appConstant.attachmentFileFolder);
+          upFiles.push({ url: res.url, fileId: res.fileId });
+        }
+      }
+
+      const commentData: ICommentData = {
+        comment: comment[0],
+        userId: Number(req.query.id),
+        resourceId: Number(resourceId),
+        attachedFiles: { fileCaption: caption[0], upFiles: upFiles },
+      };
+
+      if (parentCommentId && parentCommentId !== "undefined") commentData["parentCommentId"] = Number(parentCommentId);
+      if (tagCommentId && tagCommentId !== "undefined") commentData["tagCommentId"] = Number(tagCommentId);
+      //if (caption && caption !== "undefined") commentData["caption"] = caption;
+
+      const newComment = await prisma.discussion.create({
+        data: commentData,
       });
+      if (commentData?.parentCommentId) {
+        const newNotification = await prisma.notification.create({
+          data: {
+            notificationType: "COMMENT",
+            toUserId: Number(toUserId),
+            commentId: newComment.id,
+            fromUserId: Number(req.query.id),
+            tagCommentId: commentData.parentCommentId,
+          },
+        });
+      }
+      return res.status(200).json({ success: true, newComment });
+    } else {
+      return res.status(400).json({ success: false, error: "You are not enrolled to this course" });
     }
-    return res.status(200).json({ success: true, newComment });
   } catch (error) {
     return errorHandler(error, res);
   }

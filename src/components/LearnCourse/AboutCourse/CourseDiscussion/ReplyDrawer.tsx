@@ -7,12 +7,9 @@ import CommentBox from "./CommentBox";
 import QAForm from "./DiscussionForm";
 import { UserOutlined } from "@ant-design/icons";
 import { useMediaPredicate } from "react-media-hook";
-import {
-  Element,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from "react-scroll";
+import { Element, animateScroll as scroll, scrollSpy, scroller } from "react-scroll";
+import DiscussionsService from "@/services/DiscussionsService";
+import { error } from "console";
 
 const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
@@ -39,23 +36,30 @@ const ReplyDrawer: FC<{
 
   const getCommetById = async (id: number) => {
     try {
-      const res = await getFetch(`/api/qa-discussion/get/${id}`);
-      const result = (await res.json()) as IResponse;
-      if (res.ok && result.success) {
-        setSltComment(result.comment);
-      }
+      DiscussionsService.getComment(
+        id,
+        (result) => {
+          setSltComment(result.comment);
+        },
+        (error) => {
+          message.error(error);
+        }
+      );
     } catch (err) {}
   };
 
   const getAllReplyComment = async (cmtId: number) => {
     setListLoading(true);
-    const res = await getFetch(`/api/qa-discussion/get-list/reply/${cmtId}`);
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      setAllReplyComments(result.allReplyComments);
-    } else {
-      message.error(result.error);
-    }
+    DiscussionsService.getAllReplyCount(
+      cmtId,
+      (result) => {
+        setAllReplyComments(result.allReplyComments);
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
+
     setListLoading(false);
   };
 
@@ -126,6 +130,7 @@ const ReplyDrawer: FC<{
               setRefresh(!refresh);
               onReplyRefresh();
             }}
+            loadingPage={false}
           />
         </div>
       </Drawer>

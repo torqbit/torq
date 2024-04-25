@@ -8,6 +8,9 @@ import CommentBox, { IAttachedFiles } from "./CommentBox";
 import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
 import { useAppContext } from "@/components/ContextApi/AppContext";
+import DiscussionsService from "@/services/DiscussionsService";
+import { error } from "console";
+import { ICommentInfo } from "@/lib/types/discussions";
 
 export interface IComments extends Discussion {
   comment: string;
@@ -54,14 +57,19 @@ const QADiscssionTab: FC<{ resourceId: number; userId: number; loading: boolean 
 
   const getAllDiscussioin = async (resId: number, pageSize: number) => {
     setListLoading(true);
-    const res = await getFetch(`/api/qa-discussion/get-list/${userId}/${resId}?pageSize=${pageSize}`);
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      setAllComments(result.allComments);
-      setTotalCmt(result.total);
-    } else {
-      message.error(result.error);
-    }
+    DiscussionsService.getCommentsList(
+      userId,
+      resourceId,
+      pageSize,
+      (result) => {
+        setAllComments(result.allComments);
+        setTotalCmt(result.total);
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
+
     setListLoading(false);
   };
 
