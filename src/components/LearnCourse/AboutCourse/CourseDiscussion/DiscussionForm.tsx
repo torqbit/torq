@@ -21,6 +21,7 @@ const QAForm: FC<{
   toUserId?: number;
   parentCommentId?: number;
   tagCommentId?: number;
+  updateNotification?: () => void;
 }> = ({
   parentCommentId,
   loadingPage,
@@ -28,6 +29,7 @@ const QAForm: FC<{
   style,
   onRefresh,
   resourceId,
+  updateNotification,
   tagCommentId,
   toUserId,
 }) => {
@@ -55,15 +57,16 @@ const QAForm: FC<{
       formData.append("parentCommentId", `${parentCommentId}`);
       formData.append("tagCommentId", `${tagCommentId}`);
       formData.append("caption", attachModal.caption);
-      formData.append("toUserId", `${toUserId}`);
       DiscussionsService.addComment(
-        Number(session?.id),
         formData,
         (result) => {
           message.success("Comment Added");
           onRefresh();
           setComment("");
           onCloseModal();
+          if (updateNotification && parentCommentId) {
+            updateNotification();
+          }
         },
         (error) => {
           message.error(error);

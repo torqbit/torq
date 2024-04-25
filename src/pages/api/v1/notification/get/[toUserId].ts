@@ -61,7 +61,12 @@ export const getNotifi = async (userId: number) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const notifications = await getNotifi(Number(req.query.toUserId));
-    return res.status(200).json({ success: true, notifications });
+
+    if (notifications.length > 0) {
+      return res.status(200).json({ success: true, notifications });
+    } else {
+      res.status(400).json({ success: false, error: "No notifications" });
+    }
   } catch (err) {
     return errorHandler(err, res);
   }

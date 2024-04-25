@@ -16,7 +16,8 @@ const ReplyDrawer: FC<{
   onCloseDrawer: () => void;
   resourceId: number;
   onReplyRefresh: () => void;
-}> = ({ replyDrawer, onCloseDrawer, resourceId, onReplyRefresh }) => {
+  updateNotification?: () => void;
+}> = ({ replyDrawer, onCloseDrawer, resourceId, onReplyRefresh, updateNotification }) => {
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
@@ -126,6 +127,7 @@ const ReplyDrawer: FC<{
             toUserId={sltComment?.user?.id}
             parentCommentId={replyDrawer.sltCommentId}
             placeholder="Reply"
+            updateNotification={updateNotification}
             onRefresh={() => {
               setRefresh(!refresh);
               onReplyRefresh();

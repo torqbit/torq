@@ -20,7 +20,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const notifications = await getCheckNewOne(Number(req.query.toUserId));
 
-    return res.status(200).json({ success: true, isNew: notifications.length > 0 ? true : false });
+    return res
+      .status(200)
+      .json({ success: true, isNew: notifications.length > 0 ? true : false, length: notifications.length });
   } catch (err) {
     return errorHandler(err, res);
   }
