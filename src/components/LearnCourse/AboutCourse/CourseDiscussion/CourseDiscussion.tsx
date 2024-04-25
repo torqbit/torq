@@ -4,13 +4,11 @@ import { Button, Divider, Drawer, message, Upload } from "antd";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { Discussion } from "@prisma/client";
 import QAForm from "./DiscussionForm";
-import CommentBox, { IAttachedFiles } from "./CommentBox";
+import CommentBox from "./CommentBox";
 import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import DiscussionsService from "@/services/DiscussionsService";
-import { error } from "console";
-import { ICommentInfo } from "@/lib/types/discussions";
 
 export interface IComments extends Discussion {
   comment: string;
@@ -57,6 +55,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: number; loading: boolean 
 
   const getAllDiscussioin = async (resId: number, pageSize: number) => {
     setListLoading(true);
+
     DiscussionsService.getCommentsList(
       userId,
       resourceId,

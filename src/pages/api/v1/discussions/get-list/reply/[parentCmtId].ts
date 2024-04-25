@@ -3,6 +3,7 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import ParentCmtId from "./count/[parentCmtId]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

@@ -40,7 +40,7 @@ const CommentBox: FC<{
     DiscussionsService.getAllReplyCount(
       id,
       (result) => {
-        setAllReplyCmtCount(result.allReplyCmts);
+        setAllReplyCmtCount(result.allReplyComments.length);
       },
       (error) => {
         message.error(error);
@@ -168,7 +168,14 @@ const CommentBox: FC<{
                       {isReply.open ? (
                         "Cancel"
                       ) : (
-                        <span>Reply {allReplyCmtCount > 0 && replyList && allReplyCmtCount}</span>
+                        <span>
+                          {allReplyCmtCount > 0 && replyList && (
+                            <span>
+                              {" "}
+                              {allReplyCmtCount === 1 ? `${allReplyCmtCount} Reply` : `${allReplyCmtCount} Replies`}
+                            </span>
+                          )}
+                        </span>
                       )}
                     </span>
                   )}
