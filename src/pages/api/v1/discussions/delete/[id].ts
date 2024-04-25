@@ -2,8 +2,9 @@ import prisma from "../../../../../lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { imagekit } from "../add/[id]";
+
 import { IAttachedFiles } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CommentBox";
+import { imagekit } from "../add";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

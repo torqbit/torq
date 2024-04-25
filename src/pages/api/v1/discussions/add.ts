@@ -1,4 +1,4 @@
-import prisma from "../../../../../lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import formidable, { IncomingForm } from "formidable";
@@ -7,6 +7,12 @@ import fs from "fs";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import appConstant from "@/services/appConstant";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
+import { getToken } from "next-auth/jwt";
+export let cookieName = appConstant.development.cookieName;
+
+if (process.env.NODE_ENV === "production") {
+  cookieName = appConstant.production.cookieName;
+}
 
 // Important for NextJS!
 export const config = {
@@ -56,11 +62,18 @@ export const uploadFileToImgKit = async (file: formidable.File, folder: string) 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
+
+    const userId = Number(token?.id);
     // read file from request
     const { fields, files } = (await readFieldWithFile(req)) as any;
-
+    console.log(fields, "sd");
     // Comment Data
-    const { comment, resourceId, parentCommentId, tagCommentId, caption, toUserId } = fields;
+    const { comment, resourceId, parentCommentId, tagCommentId, caption } = fields;
     const resourceDetail = await prisma.resource.findUnique({
       where: {
         resourceId: Number(resourceId),
@@ -73,13 +86,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
     });
-
+    console.log(resourceDetail, "s");
     const isEnrolled = await prisma.courseRegistration.findFirst({
       where: {
         courseId: resourceDetail?.chapter.courseId,
-        studentId: Number(req.query.id),
+        studentId: Number(userId),
         expireIn: {
           gte: new Date(),
+        },
+      },
+      include: {
+        course: {
+          select: { authorId: true },
         },
       },
     });
@@ -105,7 +123,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const commentData: ICommentData = {
         comment: comment[0],
-        userId: Number(req.query.id),
+        userId: Number(userId),
         resourceId: Number(resourceId),
         attachedFiles: { fileCaption: caption[0], upFiles: upFiles },
       };
@@ -121,9 +139,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const newNotification = await prisma.notification.create({
           data: {
             notificationType: "COMMENT",
-            toUserId: Number(toUserId),
+            toUserId: Number(isEnrolled.course.authorId),
             commentId: newComment.id,
-            fromUserId: Number(req.query.id),
+            fromUserId: Number(userId),
             tagCommentId: commentData.parentCommentId,
           },
         });

@@ -25,13 +25,8 @@ type FailedApiResponse = {
   error: string;
 };
 class DiscussionsSerivice {
-  addComment = (
-    userId: number,
-    formData: any,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    postWithFile(formData, `/api/v1/discussions/add/${userId}`).then((result) => {
+  addComment = (formData: any, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    postWithFile(formData, `/api/v1/discussions/add/`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;

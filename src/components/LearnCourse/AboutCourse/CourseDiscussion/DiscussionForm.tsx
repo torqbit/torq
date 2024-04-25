@@ -57,9 +57,7 @@ const QAForm: FC<{
       formData.append("parentCommentId", `${parentCommentId}`);
       formData.append("tagCommentId", `${tagCommentId}`);
       formData.append("caption", attachModal.caption);
-      formData.append("toUserId", `${toUserId}`);
       DiscussionsService.addComment(
-        Number(session?.id),
         formData,
         (result) => {
           message.success("Comment Added");

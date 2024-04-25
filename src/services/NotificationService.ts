@@ -22,27 +22,6 @@ type FailedApiResponse = {
   error: string;
 };
 class NotificationService {
-  addComment = (
-    userId: number,
-    formData: any,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    postFetch(formData, `/api/v1/discussions/add/${userId}`).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-
   checkNotification = (
     toUserId: number,
     onSuccess: (response: ApiResponse) => void,
