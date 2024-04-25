@@ -217,18 +217,7 @@ const AddResourceForm: FC<{
     } catch (err) {}
   };
 
-  const onEditResource = (resourceId: number) => {
-    const resource = addedResources.find((r, i) => r.resourceId === resourceId) as IAddResources;
-    setSltResource(resource);
-    setContentType(resource?.contentType);
-    form.setFieldValue("resource_title", resource?.name);
-    form.setFieldValue("resource_type", resource?.contentType);
-    form.setFieldValue("resource_content", resource?.content);
-    form.setFieldValue("resource_video_duration", resource?.videoDuration);
-    form.setFieldValue("daysToSubmit", resource?.daysToSubmit);
-    form.setFieldValue("assign_lang", resource?.assignmentLang);
-    setAssignLangs(resource?.assignmentLang ?? []);
-  };
+  const onEditResource = (resourceId: number) => {};
 
   useEffect(() => {
     resetFields();

@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await req.body;
     const { name, description, sequenceId, courseId } = body;
 
-    // CHECK IS CHAPTER EXIST WITH THIS NAME
+    // CHECK IF CHAPTER EXIST WITH THIS NAME
     const isChapterExist = await prisma.chapter.findFirst({
       where: {
         name: name,
@@ -18,10 +18,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (isChapterExist) {
-      return res.status(403).json({
-        info: true,
-        success: false,
-        message: `Chapter already exist with this name : ${name} `,
+      return res.status(400).json({
+        error: `Chapter already exist with this name : ${name} `,
       });
     }
 

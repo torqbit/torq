@@ -14,9 +14,9 @@ const Label: FC<{
   keyValue: string;
   onRender: (value: string[]) => void;
   render: string[];
+
   onAddResource: (id: number, content: ResourceContentType) => void;
   onEditResource: (id: number) => void;
-
   icon: ReactNode;
   state: string;
   updateState: (id: number, state: string) => void;
@@ -104,7 +104,7 @@ const Label: FC<{
                     ],
                   }}
                 >
-                  Add Content
+                  Add Lesson
                 </Dropdown.Button>
               )}
             </div>
@@ -144,6 +144,7 @@ const Curriculum: FC<{
   onEditResource: (id: number) => void;
   setOpen: (value: boolean) => void;
   onAddResource: (id: number, content: ResourceContentType) => void;
+  handleEditChapter: (chapterId: number) => void;
   deleteChapter: (id: number) => void;
   updateChapterState: (id: number, state: string) => void;
   updateResState: (id: number, state: string) => void;
@@ -155,6 +156,7 @@ const Curriculum: FC<{
   onRefresh,
   setOpen,
   onAddResource,
+  handleEditChapter,
   deleteChapter,
   updateChapterState,
   updateResState,
@@ -176,7 +178,7 @@ const Curriculum: FC<{
           icon={SvgIcons.folder}
           type="chapter"
           onRender={setRender}
-          onEditResource={() => {}}
+          onEditResource={handleEditChapter}
           deleteChapter={deleteChapter}
           updateState={updateChapterState}
           onAddResource={onAddResource}
@@ -282,7 +284,9 @@ const Curriculum: FC<{
         </div>
       ) : (
         <div className={styles.no_chapter_btn}>
-          <h4>No chapters available</h4>
+          <img src="/img/common/empty.svg" alt="" />
+          <h4>No chapters were found</h4>
+          <p>Start creating chapters and lessons to build your course curriculum</p>
           <Button onClick={() => setOpen(true)} type="primary">
             Add Chapter
           </Button>

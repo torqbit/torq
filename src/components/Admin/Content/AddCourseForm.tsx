@@ -27,6 +27,7 @@ import AddResource from "@/components/programs/AddResource";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
+import { error } from "console";
 
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
@@ -37,6 +38,7 @@ const AddCourseForm: FC = () => {
   const [activeKey, setActiveKey] = useState<string>("1");
   const [isEdit, setEdit] = useState<boolean>(false);
   const [currResId, setResId] = useState<number>();
+  const [selectedChapterId, setSelectedChapterId] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [chapterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -200,6 +202,23 @@ const AddCourseForm: FC = () => {
       (error) => {}
     );
   };
+
+  const handleChapterEdit = async (chapterId: number) => {
+    setSelectedChapterId(chapterId);
+    ProgramService.getChapter(
+      chapterId,
+      (result) => {
+        chapterForm.setFieldValue("name", result.chapter.name);
+        chapterForm.setFieldValue("description", result.chapter.description);
+        showChapterDrawer(true);
+        setEdit(true);
+      },
+      (error) => {
+        message.error(error);
+      }
+    );
+  };
+
   const createChapter = async (courseId: number) => {
     setLoading(true);
     let chaptereData = {
@@ -240,10 +259,11 @@ const AddCourseForm: FC = () => {
         onRefresh();
         showChapterDrawer(false);
         chapterForm.resetFields();
-        router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
+        setEdit(false);
       },
       (error) => {
         setLoading(false);
+        setEdit(false);
         message.error(error);
       }
     );
@@ -532,7 +552,7 @@ const AddCourseForm: FC = () => {
         });
         setUploadResUrl({
           thumbnail: result.resource.video?.thumbnail,
-          videoId: String(result.resource.video?.videoId),
+          videoId: String(result.resource.video?.providerVideoId),
           videoUrl: String(result.resource.video?.videoUrl),
         });
         setResourceDrawer(true);
@@ -588,6 +608,7 @@ const AddCourseForm: FC = () => {
           onAddResource={onAddResource}
           deleteChapter={deleteChapter}
           updateChapterState={updateChapterState}
+          handleEditChapter={handleChapterEdit}
           updateResState={updateResState}
           deleteRes={deleteRes}
           onEditResource={onEditResource}
@@ -674,8 +695,10 @@ const AddCourseForm: FC = () => {
         currentSeqIds={currentSeqIds}
         showChapterDrawer={showChapterDrawer}
         loading={loading}
+        edit={isEdit}
         open={open}
         form={chapterForm}
+        chapterId={selectedChapterId}
       />
       <AddResource
         chapterId={addResource.chapterId}
