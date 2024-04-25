@@ -78,6 +78,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       where: {
         courseId: resourceDetail?.chapter.courseId,
         studentId: Number(req.query.id),
+        expireIn: {
+          gte: new Date(),
+        },
       },
     });
 
