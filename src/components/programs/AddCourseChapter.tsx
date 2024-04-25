@@ -11,8 +11,9 @@ const AddCourseChapter: FC<{
   open: boolean;
   courseId: number;
   currentSeqIds: number[];
-
   form: FormInstance;
+  edit: boolean;
+  chapterId?: number;
 }> = ({
   showChapterDrawer,
   updateChapter,
@@ -21,8 +22,10 @@ const AddCourseChapter: FC<{
   loading,
   open,
   courseId,
+  edit,
   currentSeqIds,
   form,
+  chapterId,
 }) => {
   const router = useRouter();
 
@@ -35,7 +38,7 @@ const AddCourseChapter: FC<{
     <>
       <Drawer
         className={styles.newChapterDetails}
-        title={router.query.chapterId ? "Update Chapter" : "New Chapter Details"}
+        title={edit ? "Update Chapter" : "New Chapter Details"}
         placement="right"
         maskClosable={false}
         onClose={() => {
@@ -46,12 +49,12 @@ const AddCourseChapter: FC<{
           <Form
             form={form}
             onFinish={() => {
-              router.query.chapterId ? updateChapter(Number(router.query.chapterId)) : createChapter(courseId);
+              edit && chapterId ? updateChapter(chapterId) : createChapter(courseId);
             }}
           >
             <Space className={styles.footerBtn}>
               <Button onClick={() => {}} type="primary" htmlType="submit">
-                {router.query.chapterId ? "Update" : "Save"}
+                {edit ? "Update" : "Save"}
               </Button>
               <Button
                 type="default"
