@@ -120,6 +120,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
   } catch (error) {
+    console.log(error, "d");
     return errorHandler(error, res);
   }
 };

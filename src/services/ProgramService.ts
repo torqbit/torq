@@ -15,6 +15,7 @@ export interface ICourseList extends Course {
 export type ApiResponse = {
   success: boolean;
   error: string;
+  completed: boolean;
   message: string;
   registerCourses: IRegisteredCourses[];
   courseDetails: CourseInfo;
@@ -1024,6 +1025,32 @@ class ProgramService {
     onFailure: (message: string) => void
   ) => {
     fetch(`/api/v1/course/getProgress/${courseId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+  checkProgress = (
+    resourceId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/resource/checkProgress/${resourceId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",

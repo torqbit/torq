@@ -531,6 +531,17 @@ const AddCourseForm: FC = () => {
     );
   };
 
+  const onPublishCourse = (state: string) => {
+    ProgramService.updateCourseState(
+      Number(router.query.id),
+      state,
+      (result) => {
+        router.push("/courses");
+      },
+      (error) => {}
+    );
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -623,7 +634,7 @@ const AddCourseForm: FC = () => {
             </div>
             <h3>EDIT COURSE</h3>
           </div>
-          <Button>Publish Changes</Button>
+          <Button onClick={() => onPublishCourse("ACTIVE")}>Publish Changes</Button>
         </div>
         <Tabs
           tabBarGutter={40}

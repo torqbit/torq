@@ -99,7 +99,7 @@ const EnrolledCourseList: FC<{
     },
   ];
 
-  const data = allCourses?.map((course, i) => {
+  const data = allCourses?.map((course) => {
     return {
       key: course.courseId,
       name: course.name,

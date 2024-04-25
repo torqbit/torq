@@ -59,8 +59,6 @@ const CourseSetting: FC<{
   refresh,
   onRefresh,
 }) => {
-  const router = useRouter();
-  const [preview, setPreview] = useState<boolean>(false);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
       return;

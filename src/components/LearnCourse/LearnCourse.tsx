@@ -202,24 +202,26 @@ const LearnCourse: FC<{}> = () => {
           refresh={refresh}
         />
       ),
-      children: content.resource.map((res: IResourceDetail, i: any) => {
-        return (
-          <div className={styles.resContainer}>
-            <Label
-              title={res.name}
-              icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
-              onSelectResource={onSelectResource}
-              resourceId={res.resourceId}
-              setChapterId={() => {}}
-              selectedLesson={selectedLesson}
-              chapterId={0}
-              keyValue={`${i + 1}`}
-              refresh={refresh}
-            />
-          </div>
-        );
-      }),
+      children: content.resource
+        .filter((r) => r.state === "ACTIVE")
+        .map((res: IResourceDetail, i: any) => {
+          return (
+            <div className={styles.resContainer}>
+              <Label
+                title={res.name}
+                icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
+                time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
+                onSelectResource={onSelectResource}
+                resourceId={res.resourceId}
+                setChapterId={() => {}}
+                selectedLesson={selectedLesson}
+                chapterId={0}
+                keyValue={`${i + 1}`}
+                refresh={refresh}
+              />
+            </div>
+          );
+        }),
       showArrow: false,
     };
   });
@@ -242,11 +244,14 @@ const LearnCourse: FC<{}> = () => {
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
+          if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {
+            router.push("/courses");
+          }
           setCourseData({
             ...courseData,
             name: result.courseDetails?.name,
             expiryInDays: result.courseDetails?.expiryInDays,
-            chapters: result.courseDetails?.chapters,
+            chapters: result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE"),
           });
           getProgressDetail();
 
@@ -262,9 +267,13 @@ const LearnCourse: FC<{}> = () => {
       {!loading ? (
         <section className={styles.learn_course_page}>
           <div className={styles.learn_breadcrumb}>
-            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 6 }}>{SvgIcons.chevronRight} </div>{" "}
-            {courseData.name}
+            <Flex style={{ fontSize: 20 }}>
+              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
+              <Link href={`/courses/${router.query.courseId}`}> {courseData.name}</Link>
+              <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Play
+            </Flex>
           </div>
+
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>

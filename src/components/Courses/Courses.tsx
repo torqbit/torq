@@ -89,32 +89,25 @@ const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription,
   }, []);
 
   return (
-    <div className={styles.course_card}>
-      <div className={styles.card_img}>
-        <img src={thumbnail} alt={courseName} />
-      </div>
-      <div className={styles.card_content}>
-        <div>
-          <h3 className={styles.card_title}>{courseName}</h3>
-          <p className={styles.card_description}>{courseDescription}</p>
+    <Link href={`/courses/${courseId}`}>
+      <div className={styles.course_card}>
+        <div className={styles.card_img}>
+          <img src={thumbnail} alt={courseName} />
         </div>
-
-        <div className={styles.card_footer}>
-          <div className={styles.course_duration}>
-            {daysToMonth} months {days} days
+        <div className={styles.card_content}>
+          <div>
+            <h3 className={styles.card_title}>{courseName}</h3>
+            <p className={styles.card_description}>{courseDescription}</p>
           </div>
-          {isCourseCompleted ? (
-            <Link href={`/courses/${courseId}`}>
-              <Button type="primary">Rewatch</Button>
-            </Link>
-          ) : (
-            <Button loading={!enrolled && true} type="primary" onClick={onEnrollCourse}>
-              {enrolled === "enrolled" ? "Resume" : "Enroll Course"}
-            </Button>
-          )}
+
+          <div className={styles.card_footer}>
+            <div className={styles.course_duration}>
+              {daysToMonth} months {days} days
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

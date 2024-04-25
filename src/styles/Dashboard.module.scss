@@ -40,6 +40,10 @@
   flex-wrap: wrap;
   gap: 20px;
 
+  .course_card:hover {
+    box-shadow: 0px 6px 5px 1px var(--font-secondary);
+  }
+
   .course_card {
     border-radius: 4px;
     overflow: hidden;
