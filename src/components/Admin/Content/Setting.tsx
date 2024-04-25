@@ -59,8 +59,6 @@ const CourseSetting: FC<{
   refresh,
   onRefresh,
 }) => {
-  const router = useRouter();
-  const [preview, setPreview] = useState<boolean>(false);
   const handleChange: UploadProps["onChange"] = (info) => {
     if (info.file.status === "uploading") {
       return;
@@ -69,12 +67,6 @@ const CourseSetting: FC<{
       // setLoading(false);
     }
   };
-  useEffect(() => {
-    if (!uploadVideo) {
-      console.log("no video info", uploadVideo);
-    }
-    console.log(courseTrailerUploading, "course trailer uploading");
-  }, [courseTrailerUploading]);
 
   return (
     <section className={styles.add_course_setting}>

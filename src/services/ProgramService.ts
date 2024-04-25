@@ -1,9 +1,9 @@
-import { IResourceDetail, VideoDetails } from "@/lib/types/learn";
+import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/learn";
 import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
 import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
 
-import { ChapterDetail, CourseAPIResponse } from "@/types/courses/Course";
-import { AssignmentAndTask, Chapter, Course, Resource } from "@prisma/client";
+import { ChapterDetail, CourseAPIResponse, CourseInfo } from "@/types/courses/Course";
+import { AssignmentAndTask, Chapter, Course, CourseProgress, Resource } from "@prisma/client";
 import { UploadFile } from "antd";
 import { number } from "zod";
 export interface ICourseList extends Course {
@@ -15,7 +15,20 @@ export interface ICourseList extends Course {
 export type ApiResponse = {
   success: boolean;
   error: string;
+  completed: boolean;
   message: string;
+  registerCourses: IRegisteredCourses[];
+  courseDetails: CourseInfo;
+  latestProgress: {
+    nextChap: ChapterDetail;
+    nextLesson: IResourceDetail;
+    completed: boolean;
+  };
+  progress: {
+    courseName: string;
+    progress: string;
+    courseId: number;
+  }[];
   program: {
     aboutProgram: string;
     banner: string;
@@ -250,7 +263,6 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    console.log("sending the draft course request");
     fetch(`/api/v1/course/draftCourse`, {
       method: "POST",
       headers: {
@@ -261,7 +273,6 @@ class ProgramService {
         courseId: courseId,
       }),
     }).then((result: any) => {
-      console.log(result);
       if (result.status == 400) {
         result.json().then((r: any) => {
           const failedResponse = r as FailedApiResponse;
@@ -269,7 +280,6 @@ class ProgramService {
         });
       } else if (result.status == 201) {
         result.json().then((r: any) => {
-          console.log(r);
           const apiResponse = r as ApiResponse;
           onSuccess(apiResponse);
         });
@@ -384,6 +394,28 @@ class ProgramService {
 
   getCoursesByAuthor = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
     fetch(`/api/v1/course/list/coursesByAuthor`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  getRegisterCourses = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    fetch(`/api/v1/course/list/registerCourses`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -780,7 +812,6 @@ class ProgramService {
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    console.log(resData, "resData");
     fetch(`/api/v1/resource/add`, {
       method: "POST",
       headers: {
@@ -831,11 +862,11 @@ class ProgramService {
 
   deleteResource = (
     resourceId: number,
-
+    courseId: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/resource/delete/${resourceId}`, {
+    fetch(`/api/v1/resource/delete/${resourceId}?courseId=${courseId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
@@ -987,6 +1018,58 @@ class ProgramService {
     });
   };
 
+  getProgress = (
+    courseId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/course/getProgress/${courseId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+  checkProgress = (
+    resourceId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/resource/checkProgress/${resourceId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
   getAssignmentDeadline = (
     resourceId: number,
     onSuccess: (response: ApiResponse) => void,

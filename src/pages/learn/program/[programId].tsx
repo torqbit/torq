@@ -440,7 +440,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     program = await getProgramDetailById(Number(params?.programId));
   } catch (err: any) {
-    console.log(err);
     return {
       redirect: {
         permanent: false,
@@ -449,7 +448,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: {},
     };
   }
-  if (program?.course[0]?.chapter.length && program.course[0]?.chapter[0]?.resource.length) {
+  if (program?.course[0]?.chapters.length && program.course[0]?.chapters[0]?.resource.length) {
     return {
       props: {
         program: JSON.parse(JSON.stringify(program)),

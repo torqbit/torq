@@ -24,9 +24,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       contentType: contentType as ResourceContentType,
     };
 
+    const findCourse = await prisma.course.findUnique({
+      where: {
+        courseId: courseId,
+      },
+    });
+
     if (resData) {
       const createResource = await prisma.resource.create({
         data: resData,
+      });
+
+      const updateCourse = await prisma.course.update({
+        where: {
+          courseId: courseId,
+        },
+        data: {
+          totalResources: findCourse?.totalResources ? findCourse?.totalResources + 1 : 1,
+        },
       });
 
       return res.status(200).json({

@@ -52,6 +52,10 @@ export interface ResourceDetails {
   description: string;
   chapterId: number;
   contentType: string;
+  content: string;
+  videoId: number;
+  courseId?: number;
+
 }
 
 export interface allProgram {

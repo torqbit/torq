@@ -125,10 +125,12 @@ model Course {
   sequenceId        Int?
   expiryInDays      Int                  @default(365)
   durationInMonths  Int                  @default(12)
+  totalResources    Int                  @default(0)
   state             StateType            @default(DRAFT)
   chapters          Chapter[]
   program           Program?             @relation(fields: [programId], references: [id])
   CourseRegistraion CourseRegistration[]
+  courseProgress    CourseProgress[]
 
   @@unique([courseId, name])
   @@index([programId])
@@ -225,8 +227,9 @@ model CourseRegistration {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   expireIn       DateTime?
-  user           User        @relation(fields: [studentId], references: [id])
-  course         Course      @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+
+  user   User   @relation(fields: [studentId], references: [id])
+  course Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   @@unique([registrationId])
   @@index([studentId])
@@ -241,11 +244,13 @@ model CourseProgress {
   courseId         Int
   chapterId        Int
   sequenceId       Int
+  lessonsCompleted Int      @default(0)
   resourceId       Int
   studentId        Int      @map("user_id")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
+  course           Course   @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   @@unique([courseProgressId, resourceId])
   @@index([resourceId])

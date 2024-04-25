@@ -79,8 +79,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
-    console.log(comment);
-
     const commentData: ICommentData = {
       comment: comment[0],
       userId: Number(req.query.id),

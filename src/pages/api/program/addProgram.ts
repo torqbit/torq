@@ -73,7 +73,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };

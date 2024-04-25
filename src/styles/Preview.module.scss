@@ -3,6 +3,7 @@
   .video_container {
     width: 800px;
     height: 450px;
+    margin-bottom: 20px;
 
     position: relative;
   }
@@ -13,7 +14,6 @@
     background-image: linear-gradient(to bottom, rgba(4, 0, 0, 0.2), rgba(4, 0, 0, 2), rgba(0, 0, 0, 5));
 
     width: 800px;
-
     h2,
     p {
       margin: 0;

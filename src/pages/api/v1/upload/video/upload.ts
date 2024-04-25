@@ -86,9 +86,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!files) {
       return res.status(400).json({ success: false, message: "file not recieved" });
     }
-  } catch (error) {
-    console.log(error, "my error");
-  }
+  } catch (error) {}
 };
 
 export default withMethods(["POST"], withUserAuthorized(handler));

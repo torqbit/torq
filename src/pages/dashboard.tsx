@@ -1,51 +1,49 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../styles/Dashboard.module.scss";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { List, Space, Tabs, TabsProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";
+import { GetServerSidePropsContext } from "next";
+import { getAllCoursesById } from "@/actions/getCourseById";
+import { Course } from "@prisma/client";
+import ProgramService from "@/services/ProgramService";
+import { CourseInfo } from "@/types/courses/Course";
+import { IRegisteredCourses } from "@/lib/types/learn";
+import Link from "next/link";
 
-const EnrolledCourseList: FC = () => {
-  const courseList = [
-    {
-      courseName: "Foundation of Web Development",
-      completed: "25%",
-    },
-    {
-      courseName: "Code Collaboration with Git & Github",
-      completed: "15%",
-    },
-    {
-      courseName: "Interactivity with Javascript",
-      completed: "50%",
-    },
-  ];
+const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: string; courseId: number }[] }> = ({
+  courseData,
+}) => {
   return (
     <List
       size="small"
       header={false}
       footer={false}
       bordered={false}
-      dataSource={courseList}
+      dataSource={courseData}
       className={styles.enrolled_course_list}
       renderItem={(item) => (
-        <List.Item className={styles.enroll_course_item}>
-          <div>{item.courseName}</div>
-          <Space className={styles.completed_course} size={5}>
-            <span>{item.completed}</span> <span>Completed</span>
-          </Space>
-        </List.Item>
+        <Link href={`/courses/${item.courseId}`}>
+          <List.Item className={styles.enroll_course_item}>
+            <div>{item.courseName}</div>
+            <Space className={styles.completed_course} size={5}>
+              <span>{item.progress}</span> <span>Completed</span>
+            </Space>
+          </List.Item>
+        </Link>
       )}
     />
   );
 };
 
-const Dashboard: FC = () => {
+const Dashboard = () => {
   const { data: user } = useSession();
+  const [allRegisterCourse, setAllRegisterCourse] = useState<
+    { courseName: string; progress: string; courseId: number }[]
+  >([]);
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+  const onChange = (key: string) => {};
 
   const items: TabsProps["items"] = [
     {
@@ -53,9 +51,17 @@ const Dashboard: FC = () => {
       label: "Enrolled Courses",
       className: "some-class",
       icon: SvgIcons.courses,
-      children: <EnrolledCourseList />,
+      children: <EnrolledCourseList courseData={allRegisterCourse} />,
     },
   ];
+  useEffect(() => {
+    ProgramService.getRegisterCourses(
+      (result) => {
+        setAllRegisterCourse(result.progress);
+      },
+      (error) => {}
+    );
+  }, []);
 
   return (
     <Layout2>

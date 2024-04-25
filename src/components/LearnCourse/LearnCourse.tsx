@@ -1,4 +1,4 @@
-import { Button, Collapse, Flex, Skeleton, Spin, Tabs, TabsProps, Tag, message } from "antd";
+import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
 import Layout2 from "../Layout2/Layout2";
 import styles from "@/styles/LearnCourses.module.scss";
 import { FC, ReactNode, useEffect, useState } from "react";
@@ -23,8 +23,33 @@ const Label: FC<{
   setChapterId: (value: number) => void;
   resourceId: number;
   chapterId: number;
+  refresh: boolean;
+
   icon: ReactNode;
-}> = ({ title, time, onSelectResource, selectedLesson, setChapterId, keyValue, icon, resourceId, chapterId }) => {
+}> = ({
+  title,
+  time,
+  onSelectResource,
+  refresh,
+  selectedLesson,
+  setChapterId,
+  keyValue,
+  icon,
+  resourceId,
+  chapterId,
+}) => {
+  const [completed, setCompleted] = useState<boolean>();
+  const checkIsCompleted = async () => {
+    const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
+    const result = (await res.json()) as IResponse;
+
+    if (res.ok && result.success) {
+      setCompleted(result.isCompleted);
+    }
+  };
+  useEffect(() => {
+    checkIsCompleted();
+  }, [refresh]);
   return (
     <div
       style={{ padding: resourceId > 0 ? "5px 0px" : 0, paddingLeft: resourceId > 0 ? "20px" : 0 }}
@@ -38,7 +63,7 @@ const Label: FC<{
       <Flex justify="space-between" align="center">
         <div className={styles.title_container}>
           <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
-            {icon}
+            {completed ? SvgIcons.check : icon}
             <div style={{ cursor: "pointer" }}>{title}</div>
           </Flex>
         </div>
@@ -46,6 +71,7 @@ const Label: FC<{
           <Tag className={styles.time_tag}>{time}</Tag>
         </div>
       </Flex>
+      <div className={styles.selected_bar}></div>
     </div>
   );
 };
@@ -64,6 +90,7 @@ const LearnCourse: FC<{}> = () => {
   });
 
   const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
+
   const [chapterId, setChapterId] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
@@ -71,7 +98,9 @@ const LearnCourse: FC<{}> = () => {
 
   const router = useRouter();
 
-  const [isCompleted, setCompleted] = useState<string>();
+  const [isCompleted, setCompleted] = useState<boolean>();
+  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
+
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
@@ -81,7 +110,7 @@ const LearnCourse: FC<{}> = () => {
     const result = (await res.json()) as IResponse;
 
     if (res.ok && result.success) {
-      result.isCompleted ? setCompleted("completed") : setCompleted("notCompleted");
+      setCompleted(result.isCompleted);
     }
     setLoadingBtn(false);
   };
@@ -94,7 +123,7 @@ const LearnCourse: FC<{}> = () => {
 
   const onMarkAsCompleted = async () => {
     try {
-      if (isCompleted === "completed") return;
+      if (isCompleted) return;
 
       const res = await postFetch(
         {
@@ -111,6 +140,14 @@ const LearnCourse: FC<{}> = () => {
       if (res.ok && result.success) {
         message.success(result.message);
         setRefresh(!refresh);
+        getProgressDetail();
+        ProgramService.getProgress(
+          Number(router.query.courseId),
+          (result) => {
+            setCourseCompleted(result.latestProgress.completed);
+          },
+          (error) => {}
+        );
       } else {
         message.error(result.error);
       }
@@ -162,28 +199,44 @@ const LearnCourse: FC<{}> = () => {
           setChapterId={setChapterId}
           selectedLesson={undefined}
           keyValue={`${content.chapterId}`}
+          refresh={refresh}
         />
       ),
-      children: content.resource.map((res: IResourceDetail, i: any) => {
-        return (
-          <div className={styles.resContainer}>
-            <Label
-              title={res.name}
-              icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-              time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
-              onSelectResource={onSelectResource}
-              resourceId={res.resourceId}
-              setChapterId={() => {}}
-              selectedLesson={selectedLesson}
-              chapterId={0}
-              keyValue={`${i + 1}`}
-            />
-          </div>
-        );
-      }),
+      children: content.resource
+        .filter((r) => r.state === "ACTIVE")
+        .map((res: IResourceDetail, i: any) => {
+          return (
+            <div className={styles.resContainer}>
+              <Label
+                title={res.name}
+                icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
+                time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
+                onSelectResource={onSelectResource}
+                resourceId={res.resourceId}
+                setChapterId={() => {}}
+                selectedLesson={selectedLesson}
+                chapterId={0}
+                keyValue={`${i + 1}`}
+                refresh={refresh}
+              />
+            </div>
+          );
+        }),
       showArrow: false,
     };
   });
+
+  const getProgressDetail = () => {
+    ProgramService.getProgress(
+      Number(router.query.courseId),
+      (result) => {
+        setSelectedLesson(result.latestProgress.nextLesson);
+        setChapterId(result.latestProgress.nextLesson?.chapterId);
+        setRefresh(!refresh);
+      },
+      (error) => {}
+    );
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -191,15 +244,16 @@ const LearnCourse: FC<{}> = () => {
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
+          if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {
+            router.push("/courses");
+          }
           setCourseData({
             ...courseData,
             name: result.courseDetails?.name,
             expiryInDays: result.courseDetails?.expiryInDays,
-            chapters: result.courseDetails?.chapters,
+            chapters: result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE"),
           });
-          setSelectedLesson(result.courseDetails?.chapters[0]?.resource[0]);
-          setChapterId(result.courseDetails?.chapters[0]?.chapterId);
-          checkIsCompleted();
+          getProgressDetail();
 
           setLoading(false);
         },
@@ -208,55 +262,87 @@ const LearnCourse: FC<{}> = () => {
         }
       );
   }, [router.query.courseId]);
-
   return (
     <Layout2>
       {!loading ? (
         <section className={styles.learn_course_page}>
           <div className={styles.learn_breadcrumb}>
-            <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 6 }}>{SvgIcons.chevronRight} </div>{" "}
-            {courseData.name}
+            <Flex style={{ fontSize: 20 }}>
+              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
+              <Link href={`/courses/${router.query.courseId}`}> {courseData.name}</Link>
+              <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Play
+            </Flex>
           </div>
+
           <Flex align="start" justify="space-between">
             <div>
               <div className={styles.video_container}>
                 {selectedLesson?.video?.videoUrl && !loadingLesson ? (
-                  <iframe
-                    style={{
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      outline: "none",
-                      border: "none",
-                    }}
-                    src={selectedLesson.video.videoUrl}
-                  ></iframe>
+                  <>
+                    {isCourseCompleted ? (
+                      <div
+                        className={styles.video_completed_screen}
+                        style={{
+                          position: "absolute",
+
+                          width: 800,
+                          height: 450,
+                          outline: "none",
+                          border: "none",
+                        }}
+                      >
+                        <div>Congratulations! You have successfully completed the course</div>
+                        <Space>
+                          <Link href={"/dashboard"}>
+                            <Button>Go Home</Button>
+                          </Link>
+                          <Button
+                            type="primary"
+                            onClick={() => {
+                              getProgressDetail();
+                              setCourseCompleted(false);
+                            }}
+                          >
+                            Rewatch
+                          </Button>
+                        </Space>
+                      </div>
+                    ) : (
+                      <iframe
+                        style={{
+                          position: "absolute",
+
+                          width: 800,
+                          height: 450,
+                          outline: "none",
+                          border: "none",
+                        }}
+                        src={selectedLesson.video.videoUrl}
+                      ></iframe>
+                    )}
+                  </>
                 ) : (
-                  <div
+                  <Skeleton.Image
                     style={{
                       position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      outline: "none",
-                      border: "none",
+                      width: 800,
+                      height: 450,
                     }}
-                  >
-                    <img src="https://placehold.co/800x450" alt="" />
-                  </div>
+                  />
                 )}
               </div>
 
               <Tabs
                 tabBarExtraContent={
                   <>
-                    {isCompleted ? (
+                    {!loadingBtn && isCompleted !== undefined ? (
                       <>
-                        {isCompleted === "completed" && (
+                        {isCompleted && (
                           <Button>
                             <Flex gap={5}>{SvgIcons.check} Completed </Flex>
                           </Button>
                         )}
-                        {isCompleted === "notCompleted" && (
+                        {!isCompleted && (
                           <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
                             Mark as Completed
                           </Button>

@@ -12,6 +12,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       where: {
         chapterId: Number(chapterId),
       },
+      include: {
+        resource: {},
+      },
     });
 
     if (findChapter) {
@@ -23,6 +26,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         }),
       ]);
+
+      const findCourse = await prisma.course.findUnique({
+        where: {
+          courseId: findChapter.courseId,
+        },
+      });
+      const updateCourse = await prisma.course.update({
+        where: {
+          courseId: findCourse?.courseId,
+        },
+        data: {
+          totalResources: findCourse?.totalResources && findCourse.totalResources - findChapter.resource.length,
+        },
+      });
       return res.status(200).json({
         info: false,
         success: true,

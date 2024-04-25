@@ -89,7 +89,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
   getUploadOption(file: Buffer, key: string) {
-    console.log({ headers: { accept: "application/json", AccessKey: key } });
     return {
       method: "PUT",
       headers: { accept: "application/json", AccessKey: key },
@@ -116,11 +115,11 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
     let attemptCount: number;
     for (attemptCount = 1; attemptCount <= times; attemptCount++) {
+
       try {
         const result = await toTry();
         let vresult = await result.json();
         console.log(`video progress status: ${vresult.status}`);
-
         if (vresult.status != 4) {
           if (attemptCount < times) await this.delay(interval);
           else return Promise.reject(result);
@@ -192,5 +191,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       success: uploadRes.HttpCode == 201,
       fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${this.mediaPath}/${name}` : "",
     };
+
   }
 }

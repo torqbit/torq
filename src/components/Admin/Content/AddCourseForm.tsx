@@ -165,6 +165,7 @@ const AddCourseForm: FC = () => {
 
         ProgramService.deleteResource(
           id,
+          Number(router.query.id),
           (result) => {
             message.success(result.message);
             onRefresh();
@@ -289,7 +290,12 @@ const AddCourseForm: FC = () => {
 
   const onCreateRes = (chapterId: number) => {
     setLoading(true);
-    let rs = { ...formData.getFieldsValue(), chapterId, contentType: "Video" } as ResourceDetails;
+    let rs = {
+      ...formData.getFieldsValue(),
+      chapterId,
+      contentType: "Video",
+      courseId: Number(router.query.id),
+    } as ResourceDetails;
     ProgramService.createResource(
       rs,
       (result) => {
@@ -535,6 +541,17 @@ const AddCourseForm: FC = () => {
     );
   };
 
+  const onPublishCourse = (state: string) => {
+    ProgramService.updateCourseState(
+      Number(router.query.id),
+      state,
+      (result) => {
+        router.push("/courses");
+      },
+      (error) => {}
+    );
+  };
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -640,7 +657,7 @@ const AddCourseForm: FC = () => {
             </div>
             <h3>EDIT COURSE</h3>
           </div>
-          <Button>Publish Changes</Button>
+          <Button onClick={() => onPublishCourse("ACTIVE")}>Publish Changes</Button>
         </div>
         <Tabs
           tabBarGutter={40}

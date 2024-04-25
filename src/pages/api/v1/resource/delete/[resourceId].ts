@@ -6,7 +6,7 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { resourceId } = req.query;
+    const { resourceId, courseId } = req.query;
     const findResource = await prisma.resource.findUnique({
       where: {
         resourceId: Number(resourceId),
@@ -22,6 +22,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         }),
       ]);
+      const totalCourseLessons = await prisma.course.findUnique({
+        where: {
+          courseId: Number(courseId),
+        },
+      });
+      const updateCourse = await prisma.course.update({
+        where: {
+          courseId: Number(courseId),
+        },
+        data: {
+          totalResources: totalCourseLessons?.totalResources && totalCourseLessons?.totalResources - 1,
+        },
+      });
+
       return res.status(200).json({
         info: false,
         success: true,
