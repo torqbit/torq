@@ -99,7 +99,7 @@ const LearnCoursesPage: NextPage = () => {
 
   return (
     <Layout2>
-      {chapterList?.length && videoUrl ? (
+      {chapterList?.length ? (
         <Preview
           videoUrl={videoUrl}
           enrolled={enrolled}
