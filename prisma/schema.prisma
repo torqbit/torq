@@ -112,7 +112,7 @@ model Course {
   tvProviderName    String?
   tvUrl             String?
   tvThumbnail       String?
-  tvState           VideoState?        
+  tvState           VideoState?
   thumbnail         String?
   icon              String?
   authorId          Int                  @map("user_id")
@@ -195,15 +195,15 @@ enum VideoState {
 }
 
 model Video {
-  id            Int        @id @default(autoincrement())
-  videoUrl      String     @db.VarChar(200)
-  providerVideoId   String?    @db.VarChar(500)
-  videoDuration Int
-  resourceId    Int        @unique
-  resource      Resource   @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
-  thumbnail     String     @db.VarChar(200)
-  state         VideoState @default(PROCESSING)
-  mediaProvider String?
+  id              Int        @id @default(autoincrement())
+  videoUrl        String     @db.VarChar(200)
+  providerVideoId String?    @db.VarChar(500)
+  videoDuration   Int
+  resourceId      Int        @unique
+  resource        Resource   @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
+  thumbnail       String     @db.VarChar(200)
+  state           VideoState @default(PROCESSING)
+  mediaProvider   String?
 }
 
 //****** Reource Schema End ******//
@@ -327,7 +327,7 @@ model Discussion {
   user               User           @relation(fields: [userId], references: [id])
   resource           Resource       @relation(fields: [resourceId], references: [resourceId])
   tagCmtNotification Notification[] @relation(name: "tagComment")
-  cmtNotification    Notification?  @relation(name: "comment")
+  cmtNotification    Notification[] @relation(name: "comment")
 
   @@index([userId])
   @@index([resourceId])
@@ -350,7 +350,7 @@ model Notification {
   title            String?
   description      String?
   tagCommentId     Int?
-  commentId        Int?             @unique
+  commentId        Int?
   isView           Boolean          @default(false)
   tagComment       Discussion?      @relation(name: "tagComment", fields: [tagCommentId], references: [id], onDelete: Cascade)
   comment          Discussion?      @relation(name: "comment", fields: [commentId], references: [id], onDelete: Cascade)

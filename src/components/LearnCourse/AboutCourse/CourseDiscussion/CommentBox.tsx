@@ -10,6 +10,8 @@ import { IComments } from "./CourseDiscussion";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
+import NotificationService from "@/services/NotificationService";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 moment.locale("en", { ...customFromNow });
 
 export interface IAttachedFiles {
@@ -29,6 +31,8 @@ const CommentBox: FC<{
 }> = ({ comment, onRefresh, replyList, resourceId, parentCommentId, showReplyDrawer, replyRefresh }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
+  const { globalState, dispatch } = useAppContext();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -66,6 +70,18 @@ const CommentBox: FC<{
         message.error(error);
       }
     );
+  };
+
+  const onUpdateMultipleNotificaton = () => {
+    session?.id &&
+      NotificationService.updateMultipleNotification(
+        comment.id,
+        session?.id,
+        (result) => {
+          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+        },
+        (error) => {}
+      );
   };
 
   const onEditComment = async () => {
@@ -163,7 +179,12 @@ const CommentBox: FC<{
               ) : (
                 <Space align="center">
                   {replyList && (
-                    <span onClick={() => showReplyDrawer(comment)}>
+                    <span
+                      onClick={() => {
+                        onUpdateMultipleNotificaton();
+                        showReplyDrawer(comment);
+                      }}
+                    >
                       <Image src="/img/comment-icons/directleft.svg" alt="Reply" width={25} height={25} />{" "}
                       {isReply.open ? (
                         "Cancel"

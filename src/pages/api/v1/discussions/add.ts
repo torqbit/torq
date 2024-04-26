@@ -130,22 +130,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (parentCommentId && parentCommentId !== "undefined") commentData["parentCommentId"] = Number(parentCommentId);
       if (tagCommentId && tagCommentId !== "undefined") commentData["tagCommentId"] = Number(tagCommentId);
+
       //if (caption && caption !== "undefined") commentData["caption"] = caption;
 
       const newComment = await prisma.discussion.create({
         data: commentData,
       });
+      const commentAuthor = newComment.userId;
+      let courseAuthorId = isEnrolled.course.authorId;
+
+      const getAllDiscussion = await prisma.discussion.findMany({
+        distinct: ["userId"],
+
+        where: {
+          parentCommentId: newComment.parentCommentId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+      let allUsers = getAllDiscussion
+        .map((d) => d.userId)
+        .concat([courseAuthorId])
+        .filter((id) => id !== userId);
+      console.log(allUsers, "all users");
       if (commentData?.parentCommentId) {
-        const newNotification = await prisma.notification.create({
-          data: {
-            notificationType: "COMMENT",
-            toUserId: Number(isEnrolled.course.authorId),
-            commentId: newComment.id,
-            fromUserId: Number(userId),
-            tagCommentId: commentData.parentCommentId,
-          },
+        allUsers.forEach(async (id) => {
+          await prisma.notification.create({
+            data: {
+              notificationType: "COMMENT",
+              toUserId: Number(id),
+              commentId: newComment.id,
+              fromUserId: Number(userId),
+              tagCommentId: commentData.parentCommentId,
+            },
+          });
         });
       }
+
       return res.status(200).json({ success: true, newComment });
     } else {
       return res.status(400).json({ success: false, error: "You are not enrolled to this course" });
