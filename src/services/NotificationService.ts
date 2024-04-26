@@ -81,12 +81,12 @@ class NotificationService {
     });
   };
   updateMultipleNotification = (
-    commentId: number,
+    tagCommentId: number,
     userId: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    getFetch(`/api/v1/notification/updateMany/${commentId}?userId=${2}`).then((result) => {
+    postFetch({ tagCommentId: tagCommentId }, `/api/v1/notification/updateMany/update`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
