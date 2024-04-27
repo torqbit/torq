@@ -210,5 +210,30 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
+
+    .video_container {
+      height: 178px;
+      width: 318px;
+      border-radius: 4px;
+    }
+
+    .video_status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 4px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .video_status_ready {
+      color: var(--bg-primary);
+      background-color: var(--font-primary);
+    }
+
+    .video_status_loading {
+      color: var(--font-secondary);
+    }
   }
 }

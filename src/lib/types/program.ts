@@ -1,3 +1,4 @@
+import { UploadVideoObjectType } from "@/types/courses/Course";
 import { ResourceContentType } from "@prisma/client";
 
 interface IChapter {
@@ -46,16 +47,17 @@ export interface IAddResource {
   chapterId: number;
 }
 
+export type LessonType = "Video" | "Assignment";
+
 export interface ResourceDetails {
   name: string;
   resourceId: number | undefined;
   description: string;
   chapterId: number;
-  contentType: string;
+  contentType: LessonType;
   content: string;
   videoId: number;
   courseId?: number;
-
 }
 
 export interface allProgram {

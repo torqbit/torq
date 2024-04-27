@@ -14,6 +14,7 @@ import {
   MenuProps,
   Dropdown,
   Flex,
+  Tooltip,
 } from "antd";
 import { FC, useState } from "react";
 import styles from "@/styles/AddCourse.module.scss";
@@ -24,67 +25,43 @@ import appConstant from "@/services/appConstant";
 import { IAddResource } from "@/lib/types/program";
 import { RcFile } from "antd/es/upload";
 import SvgIcons from "../SvgIcons";
-import { UploadedResourceDetail } from "@/types/courses/Course";
+import { IVideoLesson, UploadedResourceDetail, VideoInfo } from "@/types/courses/Course";
 
-const AddResource: FC<{
-  setAddResource: (value: IAddResource) => void;
-  addResource: IAddResource;
+const AddVideoLesson: FC<{
   formData: FormInstance;
   onDeleteVideo: (id: string) => void;
   isEdit: boolean;
-  uploadResourceUrl: UploadedResourceDetail;
-  loading: boolean | undefined;
+  videoLesson: IVideoLesson;
+  setVideoLesson: React.Dispatch<React.SetStateAction<IVideoLesson>>;
+  videoUploading: boolean;
   chapterId: number;
   onRefresh: () => void;
-  onUploadVideo: (file: RcFile, title: string) => void;
-  onCreateRes: (chapterId: number) => void;
+  onUploadVideo: (file: RcFile, title: string, resourceId: number) => void;
   setResourceDrawer: (value: boolean) => void;
   showResourceDrawer: boolean;
-  availableRes: Resource[] | undefined;
   onDeleteResource: (id: number) => void;
   onFindRsource: (id: number, content: ResourceContentType) => void;
-  onUpdateRes: (resId: number) => void;
-  onDeleteThumbnail: (name: string, dir: string) => void;
-  uploadFile: (file: any, title: string) => void;
+  onUpdateVideoLesson: (resId: number) => void;
   currResId?: number;
 }> = ({
   setResourceDrawer,
   showResourceDrawer,
-  onUpdateRes,
+  onUpdateVideoLesson,
   onRefresh,
-  uploadResourceUrl,
-  loading,
+  videoLesson,
+  setVideoLesson,
+  videoUploading,
   chapterId,
   isEdit,
   onDeleteResource,
-  setAddResource,
   formData,
   onDeleteVideo,
-  onCreateRes,
-  availableRes,
+
   onUploadVideo,
-  addResource,
   onFindRsource,
   currResId,
-  onDeleteThumbnail,
-  uploadFile,
 }) => {
   const router = useRouter();
-  const onUploadAssignment = (info: any) => {
-    if (info.file.status !== "uploading") {
-    }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-      const res = info.file.response; // TODO
-      setAddResource({ ...addResource, assignmentFileName: res.fileName });
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  };
-
-  let currentSeqIds = availableRes?.map((r) => {
-    return r.sequenceId;
-  });
 
   return (
     <>
@@ -117,11 +94,12 @@ const AddResource: FC<{
           <Form
             form={formData}
             onFinish={() => {
-              isEdit ? onUpdateRes(Number(currResId)) : onCreateRes(chapterId);
+              console.log("updating the lesson");
+              onUpdateVideoLesson(Number(currResId));
             }}
           >
             <Space className={styles.footerBtn}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={videoUploading || !videoLesson.video}>
                 {isEdit ? "Update" : "Save Lesson"}
               </Button>
               <Button
@@ -143,14 +121,15 @@ const AddResource: FC<{
             form={formData}
             layout="vertical"
             onFinish={() => {
-              isEdit && currResId ? onUpdateRes(currResId) : onCreateRes(chapterId);
+              console.log(`submitting the result`);
+              currResId && onUpdateVideoLesson(currResId);
             }}
           >
             <div className={styles.formCourseName}>
               <Form.Item label="Title" name="name" rules={[{ required: true, message: "Please Enter Title" }]}>
                 <Input
                   onChange={(e) => {
-                    !router.query.resId && setAddResource({ ...addResource, name: e.target.value });
+                    setVideoLesson({ ...videoLesson, title: e.currentTarget.value });
                   }}
                   value={formData.getFieldsValue().name}
                   placeholder="Set the title of the resource"
@@ -163,137 +142,93 @@ const AddResource: FC<{
                     label="Description"
                     rules={[{ required: true, message: "Please Enter Description" }]}
                   >
-                    <Input.TextArea rows={4} placeholder="Brief description about the resource" />
+                    <Input.TextArea
+                      onChange={(e) => {
+                        setVideoLesson({ ...videoLesson, description: e.currentTarget.value });
+                      }}
+                      rows={4}
+                      placeholder="Brief description about the resource"
+                    />
                   </Form.Item>
                 </div>
               </div>
 
-              {addResource.content === "Video" && (
-                <div>
-                  <div>
-                    <Form.Item
-                      name="VideoUrl"
-                      label="Video URL"
-                      rules={[{ required: true, message: "Please Enter Description" }]}
-                    >
-                      <Upload
-                        name="avatar"
-                        disabled={!formData.getFieldsValue().name && !isEdit ? true : false}
-                        listType="picture-card"
-                        className={"resource_video_uploader"}
-                        showUploadList={false}
-                        beforeUpload={(file) => {
-                          if (uploadResourceUrl.videoUrl) {
-                            onDeleteVideo(uploadResourceUrl.videoUrl);
-                          }
-                          onUploadVideo(file, formData.getFieldsValue().name);
-                        }}
-                      >
-                        {uploadResourceUrl?.videoUrl ? (
-                          <>
-                            <img
-                              src={uploadResourceUrl.thumbnail}
-                              alt=""
-                              height={"100%"}
-                              className={styles.video_container}
-                              width={355}
-                              onClick={() => {}}
-                            />
-                          </>
-                        ) : (
-                          <button style={{ border: 0, background: "none", width: 350 }} type="button">
-                            {loading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
-                            <div style={{ marginTop: 8 }}>Upload Video</div>
-                          </button>
-                        )}
-                      </Upload>
-                      {uploadResourceUrl?.videoUrl && (
-                        <div className={styles.camera_btn}>{loading ? <LoadingOutlined /> : SvgIcons.video}</div>
-                      )}
-                    </Form.Item>
-                  </div>
-                </div>
-              )}
-              {addResource.content === "Assignment" && (
+              <div>
                 <div>
                   <Form.Item
-                    label="Hours To Submit "
-                    name="submitDay"
-                    rules={[{ required: true, message: "Required Days" }]}
+                    name="VideoUrl"
+                    label="Video URL"
+                    rules={[{ required: true, message: "Please Enter Description" }]}
                   >
-                    <InputNumber
-                      onChange={(e) => !router.query.resId && setAddResource({ ...addResource, duration: Number(e) })}
-                      style={{ width: 330 }}
-                      min={1}
-                      placeholder="Enter submit hours"
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="Languages"
-                    name="assignmentLang"
-                    rules={[{ required: true, message: "Required Languages" }]}
-                  >
-                    <Select
-                      mode="multiple"
-                      showSearch
-                      style={{ width: "100%" }}
-                      placeholder="Add Language"
-                      options={appConstant.assignmentLang?.map((lang) => ({
-                        label: lang,
-                        value: lang,
-                      }))}
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Assignment file" name="assignment_file">
                     <Upload
                       name="avatar"
+                      disabled={videoUploading}
                       listType="picture-card"
                       className={"resource_video_uploader"}
                       showUploadList={false}
-                      disabled={!formData.getFieldsValue().name ? true : false}
-                      action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                       beforeUpload={(file) => {
-                        // beforeUpload(file, "img");
-                        if (uploadResourceUrl.fileName) {
-                          onDeleteThumbnail(uploadResourceUrl.fileName, "course-assignments");
+                        if (videoLesson?.video?.videoUrl) {
+                          onDeleteVideo(videoLesson?.video?.videoUrl);
                         }
-                        uploadFile(file, formData.getFieldsValue().name);
+                        currResId && onUploadVideo(file, formData.getFieldsValue().name, currResId);
                       }}
                     >
-                      {uploadResourceUrl.fileName ? (
+                      {videoLesson?.video?.state == "READY" && !videoUploading && (
+                        <Tooltip title="Upload new lesson video">
+                          <img
+                            src={videoLesson?.video?.thumbnail}
+                            alt=""
+                            height={180}
+                            className={styles.video_container}
+                            width={320}
+                          />
+                          <div
+                            style={{ height: 50, width: 50, fontSize: "1.4rem" }}
+                            className={`${styles.video_status} ${styles.video_status_ready}`}
+                          >
+                            {SvgIcons.video}
+                          </div>
+                        </Tooltip>
+                      )}
+                      {(videoLesson?.video?.state == "PROCESSING" || videoUploading) && (
+                        <div
+                          style={{ height: 50, width: 80 }}
+                          className={`${styles.video_status} ${styles.video_status_loading}`}
+                        >
+                          <LoadingOutlined />
+                          <span>{videoUploading ? "Uploading" : "Processing"}</span>
+                        </div>
+                      )}
+                      {!videoLesson?.video?.state && !videoUploading && (
+                        <div
+                          style={{ height: 50, width: 150 }}
+                          className={`${styles.video_status} ${styles.video_status_loading}`}
+                        >
+                          <i style={{ display: "block" }}>{SvgIcons.video}</i>
+                          <span>Upload Video</span>
+                        </div>
+                      )}
+                      {/* {videoLesson?.video?.videoUrl ? (
                         <>
                           <img
+                            src={videoLesson?.video?.thumbnail}
+                            alt=""
                             height={"100%"}
+                            className={styles.video_container}
                             width={355}
-                            style={{ marginLeft: 20, objectFit: "cover" }}
-                            src={`https://torqbit-dev.b-cdn.net/static/course-assignments/${uploadResourceUrl.fileName}`}
+                            onClick={() => {}}
                           />
-                          {uploadResourceUrl?.fileName && (
-                            <div className={styles.camera_btn_img}>
-                              {" "}
-                              {loading ? <LoadingOutlined /> : SvgIcons.file}
-                            </div>
-                          )}
                         </>
                       ) : (
-                        <button
-                          style={{ border: 0, background: "none" }}
-                          onClick={() => {
-                            if (!formData.getFieldsValue().name) {
-                              message.warning("please enter the title of the resource");
-                            }
-                          }}
-                          type="button"
-                        >
-                          {loading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
-                          <div style={{ marginTop: 8 }}>Upload File</div>
+                        <button style={{ border: 0, background: "none", width: 350 }} type="button">
+                          {videoUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                          <div style={{ marginTop: 8 }}>Upload Video</div>
                         </button>
-                      )}
+                      )} */}
                     </Upload>
                   </Form.Item>
                 </div>
-              )}
+              </div>
             </div>
           </Form>
         </div>
@@ -302,4 +237,4 @@ const AddResource: FC<{
   );
 };
 
-export default AddResource;
+export default AddVideoLesson;

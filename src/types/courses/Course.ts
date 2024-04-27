@@ -1,5 +1,5 @@
 import { IResourceDetail } from "@/lib/types/learn";
-import { Course, Resource, ResourceContentType, VideoState } from "@prisma/client";
+import { Course, Resource, ResourceContentType, Video, VideoState } from "@prisma/client";
 
 export interface ChapterDetail {
   sequenceId: number;
@@ -43,6 +43,13 @@ export interface CourseInfo {
   programId: number;
   state: string;
   tags: string[];
+}
+
+export interface IVideoLesson {
+  title: string;
+  description: string;
+  chapterId?: number;
+  video?: Video;
 }
 
 export interface VideoInfo {
