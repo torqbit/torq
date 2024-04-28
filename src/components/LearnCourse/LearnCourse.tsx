@@ -275,7 +275,7 @@ const LearnCourse: FC<{}> = () => {
           </div>
 
           <Flex align="start" justify="space-between">
-            <div>
+            <div className={styles.lessons_video_player_wrapper}>
               <div className={styles.video_container}>
                 {selectedLesson?.video?.videoUrl && !loadingLesson ? (
                   <>
@@ -333,6 +333,10 @@ const LearnCourse: FC<{}> = () => {
               </div>
 
               <Tabs
+                style={{
+                  padding: "0px 20px 10px",
+                  maxWidth: "800px",
+                }}
                 tabBarExtraContent={
                   <>
                     {!loadingBtn && isCompleted !== undefined ? (

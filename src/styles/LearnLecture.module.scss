@@ -33,7 +33,7 @@
       .resource_player {
         position: relative;
         z-index: 1000;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         height: 440px;
 
         .assignment_completed {
@@ -287,11 +287,13 @@
   .comment {
     flex-basis: 94%;
     .comment_body {
-      padding: 5px 8px;
+      position: relative;
       border-top-right-radius: 8px;
-      border-top-left-radius: 8px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
       min-height: 80px;
-      background-color: #fff;
+      background-color: var(--bg-secondary);
       .tag_commented {
         padding: 5px 10px 15px 10px;
         margin: 5px 0;
@@ -301,10 +303,15 @@
         cursor: pointer;
       }
       .comment_action_btns {
+        position: absolute;
+        top: 5px;
+        right: 10px;
         display: none;
       }
       &:hover {
         .comment_action_btns {
+          position: absolute;
+          right: 10px;
           display: flex;
         }
       }
@@ -329,10 +336,15 @@
       }
 
       .comment_content {
-        padding: 5px 5px 10px 5px;
+        // padding: 5px 5px 10px 5px;
+        .comment_text_wrapper {
+          padding: 10px;
+        }
+        border-radius: 8px;
         white-space: pre-wrap;
         .qa_edit_input {
-          border: none;
+          min-height: 80px;
+          background-color: var(--bg-primary);
         }
       }
     }
@@ -340,7 +352,8 @@
       padding: 5px 8px;
       border-bottom-right-radius: 8px;
       border-bottom-left-radius: 8px;
-      background-color: #f7f7f7;
+
+      // background-color: var(--bg-secondary);
       .reply_btn {
         font-size: 12px;
         display: inline;
@@ -363,14 +376,16 @@
 .reply_drawer {
   position: relative;
   overflow-x: hidden;
+
   .list_reply_cmt {
+    background-color: var(--bg-primary);
     padding: 10px 20px 20px 20px;
   }
   .comment_box {
     gap: 0 10px;
     width: 100%;
     .comment_footer {
-      background-color: #fff;
+      // background-color: var(--bg-secondary);
     }
   }
 
@@ -380,17 +395,24 @@
     bottom: 0;
     left: 0;
     box-shadow: var(--box-shadow);
+    border: 1px solid;
+    box-shadow: 0px 5px 7px 7px var(--label-color);
+    background-color: var(--bg-primary);
+
     .qa_form_input {
       width: 100%;
       border: 0;
+      height: 50px;
       border-radius: 0;
+      // background-color: var(--bg-secondary);
     }
+
     .qa_form_footer {
       display: flex;
       justify-content: space-between;
       padding: 5px;
-      border-top: 0;
-      background-color: #f7f7f7;
+      border-top: 1px solid;
+      background-color: var(--bg-secondary);
       img {
         cursor: pointer;
       }
