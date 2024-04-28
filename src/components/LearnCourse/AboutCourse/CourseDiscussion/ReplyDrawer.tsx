@@ -87,7 +87,7 @@ const ReplyDrawer: FC<{
           </Space>
         }
         width={isMax415Width ? "100%" : 500}
-        bodyStyle={{ background: "#f0f0f0", padding: 0 }}
+        bodyStyle={{ background: "#eee", padding: 0 }}
         className={styles.reply_drawer}
         placement="right"
         onClose={onCloseDrawer}

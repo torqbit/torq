@@ -126,7 +126,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: number; loading: boolean 
         placeholder="Ask a Question"
         onRefresh={() => setRefresh(!refresh)}
       />
-      <Divider style={{ margin: "20px 0" }} />
+
       {allComments.map((comment, i) => {
         return (
           <CommentBox

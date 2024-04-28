@@ -1,4 +1,4 @@
-import { Badge, Skeleton, UploadFile, UploadProps } from "antd";
+import { Badge, Button, Flex, Skeleton, UploadFile, UploadProps } from "antd";
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
 import { Input, Modal, Space, Tooltip, message, Upload } from "antd";
@@ -10,6 +10,7 @@ import { bytesToSize } from "@/services/helper";
 import appConstant from "@/services/appConstant";
 import DiscussionsService from "@/services/DiscussionsService";
 import { error } from "console";
+import SvgIcons from "@/components/SvgIcons";
 const { Dragger } = Upload;
 
 const QAForm: FC<{
@@ -115,6 +116,9 @@ const QAForm: FC<{
         <Skeleton.Input style={{ height: 80, width: 890 }} />
       ) : (
         <Input.TextArea
+          style={{
+            margin: "40px 0px 0px 0px",
+          }}
           placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.shiftKey) {
@@ -130,34 +134,20 @@ const QAForm: FC<{
       {loadingPage ? (
         <Skeleton.Input style={{ width: 890 }} />
       ) : (
-        <div className={styles.qa_form_footer}>
+        <Flex align="center" style={{ marginTop: 10 }} justify="right" className={styles.qa_form_footer}>
           <Space>
-            <Tooltip title="Attach File">
-              <Badge count={attachModal.fileList.length} size="small" color="green">
-                <Image
-                  src="/img/comment-icons/attachcircle.svg"
-                  onClick={onAttachfile}
-                  alt="Attach_file"
-                  width={25}
-                  height={25}
-                />
-              </Badge>
-            </Tooltip>
             {loading ? (
               <LoadingOutlined rev={undefined} style={{ fontSize: 20, color: "#4096ff" }} spin />
             ) : (
-              <Tooltip title="Post">
-                <Image
-                  src="/img/comment-icons/send2.svg"
-                  alt="Send"
-                  width={25}
-                  height={25}
-                  onClick={() => onPostQA()}
-                />
-              </Tooltip>
+              <Button type="primary" onClick={() => onPostQA()} title="Post">
+                <Flex align="center" gap={10}>
+                  Post
+                  {SvgIcons.send}
+                </Flex>
+              </Button>
             )}
           </Space>
-        </div>
+        </Flex>
       )}
       <Modal
         title="Attach File"

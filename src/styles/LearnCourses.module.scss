@@ -1,6 +1,9 @@
 .learn_course_page {
   padding: 20px 40px;
   overflow-y: hidden;
+  .lessons_video_player_wrapper {
+    background-color: var(--bg-primary);
+  }
   .video_container,
   .video_completed_screen {
     width: 800px;

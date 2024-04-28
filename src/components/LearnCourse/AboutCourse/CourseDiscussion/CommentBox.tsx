@@ -12,6 +12,7 @@ import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 import { useAppContext } from "@/components/ContextApi/AppContext";
+import SvgIcons from "@/components/SvgIcons";
 moment.locale("en", { ...customFromNow });
 
 export interface IAttachedFiles {
@@ -111,27 +112,29 @@ const CommentBox: FC<{
     <>
       <div className={styles.comment_box} key={comment.id} id={`comment_${comment.id}`}>
         <Avatar size={40} src={comment.user.image} icon={<UserOutlined />} className={styles.user_icon} alt="Profile" />
-        <div className={styles.comment}>
+        <div className={styles.comment} style={{ marginLeft: 20 }}>
+          <Space className={styles.user_info}>
+            <h4>{comment.user.name}</h4>
+            <p className="dot">•</p>
+            <h5 className={styles.comment_time}>
+              {moment(new Date(comment.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
+            </h5>
+          </Space>
           <div className={`${styles.comment_body} comment-card-body`}>
             <div className={styles.comment_body_header}>
-              <Space className={styles.user_info}>
-                <h4>{comment.user.name}</h4>
-                <p className="dot">•</p>
-                <h5 className={styles.comment_time}>
-                  {moment(new Date(comment.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
-                </h5>
-              </Space>
               {session?.id === comment.user.id && (
                 <Space className={styles.comment_action_btns}>
                   {isEdited ? (
                     <CloseOutlined onClick={() => setEdited(false)} />
                   ) : (
-                    <EditOutlined
+                    <div
                       onClick={() => {
                         setEdited(true);
                         setEditComment(comment.comment);
                       }}
-                    />
+                    >
+                      {SvgIcons.edit}
+                    </div>
                   )}
 
                   <Popconfirm
@@ -141,7 +144,7 @@ const CommentBox: FC<{
                     okText="Yes"
                     cancelText="Continue"
                   >
-                    <DeleteOutlined />
+                    {SvgIcons.delete}
                   </Popconfirm>
                 </Space>
               )}
@@ -161,7 +164,7 @@ const CommentBox: FC<{
                   onChange={(e) => setEditComment(e.target.value)}
                 />
               ) : (
-                <>{comment.comment}</>
+                <div className={styles.comment_text_wrapper}>{comment.comment}</div>
               )}
             </div>
           </div>
@@ -185,7 +188,7 @@ const CommentBox: FC<{
                         showReplyDrawer(comment);
                       }}
                     >
-                      <Image src="/img/comment-icons/directleft.svg" alt="Reply" width={25} height={25} />{" "}
+                      {allReplyCmtCount === 0 && "Reply"}
                       {isReply.open ? (
                         "Cancel"
                       ) : (
