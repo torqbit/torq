@@ -965,11 +965,7 @@ class ProgramService {
       }
     });
   };
-  updateResource = (
-    resData: ResourceDetails,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
+  updateResource = (resData: any, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
     fetch(`/api/v1/resource/update`, {
       method: "POST",
       headers: {

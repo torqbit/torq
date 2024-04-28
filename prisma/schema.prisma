@@ -171,7 +171,6 @@ model Resource {
   description        String?             @db.Text()
   chapterId          Int
   sequenceId         Int
-  daysToSubmit       Int?
   contentType        ResourceContentType
   isActive           Boolean             @default(true)
   state              StateType           @default(DRAFT)

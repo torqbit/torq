@@ -1,26 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
 
-import {
-  Button,
-  Form,
-  FormInstance,
-  Input,
-  Popconfirm,
-  Radio,
-  Space,
-  Tooltip,
-  Upload,
-  UploadProps,
-  message,
-} from "antd";
+import { Button, Form, FormInstance, Input, Popconfirm, Radio, Space, Tooltip, Upload, UploadProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-
-import { useRouter } from "next/router";
-import { onDeleteVideo } from "@/pages/api/v1/upload/bunny/create";
-import ProgramService from "@/services/ProgramService";
-import { postWithFile } from "@/services/request";
 import { RcFile } from "antd/es/upload";
 import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
 

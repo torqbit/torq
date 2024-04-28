@@ -66,12 +66,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   resolve({
                     success: false,
                     statusCode: 400,
-                    message: "No Media Provder has been configured"
-                  } as VideoAPIResponse)
-                })
+                    message: "No Media Provder has been configured",
+                  } as VideoAPIResponse);
+                });
                 return failedPromise;
               }
-
             });
         });
       if (videoUploadResponse && path != "") {
@@ -86,7 +85,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!files) {
       return res.status(400).json({ success: false, message: "file not recieved" });
     }
-  } catch (error) {}
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error });
+  }
 };
 
 export default withMethods(["POST"], withUserAuthorized(handler));

@@ -17,7 +17,6 @@ const AddCourseChapter: FC<{
 }> = ({
   showChapterDrawer,
   updateChapter,
-
   createChapter,
   loading,
   open,
@@ -60,8 +59,7 @@ const AddCourseChapter: FC<{
                 type="default"
                 onClick={() => {
                   onClose();
-                  router.query.chapterId &&
-                    router.replace(`/programs/${router.query.programId}/add-overview?edit=true`);
+                  router.query.chapterId && router.replace(`/admin/content`);
                 }}
               >
                 Cancel

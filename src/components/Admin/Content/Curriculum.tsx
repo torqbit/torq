@@ -14,7 +14,6 @@ const Label: FC<{
   keyValue: string;
   onRender: (value: string[]) => void;
   render: string[];
-
   onAddResource: (id: number, content: ResourceContentType) => void;
   onEditResource: (id: number) => void;
   icon: ReactNode;
@@ -142,7 +141,7 @@ const Curriculum: FC<{
   onDiscard: () => void;
   onRefresh: () => void;
   onEditResource: (id: number) => void;
-  setOpen: (value: boolean) => void;
+  handleNewChapter: () => void;
   onAddResource: (id: number, content: ResourceContentType) => void;
   handleEditChapter: (chapterId: number) => void;
   deleteChapter: (id: number) => void;
@@ -154,7 +153,7 @@ const Curriculum: FC<{
   onSave,
   chapters,
   onRefresh,
-  setOpen,
+  handleNewChapter,
   onAddResource,
   handleEditChapter,
   deleteChapter,
@@ -247,7 +246,12 @@ const Curriculum: FC<{
           <Flex justify="space-between" align="center">
             <h2>{chapters.length ? chapters.length : 0} Chapters</h2>
             <Space>
-              <Button className={styles.add_btn} onClick={() => setOpen(true)}>
+              <Button
+                className={styles.add_btn}
+                onClick={() => {
+                  handleNewChapter();
+                }}
+              >
                 {SvgIcons.plusBtn}
                 <div> Add Chapter</div>
               </Button>
@@ -287,7 +291,7 @@ const Curriculum: FC<{
           <img src="/img/common/empty.svg" alt="" />
           <h4>No chapters were found</h4>
           <p>Start creating chapters and lessons to build your course curriculum</p>
-          <Button onClick={() => setOpen(true)} type="primary">
+          <Button onClick={() => handleNewChapter()} type="primary">
             Add Chapter
           </Button>
         </div>
