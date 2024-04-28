@@ -25,7 +25,7 @@ import {
 import AddCourseChapter from "@/components/programs/AddCourseChapter";
 import { Resource, ResourceContentType } from "@prisma/client";
 import { IAddResource, ResourceDetails } from "@/lib/types/program";
-import AddResource from "@/components/programs/AddResource";
+import AddVideoLesson from "@/components/programs/AddVideoLesson";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
@@ -39,13 +39,14 @@ const AddCourseForm: FC = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
   const [isEdit, setEdit] = useState<boolean>(false);
+  const [isChapterEdit, setChapterEdit] = useState<boolean>(false);
   const [currResId, setResId] = useState<number>();
   const [selectedChapterId, setSelectedChapterId] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const [chapterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
-  const [formData] = Form.useForm();
+  const [videoForm] = Form.useForm();
 
   const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
   const onRefresh = () => {
@@ -195,6 +196,11 @@ const AddCourseForm: FC = () => {
     );
   };
 
+  const handleNewChapter = () => {
+    setChapterEdit(false);
+    setOpen(true);
+  };
+
   const handleChapterEdit = async (chapterId: number) => {
     setSelectedChapterId(chapterId);
     ProgramService.getChapter(
@@ -203,7 +209,7 @@ const AddCourseForm: FC = () => {
         chapterForm.setFieldValue("name", result.chapter.name);
         chapterForm.setFieldValue("description", result.chapter.description);
         showChapterDrawer(true);
-        setEdit(true);
+        setChapterEdit(true);
       },
       (error) => {
         message.error(error);
@@ -266,7 +272,7 @@ const AddCourseForm: FC = () => {
     ProgramService.getResources(
       chapterId,
       (result) => {
-        formData.resetFields();
+        videoForm.resetFields();
         setLoading(false);
         !showResourceDrawer && setResourceDrawer(true);
         setUploadResUrl({});
@@ -288,13 +294,12 @@ const AddCourseForm: FC = () => {
         contentType: content,
       } as ResourceDetails,
       (result) => {
-        formData.setFieldValue("name", result.resource.name);
-        formData.setFieldValue("description", result.resource.description);
+        videoForm.setFieldValue("name", result.resource.name);
+        videoForm.setFieldValue("description", result.resource.description);
         setResId(result.resource.resourceId);
         setLoading(false);
         !showResourceDrawer && setResourceDrawer(true);
-        setUploadResUrl({});
-        setVideoLesson({ ...videoLesson, chapterId: chapterId });
+        setVideoLesson({ ...videoLesson, chapterId: chapterId, video: undefined });
       },
       (error) => {
         message.error(error);
@@ -306,32 +311,22 @@ const AddCourseForm: FC = () => {
     setLoading(true);
 
     let resData = {
-      name: formData.getFieldsValue().name,
+      name: videoForm.getFieldsValue().name,
       resourceId: resId,
-      description: formData.getFieldsValue().description,
-      chapterId: videoLesson.chapterId,
-      sequenceId: Number(formData.getFieldsValue().index),
-      assignmentLang: formData.getFieldsValue().assignmentLang || [],
-      videoDuration: formData.getFieldsValue().duration || 0,
-      daysToSubmit: formData.getFieldsValue().submitDay || 0,
-      thumbnail: uploadResourceUrl?.videoUrl,
-      contentType: "Video",
-      content: uploadResourceUrl?.fileName || "",
-      videoId: Number(uploadResourceUrl?.videoId),
-    } as ResourceDetails;
+      description: videoForm.getFieldsValue().description,
+    };
 
     ProgramService.updateResource(
       resData,
       (result) => {
         message.success(result.message);
         videoLesson.chapterId && onFindResource(videoLesson.chapterId, "Video");
-        formData.resetFields();
+        videoForm.resetFields();
         setLoading(false);
-
-        formData.setFieldValue("contentType", "Video");
+        videoForm.setFieldValue("contentType", "Video");
         setEdit(false);
-
         setResourceDrawer(false);
+        onRefresh();
       },
       (error) => {
         onRefresh();
@@ -364,6 +359,19 @@ const AddCourseForm: FC = () => {
     }
     const res = (await postRes.json()) as VideoAPIResponse;
     if (res.success) {
+      setVideoLesson({
+        ...videoLesson,
+        video: {
+          id: 0,
+          providerVideoId: res.video.videoId,
+          videoUrl: res.video.videoUrl,
+          thumbnail: res.video.thumbnail,
+          resourceId: currResId || 0,
+          state: res.video.state,
+          mediaProvider: res.video.mediaProviderName,
+          videoDuration: res.video.videoDuration,
+        },
+      });
       setUploadResUrl({
         videoId: String(res.video.videoId),
         videoUrl: res.video.videoUrl,
@@ -455,47 +463,18 @@ const AddCourseForm: FC = () => {
     }
   };
 
-  const uploadAssignment = async (file: any, title: string) => {
-    if (file) {
-      setLoading(true);
-      const name = title.replace(/\s+/g, "-");
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("title", name);
-      formData.append("dir", "course-assignments");
-
-      const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
-      if (!postRes.ok) {
-        setLoading(false);
-        throw new Error("Failed to upload file");
-      }
-      const res = await postRes.json();
-
-      if (res.success) {
-        setUploadResUrl({ fileName: res.fileCDNPath as string });
-      }
-    }
-  };
-
   const onEditResource = (id: number) => {
     setResId(id);
     ProgramService.getResource(
       id,
       (result) => {
-        formData.setFieldValue("name", result.resource?.name);
-        formData.setFieldValue("description", result.resource?.description);
-        formData.setFieldValue("submitDay", result.resource.daysToSubmit);
-        formData.setFieldValue("index", result.resource.sequenceId);
-        formData.setFieldValue("contentType", result.resource.contentType);
+        console.log("setting the video form props", result.resource);
+        videoForm.setFieldValue("name", result.resource?.name);
+        videoForm.setFieldValue("description", result.resource?.description);
+        videoForm.setFieldValue("videoUrl", result.resource?.video.videoUrl);
+        console.log("form props", videoForm.getFieldsValue());
         setEdit(true);
-
         setVideoLesson({ ...videoLesson, chapterId: result.resource.chapterId, video: result.resource.video });
-
-        setUploadResUrl({
-          thumbnail: result.resource.video?.thumbnail,
-          videoId: String(result.resource.video?.providerVideoId),
-          videoUrl: String(result.resource.video?.videoUrl),
-        });
         setResourceDrawer(true);
       },
       (error) => {
@@ -547,7 +526,7 @@ const AddCourseForm: FC = () => {
         <Curriculum
           chapters={courseData.chapters}
           onRefresh={onRefresh}
-          setOpen={setOpen}
+          handleNewChapter={handleNewChapter}
           onAddResource={onAddResource}
           deleteChapter={deleteChapter}
           updateChapterState={updateChapterState}
@@ -638,14 +617,14 @@ const AddCourseForm: FC = () => {
         currentSeqIds={currentSeqIds}
         showChapterDrawer={showChapterDrawer}
         loading={loading}
-        edit={isEdit}
+        edit={isChapterEdit}
         open={open}
         form={chapterForm}
         chapterId={selectedChapterId}
       />
-      {videoLesson.chapterId && (
-        <AddResource
-          chapterId={videoLesson.chapterId}
+
+      {currResId && (
+        <AddVideoLesson
           videoLesson={videoLesson}
           onRefresh={onRefresh}
           setVideoLesson={setVideoLesson}
@@ -654,12 +633,11 @@ const AddCourseForm: FC = () => {
           isEdit={isEdit}
           onUpdateVideoLesson={onUpdateVideoLesson}
           onUploadVideo={onUploadVideo}
-          formData={formData}
+          formData={videoForm}
           setResourceDrawer={setResourceDrawer}
           onDeleteVideo={onDeleteVideo}
           showResourceDrawer={showResourceDrawer}
           videoUploading={resourceVideoUploading}
-          onFindRsource={onFindResource}
         />
       )}
     </Layout2>

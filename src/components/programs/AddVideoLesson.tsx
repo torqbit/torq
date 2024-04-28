@@ -16,7 +16,7 @@ import {
   Flex,
   Tooltip,
 } from "antd";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import styles from "@/styles/AddCourse.module.scss";
 import { useRouter } from "next/router";
 import { CloseOutlined, EllipsisOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
@@ -34,13 +34,11 @@ const AddVideoLesson: FC<{
   videoLesson: IVideoLesson;
   setVideoLesson: React.Dispatch<React.SetStateAction<IVideoLesson>>;
   videoUploading: boolean;
-  chapterId: number;
   onRefresh: () => void;
   onUploadVideo: (file: RcFile, title: string, resourceId: number) => void;
   setResourceDrawer: (value: boolean) => void;
   showResourceDrawer: boolean;
   onDeleteResource: (id: number) => void;
-  onFindRsource: (id: number, content: ResourceContentType) => void;
   onUpdateVideoLesson: (resId: number) => void;
   currResId?: number;
 }> = ({
@@ -51,17 +49,18 @@ const AddVideoLesson: FC<{
   videoLesson,
   setVideoLesson,
   videoUploading,
-  chapterId,
   isEdit,
   onDeleteResource,
   formData,
   onDeleteVideo,
-
   onUploadVideo,
-  onFindRsource,
   currResId,
 }) => {
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("name is ", formData.getFieldValue("name"));
+  }, [currResId]);
 
   return (
     <>
@@ -94,7 +93,9 @@ const AddVideoLesson: FC<{
           <Form
             form={formData}
             onFinish={() => {
-              console.log("updating the lesson");
+              isEdit && console.log("updating the lesson");
+              !isEdit && console.log("creating the lesson");
+
               onUpdateVideoLesson(Number(currResId));
             }}
           >
@@ -156,7 +157,7 @@ const AddVideoLesson: FC<{
               <div>
                 <div>
                   <Form.Item
-                    name="VideoUrl"
+                    name="videoUrl"
                     label="Video URL"
                     rules={[{ required: true, message: "Please Enter Description" }]}
                   >
