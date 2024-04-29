@@ -284,7 +284,6 @@ const LearnCourse: FC<{}> = () => {
                         className={styles.video_completed_screen}
                         style={{
                           position: "absolute",
-
                           width: 800,
                           height: 450,
                           outline: "none",
@@ -327,6 +326,7 @@ const LearnCourse: FC<{}> = () => {
                       position: "absolute",
                       width: 800,
                       height: 450,
+                      top: 0,
                     }}
                   />
                 )}

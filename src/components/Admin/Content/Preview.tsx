@@ -150,7 +150,12 @@ const Preview: FC<{
                 <Button>Rewatch</Button>
               </Link>
             ) : (
-              <Button className={styles.save_btn} onClick={onEnrollCourse}>
+              <Button
+                className={styles.save_btn}
+                onClick={() => {
+                  !addContentPreview && onEnrollCourse && onEnrollCourse();
+                }}
+              >
                 {enrolled ? "Resume" : "Enroll Course"}
                 {SvgIcons.arrowRight}
               </Button>

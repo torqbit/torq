@@ -33,6 +33,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
           include: {
             resource: {
+              where: {
+                state: "ACTIVE",
+              },
               include: {
                 video: {},
               },
@@ -66,6 +69,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         include: {
           resource: {
+            where: {
+              state: "ACTIVE",
+            },
             include: {
               video: {},
             },
