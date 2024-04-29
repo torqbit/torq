@@ -27,14 +27,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           courseId: Number(courseId),
         },
       });
-      const updateCourse = await prisma.course.update({
-        where: {
-          courseId: Number(courseId),
-        },
-        data: {
-          totalResources: totalCourseLessons?.totalResources && totalCourseLessons?.totalResources - 1,
-        },
-      });
+      if (findResource.state === "ACTIVE") {
+        const updateCourse = await prisma.course.update({
+          where: {
+            courseId: Number(courseId),
+          },
+          data: {
+            totalResources:
+              totalCourseLessons?.totalResources && totalCourseLessons?.totalResources > 0
+                ? totalCourseLessons?.totalResources - 1
+                : 0,
+          },
+        });
+      }
 
       return res.status(200).json({
         info: false,

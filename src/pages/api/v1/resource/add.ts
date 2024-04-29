@@ -13,6 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const resourceCount = await prisma.resource.count({
       where: {
         chapterId: chapterId,
+        state: "ACTIVE",
       },
     });
 
@@ -24,45 +25,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       contentType: contentType as ResourceContentType,
     };
 
-    const courseDetails = await prisma.chapter.findFirst({
-      where: {
-        chapterId: chapterId,
-      },
-      include: {
-        course: {
-          select: {
-            courseId: true,
-            totalResources: true,
-          },
-        },
-      },
+    const createResource = await prisma.resource.create({
+      data: resData,
     });
 
-    if (courseDetails) {
-      const createResource = await prisma.resource.create({
-        data: resData,
-      });
-
-      const updateCourse = await prisma.course.update({
-        where: {
-          courseId: courseDetails.course.courseId,
-        },
-        data: {
-          totalResources: courseDetails.course.totalResources + 1,
-        },
-      });
-
-      return res.status(201).json({
-        info: false,
-        success: true,
-        message: "Resource added successfully",
-        resource: createResource,
-      });
-    } else {
-      return res.status(400).json({
-        error: "Failed to find the course for which lesson is being added",
-      });
-    }
+    return res.status(201).json({
+      info: false,
+      success: true,
+      message: "Resource added successfully",
+      resource: createResource,
+    });
   } catch (error) {
     return errorHandler(error, res);
   }

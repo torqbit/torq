@@ -6,7 +6,7 @@ import Link from "next/link";
 import Setting from "./Setting";
 import styles from "@/styles/Dashboard.module.scss";
 
-import { Button, Form, Tabs, TabsProps, message } from "antd";
+import { Button, Dropdown, Form, Tabs, TabsProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
@@ -106,7 +106,6 @@ const AddCourseForm: FC = () => {
         let course = {
           name: courseData?.name || form.getFieldsValue().course_name,
           expiryInDays: Number(courseData?.expiryInDays),
-          state: "ACTIVE",
           description: courseData?.description || form.getFieldsValue().course_description,
           thumbnail: result.courseDetails.thumbnail || "",
           tvThumbnail: result.courseDetails.tvThumbnail || "",
@@ -479,14 +478,18 @@ const AddCourseForm: FC = () => {
   };
 
   const onPublishCourse = (state: string) => {
-    ProgramService.updateCourseState(
-      Number(router.query.id),
-      state,
-      (result) => {
-        router.push("/courses");
-      },
-      (error) => {}
-    );
+    if (courseData.chapters.length > 0 && courseData.chapters[0].resource.length >= 2) {
+      ProgramService.updateCourseState(
+        Number(router.query.id),
+        state,
+        (result) => {
+          router.push("/courses");
+        },
+        (error) => {}
+      );
+    } else {
+      message.error("Minimum two published lessons are required to publish the course");
+    }
   };
 
   const items: TabsProps["items"] = [
@@ -579,6 +582,7 @@ const AddCourseForm: FC = () => {
             description: result.courseDetails.description,
             chapters: result.courseDetails.chapters,
             difficultyLevel: result.courseDetails.difficultyLevel,
+            state: result?.courseDetails.state,
           });
           setCourseThumbnail(result.courseDetails.thumbnail);
           setUploadVideo({
@@ -606,7 +610,27 @@ const AddCourseForm: FC = () => {
             </div>
             <h3>EDIT COURSE</h3>
           </div>
-          <Button onClick={() => onPublishCourse("ACTIVE")}>Publish Changes</Button>
+          <div>
+            <Dropdown.Button
+              onClick={() => {
+                courseData.state === "DRAFT" ? onPublishCourse("ACTIVE") : onPublishCourse("DRAFT");
+              }}
+              icon={SvgIcons.chevronDown}
+              menu={{
+                items: [
+                  {
+                    key: 1,
+                    label: courseData.state === "DRAFT" ? "Save and exit" : "Publish Course",
+                    onClick: () => {
+                      router.push("/admin/content");
+                    },
+                  },
+                ],
+              }}
+            >
+              {courseData.state === "DRAFT" ? "  Publish Course" : "Save as Draft"}
+            </Dropdown.Button>
+          </div>
         </div>
         <Tabs
           tabBarGutter={40}

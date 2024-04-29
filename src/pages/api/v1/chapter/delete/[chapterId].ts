@@ -13,7 +13,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         chapterId: Number(chapterId),
       },
       include: {
-        resource: {},
+        resource: {
+          where: {
+            state: "ACTIVE",
+          },
+        },
       },
     });
 
@@ -37,7 +41,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           courseId: findCourse?.courseId,
         },
         data: {
-          totalResources: findCourse?.totalResources && findCourse.totalResources - findChapter.resource.length,
+          totalResources:
+            findCourse?.totalResources &&
+            findCourse.totalResources > 0 &&
+            findCourse.totalResources > findChapter.resource.length
+              ? findCourse.totalResources - findChapter.resource.length
+              : 0,
         },
       });
       return res.status(200).json({

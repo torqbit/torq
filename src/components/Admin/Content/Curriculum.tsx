@@ -189,7 +189,7 @@ const Curriculum: FC<{
       ),
       children: content.resource.map((res, i) => {
         return (
-          <div className={styles.resContainer}>
+          <div className={styles.resContainer} key={i}>
             <Label
               title={res.name}
               icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}

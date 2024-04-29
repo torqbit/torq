@@ -15,6 +15,47 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         state: state,
       },
     });
+    const courseDetails = await prisma.chapter.findFirst({
+      where: {
+        chapterId: Number(chapterId),
+      },
+      include: {
+        course: {
+          select: {
+            courseId: true,
+            totalResources: true,
+          },
+        },
+        resource: {
+          where: {
+            state: "ACTIVE",
+          },
+        },
+      },
+    });
+    if (courseDetails && state === "ACTIVE") {
+      const updateCourse = await prisma.course.update({
+        where: {
+          courseId: courseDetails.course.courseId,
+        },
+        data: {
+          totalResources: courseDetails.course.totalResources + courseDetails.resource.length,
+        },
+      });
+    }
+    if (courseDetails && state === "DRAFT") {
+      const updateCourse = await prisma.course.update({
+        where: {
+          courseId: courseDetails.course.courseId,
+        },
+        data: {
+          totalResources:
+            courseDetails.course.totalResources > 0
+              ? courseDetails.course.totalResources - courseDetails.resource.length
+              : 0,
+        },
+      });
+    }
     return res.status(200).json({
       info: false,
       success: true,
