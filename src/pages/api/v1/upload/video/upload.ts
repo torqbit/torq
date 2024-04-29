@@ -45,41 +45,61 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
       const fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
-      const videoUploadResponse = await saveToDir(fullName, sourcePath)
-        .then((v) => {
-          path = v;
-          return fs.promises.readFile(v);
-        })
-        .then((fileBuffer) => {
-          return prisma?.serviceProvider
-            .findFirst({
-              where: {
-                service_type: "media",
-              },
-            })
-            .then((provider: any) => {
-              if (provider?.provider_name) {
-                const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-                return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
-              } else {
-                const failedPromise: Promise<VideoAPIResponse> = new Promise((resolve, _) => {
-                  resolve({
-                    success: false,
-                    statusCode: 400,
-                    message: "No Media Provder has been configured",
-                  } as VideoAPIResponse);
-                });
-                return failedPromise;
-              }
-            });
+      let needDeletion = false;
+      let videoProviderId: string | undefined | null;
+      if (objectType == "course") {
+        const trailerVideo = await prisma?.course.findUnique({
+          where: {
+            courseId: objectId,
+          },
+          select: {
+            tvProviderId: true,
+          },
         });
-      if (videoUploadResponse && path != "") {
-        console.log(`deleting the file - ${path}`);
-        fs.unlinkSync(path);
-      } else {
-        console.log(`unable to delete video : ${path} . response ${videoUploadResponse?.statusCode}`);
+        videoProviderId = trailerVideo?.tvProviderId;
+        needDeletion = typeof trailerVideo !== undefined || trailerVideo != null;
+      } else if (objectType == "lesson") {
+        const videoLesson = await prisma?.video.findUnique({
+          where: {
+            resourceId: objectId,
+          },
+          select: {
+            providerVideoId: true,
+          },
+        });
+        videoProviderId = videoLesson?.providerVideoId;
+        needDeletion = typeof videoLesson !== undefined || videoLesson != null;
       }
-      return res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
+      const localPath = await saveToDir(fullName, sourcePath);
+      const fileBuffer = await fs.promises.readFile(localPath);
+      const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+        where: {
+          service_type: "media",
+        },
+      });
+      if (serviceProviderResponse) {
+        const serviceProvider = cms.getServiceProvider(
+          serviceProviderResponse?.provider_name,
+          serviceProviderResponse?.providerDetail
+        );
+        if (needDeletion && videoProviderId) {
+          const deletionResponse = await cms.deleteVideo(videoProviderId, objectId, objectType, serviceProvider);
+          if (!deletionResponse.success) {
+            throw new Error(`Unable to delete the video due to : ${deletionResponse.message}`);
+          }
+        }
+        const uploadResponse = await cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
+        if (localPath != "") {
+          console.log(`deleting the file - ${path}`);
+          fs.unlinkSync(localPath);
+        } else {
+          console.log(`unable to delete video : ${localPath} . response ${uploadResponse?.statusCode}`);
+        }
+
+        return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
+      } else {
+        throw new Error("No Media Provder has been configured");
+      }
     }
 
     if (!files) {

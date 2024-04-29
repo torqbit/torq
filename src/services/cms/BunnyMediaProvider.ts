@@ -1,6 +1,6 @@
 import { VideoState } from "@prisma/client";
 import { ContentServiceProvider } from "./ContentManagementService";
-import { FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
+import { BasicAPIResponse, FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
 export type GetVideo = {
   guid: string;
   libraryId: number;
@@ -96,6 +96,13 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
 
+  getDeleteOption(key: string) {
+    return {
+      method: "DELETE",
+      headers: { accept: "application/json", AccessKey: key },
+    };
+  }
+
   getVideoOption(key: string) {
     return {
       method: "GET",
@@ -115,7 +122,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
     let attemptCount: number;
     for (attemptCount = 1; attemptCount <= times; attemptCount++) {
-
       try {
         const result = await toTry();
         let vresult = await result.json();
@@ -191,6 +197,19 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       success: uploadRes.HttpCode == 201,
       fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${this.mediaPath}/${name}` : "",
     };
+  }
 
+  async deleteVideo(videoProviderId: string): Promise<BasicAPIResponse> {
+    const deleteUrl = `https://video.bunnycdn.com/library/${this.libraryId}/videos/${videoProviderId}`;
+    const response = await fetch(deleteUrl, this.getDeleteOption(this.accessKey));
+    if (response.ok) {
+      return (await response.json()) as BasicAPIResponse;
+    } else {
+      return {
+        statusCode: response.status,
+        message: response.statusText,
+        success: false,
+      };
+    }
   }
 }
