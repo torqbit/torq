@@ -30,7 +30,6 @@ import AddVideoLesson from "@/components/programs/AddVideoLesson";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
-import { error } from "console";
 
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);

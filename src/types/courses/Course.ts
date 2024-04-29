@@ -68,6 +68,12 @@ export interface IVideoLesson {
   video?: Video;
 }
 
+export interface BasicAPIResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+}
+
 export interface VideoInfo {
   videoId: string;
   thumbnail: string;
