@@ -100,37 +100,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       } else {
         throw new Error("No Media Provder has been configured");
       }
-
-      // const videoUploadResponse = await saveToDir(fullName, sourcePath)
-      //   .then((v) => {
-      //     path = v;
-      //     return fs.promises.readFile(v);
-      //   })
-      //   .then((fileBuffer) => {
-      //     return prisma?.serviceProvider
-      //       .findFirst({
-      //         where: {
-      //           service_type: "media",
-      //         },
-      //       })
-      //       .then((provider: any) => {
-      //         if (provider?.provider_name) {
-      //           const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-      //           return cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
-      //         } else {
-      //           const failedPromise: Promise<VideoAPIResponse> = new Promise((resolve, _) => {
-      //             resolve({
-      //               success: false,
-      //               statusCode: 400,
-      //               message: "No Media Provder has been configured",
-      //             } as VideoAPIResponse);
-      //           });
-      //           return failedPromise;
-      //         }
-      //       });
-      //   });
-
-      // return res.status(videoUploadResponse?.statusCode || 200).json({ ...videoUploadResponse });
     }
 
     if (!files) {

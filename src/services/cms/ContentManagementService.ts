@@ -110,7 +110,6 @@ export class ContentManagementService {
     csp: ContentServiceProvider
   ) => {
     const deleteResponse = await csp.deleteVideo(videoProviderId);
-    console.log(deleteResponse, `deleting ${videoProviderId}`);
     if (deleteResponse.success && objectType == "lesson") {
       const videoDel = await prisma.video.delete({
         where: {
