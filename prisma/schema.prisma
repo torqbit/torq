@@ -102,12 +102,18 @@ enum StateType {
   DRAFT
 }
 
+enum courseDifficultyType {
+  Beginner
+  Intermediate
+  Advance
+}
+
 model Course {
-  courseId          Int                  @id @default(autoincrement())
-  programId         Int?                 @default(1)
+  courseId          Int                   @id @default(autoincrement())
+  programId         Int?                  @default(1)
   name              String
-  about             String               @db.Text()
-  description       String               @db.Text()
+  about             String                @db.Text()
+  description       String                @db.Text()
   tvProviderId      String?
   tvProviderName    String?
   tvUrl             String?
@@ -115,20 +121,21 @@ model Course {
   tvState           VideoState?
   thumbnail         String?
   icon              String?
-  authorId          Int                  @map("user_id")
+  authorId          Int                   @map("user_id")
   skills            Json?
-  createdAt         DateTime             @default(now())
-  updatedAt         DateTime             @default(now())
-  courseType        CourseType           @default(FREE)
-  isActive          Boolean              @default(true)
-  coursePrice       Float?               @default(0)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @default(now())
+  courseType        CourseType            @default(FREE)
+  isActive          Boolean               @default(true)
+  coursePrice       Float?                @default(0)
   sequenceId        Int?
-  expiryInDays      Int                  @default(365)
-  durationInMonths  Int                  @default(12)
-  totalResources    Int                  @default(0)
-  state             StateType            @default(DRAFT)
+  expiryInDays      Int                   @default(365)
+  difficultyLevel   courseDifficultyType?
+  durationInMonths  Int                   @default(12)
+  totalResources    Int                   @default(0)
+  state             StateType             @default(DRAFT)
   chapters          Chapter[]
-  program           Program?             @relation(fields: [programId], references: [id])
+  program           Program?              @relation(fields: [programId], references: [id])
   CourseRegistraion CourseRegistration[]
   courseProgress    CourseProgress[]
 

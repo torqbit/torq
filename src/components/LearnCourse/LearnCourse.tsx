@@ -210,7 +210,7 @@ const LearnCourse: FC<{}> = () => {
               <Label
                 title={res.name}
                 icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-                time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
+                time={`${res.video?.videoDuration} min`}
                 onSelectResource={onSelectResource}
                 resourceId={res.resourceId}
                 setChapterId={() => {}}

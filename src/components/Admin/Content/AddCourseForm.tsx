@@ -23,7 +23,7 @@ import {
   VideoInfo,
 } from "@/types/courses/Course";
 import AddCourseChapter from "@/components/programs/AddCourseChapter";
-import { Resource, ResourceContentType } from "@prisma/client";
+import { Resource, ResourceContentType, courseDifficultyType } from "@prisma/client";
 import { IAddResource, ResourceDetails } from "@/lib/types/program";
 import AddVideoLesson from "@/components/programs/AddVideoLesson";
 
@@ -77,6 +77,7 @@ const AddCourseForm: FC = () => {
     description: string;
     expiryInDays: number;
     chapters: ChapterDetail[];
+    difficultyLevel?: courseDifficultyType;
   }>({
     name: "",
     description: "",
@@ -117,6 +118,7 @@ const AddCourseForm: FC = () => {
           tvUrl: result.courseDetails.videoUrl || "",
           tvProviderId: result.courseDetails.tvProviderId || "",
           courseId: Number(router.query.id),
+          difficultyLevel: form.getFieldsValue().course_difficulty,
         };
 
         ProgramService.updateCourse(
@@ -468,11 +470,9 @@ const AddCourseForm: FC = () => {
     ProgramService.getResource(
       id,
       (result) => {
-        console.log("setting the video form props", result.resource);
         videoForm.setFieldValue("name", result.resource?.name);
         videoForm.setFieldValue("description", result.resource?.description);
         videoForm.setFieldValue("videoUrl", result.resource?.video.videoUrl);
-        console.log("form props", videoForm.getFieldsValue());
         setEdit(true);
         setVideoLesson({ ...videoLesson, chapterId: result.resource.chapterId, video: result.resource.video });
         setResourceDrawer(true);
@@ -568,11 +568,13 @@ const AddCourseForm: FC = () => {
           form.setFieldValue("course_name", result.courseDetails.name);
           form.setFieldValue("course_description", result.courseDetails.description);
           form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
+          form.setFieldValue("course_difficulty", result.courseDetails.difficultyLevel);
 
           setCourseData({
             ...courseData,
             expiryInDays: result.courseDetails.expiryInDays,
             chapters: result.courseDetails.chapters,
+            difficultyLevel: result.courseDetails.difficultyLevel,
           });
           setCourseThumbnail(result.courseDetails.thumbnail);
           setUploadVideo({
