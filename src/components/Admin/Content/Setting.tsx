@@ -1,7 +1,19 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
 
-import { Button, Form, FormInstance, Input, Popconfirm, Radio, Space, Tooltip, Upload, UploadProps } from "antd";
+import {
+  Button,
+  Form,
+  FormInstance,
+  Input,
+  Popconfirm,
+  Radio,
+  Select,
+  Space,
+  Tooltip,
+  Upload,
+  UploadProps,
+} from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
@@ -50,6 +62,8 @@ const CourseSetting: FC<{
       // setLoading(false);
     }
   };
+
+  const courseDifficulty = ["Beginner", "Intermediate", "Advance"];
 
   return (
     <section className={styles.add_course_setting}>
@@ -101,6 +115,32 @@ const CourseSetting: FC<{
               rows={3}
               placeholder="A brief description about the course"
             />
+          </Form.Item>
+
+          <Form.Item
+            name="course_difficulty"
+            label="Difficulty level"
+            rules={[
+              {
+                required: true,
+                message: "Required difficulty level",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Choose Difficulty level"
+              onChange={(e) => {
+                form.setFieldValue("course_difficulty", e);
+              }}
+            >
+              {courseDifficulty.map((difficulty, i) => {
+                return (
+                  <Select.Option key={i} value={`${difficulty}`}>
+                    {difficulty}
+                  </Select.Option>
+                );
+              })}
+            </Select>
           </Form.Item>
         </div>
         <div className={styles.course_thumbnails}>

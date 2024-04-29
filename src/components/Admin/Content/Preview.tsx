@@ -93,7 +93,7 @@ const Preview: FC<{
               <Label
                 title={res.name}
                 icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-                time={res.contentType === "Video" ? `${res.video?.videoDuration} min` : `${res.daysToSubmit} days`}
+                time={`${res.video?.videoDuration} min`}
                 onRender={setRender}
                 resourceId={res.resourceId}
                 render={render}
@@ -105,7 +105,6 @@ const Preview: FC<{
       showArrow: false,
     };
   });
-
   return (
     <section className={styles.preview_container}>
       <Space direction="vertical">
