@@ -88,7 +88,7 @@ const LearnCoursesPage: NextPage = () => {
         Number(router.query.courseId),
         (result) => {
           setCourseDetail(result.courseDetails);
-          setVideoUrl(result.courseDetails.videoUrl);
+          setVideoUrl(result.courseDetails.tvUrl);
           setChapterList(result.courseDetails.chapters.filter((c) => c.state === "ACTIVE"));
           setCourseType(result.courseDetails.courseType);
         },

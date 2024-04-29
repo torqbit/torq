@@ -16,6 +16,7 @@ import ProgramService from "@/services/ProgramService";
 import {
   ChapterDetail,
   CourseAPIResponse,
+  CourseData,
   IVideoLesson,
   UploadVideoObjectType,
   UploadedResourceDetail,
@@ -72,13 +73,7 @@ const AddCourseForm: FC = () => {
   const [uploadVideo, setUploadVideo] = useState<VideoInfo>();
   const [courseThumbnail, setCourseThumbnail] = useState<string>();
 
-  const [courseData, setCourseData] = useState<{
-    name: string;
-    description: string;
-    expiryInDays: number;
-    chapters: ChapterDetail[];
-    difficultyLevel?: courseDifficultyType;
-  }>({
+  const [courseData, setCourseData] = useState<CourseData>({
     name: "",
     description: "",
     expiryInDays: 365,
@@ -543,7 +538,14 @@ const AddCourseForm: FC = () => {
     {
       key: "3",
       label: "Preview",
-      children: <Preview uploadVideo={uploadVideo} chapter={courseData.chapters} />,
+      children: (
+        <Preview
+          uploadVideo={uploadVideo}
+          chapter={courseData.chapters}
+          courseDetail={courseData}
+          addContentPreview={true}
+        />
+      ),
     },
   ];
 
@@ -573,6 +575,8 @@ const AddCourseForm: FC = () => {
           setCourseData({
             ...courseData,
             expiryInDays: result.courseDetails.expiryInDays,
+            name: result.courseDetails.name,
+            description: result.courseDetails.description,
             chapters: result.courseDetails.chapters,
             difficultyLevel: result.courseDetails.difficultyLevel,
           });
