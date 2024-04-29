@@ -478,7 +478,10 @@ const AddCourseForm: FC = () => {
   };
 
   const onPublishCourse = (state: string) => {
-    if (courseData.chapters.length > 0 && courseData.chapters[0].resource.length >= 2) {
+    if (
+      courseData.chapters.length > 0 &&
+      courseData.chapters[0].resource.filter((r) => r.state === "ACTIVE").length >= 2
+    ) {
       ProgramService.updateCourseState(
         Number(router.query.id),
         state,

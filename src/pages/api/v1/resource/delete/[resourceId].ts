@@ -33,10 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             courseId: Number(courseId),
           },
           data: {
-            totalResources:
-              totalCourseLessons?.totalResources && totalCourseLessons?.totalResources > 0
-                ? totalCourseLessons?.totalResources - 1
-                : 0,
+            totalResources: totalCourseLessons?.totalResources && totalCourseLessons?.totalResources - 1,
           },
         });
       }
