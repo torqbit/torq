@@ -130,7 +130,7 @@ model Course {
   coursePrice       Float?                @default(0)
   sequenceId        Int?
   expiryInDays      Int                   @default(365)
-  courseDifficulty  courseDifficultyType?
+  difficultyLevel   courseDifficultyType?
   durationInMonths  Int                   @default(12)
   totalResources    Int                   @default(0)
   state             StateType             @default(DRAFT)

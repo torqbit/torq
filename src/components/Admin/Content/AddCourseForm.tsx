@@ -77,7 +77,7 @@ const AddCourseForm: FC = () => {
     description: string;
     expiryInDays: number;
     chapters: ChapterDetail[];
-    courseDifficulty?: courseDifficultyType;
+    difficultyLevel?: courseDifficultyType;
   }>({
     name: "",
     description: "",
@@ -118,7 +118,7 @@ const AddCourseForm: FC = () => {
           tvUrl: result.courseDetails.videoUrl || "",
           tvProviderId: result.courseDetails.tvProviderId || "",
           courseId: Number(router.query.id),
-          courseDifficulty: form.getFieldsValue().course_difficulty,
+          difficultyLevel: form.getFieldsValue().course_difficulty,
         };
 
         ProgramService.updateCourse(
@@ -568,13 +568,13 @@ const AddCourseForm: FC = () => {
           form.setFieldValue("course_name", result.courseDetails.name);
           form.setFieldValue("course_description", result.courseDetails.description);
           form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
-          form.setFieldValue("course_difficulty", result.courseDetails.courseDifficulty);
+          form.setFieldValue("course_difficulty", result.courseDetails.difficultyLevel);
 
           setCourseData({
             ...courseData,
             expiryInDays: result.courseDetails.expiryInDays,
             chapters: result.courseDetails.chapters,
-            courseDifficulty: result.courseDetails.courseDifficulty,
+            difficultyLevel: result.courseDetails.difficultyLevel,
           });
           setCourseThumbnail(result.courseDetails.thumbnail);
           setUploadVideo({

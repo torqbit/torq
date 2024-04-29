@@ -39,7 +39,7 @@ export interface CourseInfo {
   description: string;
   expiryInDays: number;
   durationInMonths: number;
-  courseDifficulty: courseDifficultyType;
+  difficultyLevel: courseDifficultyType;
   name: string;
   programId: number;
   state: string;
