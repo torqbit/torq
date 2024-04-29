@@ -19,7 +19,13 @@ export interface CourseAPIResponse {
   message: string;
   courseDetails: CourseInfo;
 }
-
+export interface CourseData {
+  name: string;
+  description: string;
+  expiryInDays: number;
+  chapters: ChapterDetail[];
+  difficultyLevel?: courseDifficultyType;
+}
 export interface CourseInfo {
   about: string;
   authorId: number;

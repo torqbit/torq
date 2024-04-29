@@ -2,7 +2,7 @@ import SvgIcons from "@/components/SvgIcons";
 import { IResourceDetail } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
-import { ChapterDetail, CourseInfo, VideoInfo } from "@/types/courses/Course";
+import { ChapterDetail, CourseData, CourseInfo, VideoInfo } from "@/types/courses/Course";
 import { Button, Collapse, Flex, Space, Tag } from "antd";
 import Link from "next/link";
 
@@ -59,14 +59,24 @@ const Label: FC<{
 };
 
 const Preview: FC<{
-  courseDetail?: CourseInfo;
+  courseDetail?: CourseInfo | CourseData;
+  addContentPreview?: boolean;
   videoUrl?: string;
   uploadVideo?: VideoInfo;
   chapter: ChapterDetail[];
   enrolled?: boolean;
   isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
-}> = ({ uploadVideo, chapter, videoUrl, onEnrollCourse, enrolled, isCourseCompleted, courseDetail }) => {
+}> = ({
+  uploadVideo,
+  chapter,
+  addContentPreview,
+  videoUrl,
+  onEnrollCourse,
+  enrolled,
+  isCourseCompleted,
+  courseDetail,
+}) => {
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
@@ -86,7 +96,7 @@ const Preview: FC<{
         />
       ),
       children: content.resource
-        .filter((r) => r.state === "ACTIVE")
+        .filter((r) => (addContentPreview ? r.state === "ACTIVE" || r.state === "DRAFT" : r.state === "ACTIVE"))
         .map((res: IResourceDetail, i: any) => {
           return (
             <div className={styles.resContainer}>
@@ -109,7 +119,7 @@ const Preview: FC<{
     <section className={styles.preview_container}>
       <Space direction="vertical">
         <div style={{ fontSize: 20 }}>
-          {courseDetail && (
+          {courseDetail && !addContentPreview && (
             <Flex>
               <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
               <div>{courseDetail.name}</div>
@@ -117,19 +127,18 @@ const Preview: FC<{
           )}
         </div>
         <div className={styles.video_container}>
-          {uploadVideo?.videoUrl ||
-            (videoUrl && (
-              <iframe
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  outline: "none",
-                  border: "none",
-                }}
-                src={videoUrl}
-              ></iframe>
-            ))}
+          {
+            <iframe
+              style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                outline: "none",
+                border: "none",
+              }}
+              src={videoUrl ? videoUrl : uploadVideo?.videoUrl}
+            ></iframe>
+          }
           <div className={styles.video_player_info}>
             <Space direction="vertical">
               <h2>{courseDetail?.name}</h2>
