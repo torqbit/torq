@@ -82,7 +82,9 @@ const CourseSetting: FC<{
               type="primary"
               htmlType="submit"
               className={styles.save_setting_btn}
-              disabled={courseTrailerUploading || uploadVideo?.state == "PROCESSING"}
+              disabled={
+                courseTrailerUploading || uploadVideo?.state == "PROCESSING" || !uploadVideo?.videoUrl || !courseBanner
+              }
             >
               Save Settings <img style={{ marginLeft: 5 }} src="/img/program/arrow-right.png" alt="arrow" />
             </Button>
@@ -212,9 +214,6 @@ const CourseSetting: FC<{
                 showUploadList={false}
                 style={{ width: 118, height: 118 }}
                 beforeUpload={(file) => {
-                  if (courseBanner) {
-                    onDeleteThumbnail(courseBanner, "course-banners");
-                  }
                   uploadFile(file, `${form.getFieldsValue().course_name}_banner`);
                 }}
                 onChange={handleChange}

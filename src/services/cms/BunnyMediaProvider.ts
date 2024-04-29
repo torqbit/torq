@@ -177,7 +177,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
         videoId: videoData.guid as string,
         thumbnail: `https://${this.streamCDNHostname}/${videoData.guid}/${videoData.thumbnailFileName}`,
         previewUrl: `https://${this.streamCDNHostname}/${videoData.guid}/preview.webp`,
-        videoUrl: `https://iframe.mediadelivery.net/play/${this.libraryId}/${videoData.guid}`,
+        videoUrl: `https://iframe.mediadelivery.net/embed/${this.libraryId}/${videoData.guid}`,
         mediaProviderName: "bunny",
         state: state as VideoState,
         videoDuration: videoData.length,
