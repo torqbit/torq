@@ -72,6 +72,7 @@ export class ContentManagementService {
       });
     }
     if (objectType == "course") {
+      console.log(videoResponse);
       await prisma.course.update({
         where: {
           courseId: id,
