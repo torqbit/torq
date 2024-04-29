@@ -599,7 +599,7 @@ const AddCourseForm: FC = () => {
         <div className={styles.add_course_header}>
           <div className={styles.left_icon}>
             <div className={styles.cancel_add_course}>
-              <Link href="content">{SvgIcons.xMark}</Link>
+              <Link href="/admin/content">{SvgIcons.xMark}</Link>
             </div>
             <h3>EDIT COURSE</h3>
           </div>
