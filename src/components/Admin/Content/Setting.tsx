@@ -25,7 +25,6 @@ const CourseSetting: FC<{
   onDiscard: () => void;
   form: FormInstance;
   onSubmit: () => void;
-  onDeleteVideo: (id: string) => void;
   uploadFile: (file: any, title: string) => void;
   onRefresh: () => void;
   onUploadTrailer: (file: RcFile, title: string) => void;
@@ -44,7 +43,6 @@ const CourseSetting: FC<{
   onUploadTrailer,
   uploadFile,
   onDiscard,
-  onDeleteVideo,
   courseBannerUploading,
   courseTrailerUploading,
   uploadVideo,
@@ -158,9 +156,6 @@ const CourseSetting: FC<{
                 disabled={courseTrailerUploading || uploadVideo?.state == "PROCESSING"}
                 showUploadList={false}
                 beforeUpload={(file) => {
-                  if (uploadVideo && uploadVideo.videoUrl) {
-                    onDeleteVideo(uploadVideo.videoUrl);
-                  }
                   onUploadTrailer(file, `${form.getFieldsValue().course_name}_trailer`);
                 }}
                 onChange={handleChange}

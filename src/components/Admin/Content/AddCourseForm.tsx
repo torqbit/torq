@@ -85,7 +85,6 @@ const AddCourseForm: FC = () => {
     ProgramService.getCourses(
       Number(router.query.id),
       (result: CourseAPIResponse) => {
-        onDeleteVideo(result.courseDetails.videoUrl);
         ProgramService.deleteCourse(
           Number(router.query.id),
           (result) => {
@@ -413,13 +412,6 @@ const AddCourseForm: FC = () => {
     }
   };
 
-  const onDeleteVideo = (id: string) => {
-    ProgramService.deleteVideo(
-      id,
-      (result) => {},
-      (error) => {}
-    );
-  };
   const uploadFile = async (file: any, title: string) => {
     if (file) {
       setLoading(true);
@@ -509,7 +501,6 @@ const AddCourseForm: FC = () => {
           onUploadTrailer={onUploadTrailer}
           uploadFile={uploadFile}
           onDeleteThumbnail={onDeleteThumbnail}
-          onDeleteVideo={onDeleteVideo}
           uploadVideo={uploadVideo}
           courseBannerUploading={courseBannerUploading}
           courseTrailerUploading={courseTrailerUploading}
@@ -667,7 +658,6 @@ const AddCourseForm: FC = () => {
           onUploadVideo={onUploadVideo}
           formData={videoForm}
           setResourceDrawer={setResourceDrawer}
-          onDeleteVideo={onDeleteVideo}
           showResourceDrawer={showResourceDrawer}
           videoUploading={resourceVideoUploading}
         />

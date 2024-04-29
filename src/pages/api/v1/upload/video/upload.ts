@@ -90,7 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         const uploadResponse = await cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
         if (localPath != "") {
-          console.log(`deleting the file - ${path}`);
+          console.log(`deleting the file - ${localPath}`);
           fs.unlinkSync(localPath);
         } else {
           console.log(`unable to delete video : ${localPath} . response ${uploadResponse?.statusCode}`);

@@ -12,7 +12,7 @@ import { VideoState } from "@prisma/client";
 export interface ContentServiceProvider {
   name: string;
   uploadVideo(title: string, file: Buffer): Promise<VideoAPIResponse>;
-  trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string>;
+  trackVideo(videoInfo: VideoInfo, onCompletion: (videoLen: number) => Promise<string>): Promise<string>;
   uploadFile(name: string, file: Buffer): Promise<FileUploadResponse>;
   deleteVideo(videoProviderId: string): Promise<BasicAPIResponse>;
 }
@@ -57,13 +57,14 @@ export class ContentManagementService {
           mediaProvider: csp.name,
         },
       });
-      csp.trackVideo(videoResponse.video, async () => {
+      csp.trackVideo(videoResponse.video, async (videoLen: number) => {
         const updatedVideo = prisma.video.update({
           where: {
             id: newVideo.id,
           },
           data: {
             state: "READY",
+            videoDuration: videoLen,
           },
         });
         const r = await updatedVideo;

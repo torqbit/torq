@@ -117,7 +117,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     times: number,
     interval: number,
     toTry: () => Promise<Response>,
-    onCompletion: () => Promise<string>
+    onCompletion: (len: number) => Promise<string>
   ): Promise<any> {
     if (times < 1) throw new Error(`Bad argument: 'times' must be greater than 0, but ${times} was received.`);
     let attemptCount: number;
@@ -125,12 +125,11 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       try {
         const result = await toTry();
         let vresult = await result.json();
-        console.log(`video progress status: ${vresult.status}`);
         if (vresult.status != 4) {
           if (attemptCount < times) await this.delay(interval);
           else return Promise.reject(result);
         } else {
-          return onCompletion();
+          return onCompletion(vresult.length);
         }
       } catch (error) {
         console.log(`failed due to : ${error}`);
@@ -139,7 +138,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     }
   }
 
-  trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string> {
+  trackVideo(videoInfo: VideoInfo, onCompletion: (videoLen: number) => Promise<string>): Promise<string> {
     return this.tryNTimes(
       60,
       5,

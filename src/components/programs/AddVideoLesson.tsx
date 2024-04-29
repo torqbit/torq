@@ -29,7 +29,6 @@ import { IVideoLesson, UploadedResourceDetail, VideoInfo } from "@/types/courses
 
 const AddVideoLesson: FC<{
   formData: FormInstance;
-  onDeleteVideo: (id: string) => void;
   isEdit: boolean;
   videoLesson: IVideoLesson;
   setVideoLesson: React.Dispatch<React.SetStateAction<IVideoLesson>>;
@@ -52,7 +51,6 @@ const AddVideoLesson: FC<{
   isEdit,
   onDeleteResource,
   formData,
-  onDeleteVideo,
   onUploadVideo,
   currResId,
 }) => {
@@ -168,9 +166,6 @@ const AddVideoLesson: FC<{
                       className={"resource_video_uploader"}
                       showUploadList={false}
                       beforeUpload={(file) => {
-                        if (videoLesson?.video?.videoUrl) {
-                          onDeleteVideo(videoLesson?.video?.videoUrl);
-                        }
                         currResId && onUploadVideo(file, formData.getFieldsValue().name, currResId);
                       }}
                     >
