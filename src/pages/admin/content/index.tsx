@@ -164,21 +164,26 @@ const Content = (props: IProps) => {
   }, [coursesAuthored.fetchCourses]);
 
   const onCourseUpdate = (courseId: number, newState: string) => {
-    ProgramService.updateCourseState(
-      courseId,
-      newState,
-      (res) => {
-        if (res.success) {
-          message.success(`Course status has been updated`);
-          setCoursesAuthored({ ...coursesAuthored, fetchCourses: true });
-        } else {
-          message.error(`Course status update failed due to ${res.error}`);
+    const currCourse = coursesAuthored.courses?.find((c) => c.courseId === courseId);
+    if (currCourse && currCourse?.totalResources >= 2) {
+      ProgramService.updateCourseState(
+        courseId,
+        newState,
+        (res) => {
+          if (res.success) {
+            message.success(`Course status has been updated`);
+            setCoursesAuthored({ ...coursesAuthored, fetchCourses: true });
+          } else {
+            message.error(`Course status update failed due to ${res.error}`);
+          }
+        },
+        (err) => {
+          message.error(`Course status update failed due to ${err}`);
         }
-      },
-      (err) => {
-        message.error(`Course status update failed due to ${err}`);
-      }
-    );
+      );
+    } else {
+      message.error("Minimum two published lessons are required to publish the course");
+    }
   };
 
   const items: TabsProps["items"] = [

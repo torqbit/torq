@@ -15,6 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (findResource) {
+
       const videoLesson = await prisma.video.findUnique({
         where: {
           resourceId: Number(resourceId),
@@ -23,6 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           providerVideoId: true,
         },
       });
+
 
       if (videoLesson) {
         const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
