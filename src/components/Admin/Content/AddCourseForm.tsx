@@ -90,11 +90,16 @@ const AddCourseForm: FC = () => {
           Number(router.query.id),
           (result) => {
             message.success(result.message);
+            router.push(`/admin/content`);
           },
-          (error) => {}
+          (error) => {
+            message.error(error);
+          }
         );
       },
-      (error) => {}
+      (error) => {
+        message.error(error);
+      }
     );
   };
 

@@ -144,7 +144,7 @@ const Content = (props: IProps) => {
         }
       },
       (err) => {
-        message.error(`Course deletion failed due to ${err}`);
+        message.error(err);
       }
     );
   };
