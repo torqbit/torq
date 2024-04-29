@@ -1,4 +1,10 @@
-import { FileUploadResponse, UploadVideoObjectType, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
+import {
+  BasicAPIResponse,
+  FileUploadResponse,
+  UploadVideoObjectType,
+  VideoAPIResponse,
+  VideoInfo,
+} from "@/types/courses/Course";
 import { BunnyConfig, BunnyMediaProvider, GetVideo } from "./BunnyMediaProvider";
 import prisma from "@/lib/prisma";
 import { VideoState } from "@prisma/client";
@@ -8,6 +14,7 @@ export interface ContentServiceProvider {
   uploadVideo(title: string, file: Buffer): Promise<VideoAPIResponse>;
   trackVideo(videoInfo: VideoInfo, onCompletion: () => Promise<string>): Promise<string>;
   uploadFile(name: string, file: Buffer): Promise<FileUploadResponse>;
+  deleteVideo(videoProviderId: string): Promise<BasicAPIResponse>;
 }
 
 export class ContentManagementService {
@@ -94,5 +101,37 @@ export class ContentManagementService {
 
   uploadFile = (fileName: string, file: Buffer, csp: ContentServiceProvider) => {
     return csp.uploadFile(fileName, file);
+  };
+
+  deleteVideo = async (
+    videoProviderId: string,
+    objectId: number,
+    objectType: UploadVideoObjectType,
+    csp: ContentServiceProvider
+  ) => {
+    const deleteResponse = await csp.deleteVideo(videoProviderId);
+    console.log(deleteResponse, `deleting ${videoProviderId}`);
+    if (deleteResponse.success && objectType == "lesson") {
+      const videoDel = await prisma.video.delete({
+        where: {
+          resourceId: objectId,
+          providerVideoId: videoProviderId,
+        },
+      });
+    } else if (deleteResponse.success && objectType == "course") {
+      await prisma.course.update({
+        where: {
+          courseId: objectId,
+        },
+        data: {
+          tvProviderId: undefined,
+          tvProviderName: undefined,
+          tvUrl: undefined,
+          tvThumbnail: undefined,
+          tvState: undefined,
+        },
+      });
+    }
+    return deleteResponse;
   };
 }
