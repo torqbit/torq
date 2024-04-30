@@ -74,11 +74,6 @@ export interface BasicAPIResponse {
   message: string;
 }
 
-export interface DeleteFileAPIResponse {
-  HttpCode: number;
-  message: string;
-}
-
 export interface VideoInfo {
   videoId: string;
   thumbnail: string;
