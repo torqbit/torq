@@ -138,7 +138,13 @@ const Courses: FC<{
           </div>
         </section>
       ) : (
-        <h1 className={styles.course_content}>No Courses Availble</h1>
+        <>
+          <div className={styles.no_course_found}>
+            <img src="/img/common/empty.svg" alt="" />
+            <h2>No Courses were found</h2>
+            <p>Contact support team for more information.</p>
+          </div>
+        </>
       )}
     </Layout2>
   );

@@ -25,6 +25,23 @@
   }
 }
 
+//no courses found
+
+.no_course_found {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  h4 {
+    // font-size: 20px;
+  }
+  p {
+    // font-size: 15px;
+    color: var(--font-secondary);
+  }
+}
+
 // Guides Page styles
 .guide_wrapper {
   p {
