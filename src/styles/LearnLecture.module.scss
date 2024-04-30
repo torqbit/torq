@@ -284,6 +284,7 @@
   margin-top: 15px;
   display: flex;
   justify-content: space-between;
+
   .comment {
     flex-basis: 94%;
     .comment_body {
@@ -292,7 +293,7 @@
       border-top-left-radius: 0px;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
-      min-height: 80px;
+
       background-color: var(--bg-secondary);
       .tag_commented {
         padding: 5px 10px 15px 10px;
@@ -304,9 +305,8 @@
       }
       .comment_action_btns {
         position: absolute;
-        top: 5px;
+        top: -25px;
         right: 10px;
-        display: none;
       }
       &:hover {
         .comment_action_btns {
@@ -339,6 +339,7 @@
         // padding: 5px 5px 10px 5px;
         .comment_text_wrapper {
           padding: 10px;
+          height: 100%;
         }
         border-radius: 8px;
         white-space: pre-wrap;

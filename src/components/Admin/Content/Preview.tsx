@@ -1,5 +1,6 @@
 import SvgIcons from "@/components/SvgIcons";
 import { IResourceDetail } from "@/lib/types/learn";
+import { convertSecToHourandMin } from "@/pages/admin/content";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
 import { ChapterDetail, CourseData, CourseInfo, VideoInfo } from "@/types/courses/Course";
@@ -98,12 +99,13 @@ const Preview: FC<{
       children: content.resource
         .filter((r) => (addContentPreview ? r.state === "ACTIVE" || r.state === "DRAFT" : r.state === "ACTIVE"))
         .map((res: IResourceDetail, i: any) => {
+          const duration = convertSecToHourandMin(res.video?.videoDuration);
           return (
             <div className={styles.resContainer}>
               <Label
                 title={res.name}
                 icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-                time={`${res.video?.videoDuration} min`}
+                time={duration}
                 onRender={setRender}
                 resourceId={res.resourceId}
                 render={render}

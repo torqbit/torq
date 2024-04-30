@@ -1,7 +1,7 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import styles from "../../styles/Sidebar.module.scss";
 
-import { Avatar, Badge, Button, Dropdown, Layout, Menu, MenuProps, Modal, Space, message } from "antd";
+import { Avatar, Dropdown, Layout, Menu, MenuProps, Modal, Space } from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -9,126 +9,15 @@ import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import { IResponse, getFetch } from "@/services/request";
-import NotificationService from "@/services/NotificationService";
 
 const { Sider } = Layout;
 
-const Sidebar: FC = () => {
+const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
   const [collapsed, setCollapsed] = React.useState(false);
-
-  const [isNewNotifi, setNewNotifi] = React.useState(false);
-
   const { data: user } = useSession();
   const { globalState, dispatch } = useAppContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newNotificationLength, setNotificationLength] = useState<number>(0);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
   const [modal, contextWrapper] = Modal.useModal();
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  // const getNewNotification = async (userId: number) => {
-  //   try {
-  //     NotificationService.checkNotification(
-  //       userId,
-  //       (result) => {
-  //         console.log(result, "side");
-  //         setNewNotifi(result.isNew);
-  //         setNotificationLength(result.length);
-  //       },
-  //       (error) => {
-  //         message.error(error);
-  //       }
-  //     );
-  //   } catch (err: any) {
-  //     message.error(err);
-  //   }
-  // };
-
-  const siderMenu: MenuProps["items"] = [
-    {
-      type: "group",
-      label: "LEARN",
-      key: "group1",
-    },
-    {
-      label: <Link href="/dashboard">Dashboard</Link>,
-      key: "dashboard",
-      icon: SvgIcons.dashboard,
-    },
-    {
-      label: <Link href="/courses">Courses</Link>,
-      key: "courses",
-      icon: SvgIcons.courses,
-    },
-    {
-      label: <Link href="/guides">Guides</Link>,
-      key: "guides",
-      icon: SvgIcons.guides,
-    },
-    {
-      label: <Link href="/quizzes">Quizzes</Link>,
-      key: "quiz",
-      icon: SvgIcons.quiz,
-    },
-    {
-      type: "group",
-      label: "ACCOUNT",
-      key: "group",
-    },
-    {
-      label: <Link href="/setting">Setting</Link>,
-      key: "setting",
-      icon: SvgIcons.setting,
-    },
-    {
-      label: <Link href="/torq/notifications">Notifications</Link>,
-      key: "notification",
-      icon: (
-        <Badge
-          color="blue"
-          count={globalState?.notifications?.length}
-          style={{ fontSize: 10, paddingTop: 1.5 }}
-          size="small"
-        >
-          {SvgIcons.nottification}
-        </Badge>
-      ),
-    },
-    {
-      type: "group",
-      label: "ADMINISTRATION",
-      key: "administration",
-    },
-    {
-      label: <Link href="/admin/users">Users</Link>,
-      key: "users",
-      icon: SvgIcons.userGroup,
-    },
-    {
-      label: <Link href="/admin/content">Content</Link>,
-      key: "content",
-      icon: SvgIcons.content,
-    },
-    {
-      label: <Link href="/admin/config">Configurations</Link>,
-
-      key: "configuration",
-      icon: SvgIcons.configuration,
-    },
-  ];
-
-  // React.useEffect(() => {
-  //   if (user?.id) {
-  //     getNewNotification(user.id);
-  //   }
-  // }, [user?.id]);
 
   return (
     <Sider
@@ -162,7 +51,7 @@ const Sidebar: FC = () => {
           defaultSelectedKeys={["dashboard"]}
           selectedKeys={[globalState.selectedSiderMenu]}
           style={{ width: "100%", borderInlineEnd: "none" }}
-          items={siderMenu}
+          items={menu}
         />
       </div>
       <Space
