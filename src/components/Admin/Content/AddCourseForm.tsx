@@ -428,6 +428,8 @@ const AddCourseForm: FC = () => {
       formData.append("title", name);
       formData.append("dir", "/courses/banners/");
 
+      courseThumbnail && formData.append("existingFilePath", courseThumbnail);
+
       const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
       if (!postRes.ok) {
         setLoading(false);

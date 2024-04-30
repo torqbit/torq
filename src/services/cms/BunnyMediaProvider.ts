@@ -1,6 +1,12 @@
 import { VideoState } from "@prisma/client";
 import { ContentServiceProvider } from "./ContentManagementService";
-import { BasicAPIResponse, FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
+import {
+  BasicAPIResponse,
+  DeleteFileAPIResponse,
+  FileUploadResponse,
+  VideoAPIResponse,
+  VideoInfo,
+} from "@/types/courses/Course";
 export type GetVideo = {
   guid: string;
   libraryId: number;
@@ -71,7 +77,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       fullPath = `${path.substring(0, path.length - 1)}${path}`;
     }
     fullPath = `${this.mediaPath}${path}`;
-    return `https://storage.bunnycdn.com/${this.storageZone}/${fullPath}/${file}`;
+    return `https://storage.bunnycdn.com/${this.storageZone}/${fullPath}`;
   }
 
   delay(time: number): Promise<void> {
@@ -195,7 +201,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
       statusCode: uploadRes.HttpCode,
       message: uploadRes.Message,
       success: uploadRes.HttpCode == 201,
-      fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${fullPath}/${name}` : "",
+      fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${fullPath}` : "",
     };
   }
 
@@ -204,6 +210,24 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     const response = await fetch(deleteUrl, this.getDeleteOption(this.accessKey));
     if (response.ok) {
       return (await response.json()) as BasicAPIResponse;
+    } else {
+      return {
+        statusCode: response.status,
+        message: response.statusText,
+        success: false,
+      };
+    }
+  }
+
+  async deleteFile(filePath: string): Promise<BasicAPIResponse> {
+    const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${filePath}`;
+    const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
+    if (response.ok) {
+      return {
+        statusCode: response.status,
+        message: response.statusText,
+        success: true,
+      } as BasicAPIResponse;
     } else {
       return {
         statusCode: response.status,
