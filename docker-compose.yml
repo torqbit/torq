@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  web:
+    image: torqbit/torq:0.1.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=mysql://root:torq123@db.torqbit.com/torqdb
+      - GOOGLE_ID=799867194815-415l8muo29a27e2els66gnbgr0e4pbpv.apps.googleusercontent.com
+      - GOOGLE_SECRET=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
+      - GITHUB_ID=375e4bedf65c010dbe41
+      - GITHUB_SECRET=238f9a3e0354fbb0736647ac7f7038410332e936
+      - NEXT_PUBLIC_SECRET=d090c4d9bea3f1076d6ebc47460d0e0988a9924ddfa1e8691cbbf28e3f4638cd
+      - JWT_SECRET=uPijyPl163ihk570eXbQrNMnKW4
+      - NEXTAUTH_URL=http://localhost:3000
+      - ADMIN_EMAIL=shad.amezng@gmail.com
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    hostname: db.torqbit.com
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: torq123
+      MYSQL_DATABASE: torqdb
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
