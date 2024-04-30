@@ -134,7 +134,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
         }
       } catch (error) {
         console.log(`failed due to : ${error}`);
-        console.log("this will be retried");
       }
     }
   }
@@ -216,7 +215,6 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   async deleteFile(filePath: string): Promise<BasicAPIResponse> {
     const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${filePath}`;
     const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
-    console.log(response, "bunny delete file response");
 
     if (response.ok) {
       return {
