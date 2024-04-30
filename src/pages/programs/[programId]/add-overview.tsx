@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Form, Modal } from "antd";
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
-import AddOverview from "@/components/programs/AddOverview";
 import Header from "@/components/Header/Header";
 import { GetServerSidePropsContext, NextPage } from "next";
 import { getSession } from "next-auth/react";
@@ -60,12 +59,6 @@ const AddOverviewPage = (props: { courseLength: number; userId: number }) => {
     <section>
       {contextWrapper}
       <Header theme={false} onThemeChange={function (): void {}} />
-      <AddOverview
-        programState={programState}
-        onUpdateProgramState={onUpdateProgramState}
-        courseDetail={coursesAvailble}
-        onRefresh={onRefresh}
-      />
     </section>
   );
 };
