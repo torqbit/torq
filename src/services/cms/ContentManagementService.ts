@@ -1,6 +1,5 @@
 import {
   BasicAPIResponse,
-  DeleteFileAPIResponse,
   FileUploadResponse,
   UploadVideoObjectType,
   VideoAPIResponse,

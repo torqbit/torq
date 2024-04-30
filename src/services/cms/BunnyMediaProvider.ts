@@ -1,12 +1,6 @@
 import { VideoState } from "@prisma/client";
 import { ContentServiceProvider } from "./ContentManagementService";
-import {
-  BasicAPIResponse,
-  DeleteFileAPIResponse,
-  FileUploadResponse,
-  VideoAPIResponse,
-  VideoInfo,
-} from "@/types/courses/Course";
+import { BasicAPIResponse, FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
 export type GetVideo = {
   guid: string;
   libraryId: number;
@@ -222,6 +216,8 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   async deleteFile(filePath: string): Promise<BasicAPIResponse> {
     const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${filePath}`;
     const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
+    console.log(response, "bunny delete file response");
+
     if (response.ok) {
       return {
         statusCode: response.status,
