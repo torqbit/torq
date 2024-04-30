@@ -15,6 +15,7 @@ export interface ContentServiceProvider {
   trackVideo(videoInfo: VideoInfo, onCompletion: (videoLen: number) => Promise<string>): Promise<string>;
   uploadFile(name: string, file: Buffer, bannerPath: string): Promise<FileUploadResponse>;
   deleteVideo(videoProviderId: string): Promise<BasicAPIResponse>;
+  deleteFile(filePath: string): Promise<BasicAPIResponse>;
 }
 
 export class ContentManagementService {
@@ -133,5 +134,9 @@ export class ContentManagementService {
       });
     }
     return deleteResponse;
+  };
+
+  deleteFile = (filePath: string, csp: ContentServiceProvider) => {
+    return csp.deleteFile(filePath);
   };
 }
