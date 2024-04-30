@@ -3,7 +3,7 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
-import { bigint } from "zod";
+import { ContentManagementService } from "@/services/cms/ContentManagementService";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -26,6 +26,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           error: "You need to delete the existing lessons, before deleting the course",
         });
       } else {
+        const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+          where: {
+            service_type: "media",
+          },
+        });
+        if (serviceProviderResponse && findCourse.tvProviderId) {
+          const cms = new ContentManagementService();
+          const serviceProvider = cms.getServiceProvider(
+            serviceProviderResponse?.provider_name,
+            serviceProviderResponse?.providerDetail
+          );
+          const deletionResponse = await cms.deleteVideo(
+            findCourse.tvProviderId,
+            Number(courseId),
+            "course",
+            serviceProvider
+          );
+          if (!deletionResponse.success) {
+            throw new Error(`Unable to delete the video due to : ${deletionResponse.message}`);
+          } else {
+            console.log(`The video has been deleted`);
+          }
+        }
         const courseDeleted = await prisma.course.delete({
           where: {
             courseId: Number(courseId),
