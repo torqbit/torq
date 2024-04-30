@@ -4,7 +4,6 @@ import { Button, Modal, Skeleton, Space, Tabs, TabsProps, message } from "antd";
 import { useRouter } from "next/router";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { ICourseDetial } from "@/lib/types/program";
-import CourseView from "./CourseView";
 import { Role } from "@prisma/client";
 
 const ProgramCoursesDetail: FC<{
@@ -144,24 +143,7 @@ const ProgramCoursesDetail: FC<{
                         .map((course, i) => {
                           return (
                             <>
-                              {course.state === "ACTIVE" && (
-                                <div className={styles.courseViewContainer} key={i}>
-                                  <CourseView
-                                    edit={false}
-                                    name={course.name}
-                                    durationInMonths={course.durationInMonths}
-                                    skills={course.skills}
-                                    description={course.description}
-                                    sequenceId={course.sequenceId}
-                                    chapter={course.chapter}
-                                    state={course.state}
-                                    courseId={course.courseId}
-                                    onRefresh={() => {}}
-                                    onUpdateCourse={() => {}}
-                                    onDeleteCourse={() => {}}
-                                  />
-                                </div>
-                              )}
+                              {course.state === "ACTIVE" && <div className={styles.courseViewContainer} key={i}></div>}
                             </>
                           );
                         })}
