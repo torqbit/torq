@@ -421,12 +421,12 @@ const AddCourseForm: FC = () => {
 
   const uploadFile = async (file: any, title: string) => {
     if (file) {
-      setLoading(true);
+      setCourseBannerUploading(true);
       const name = title.replace(/\s+/g, "-");
       const formData = new FormData();
       formData.append("file", file);
       formData.append("title", name);
-      formData.append("dir", "course-banners");
+      formData.append("dir", "/courses/banners/");
 
       const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
       if (!postRes.ok) {

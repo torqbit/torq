@@ -65,12 +65,13 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     return `https://video.bunnycdn.com/library/${libId}/videos/${id}`;
   }
 
-  getUploadFileUrl(file: string) {
-    let path = this.mediaPath;
-    if (path.endsWith("/")) {
-      path = path.substring(0, path.length - 1);
+  getUploadFileUrl(file: string, path: string) {
+    let fullPath = this.mediaPath;
+    if (fullPath.endsWith("/")) {
+      fullPath = `${path.substring(0, path.length - 1)}${path}`;
     }
-    return `https://storage.bunnycdn.com/${this.storageZone}/${path}/${file}`;
+    fullPath = `${this.mediaPath}${path}`;
+    return `https://storage.bunnycdn.com/${this.storageZone}/${fullPath}/${file}`;
   }
 
   delay(time: number): Promise<void> {
@@ -185,16 +186,16 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     };
   }
 
-  async uploadFile(name: string, file: Buffer): Promise<FileUploadResponse> {
-    let uploadFileUrl = this.getUploadFileUrl(name);
+  async uploadFile(name: string, file: Buffer, path: string): Promise<FileUploadResponse> {
+    let uploadFileUrl = this.getUploadFileUrl(name, path);
     const res = await fetch(uploadFileUrl, this.getUploadOption(file, this.storagePassword));
     const uploadRes = await res.json();
-    console.log(uploadRes, "Upload response");
+    const fullPath = `${this.mediaPath}${path}`;
     return {
       statusCode: uploadRes.HttpCode,
       message: uploadRes.Message,
       success: uploadRes.HttpCode == 201,
-      fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${this.mediaPath}/${name}` : "",
+      fileCDNPath: uploadRes.HttpCode == 201 ? `https://${this.connectedCDNHostname}/${fullPath}/${name}` : "",
     };
   }
 
