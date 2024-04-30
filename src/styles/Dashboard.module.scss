@@ -198,6 +198,12 @@
           width: 150px;
           position: relative;
         }
+        right: 50%;
+        .bannerStatus {
+          color: var(--bg-primary);
+          position: absolute;
+          top: 70%;
+        }
       }
 
       .course_info {
@@ -272,8 +278,8 @@
 
           & > span {
             position: absolute;
-            top: 60px;
-            right: 60px;
+            top: 30%;
+            right: 35%;
           }
 
           & > svg {

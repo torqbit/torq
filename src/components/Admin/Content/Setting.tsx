@@ -18,6 +18,7 @@ import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
+import ImgCrop from "antd-img-crop";
 
 const { TextArea } = Input;
 
@@ -206,34 +207,44 @@ const CourseSetting: FC<{
               <p>Upload a photo of 256px x 256px </p>
             </div>
             <div className={styles.video_container}>
-              <Upload
-                name="avatar"
-                listType="picture-card"
-                className={styles.upload__thumbnail}
-                disabled={courseTrailerUploading}
-                showUploadList={false}
-                style={{ width: 118, height: 118 }}
-                beforeUpload={(file) => {
-                  uploadFile(file, `${form.getFieldsValue().course_name}_banner`);
-                }}
-                onChange={handleChange}
-              >
-                {courseBanner ? (
-                  <>
-                    <img style={{ borderRadius: 4, objectFit: "cover", width: 148, height: 148 }} src={courseBanner} />
-                    <Tooltip title="Upload course thumbnail">
-                      <div className={styles.camera_btn_img}>
-                        {courseBannerUploading && courseBanner ? <LoadingOutlined /> : SvgIcons.camera}
-                      </div>
-                    </Tooltip>
-                  </>
-                ) : (
-                  <button style={{ border: 0, background: "none", width: 150, height: 150 }} type="button">
-                    {courseBannerUploading && courseBanner ? <LoadingOutlined /> : SvgIcons.uploadIcon}
-                    <div style={{ marginTop: 8 }}>Upload Image</div>
-                  </button>
-                )}
-              </Upload>
+              <ImgCrop rotationSlider>
+                <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  className={styles.upload__thumbnail}
+                  disabled={courseTrailerUploading}
+                  showUploadList={false}
+                  style={{ width: 118, height: 118 }}
+                  beforeUpload={(file) => {
+                    uploadFile(file, `${form.getFieldsValue().course_name}_banner`);
+                  }}
+                  onChange={handleChange}
+                >
+                  {courseBanner ? (
+                    <>
+                      <img
+                        style={{ borderRadius: 4, objectFit: "cover", width: 148, height: 148 }}
+                        src={courseBanner}
+                      />
+                      <Tooltip title="Upload course thumbnail">
+                        <div className={styles.camera_btn_img}>
+                          {courseBannerUploading && courseBanner ? <LoadingOutlined /> : SvgIcons.camera}
+                        </div>
+                      </Tooltip>
+                      <div className={styles.bannerStatus}>{courseBannerUploading && "Uploading"}</div>
+                    </>
+                  ) : (
+                    <button style={{ border: 0, background: "none", width: 150, height: 150 }} type="button">
+                      {courseBannerUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                      {!courseBannerUploading ? (
+                        <div style={{ marginTop: 8 }}>Upload Image</div>
+                      ) : (
+                        <div style={{ color: "#000" }}>{courseBannerUploading && "Uploading"}</div>
+                      )}
+                    </button>
+                  )}
+                </Upload>
+              </ImgCrop>
             </div>
           </div>
         </div>

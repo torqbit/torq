@@ -30,10 +30,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (files.file) {
       let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
+      const dir = fields.dir[0];
+
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
       const fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
+      const bannerPath = `${dir}${fullName}`;
       //const path = await saveToDir(fullName, sourcePath);
       const fileUploadResponse = await saveToDir(fullName, sourcePath)
         .then((v) => {
@@ -49,14 +52,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             })
             .then((provider: any) => {
               const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-              return cms.uploadFile(fullName, fileBuffer, serviceProvider);
+              return cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
             });
         });
 
       if (path != "" && fileUploadResponse?.statusCode) {
         console.log(`deleting the file: ${path}`);
         fs.unlinkSync(path);
-      } 
+      }
       return res.status(fileUploadResponse?.statusCode || 200).json({ ...fileUploadResponse });
     }
 
