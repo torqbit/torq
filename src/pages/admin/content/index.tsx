@@ -128,7 +128,7 @@ const EnrolledCourseList: FC<{
     let totalDuration = 0;
     course.chapters?.forEach((chap: any) => {
       chap.resource?.forEach((r: any) => {
-        totalDuration = totalDuration + r.video.videoDuration;
+        totalDuration = totalDuration + r.video?.videoDuration;
       });
     });
 
