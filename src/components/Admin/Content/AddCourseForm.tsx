@@ -155,7 +155,9 @@ const AddCourseForm: FC = () => {
         message.success(result.message);
         onRefresh();
       },
-      (error) => {}
+      (error) => {
+        message.error(error);
+      }
     );
   };
   const onDeleteResource = (id: number) => {
