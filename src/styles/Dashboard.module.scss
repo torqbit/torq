@@ -25,6 +25,23 @@
   }
 }
 
+//no courses found
+
+.no_course_found {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  h4 {
+    // font-size: 20px;
+  }
+  p {
+    // font-size: 15px;
+    color: var(--font-secondary);
+  }
+}
+
 // Guides Page styles
 .guide_wrapper {
   p {
@@ -68,6 +85,10 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      .card_difficulty_level {
+        margin-left: 15px;
+        margin-top: 10px;
+      }
       .card_title {
         padding-top: 10px;
       }
@@ -198,6 +219,12 @@
           width: 150px;
           position: relative;
         }
+        right: 50%;
+        .bannerStatus {
+          color: var(--bg-primary);
+          position: absolute;
+          top: 70%;
+        }
       }
 
       .course_info {
@@ -272,8 +299,8 @@
 
           & > span {
             position: absolute;
-            top: 60px;
-            right: 60px;
+            top: 30%;
+            right: 35%;
           }
 
           & > svg {

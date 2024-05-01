@@ -13,8 +13,9 @@ export interface ContentServiceProvider {
   name: string;
   uploadVideo(title: string, file: Buffer): Promise<VideoAPIResponse>;
   trackVideo(videoInfo: VideoInfo, onCompletion: (videoLen: number) => Promise<string>): Promise<string>;
-  uploadFile(name: string, file: Buffer): Promise<FileUploadResponse>;
+  uploadFile(name: string, file: Buffer, bannerPath: string): Promise<FileUploadResponse>;
   deleteVideo(videoProviderId: string): Promise<BasicAPIResponse>;
+  deleteFile(filePath: string): Promise<BasicAPIResponse>;
 }
 
 export class ContentManagementService {
@@ -72,7 +73,6 @@ export class ContentManagementService {
       });
     }
     if (objectType == "course") {
-      console.log(videoResponse);
       await prisma.course.update({
         where: {
           courseId: id,
@@ -101,8 +101,8 @@ export class ContentManagementService {
     return videoResponse;
   };
 
-  uploadFile = (fileName: string, file: Buffer, csp: ContentServiceProvider) => {
-    return csp.uploadFile(fileName, file);
+  uploadFile = (fileName: string, file: Buffer, path: string, csp: ContentServiceProvider) => {
+    return csp.uploadFile(fileName, file, path);
   };
 
   deleteVideo = async (
@@ -134,5 +134,9 @@ export class ContentManagementService {
       });
     }
     return deleteResponse;
+  };
+
+  deleteFile = (filePath: string, csp: ContentServiceProvider) => {
+    return csp.deleteFile(filePath);
   };
 }

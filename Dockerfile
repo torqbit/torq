@@ -17,8 +17,10 @@ COPY . .
 # Generate the schema & build the Next.js application
 RUN npx prisma generate && yarn build
 
+
 # Expose the port Next.js is running on
 EXPOSE 3000
 
 # Start the Next.js application
+
 CMD ["sh","-c", "npx prisma db push && cat ascii && yarn start "]

@@ -3,12 +3,11 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 
-import path from "path";
-
 import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { saveToDir } from "../video/upload";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
+import url from "url";
 
 export const config = {
   api: {
@@ -28,36 +27,49 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { fields, files } = (await readFieldWithFile(req)) as any;
     if (files.file) {
-      let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
+      const dir = fields.dir[0];
+
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
       const fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
-      //const path = await saveToDir(fullName, sourcePath);
-      const fileUploadResponse = await saveToDir(fullName, sourcePath)
-        .then((v) => {
-          path = v;
-          return fs.promises.readFile(v);
-        })
-        .then((fileBuffer) => {
-          return prisma?.serviceProvider
-            .findFirst({
-              where: {
-                service_type: "media",
-              },
-            })
-            .then((provider: any) => {
-              const serviceProvider = cms.getServiceProvider(provider?.provider_name, provider?.providerDetail);
-              return cms.uploadFile(fullName, fileBuffer, serviceProvider);
-            });
-        });
 
-      if (path != "" && fileUploadResponse?.statusCode) {
-        console.log(`deleting the file: ${path}`);
-        fs.unlinkSync(path);
-      } 
-      return res.status(fileUploadResponse?.statusCode || 200).json({ ...fileUploadResponse });
+      const bannerPath = `${dir}${fullName}`;
+
+      const parseUrl = fields.existingFilePath && url.parse(fields.existingFilePath[0]);
+      const existingFilePath = parseUrl && parseUrl.pathname;
+
+      const localPath = await saveToDir(fullName, sourcePath);
+
+      const fileBuffer = await fs.promises.readFile(localPath);
+      const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+        where: {
+          service_type: "media",
+        },
+      });
+      if (serviceProviderResponse) {
+        const serviceProvider = cms.getServiceProvider(
+          serviceProviderResponse?.provider_name,
+          serviceProviderResponse?.providerDetail
+        );
+        if (existingFilePath) {
+          const deletionResponse = await cms.deleteFile(`${existingFilePath}`, serviceProvider);
+          if (!deletionResponse.success) {
+            throw new Error(`Unable to delete the file due to : ${deletionResponse.message}`);
+          }
+        }
+        const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
+        if (localPath != "") {
+          fs.unlinkSync(localPath);
+        } else {
+          console.log(`unable to delete file : ${localPath} . response ${uploadResponse?.statusCode}`);
+        }
+
+        return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
+      } else {
+        throw new Error("No Media Provder has been configured");
+      }
     }
 
     if (!files) {

@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import ProgramService from "@/services/ProgramService";
 import Link from "next/link";
+import { convertSecToHourandMin } from "@/pages/admin/content";
 
 interface ICourseCard {
   thumbnail: string;
@@ -17,18 +18,25 @@ interface ICourseCard {
   duration: string;
   courseId: number;
   courseType: string;
+  difficulty: string;
 }
 
-const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription, courseId, duration, courseType }) => {
+const CourseCard: FC<ICourseCard> = ({
+  thumbnail,
+  courseName,
+  courseDescription,
+  courseId,
+  duration,
+  courseType,
+  difficulty,
+}) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [enrolled, setEnroll] = useState<string>();
   const [loading, setLoading] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
-  const daysToMonth = Math.floor(Number(duration) / 30);
-  const days = Math.floor(Number(duration) % 30);
-
+  console.log(duration, "dur");
   const onCheckErollment = async () => {
     const res = await getFetch(`/api/course/get-enrolled/${courseId}/checkStatus`);
     const result = (await res.json()) as IResponse;
@@ -96,14 +104,14 @@ const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription,
         </div>
         <div className={styles.card_content}>
           <div>
+            <Tag className={styles.card_difficulty_level}>{difficulty}</Tag>
+
             <h3 className={styles.card_title}>{courseName}</h3>
             <p className={styles.card_description}>{courseDescription}</p>
           </div>
 
           <div className={styles.card_footer}>
-            <div className={styles.course_duration}>
-              {daysToMonth} months {days} days
-            </div>
+            <div className={styles.course_duration}>{duration}</div>
           </div>
         </div>
       </div>
@@ -112,7 +120,7 @@ const CourseCard: FC<ICourseCard> = ({ thumbnail, courseName, courseDescription,
 };
 
 const Courses: FC<{
-  allCourses: Course[];
+  allCourses: any[];
 }> = ({ allCourses }) => {
   const { data: user } = useSession();
 
@@ -123,22 +131,38 @@ const Courses: FC<{
           <h2>Hello {user?.user?.name}</h2>
           <h3>Courses</h3>
           <div className={styles.course_card_wrapper}>
-            {allCourses.map((course: Course, i) => {
+            {allCourses.map((course: any, i) => {
+              let totalDuration = 0;
+              course.chapters.forEach((chap: any) => {
+                console.log(chap, "chap");
+                chap.resource.forEach((r: any) => {
+                  console.log(r, "r");
+                  totalDuration = totalDuration + r.video.videoDuration;
+                });
+              });
+              let duration = convertSecToHourandMin(totalDuration);
               return (
                 <CourseCard
                   thumbnail={course.thumbnail as string}
                   courseName={course.name}
                   courseDescription={course.description}
-                  duration={String(course.expiryInDays)}
+                  duration={String(duration)}
                   courseId={course.courseId}
                   courseType={course.courseType}
+                  difficulty={course.difficultyLevel}
                 />
               );
             })}
           </div>
         </section>
       ) : (
-        <h1 className={styles.course_content}>No Courses Availble</h1>
+        <>
+          <div className={styles.no_course_found}>
+            <img src="/img/common/empty.svg" alt="" />
+            <h2>No Courses were found</h2>
+            <p>Contact support team for more information.</p>
+          </div>
+        </>
       )}
     </Layout2>
   );
