@@ -203,6 +203,7 @@ export const getAllCourses = async (id: number) => {
       state: true,
       thumbnail: true,
       description: true,
+      totalResources: true,
       user: {
         select: {
           name: true,
