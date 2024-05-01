@@ -52,7 +52,7 @@ const LoginPage: NextPage = () => {
         <p>Transform into the most competitive individual who drives changes for the betterment.</p>
       </div>
       <div className={styles.social_login_container}>
-        <img src="/icon/torq-logo.svg" alt="" />
+        <img src="/icon/torq.svg" alt="" />
         <h3>Login to Torq</h3>
 
         <Button
