@@ -28,6 +28,9 @@ export const authOptions: NextAuthOptions = {
       const isEarlyAccess = await prisma.userJoinWaiting.findFirst({
         where: { email: user?.email as string },
       });
+     if (user?.email == process.env.ADMIN_EMAIL) {
+        return true;
+      }
       if (!isEarlyAccess) {
         return "/login?error=AccessDenied";
       }

@@ -16,10 +16,10 @@ RUN yarn install --production
 COPY . .
 
 # Build the Next.js application
-RUN yarn build
+RUN npx prisma generate && yarn build
 
 # Expose the port Next.js is running on
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["yarn", "start"]
+CMD ["sh","-c", "npx prisma db push && cat ascii && yarn start "]
