@@ -23,11 +23,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         : 0;
     };
 
-    const authorId = Number(token?.id);
+    const authorId = token?.id;
     const allRegisterCourse = await prisma.courseRegistration.findMany({
       orderBy: [{ createdAt: "asc" }],
       where: {
-        studentId: Number(authorId),
+        studentId: authorId,
       },
       include: {
         course: {
@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               orderBy: [{ createdAt: "asc" }],
 
               where: {
-                studentId: Number(authorId),
+                studentId: authorId,
               },
             },
           },

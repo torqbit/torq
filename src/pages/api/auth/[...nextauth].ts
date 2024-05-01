@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import getUserByEmail from "@/actions/getUserByEmail";
+import { JWT } from "next-auth/jwt/types";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_PUBLIC_SECRET,
@@ -42,15 +43,16 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async jwt({ token, account, user, profile }) {
+    async jwt({ token, user, account, profile }) {
       const dbUser = await getUserByEmail(token?.email as string);
-
       if (!dbUser) {
         if (account) {
+          console.log(account, "jwt account");
           token.accessToken = account.access_token;
-          token.id = user?.id as number;
+          token.id = user?.id;
           token.role = user?.role;
         }
+        console.log(dbUser, "jwt dbuser");
         return token;
       }
 
@@ -82,6 +84,7 @@ export const authOptions: NextAuthOptions = {
 
   pages: {
     signIn: "/login",
+    newUser: "/dashboard",
   },
 };
 export default NextAuth(authOptions);

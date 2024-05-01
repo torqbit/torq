@@ -61,11 +61,6 @@ export const getTotalVideoLength = async (courseId: number) => {
   });
 
   let totalMin: number[] = [];
-  res?.chapters.map((c, i) =>
-    c.resource.map((r, i) => {
-      totalMin.push(r.video.videoDuration);
-    })
-  );
 
   return totalMin.reduce((total, item) => item + total, 0);
 };

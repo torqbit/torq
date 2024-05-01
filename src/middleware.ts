@@ -14,12 +14,12 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     secret: process.env.NEXT_PUBLIC_SECRET,
     cookieName,
   });
-  const isAuthenticated = !!token;
+  const isAuthenticated = token != null;
   if (!isAuthenticated) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (!token?.isActive) {
+  if (token != null && !token.isActive) {
     return NextResponse.redirect(new URL("/in-active-user", req.url));
   }
 

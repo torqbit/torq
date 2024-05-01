@@ -17,6 +17,11 @@ const LoginPage: NextPage = () => {
   const { data: session, status: sessionStatus } = useSession();
 
   React.useEffect(() => {
+    if (session != null) {
+      console.log(session);
+    } else {
+      console.log("no session present");
+    }
     if (router.query.error) {
       if (router.query.error === "OAuthAccountNotLinked") {
         closeLoading();
@@ -47,7 +52,7 @@ const LoginPage: NextPage = () => {
         <p>Transform into the most competitive individual who drives changes for the betterment.</p>
       </div>
       <div className={styles.social_login_container}>
-        <img src="/icon/torq-logo.svg" alt="" />
+        <img src="/icon/torq.svg" alt="" />
         <h3>Login to Torq</h3>
 
         <Button
@@ -83,6 +88,7 @@ const LoginPage: NextPage = () => {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { req } = ctx;
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+  console.log(user, "user from server side props");
   if (user) {
     return {
       redirect: {

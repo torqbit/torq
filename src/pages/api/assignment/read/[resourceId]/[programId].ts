@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const getRegistraionInfo = await prisma.courseRegistration.findFirst({
       where: {
         courseId: Number(courseId),
-        studentId: Number(token?.id),
+        studentId: token?.id,
       },
     });
 

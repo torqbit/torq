@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const authorId = Number(token?.id);
+    const authorId = token?.id;
 
     const course = await prisma.course.findUnique({
       where: {

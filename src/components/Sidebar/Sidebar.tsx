@@ -39,9 +39,9 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
         <div className={styles.logo}>
           <Link href="/programs">
             {collapsed ? (
-              <Image src="/icon/torq-logo.svg" alt="torq" width={40} height={30} />
+              <Image src="/icon/torq.svg" alt="torq" width={40} height={40} />
             ) : (
-              <Image src="/icon/torq-long-logo.svg" alt="torq" width={130} height={30} />
+              <Image src="/icon/torq-long.svg" alt="torq" width={100} height={40} />
             )}
           </Link>
         </div>

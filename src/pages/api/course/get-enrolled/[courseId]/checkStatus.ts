@@ -17,12 +17,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     secret: process.env.NEXT_PUBLIC_SECRET,
     cookieName,
   });
-  const userId = Number(token?.id);
+  const userId = token?.id;
   const { courseId } = req.query;
   try {
     const course = await prisma.courseRegistration.findFirst({
       where: {
-        studentId: Number(userId),
+        studentId: userId,
         courseId: Number(courseId),
       },
     });
