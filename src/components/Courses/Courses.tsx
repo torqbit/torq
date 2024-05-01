@@ -137,7 +137,7 @@ const Courses: FC<{
                 console.log(chap, "chap");
                 chap.resource.forEach((r: any) => {
                   console.log(r, "r");
-                  totalDuration = totalDuration + r.video.videoDuration;
+                  totalDuration = totalDuration + r.video?.videoDuration;
                 });
               });
               let duration = convertSecToHourandMin(totalDuration);

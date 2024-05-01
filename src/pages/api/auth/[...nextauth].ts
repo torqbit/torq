@@ -44,16 +44,12 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token, account, user, profile }) {
       const dbUser = await getUserByEmail(token?.email as string);
-      console.log(dbUser, "db user");
-      let newRole = user?.role;
-      if (user.email == process.env.ADMIN_EMAIL) {
-        newRole = "AUTHOR";
-      }
+
       if (!dbUser) {
         if (account) {
           token.accessToken = account.access_token;
           token.id = user?.id as number;
-          token.role = newRole;
+          token.role = user?.role;
         }
         return token;
       }
