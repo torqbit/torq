@@ -73,13 +73,12 @@ class DiscussionsSerivice {
   };
 
   getCommentsList = (
-    userId: number,
     resourceId: number,
     pageSize: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    getFetch(`/api/v1/discussions/get-list/${userId}/${resourceId}?pageSize=${pageSize}`).then((result) => {
+    getFetch(`/api/v1/discussions/get-list/${resourceId}?pageSize=${pageSize}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;

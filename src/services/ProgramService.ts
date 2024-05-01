@@ -47,7 +47,7 @@ export type ApiResponse = {
   courses: Course[];
   getCourse: {
     about: string;
-    authorId: number;
+    authorId: string;
     sequenceId: number;
     skills: string[];
     thumbnailId: string;
@@ -613,7 +613,7 @@ class ProgramService {
       expiryInDays?: number;
       videoId?: string;
       programId?: number;
-      authorId?: number | undefined;
+      authorId?: string | undefined;
       sequenceId?: number | undefined;
       courseId: number;
     },

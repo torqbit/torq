@@ -1,15 +1,7 @@
 import { GetServerSidePropsContext } from "next";
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/EnrollCourses.module.scss";
-import {
-  Badge,
-  Button,
-  Progress,
-  Result,
-  Skeleton,
-  Space,
-  message,
-} from "antd";
+import { Badge, Button, Progress, Result, Skeleton, Space, message } from "antd";
 import Layout from "@/components/Layout";
 import getEnrollCourses from "@/actions/getEnrollCourses";
 import { CourseRegistration } from "@prisma/client";
@@ -68,18 +60,12 @@ const CourseListCard: FC<any> = ({ course, userId }) => {
           <img src="/img/courses/play-btn.svg" alt="play-btn" />
         </span>
       </div>
-      <Skeleton
-        loading={loading}
-        style={{ padding: 15 }}
-        paragraph={{ rows: 2, width: "100%" }}
-      >
+      <Skeleton loading={loading} style={{ padding: 15 }} paragraph={{ rows: 2, width: "100%" }}>
         <div className={styles.course_card_details}>
           <h3 className={styles.card_name}>{name}</h3>
           <Space align="center" size={3}>
             <Badge color="gray" status="default" count={totalChapter} />
-            <div className={styles.card_chapter_name}>
-              {truncateString(about, 60)}
-            </div>
+            <div className={styles.card_chapter_name}>{truncateString(about, 60)}</div>
           </Space>
           <Progress
             trailColor="#6f6f6f"
@@ -103,7 +89,7 @@ const CoursesPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [enrollCourses, setEnrollCourses] = useState([]);
 
-  const fetchEnrollCourses = async (userId: number) => {
+  const fetchEnrollCourses = async (userId: string) => {
     try {
       const res = await getFetch(`/api/course/get-enrolled/user/${userId}`);
       const result = (await res.json()) as IResponse;
@@ -131,9 +117,7 @@ const CoursesPage = () => {
             <h2 className={styles.page_title}>Your Courses</h2>
             <section className={styles.course_list}>
               {enrollCourses.map((course: CourseRegistration, i: number) => {
-                return (
-                  <CourseListCard {...course} key={i} userId={session?.id} />
-                );
+                return <CourseListCard {...course} key={i} userId={session?.id} />;
               })}
             </section>
           </>

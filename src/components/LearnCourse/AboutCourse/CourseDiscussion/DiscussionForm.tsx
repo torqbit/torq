@@ -19,7 +19,7 @@ const QAForm: FC<{
   placeholder?: string;
   onRefresh: () => void;
   resourceId: number;
-  toUserId?: number;
+  toUserId?: string;
   parentCommentId?: number;
   tagCommentId?: number;
   updateNotification?: () => void;

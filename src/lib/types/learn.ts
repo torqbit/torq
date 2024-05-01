@@ -16,7 +16,7 @@ export interface Course {
   description: string;
   about: string;
   state: string;
-  authorId: number;
+  authorId: string;
   durationInMonths: number;
   id: number;
   programId: number;
@@ -96,7 +96,7 @@ export interface IProgram {
   aboutProgram: string;
   description: string;
   title: string;
-  authorId: number;
+  authorId: string;
   banner: string;
   programType: string;
   course: [
@@ -105,7 +105,7 @@ export interface IProgram {
       description: string;
       about: string;
       state: string;
-      authorId: number;
+      authorId: string;
       durationInMonths: number;
       id: number;
       programId: number;

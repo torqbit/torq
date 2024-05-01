@@ -36,7 +36,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).json({
         info: false,
         success: false,
-        error: "You need to delete the existing lessons, before deleting the course",
+        error: "You need to delete the existing lessons, before deleting the Chapter",
       });
     }
   } catch (error) {

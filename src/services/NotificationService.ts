@@ -22,12 +22,8 @@ type FailedApiResponse = {
   error: string;
 };
 class NotificationService {
-  checkNotification = (
-    toUserId: number,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    getFetch(`/api/v1/notification/check/${toUserId}`).then((result) => {
+  checkNotification = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    getFetch(`/api/v1/notification/check`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -41,12 +37,8 @@ class NotificationService {
       }
     });
   };
-  getNotification = (
-    toUserId: number,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    getFetch(`/api/v1/notification/get/${toUserId}`).then((result) => {
+  getNotification = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    getFetch(`/api/v1/notification/get/notification`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -62,11 +54,10 @@ class NotificationService {
   };
   updateNotification = (
     id: number,
-    userId: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    getFetch(`/api/v1/notification/update/${id}?userId=${userId}`).then((result) => {
+    getFetch(`/api/v1/notification/update/${id}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -82,7 +73,6 @@ class NotificationService {
   };
   updateMultipleNotification = (
     tagCommentId: number,
-    userId: number,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {

@@ -20,11 +20,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const authorId = Number(token?.id);
+    const authorId = token?.id;
     const allCourse = await prisma.course.findMany({
       orderBy: [{ createdAt: "asc" }],
       where: {
-        authorId: Number(authorId),
+        authorId: authorId,
         state: "DRAFT",
         // state: state as StateType,
       },

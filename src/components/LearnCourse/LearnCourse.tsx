@@ -130,9 +130,7 @@ const LearnCourse: FC<{}> = () => {
         {
           chapterId: selectedLesson?.chapterId,
           courseId: Number(router.query.courseId),
-          userId: session?.id,
           sequenceId: selectedLesson?.sequenceId,
-
           resourceId: selectedLesson?.resourceId,
         },
         `/api/progress/create`

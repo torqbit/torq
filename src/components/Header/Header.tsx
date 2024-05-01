@@ -139,9 +139,9 @@ const Header: FC<{ theme: boolean; onThemeChange: () => void }> = ({ theme = fal
     />
   );
 
-  const getNotification = async (userId: number) => {
+  const getNotification = async (userId: string) => {
     try {
-      const res = await getFetch(`/api/notification/get/${userId}`);
+      const res = await getFetch(`/api/notification/get/notification`);
       const result = (await res.json()) as IResponse;
       if (res.ok && result.success) {
         dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });

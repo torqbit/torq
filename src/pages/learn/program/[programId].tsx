@@ -14,7 +14,7 @@ import AboutCourse from "@/components/LearnCourse/AboutCourse/AboutCourse";
 import { useMediaPredicate } from "react-media-hook";
 import { Divider, Modal, Skeleton, message } from "antd";
 import ProgramService from "@/services/ProgramService";
-import ResourceId from "@/pages/api/v1/discussions/get-list/[userId]/[resourceId]";
+import ResourceId from "@/pages/api/v1/discussions/get-list/[resourceId]";
 import { IResponse, getFetch } from "@/services/request";
 import { IResResources } from "@/components/AddCourse/AddResourceForm";
 import appConstant from "@/services/appConstant";

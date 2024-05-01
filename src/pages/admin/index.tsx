@@ -41,13 +41,13 @@ const UserTab: FC = () => {
     loading: boolean;
     isModalOpen: boolean;
     storeDate: { startDate: string; endDate: string };
-    selectedUserId: number;
+    selectedUserId: string;
   }>({
     updateLoading: false,
     loading: false,
     isModalOpen: false,
     storeDate: { startDate: "", endDate: "" },
-    selectedUserId: 0,
+    selectedUserId: "0",
   });
 
   const [allUsers, setAllUsers] = React.useState<User[]>([]);
@@ -70,7 +70,7 @@ const UserTab: FC = () => {
   }, []);
 
   const onModalClose = () => {
-    setData({ ...data, isModalOpen: false, selectedUserId: 0 });
+    setData({ ...data, isModalOpen: false, selectedUserId: "0" });
 
     form.resetFields(["name", "role", "isActive"]);
   };
