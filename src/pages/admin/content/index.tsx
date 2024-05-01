@@ -8,7 +8,7 @@ import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
-import { getAllCoursesById } from "@/actions/getCourseById";
+import { getAllCourses } from "@/actions/getCourseById";
 import { GetServerSidePropsContext } from "next";
 import { Course } from "@prisma/client";
 
@@ -16,9 +16,27 @@ interface IProps {
   author: string;
   allCourses: Course[] | undefined;
 }
+export const convertSecToHourandMin = (seconds: number) => {
+  // Calculate hours and minutes
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  // Construct the result string
+  let result = "";
+  if (hours > 0) {
+    result += hours + " hr";
+    if (hours !== 1) result += "s";
+    result += " ";
+  }
+  if (minutes > 0 || hours === 0) {
+    result += minutes + " min";
+    if (minutes > 1) result += "s";
+  }
+  return result;
+};
 
 const EnrolledCourseList: FC<{
-  allCourses: Course[] | undefined;
+  allCourses: any[] | undefined;
   author: string;
   handleCourseStatusUpdate: (courseId: number, newState: string) => void;
   handleCourseDelete: (courseId: number) => void;
@@ -41,6 +59,13 @@ const EnrolledCourseList: FC<{
       title: "STATE",
       dataIndex: "state",
       key: "state",
+    },
+    {
+      title: "DIFFICULTY LEVEL",
+      align: "center",
+
+      dataIndex: "difficulty",
+      key: "difficulty",
     },
 
     {
@@ -100,12 +125,23 @@ const EnrolledCourseList: FC<{
   ];
 
   const data = allCourses?.map((course) => {
+    let totalDuration = 0;
+    course.chapters.forEach((chap: any) => {
+      console.log(chap, "chap");
+      chap.resource.forEach((r: any) => {
+        totalDuration = totalDuration + r.video.videoDuration;
+      });
+    });
+    console.log(totalDuration, "tota");
+    let contentDuration = convertSecToHourandMin(totalDuration);
+    console.log(totalDuration, "d");
     return {
       key: course.courseId,
       name: course.name,
-      author: author,
+      author: course.user.name,
       state: course.state,
-      contentDuration: "4h 30m",
+      contentDuration: contentDuration,
+      difficulty: course.difficultyLevel,
     };
   });
 
@@ -300,7 +336,7 @@ export default Content;
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getSession(ctx);
   if (user) {
-    const allCourses = await getAllCoursesById(user?.id);
+    const allCourses = await getAllCourses(user?.id);
 
     return {
       props: {

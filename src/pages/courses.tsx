@@ -5,7 +5,7 @@ import React from "react";
 
 import { Course } from "@prisma/client";
 import Courses from "@/components/Courses/Courses";
-import { getAllCoursesById } from "@/actions/getCourseById";
+import { getAllCourses } from "@/actions/getCourseById";
 import { Spin } from "antd";
 
 interface IProps {
@@ -28,7 +28,7 @@ const CoursesPage = (props: IProps) => {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getSession(ctx);
   if (user) {
-    const allCourses = await getAllCoursesById(user?.id);
+    const allCourses = await getAllCourses(user?.id);
 
     return {
       props: {

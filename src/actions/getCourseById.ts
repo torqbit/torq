@@ -194,10 +194,33 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
   }
 }
 
-export const getAllCoursesById = async (id: number) => {
+export const getAllCourses = async (id: number) => {
   const res = await prisma.course.findMany({
-    where: {
-      authorId: id,
+    select: {
+      courseId: true,
+      name: true,
+      difficultyLevel: true,
+      state: true,
+      thumbnail: true,
+      description: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      chapters: {
+        select: {
+          resource: {
+            select: {
+              video: {
+                select: {
+                  videoDuration: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 

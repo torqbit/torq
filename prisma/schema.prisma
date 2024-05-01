@@ -32,6 +32,7 @@ model User {
   CourseRegistration   CourseRegistration[]
   account              Account[]
   sessions             Session[]
+  course               Course[]             @relation("userCourse")
   discussion           Discussion[]
   fromUserNotification Notification[]       @relation("fromUser")
   toUserNotification   Notification[]       @relation("toUser")
@@ -132,6 +133,7 @@ model Course {
   expiryInDays      Int                   @default(365)
   difficultyLevel   courseDifficultyType?
   durationInMonths  Int                   @default(12)
+  user              User                  @relation(name: "userCourse", fields: [authorId], references: [id])
   totalResources    Int                   @default(0)
   state             StateType             @default(DRAFT)
   chapters          Chapter[]
@@ -141,6 +143,7 @@ model Course {
 
   @@unique([courseId, name])
   @@index([programId])
+  @@index([authorId])
 }
 
 //****** Course Schema  End******//

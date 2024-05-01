@@ -13,6 +13,7 @@ import CourseDiscussion from "./AboutCourse/CourseDiscussion/CourseDiscussion";
 import { useSession } from "next-auth/react";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
+import { convertSecToHourandMin } from "@/pages/admin/content";
 
 const Label: FC<{
   title: string;
@@ -186,13 +187,14 @@ const LearnCourse: FC<{}> = () => {
     content.resource.forEach((data) => {
       totalTime = totalTime + data.video?.videoDuration;
     });
+    const duration = convertSecToHourandMin(totalTime);
     return {
       key: `${content.chapterId}`,
       label: (
         <Label
           title={content.name}
           icon={SvgIcons.folder}
-          time={`${totalTime} min`}
+          time={duration}
           onSelectResource={() => {}}
           resourceId={0}
           chapterId={content.chapterId}
@@ -210,7 +212,7 @@ const LearnCourse: FC<{}> = () => {
               <Label
                 title={res.name}
                 icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-                time={`${res.video?.videoDuration} min`}
+                time={convertSecToHourandMin(res.video?.videoDuration)}
                 onSelectResource={onSelectResource}
                 resourceId={res.resourceId}
                 setChapterId={() => {}}

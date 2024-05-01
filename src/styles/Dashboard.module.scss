@@ -85,6 +85,10 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      .card_difficulty_level {
+        margin-left: 15px;
+        margin-top: 10px;
+      }
       .card_title {
         padding-top: 10px;
       }

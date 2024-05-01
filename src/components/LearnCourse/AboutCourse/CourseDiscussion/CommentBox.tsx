@@ -35,6 +35,8 @@ const CommentBox: FC<{
   const { globalState, dispatch } = useAppContext();
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [editActive, setEditActive] = useState<boolean>(false);
+
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
   const [refresh, setRefresh] = useState<boolean>(false);
   const [allReplyCmtCount, setAllReplyCmtCount] = useState<number>(0);
@@ -110,7 +112,15 @@ const CommentBox: FC<{
 
   return (
     <>
-      <div className={styles.comment_box} key={comment.id} id={`comment_${comment.id}`}>
+      <div
+        className={styles.comment_box}
+        key={comment.id}
+        id={`comment_${comment.id}`}
+        onMouseOver={() => {
+          setEditActive(true);
+        }}
+        onMouseLeave={() => setEditActive(false)}
+      >
         <Avatar size={40} src={comment.user.image} icon={<UserOutlined />} className={styles.user_icon} alt="Profile" />
         <div className={styles.comment} style={{ marginLeft: 20 }}>
           <Space className={styles.user_info}>
@@ -121,34 +131,36 @@ const CommentBox: FC<{
             </h5>
           </Space>
           <div className={`${styles.comment_body} comment-card-body`}>
-            <div className={styles.comment_body_header}>
-              {session?.id === comment.user.id && (
-                <Space className={styles.comment_action_btns}>
-                  {isEdited ? (
-                    <CloseOutlined onClick={() => setEdited(false)} />
-                  ) : (
-                    <div
-                      onClick={() => {
-                        setEdited(true);
-                        setEditComment(comment.comment);
-                      }}
-                    >
-                      {SvgIcons.edit}
-                    </div>
-                  )}
+            {editActive && (
+              <div className={styles.comment_body_header}>
+                {session?.id === comment.user.id && (
+                  <Space className={styles.comment_action_btns}>
+                    {isEdited ? (
+                      <CloseOutlined onClick={() => setEdited(false)} />
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setEdited(true);
+                          setEditComment(comment.comment);
+                        }}
+                      >
+                        {SvgIcons.edit}
+                      </div>
+                    )}
 
-                  <Popconfirm
-                    title="Delete the post"
-                    description="Are you sure to delete this post?"
-                    onConfirm={() => onDeleteComment(comment.id)}
-                    okText="Yes"
-                    cancelText="Continue"
-                  >
-                    {SvgIcons.delete}
-                  </Popconfirm>
-                </Space>
-              )}
-            </div>
+                    <Popconfirm
+                      title="Delete the post"
+                      description="Are you sure to delete this post?"
+                      onConfirm={() => onDeleteComment(comment.id)}
+                      okText="Yes"
+                      cancelText="Continue"
+                    >
+                      {SvgIcons.delete}
+                    </Popconfirm>
+                  </Space>
+                )}
+              </div>
+            )}
             <div className={styles.comment_content}>
               {isEdited ? (
                 <Input.TextArea
