@@ -133,8 +133,7 @@ const UserList: FC = () => {
       align: "center",
       dataIndex: "dateJoined",
       render: (u: User) => {
-        console.log(u, "user");
-        return <span>{moment(u).format("MMM-DD-YY  hh:mm a")}</span>;
+        return <span>{moment(u as any).format("MMM-DD-YY  hh:mm a")}</span>;
       },
       key: "dateJoined",
     },
