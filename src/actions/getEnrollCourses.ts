@@ -1,12 +1,12 @@
 import prisma from "@/lib/prisma";
 
 export interface IListingsCourses {
-  userId?: number;
+  userId?: string;
   pageNo?: number;
   pageSize?: number;
 }
 
-export const getUserEnrolledUserId = async (userId: number) => {
+export const getUserEnrolledUserId = async (userId: string) => {
   try {
     const coursesId = await prisma.courseRegistration.findMany({
       where: {
@@ -22,7 +22,7 @@ export const getUserEnrolledUserId = async (userId: number) => {
     throw new Error(error);
   }
 };
-export const getUserEnrolledCoursesId = async (courseId: number, userId: number) => {
+export const getUserEnrolledCoursesId = async (courseId: number, userId: string) => {
   try {
     const course = await prisma.courseRegistration.findFirst({
       where: {

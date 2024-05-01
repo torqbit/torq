@@ -17,6 +17,11 @@ const LoginPage: NextPage = () => {
   const { data: session, status: sessionStatus } = useSession();
 
   React.useEffect(() => {
+    if (session != null) {
+      console.log(session);
+    } else {
+      console.log("no session present");
+    }
     if (router.query.error) {
       if (router.query.error === "OAuthAccountNotLinked") {
         closeLoading();
@@ -83,6 +88,7 @@ const LoginPage: NextPage = () => {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { req } = ctx;
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+  console.log(user, "user from server side props");
   if (user) {
     return {
       redirect: {

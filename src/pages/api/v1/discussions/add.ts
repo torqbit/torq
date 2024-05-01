@@ -23,7 +23,7 @@ export const config = {
 
 interface ICommentData {
   comment: string;
-  userId: number;
+  userId: string;
   resourceId: number;
   attachedFiles: { fileCaption: string; upFiles: Array<{ url: string; fileId: string }> };
   parentCommentId?: number;
@@ -68,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const userId = Number(token?.id);
+    const userId = token?.id;
     // read file from request
     const { fields, files } = (await readFieldWithFile(req)) as any;
     console.log(fields, "sd");
@@ -90,7 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const isEnrolled = await prisma.courseRegistration.findFirst({
       where: {
         courseId: resourceDetail?.chapter.courseId,
-        studentId: Number(userId),
+        studentId: userId,
         expireIn: {
           gte: new Date(),
         },
@@ -123,7 +123,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const commentData: ICommentData = {
         comment: comment[0],
-        userId: Number(userId),
+        userId: userId || "0",
         resourceId: Number(resourceId),
         attachedFiles: { fileCaption: caption[0], upFiles: upFiles },
       };
@@ -159,9 +159,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           await prisma.notification.create({
             data: {
               notificationType: "COMMENT",
-              toUserId: Number(id),
+              toUserId: id,
               commentId: newComment.id,
-              fromUserId: Number(userId),
+              fromUserId: userId || "",
               tagCommentId: commentData.parentCommentId,
             },
           });

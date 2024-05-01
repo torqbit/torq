@@ -3,14 +3,14 @@ import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session {
-    id: number;
+    id: string;
     role: string;
     phone: string;
     isActive: boolean;
   }
 
   interface User {
-    id: number;
+    id: string;
     role: string;
     isActive: boolean;
   }
@@ -18,7 +18,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id: number;
+    id: string;
     role: string;
     isActive: boolean;
   }
