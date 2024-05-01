@@ -5,36 +5,49 @@ import withValidation from "@/lib/api-middlewares/with-validation";
 
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import appConstant from "@/services/appConstant";
+import { getToken } from "next-auth/jwt";
+export let cookieName = appConstant.development.cookieName;
+
+if (process.env.NODE_ENV === "production") {
+  cookieName = appConstant.production.cookieName;
+}
 
 export const validateReqBody = z.object({
   resourceId: z.number(),
   sequenceId: z.number(),
   courseId: z.number(),
   chapterId: z.number(),
-
-  userId: z.number(),
 });
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
+    const userId = token?.id;
     const body = await req.body;
-    const { resourceId, chapterId, userId, sequenceId, courseId } = body;
+    const { resourceId, chapterId, sequenceId, courseId } = body;
     const findTotalResourceCompleted = await prisma.courseProgress.count({
       where: {
         studentId: userId,
         courseId: Number(courseId),
       },
     });
-    const newProgress = await prisma.courseProgress.create({
-      data: {
-        courseId: Number(courseId),
-        resourceId: resourceId,
-        sequenceId: sequenceId,
-        studentId: userId,
-        chapterId: chapterId,
-        lessonsCompleted: findTotalResourceCompleted > 0 ? findTotalResourceCompleted + 1 : 1,
-      },
-    });
+    const newProgress =
+      userId &&
+      (await prisma.courseProgress.create({
+        data: {
+          courseId: Number(courseId),
+          resourceId: resourceId,
+          sequenceId: sequenceId,
+          studentId: userId,
+          chapterId: chapterId,
+          lessonsCompleted: findTotalResourceCompleted > 0 ? findTotalResourceCompleted + 1 : 1,
+        },
+      }));
 
     return res.status(200).json({ success: true, message: "Resource updated successfully" });
   } catch (error) {

@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { getNotifi } from "../get/[toUserId]";
+import { getNotifi } from "../get/notification";
 import { getToken } from "next-auth/jwt";
 import appConstant from "@/services/appConstant";
 export let cookieName = appConstant.development.cookieName;
@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const userId = Number(token?.id);
+    const userId = token?.id;
     const update = await prisma.notification.updateMany({
       where: {
         toUserId: userId,
@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    const notifications = await getNotifi(Number(req.query.userId));
+    const notifications = token?.id && (await getNotifi(token?.id));
     return res.status(200).json({ notifications, success: true });
   } catch (error) {
     return errorHandler(error, res);

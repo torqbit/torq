@@ -19,11 +19,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   });
   try {
     const resourceId = req.query?.resourceId;
-    const userId = Number(token?.id);
+    const userId = token?.id;
     const progress = await prisma.courseProgress.findFirst({
       where: {
         resourceId: Number(resourceId),
-        studentId: Number(userId),
+        studentId: userId,
       },
     });
 

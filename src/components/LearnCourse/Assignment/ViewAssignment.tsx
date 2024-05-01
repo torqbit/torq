@@ -161,7 +161,7 @@ const ViewAssignment: FC<{
 
   const updateNotification = async (id: string, userId: string) => {
     try {
-      const res = await getFetch(`/api/notification/update/${id}/?userId=${userId}`);
+      const res = await getFetch(`/api/notification/update/${id}}`);
       const result = (await res.json()) as IResponse;
       dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
     } catch (err) {}

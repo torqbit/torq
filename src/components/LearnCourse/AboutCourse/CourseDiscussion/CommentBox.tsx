@@ -79,7 +79,6 @@ const CommentBox: FC<{
     session?.id &&
       NotificationService.updateMultipleNotification(
         comment.id,
-        session?.id,
         (result) => {
           dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
         },

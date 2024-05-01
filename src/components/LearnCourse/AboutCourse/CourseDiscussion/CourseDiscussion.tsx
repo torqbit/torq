@@ -56,9 +56,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   const getAllDiscussioin = async (resId: number, pageSize: number) => {
     setListLoading(true);
-
     DiscussionsService.getCommentsList(
-      userId,
       resourceId,
       pageSize,
       (result) => {
@@ -89,7 +87,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     try {
       NotificationService.updateNotification(
         Number(query.notifi),
-        userId,
+
         (result) => {
           dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
         },

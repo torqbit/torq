@@ -3,8 +3,15 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import appConstant from "@/services/appConstant";
+import { getToken } from "next-auth/jwt";
+export let cookieName = appConstant.development.cookieName;
 
-export const getNotifi = async (userId: number) => {
+if (process.env.NODE_ENV === "production") {
+  cookieName = appConstant.production.cookieName;
+}
+
+export const getNotifi = async (userId: string) => {
   return await prisma.notification.findMany({
     where: {
       toUserId: userId,
@@ -60,9 +67,14 @@ export const getNotifi = async (userId: number) => {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const notifications = await getNotifi(Number(req.query.toUserId));
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
+    const notifications = token?.id && (await getNotifi(token?.id));
 
-    if (notifications.length > 0) {
+    if (notifications && notifications.length > 0) {
       return res.status(200).json({ success: true, notifications });
     } else {
       res.status(400).json({ success: false, error: "No notifications" });

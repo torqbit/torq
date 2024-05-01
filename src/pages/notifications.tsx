@@ -40,12 +40,11 @@ const NotificationList: FC = () => {
     setReplyDrawer({ isOpen: false, sltCommentId: 0 });
   };
 
-  const getNotification = async (userId: string) => {
+  const getNotification = async () => {
     try {
       setLoading(true);
 
       NotificationService.getNotification(
-        userId,
         (result) => {
           dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
           setLoading(false);
@@ -66,7 +65,6 @@ const NotificationList: FC = () => {
       user?.id &&
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
-          user?.id,
           (result) => {
             dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
           },
@@ -77,7 +75,7 @@ const NotificationList: FC = () => {
 
   React.useEffect(() => {
     if (user?.id) {
-      getNotification(user.id);
+      getNotification();
     }
   }, [user?.id]);
   return (
