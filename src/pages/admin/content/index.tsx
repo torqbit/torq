@@ -126,13 +126,12 @@ const EnrolledCourseList: FC<{
 
   const data = allCourses?.map((course) => {
     let totalDuration = 0;
-    course.chapters.forEach((chap: any) => {
-      console.log(chap, "chap");
-      chap.resource.forEach((r: any) => {
+    course.chapters?.forEach((chap: any) => {
+      chap.resource?.forEach((r: any) => {
         totalDuration = totalDuration + r.video?.videoDuration;
       });
     });
-    console.log(totalDuration, "tota");
+
     let contentDuration = convertSecToHourandMin(totalDuration);
     console.log(totalDuration, "d");
     return {
@@ -201,6 +200,7 @@ const Content = (props: IProps) => {
 
   const onCourseUpdate = (courseId: number, newState: string) => {
     const currCourse = coursesAuthored.courses?.find((c) => c.courseId === courseId);
+    console.log(currCourse, "c");
     if (currCourse && currCourse?.totalResources >= 2) {
       ProgramService.updateCourseState(
         courseId,
@@ -234,16 +234,6 @@ const Content = (props: IProps) => {
           handleCourseStatusUpdate={onCourseUpdate}
         />
       ),
-    },
-    {
-      key: "2",
-      label: "Certifications",
-      children: "Content of Tab Pane 2",
-    },
-    {
-      key: "3",
-      label: "Quiz",
-      children: "Content of Tab Pane 3",
     },
   ];
 
