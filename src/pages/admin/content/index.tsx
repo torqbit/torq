@@ -137,7 +137,7 @@ const EnrolledCourseList: FC<{
     return {
       key: course.courseId,
       name: course.name,
-      author: course.user.name,
+      author: course.user?.name,
       state: course.state,
       contentDuration: contentDuration,
       difficulty: course.difficultyLevel,

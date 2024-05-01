@@ -13,15 +13,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         chapterId: Number(chapterId),
       },
       include: {
-        resource: {
-          where: {
-            state: "ACTIVE",
-          },
-        },
+        resource: {},
       },
     });
 
-    if (findChapter) {
+    if (findChapter && findChapter.resource.length === 0) {
       const [updateSeq, deleteCourse] = await prisma.$transaction([
         prisma.$executeRaw`UPDATE Chapter SET sequenceId = sequenceId - 1  WHERE sequenceId > ${findChapter.sequenceId}  AND  courseId = ${findChapter.courseId};`,
         prisma.chapter.delete({
@@ -35,6 +31,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         info: false,
         success: true,
         message: "Chapter Deleted",
+      });
+    } else {
+      return res.status(400).json({
+        info: false,
+        success: false,
+        error: "You need to delete the existing lessons, before deleting the course",
       });
     }
   } catch (error) {
