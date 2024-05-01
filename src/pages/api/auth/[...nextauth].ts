@@ -25,10 +25,12 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       const isActiveUser = user.isActive ?? true;
+      console.log(user, "user details");
+
       const isEarlyAccess = await prisma.userJoinWaiting.findFirst({
         where: { email: user?.email as string },
       });
-     if (user?.email == process.env.ADMIN_EMAIL) {
+      if (user?.email == process.env.ADMIN_EMAIL) {
         return true;
       }
       if (!isEarlyAccess) {
@@ -42,12 +44,16 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token, account, user, profile }) {
       const dbUser = await getUserByEmail(token?.email as string);
-
+      console.log(dbUser, "db user");
+      let newRole = user?.role;
+      if (user.email == process.env.ADMIN_EMAIL) {
+        newRole = "AUTHOR";
+      }
       if (!dbUser) {
         if (account) {
           token.accessToken = account.access_token;
           token.id = user?.id as number;
-          token.role = user?.role as string;
+          token.role = newRole;
         }
         return token;
       }
