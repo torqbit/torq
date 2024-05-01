@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const authorId = Number(token?.id);
+    const authorId = token?.id;
     const body = await req.body;
     const { id } = body;
 
@@ -47,7 +47,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         durationInMonths: 1,
         thumbnail: "",
         state: "DRAFT",
-        authorId: authorId,
+        authorId: authorId || "",
         skills: [],
         about: "",
         sequenceId: 0,

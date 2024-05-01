@@ -139,7 +139,7 @@ const Header: FC<{ theme: boolean; onThemeChange: () => void }> = ({ theme = fal
     />
   );
 
-  const getNotification = async (userId: number) => {
+  const getNotification = async (userId: string) => {
     try {
       const res = await getFetch(`/api/notification/get/${userId}`);
       const result = (await res.json()) as IResponse;

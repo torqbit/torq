@@ -40,7 +40,7 @@ const NotificationList: FC = () => {
     setReplyDrawer({ isOpen: false, sltCommentId: 0 });
   };
 
-  const getNotification = async (userId: number) => {
+  const getNotification = async (userId: string) => {
     try {
       setLoading(true);
 
@@ -63,14 +63,15 @@ const NotificationList: FC = () => {
 
   const updateNotification = async () => {
     try {
-      NotificationService.updateNotification(
-        Number(selectedNotification?.id),
-        Number(user?.id),
-        (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
-        },
-        (error) => {}
-      );
+      user?.id &&
+        NotificationService.updateNotification(
+          Number(selectedNotification?.id),
+          user?.id,
+          (result) => {
+            dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          },
+          (error) => {}
+        );
     } catch (err) {}
   };
 

@@ -15,7 +15,7 @@ export interface IProgramDetail {
   aboutProgram: string;
   description: string;
   title: string;
-  authorId: number;
+  authorId: string;
   banner: string;
   programType: string;
   state: string;
@@ -68,13 +68,13 @@ export interface allProgram {
   id: number;
   skills: string[];
   state: string;
-  authorId: number;
+  authorId: string;
   programType: string;
   course: [
     {
       description: string;
       durationInMonths: number;
-      authorId: number;
+      authorId: string;
       id: number;
       programId: number;
       skills: string[];

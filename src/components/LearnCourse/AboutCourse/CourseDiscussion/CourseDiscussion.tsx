@@ -14,7 +14,7 @@ import NotificationService from "@/services/NotificationService";
 export interface IComments extends Discussion {
   comment: string;
   user: {
-    id: number;
+    id: string;
     name: string;
     image: string;
   };
@@ -25,7 +25,7 @@ export interface IReplyDrawer {
   sltCommentId: number;
 }
 
-const QADiscssionTab: FC<{ resourceId: number; userId: number; loading: boolean }> = ({
+const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean }> = ({
   resourceId,
   userId,
   loading,

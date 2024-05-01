@@ -42,7 +42,7 @@ class NotificationService {
     });
   };
   getNotification = (
-    toUserId: number,
+    toUserId: string,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -62,7 +62,7 @@ class NotificationService {
   };
   updateNotification = (
     id: number,
-    userId: number,
+    userId: string,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -82,7 +82,7 @@ class NotificationService {
   };
   updateMultipleNotification = (
     tagCommentId: number,
-    userId: number,
+    userId: string,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {

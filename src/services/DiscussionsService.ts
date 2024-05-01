@@ -73,7 +73,7 @@ class DiscussionsSerivice {
   };
 
   getCommentsList = (
-    userId: number,
+    userId: string,
     resourceId: number,
     pageSize: number,
     onSuccess: (response: ApiResponse) => void,

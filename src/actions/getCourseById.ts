@@ -189,7 +189,7 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
   }
 }
 
-export const getAllCourses = async (id: number) => {
+export const getAllCourses = async (id: string) => {
   const res = await prisma.course.findMany({
     select: {
       courseId: true,

@@ -131,7 +131,7 @@ const ViewAssignment: FC<{
     },
   ];
 
-  const getAssignmentInfo = async (resId: number, userId: number) => {
+  const getAssignmentInfo = async (resId: number, userId: string) => {
     setLoading(true);
     try {
       const res = await getFetch(`/api/assignment/get/${resId}/?userId=${userId}`);
@@ -159,7 +159,7 @@ const ViewAssignment: FC<{
     }
   };
 
-  const updateNotification = async (id: string, userId: number) => {
+  const updateNotification = async (id: string, userId: string) => {
     try {
       const res = await getFetch(`/api/notification/update/${id}/?userId=${userId}`);
       const result = (await res.json()) as IResponse;

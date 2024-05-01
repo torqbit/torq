@@ -143,7 +143,7 @@ const CourseListCard: FC<ICourseList> = ({
         <p className={styles.course_about}>{about}</p>
         <div className={styles.tag_label}>Learning</div>
         <div className={styles.stack_tags}>
-          {tags.map((tag, i) => {
+          {tags.map((tag: any, i) => {
             return (
               <Tag key={i} className={styles.tag}>
                 {tag}
