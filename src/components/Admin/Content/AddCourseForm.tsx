@@ -624,7 +624,7 @@ const AddCourseForm: FC = () => {
           message.error(error);
         }
       );
-  }, [router.query.id]);
+  }, [router.query.id, refresh]);
 
   return (
     <Layout2>

@@ -133,7 +133,7 @@ const EnrolledCourseList: FC<{
     });
 
     let contentDuration = convertSecToHourandMin(totalDuration);
-    console.log(totalDuration, "d");
+
     return {
       key: course.courseId,
       name: course.name,
@@ -157,9 +157,14 @@ const Content = (props: IProps) => {
   const [modal, contextWrapper] = Modal.useModal();
   const { globalState, dispatch } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [coursesAuthored, setCoursesAuthored] = useState<{ fetchCourses: boolean; courses: Course[] | undefined }>({
+  const [coursesAuthored, setCoursesAuthored] = useState<{
+    fetchCourses: boolean;
+    courses: Course[] | undefined;
+    refresh: boolean;
+  }>({
     fetchCourses: false,
     courses: props.allCourses,
+    refresh: false,
   });
   const router = useRouter();
 
@@ -188,27 +193,47 @@ const Content = (props: IProps) => {
     if (coursesAuthored.fetchCourses) {
       ProgramService.getCoursesByAuthor(
         (res) => {
-          setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, courses: res.courses });
+          setCoursesAuthored({
+            ...coursesAuthored,
+            fetchCourses: false,
+            courses: res.courses,
+            refresh: !coursesAuthored.refresh,
+          });
         },
         (err) => {
-          setCoursesAuthored({ ...coursesAuthored, fetchCourses: false });
+          setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, refresh: !coursesAuthored.refresh });
           message.error(`Unable to get the courses due to ${err}`);
         }
       );
     }
-  }, [coursesAuthored.fetchCourses]);
+  }, [coursesAuthored.fetchCourses, coursesAuthored.refresh]);
 
   const onCourseUpdate = (courseId: number, newState: string) => {
     const currCourse = coursesAuthored.courses?.find((c) => c.courseId === courseId);
-    console.log(currCourse, "c");
-    if (currCourse && currCourse?.totalResources >= 2) {
+    if (currCourse && currCourse?.totalResources >= 2 && newState === "ACTIVE") {
       ProgramService.updateCourseState(
         courseId,
         newState,
         (res) => {
           if (res.success) {
             message.success(`Course status has been updated`);
-            setCoursesAuthored({ ...coursesAuthored, fetchCourses: true });
+            setCoursesAuthored({ ...coursesAuthored, fetchCourses: true, refresh: !coursesAuthored.refresh });
+          } else {
+            message.error(`Course status update failed due to ${res.error}`);
+          }
+        },
+        (err) => {
+          message.error(`Course status update failed due to ${err}`);
+        }
+      );
+    } else if (currCourse && newState === "DRAFT") {
+      ProgramService.updateCourseState(
+        courseId,
+        newState,
+        (res) => {
+          if (res.success) {
+            message.success(`Course status has been updated`);
+            setCoursesAuthored({ ...coursesAuthored, fetchCourses: true, refresh: !coursesAuthored.refresh });
           } else {
             message.error(`Course status update failed due to ${res.error}`);
           }

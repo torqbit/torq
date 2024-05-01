@@ -256,8 +256,19 @@ const Curriculum: FC<{
                 <div> Add Chapter</div>
               </Button>
 
-              <Button className={styles.add_btn} onClick={() => setRender([""])}>
-                {SvgIcons.barsArrowDown}Collapse All
+              <Button
+                className={styles.add_btn}
+                onClick={() => (render[0] === "" ? setRender(chapters.map((c, i) => `${i + 1}`)) : setRender([""]))}
+              >
+                {render[0] !== "" ? (
+                  <Flex align="center" justify="center" gap={10}>
+                    {SvgIcons.barUpIcon} Collapse All
+                  </Flex>
+                ) : (
+                  <Flex align="center" justify="center" gap={10}>
+                    {SvgIcons.barsArrowDown} Expand all
+                  </Flex>
+                )}
               </Button>
             </Space>
           </Flex>
