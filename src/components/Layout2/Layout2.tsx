@@ -90,7 +90,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       icon: SvgIcons.setting,
     },
     {
-      label: <Link href="/torq/notifications">Notifications</Link>,
+      label: <Link href="/notifications">Notifications</Link>,
       key: "notification",
       icon: (
         <Badge

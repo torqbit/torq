@@ -23,9 +23,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const authorId = Number(token?.id);
     const allCourse = await prisma.course.findMany({
       select: {
-        name: true,
-        state: true,
         courseId: true,
+        name: true,
+        difficultyLevel: true,
+        state: true,
+        thumbnail: true,
+        description: true,
+        totalResources: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        chapters: {
+          select: {
+            resource: {
+              select: {
+                video: {
+                  select: {
+                    videoDuration: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       orderBy: [{ createdAt: "asc" }],
       where: {

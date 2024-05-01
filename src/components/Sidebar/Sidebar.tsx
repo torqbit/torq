@@ -60,7 +60,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
         className={styles.user_profile}
       >
         <Space>
-          <Avatar icon={<UserOutlined />} />
+          <Avatar src={user?.user?.image} icon={<UserOutlined />} />
           {!collapsed && (
             <div>
               <h4>{user?.user?.name}</h4>
