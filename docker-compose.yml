@@ -17,6 +17,7 @@ services:
       - JWT_SECRET=uPijyPl163ihk570eXbQrNMnKW4
       - NEXTAUTH_URL=http://localhost:3000
       - ADMIN_EMAIL=shad.amezng@gmail.com
+      - NODE_ENV=development
     networks:
       - app-network
 

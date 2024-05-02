@@ -7,7 +7,7 @@ import appConstant from "@/services/appConstant";
 import { getToken } from "next-auth/jwt";
 export let cookieName = appConstant.development.cookieName;
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
   cookieName = appConstant.production.cookieName;
 }
 
@@ -32,13 +32,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     const notifications = token?.id && (await getCheckNewOne(token?.id));
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        isNew: notifications && notifications.length > 0 ? true : false,
-        length: notifications && notifications.length,
-      });
+    return res.status(200).json({
+      success: true,
+      isNew: notifications && notifications.length > 0 ? true : false,
+      length: notifications && notifications.length,
+    });
   } catch (err) {
     return errorHandler(err, res);
   }

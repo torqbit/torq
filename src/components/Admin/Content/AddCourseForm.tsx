@@ -469,7 +469,7 @@ const AddCourseForm: FC = () => {
       (result) => {
         videoForm.setFieldValue("name", result.resource?.name);
         videoForm.setFieldValue("description", result.resource?.description);
-        videoForm.setFieldValue("videoUrl", result.resource?.video.videoUrl);
+        videoForm.setFieldValue("videoUrl", result.resource?.video?.videoUrl);
         setEdit(true);
         setVideoLesson({ ...videoLesson, chapterId: result.resource.chapterId, video: result.resource.video });
         setResourceDrawer(true);
