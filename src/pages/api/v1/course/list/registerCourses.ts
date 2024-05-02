@@ -6,7 +6,7 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getToken } from "next-auth/jwt";
 import appConstant from "@/services/appConstant";
 export let cookieName = appConstant.development.cookieName;
-if (process.env.NODE_ENV === "production") {
+if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
   cookieName = appConstant.production.cookieName;
 }
 
