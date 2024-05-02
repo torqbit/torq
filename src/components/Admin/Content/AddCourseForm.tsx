@@ -44,6 +44,7 @@ const AddCourseForm: FC = () => {
   const [currResId, setResId] = useState<number>();
   const [selectedChapterId, setSelectedChapterId] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [tabActive, setTabActive] = useState<boolean>(false);
   const [chapterForm] = Form.useForm();
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
@@ -125,6 +126,7 @@ const AddCourseForm: FC = () => {
             setActiveKey("2");
             form.resetFields();
             setRefresh(!refresh);
+            setTabActive(true);
             message.success("Course has been updated");
           },
           (error) => {
@@ -521,9 +523,14 @@ const AddCourseForm: FC = () => {
     },
     {
       key: "2",
-      label: "Curriculum",
+      label: (
+        <span onClick={() => !tabActive && message.error("First fill and  save  the add course form ")}>
+          Curriculum
+        </span>
+      ),
+      disabled: (!courseThumbnail && !uploadVideo?.videoUrl) || !tabActive,
 
-      children: (
+      children: courseThumbnail && uploadVideo?.videoUrl && (
         <Curriculum
           chapters={courseData.chapters}
           onRefresh={onRefresh}
@@ -543,8 +550,11 @@ const AddCourseForm: FC = () => {
 
     {
       key: "3",
-      label: "Preview",
-      children: (
+      label: (
+        <span onClick={() => !tabActive && message.error("First fill and  save  the add course form ")}>Preview</span>
+      ),
+      disabled: (!courseThumbnail && !uploadVideo?.videoUrl) || !tabActive,
+      children: courseThumbnail && uploadVideo?.videoUrl && (
         <Preview
           uploadVideo={uploadVideo}
           chapter={courseData.chapters}
@@ -608,6 +618,9 @@ const AddCourseForm: FC = () => {
           form.setFieldValue("course_description", result.courseDetails.description);
           form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
           form.setFieldValue("course_difficulty", result.courseDetails.difficultyLevel);
+          if (result.courseDetails.chapters.length > 0 || result.courseDetails.videoUrl) {
+            setTabActive(true);
+          }
 
           setCourseData({
             ...courseData,

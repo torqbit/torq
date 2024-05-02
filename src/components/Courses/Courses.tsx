@@ -125,46 +125,34 @@ const Courses: FC<{
   const { data: user } = useSession();
 
   return (
-    <Layout2>
-      {allCourses.length ? (
-        <section className={styles.course_content}>
-          <h2>Hello {user?.user?.name}</h2>
-          <h3>Courses</h3>
-          <div className={styles.course_card_wrapper}>
-            {allCourses.map((course: any, i) => {
-              let totalDuration = 0;
-              course.chapters.forEach((chap: any) => {
-                console.log(chap, "chap");
-                chap.resource.forEach((r: any) => {
-                  console.log(r, "r");
-                  totalDuration = totalDuration + r.video?.videoDuration;
-                });
-              });
-              let duration = convertSecToHourandMin(totalDuration);
-              return (
-                <CourseCard
-                  thumbnail={course.thumbnail as string}
-                  courseName={course.name}
-                  courseDescription={course.description}
-                  duration={String(duration)}
-                  courseId={course.courseId}
-                  courseType={course.courseType}
-                  difficulty={course.difficultyLevel}
-                />
-              );
-            })}
-          </div>
-        </section>
-      ) : (
-        <>
-          <div className={styles.no_course_found}>
-            <img src="/img/common/empty.svg" alt="" />
-            <h2>No Courses were found</h2>
-            <p>Contact support team for more information.</p>
-          </div>
-        </>
-      )}
-    </Layout2>
+    <section className={styles.course_content}>
+      <h2>Hello {user?.user?.name}</h2>
+      <h3>Courses</h3>
+      <div className={styles.course_card_wrapper}>
+        {allCourses.map((course: any, i) => {
+          let totalDuration = 0;
+          course.chapters.forEach((chap: any) => {
+            console.log(chap, "chap");
+            chap.resource.forEach((r: any) => {
+              console.log(r, "r");
+              totalDuration = totalDuration + r.video?.videoDuration;
+            });
+          });
+          let duration = convertSecToHourandMin(totalDuration);
+          return (
+            <CourseCard
+              thumbnail={course.thumbnail as string}
+              courseName={course.name}
+              courseDescription={course.description}
+              duration={String(duration)}
+              courseId={course.courseId}
+              courseType={course.courseType}
+              difficulty={course.difficultyLevel}
+            />
+          );
+        })}
+      </div>
+    </section>
   );
 };
 
