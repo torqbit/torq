@@ -12,7 +12,7 @@
   place-items: center;
 }
 
-.login_page_wrapper>div {
+.login_page_wrapper > div {
   width: 50vw;
   padding: 20px;
 }
@@ -44,8 +44,7 @@
   background-color: var(--bg-secondary);
   padding: 20px;
 
-
-  &>img {
+  & > img {
     height: 60px;
   }
 }
@@ -68,13 +67,6 @@
 .social_login_container h3 {
   color: var(--font-primary);
 }
-
-.social_login_container .google_btn {
-
-  // color: #fff;
-}
-
-.social_login_container .github_btn {}
 
 @media only screen and (max-width: 415px) {
   .login_page_wrapper {
