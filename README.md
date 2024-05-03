@@ -12,7 +12,7 @@
 <p>
     <a href="https://github.com/torqbit/torq" target="_blank">
       <img
-        src="screenshots/02-course-curriculum.png"
+        src="screenshots/screenshot-torq.png"
         alt="Course management screen"
         width="100%"
       />
@@ -21,7 +21,7 @@
 
 Meet [Torq](https://github.com/torqbit/torq). An open-source learning platform to manage your courses.
 
-The easiest way to get started with Torq is by installing in your local machine. Torqbit offers to add Course, Update and Tracking the learning progress.
+The easiest way to get started with Torq is by installing in your local machine.
 
 ## 🍙 Self Hosting
 
