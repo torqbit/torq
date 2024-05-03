@@ -14,6 +14,7 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     secret: process.env.NEXT_PUBLIC_SECRET,
     cookieName,
   });
+  console.log(token, "token in middleware");
   const isAuthenticated = token != null;
   if (!isAuthenticated) {
     return NextResponse.redirect(new URL("/login", req.url));

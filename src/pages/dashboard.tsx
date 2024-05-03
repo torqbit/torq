@@ -6,6 +6,7 @@ import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layout2/Layout2";
 import ProgramService from "@/services/ProgramService";
 import Link from "next/link";
+import { NextPage } from "next";
 
 const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: string; courseId: number }[] }> = ({
   courseData,
@@ -32,7 +33,7 @@ const EnrolledCourseList: FC<{ courseData: { courseName: string; progress: strin
   );
 };
 
-const Dashboard = () => {
+const Dashboard: NextPage = () => {
   const { data: user } = useSession();
   const [allRegisterCourse, setAllRegisterCourse] = useState<
     { courseName: string; progress: string; courseId: number }[]

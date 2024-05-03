@@ -117,7 +117,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout>
+      <Layout hasSider>
         <Sidebar menu={user?.role == "AUTHOR" ? usersMenu.concat(authorSiderMenu) : usersMenu} />
         <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
           <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
