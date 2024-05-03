@@ -26,6 +26,10 @@ export function getFileExtension(fileName: string) {
 
 export const saveToDir = async (fullName: string, sourcePath: string) => {
   console.log(String(process.env.MEDIA_UPLOAD_PATH), "media env file uplaod path");
+  if (!process.env.MEDIA_UPLOAD_PATH) {
+    throw new Error("absolute path does not exist");
+  }
+
   const destinationPath = path.join(String(process.env.MEDIA_UPLOAD_PATH), fullName);
 
   fs.copyFileSync(sourcePath, destinationPath);
