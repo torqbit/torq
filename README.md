@@ -7,7 +7,6 @@
 </p>
 
 <!-- <h3 align="center"><b>Torqbit</b></h3> -->
-<p align="center"><b>An all-in-one open source platform for selling courses online</b></p>
 
 <p>
     <a href="https://github.com/torqbit/torq" target="_blank">
@@ -18,8 +17,6 @@
       />
     </a>
 </p>
-
-Meet [Torq](https://github.com/torqbit/torq). An open-source learning platform to manage your courses.
 
 The easiest way to get started with Torq is by installing in your local machine.
 
