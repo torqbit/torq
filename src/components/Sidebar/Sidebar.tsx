@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-
 import { Avatar, Dropdown, Layout, Menu, MenuProps, Modal, Space } from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
