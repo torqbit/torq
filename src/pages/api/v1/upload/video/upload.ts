@@ -25,7 +25,8 @@ export function getFileExtension(fileName: string) {
 }
 
 export const saveToDir = async (fullName: string, sourcePath: string) => {
-  const destinationPath = path.join("public/resource", fullName);
+  console.log(String(process.env.MEDIA_UPLOAD_PATH), "media env file uplaod path");
+  const destinationPath = path.join(String(process.env.MEDIA_UPLOAD_PATH), fullName);
 
   fs.copyFileSync(sourcePath, destinationPath);
 
