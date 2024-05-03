@@ -86,11 +86,13 @@ const LoginPage: NextPage = () => {
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { req } = ctx;
+
   console.log("environment..", process.env.NODE_ENV);
   let cookieName = appConstant.development.cookieName;
   if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
     cookieName = appConstant.production.cookieName;
   }
+
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   console.log(user, "user from server side props");
   if (user) {
