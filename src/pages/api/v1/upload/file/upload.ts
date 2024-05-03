@@ -62,8 +62,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
         if (localPath != "") {
           fs.unlinkSync(localPath);
-        } else {
-          console.log(`unable to delete file : ${localPath} . response ${uploadResponse?.statusCode}`);
         }
 
         return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });

@@ -9,15 +9,15 @@ services:
       - db
     environment:
       - DATABASE_URL=mysql://root:torq123@db.torqbit.com/torqdb
-      - GOOGLE_ID=799867194815-415l8muo29a27e2els66gnbgr0e4pbpv.apps.googleusercontent.com
-      - GOOGLE_SECRET=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
-      - GITHUB_ID=375e4bedf65c010dbe41
-      - GITHUB_SECRET=238f9a3e0354fbb0736647ac7f7038410332e936
+      - GOOGLE_ID=*****************
+      - GOOGLE_SECRET=*************
+      - GITHUB_ID=*****************
+      - GITHUB_SECRET=*************
       - NEXT_PUBLIC_SECRET=d090c4d9bea3f1076d6ebc47460d0e0988a9924ddfa1e8691cbbf28e3f4638cd
       - JWT_SECRET=uPijyPl163ihk570eXbQrNMnKW4
       - NEXTAUTH_URL=http://localhost:3000
-      - ADMIN_EMAIL=shad.amezng@gmail.com
-      - NODE_ENV=development
+      - ADMIN_EMAIL=your@mail.com
+      - NEXT_PUBLIC_APP_ENV=development
     networks:
       - app-network
 

@@ -56,10 +56,6 @@ const AddVideoLesson: FC<{
 }) => {
   const router = useRouter();
 
-  useEffect(() => {
-    console.log("name is ", formData.getFieldValue("name"));
-  }, [currResId]);
-
   return (
     <>
       <Drawer
@@ -91,9 +87,6 @@ const AddVideoLesson: FC<{
           <Form
             form={formData}
             onFinish={() => {
-              isEdit && console.log("updating the lesson");
-              !isEdit && console.log("creating the lesson");
-
               onUpdateVideoLesson(Number(currResId));
             }}
           >
@@ -120,7 +113,6 @@ const AddVideoLesson: FC<{
             form={formData}
             layout="vertical"
             onFinish={() => {
-              console.log(`submitting the result`);
               currResId && onUpdateVideoLesson(currResId);
             }}
           >

@@ -559,11 +559,9 @@ const AddCourseForm: FC = () => {
     let intervalId: NodeJS.Timer | undefined;
     if (checkVideoState && uploadVideo && uploadVideo.state == "PROCESSING" && typeof intervalId === "undefined") {
       intervalId = setInterval(() => {
-        console.log("updating the video state sec");
         ProgramService.getCourses(
           Number(router.query.id),
           (result) => {
-            console.log(`current state: ${result.courseDetails.tvState}`);
             setUploadVideo({
               ...uploadVideo,
               previewUrl: "",

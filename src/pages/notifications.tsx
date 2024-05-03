@@ -24,11 +24,9 @@ const NotificationList: FC = () => {
     sltCommentId: 0,
   });
   const { notifications } = globalState;
-  console.log(notifications, "no");
   const [selectedNotification, setSelectedNotification] = useState<INotification>();
 
   const showReplyDrawer = () => {
-    console.log("hit eee");
     !replyDrawer.isOpen &&
       setReplyDrawer({
         isOpen: true,

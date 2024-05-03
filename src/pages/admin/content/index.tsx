@@ -350,7 +350,6 @@ export default Content;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getSession(ctx);
-  console.log(user, "inside content page");
   if (user) {
     const allCourses = await getAllCourses(user?.id);
     if (allCourses.length > 0) {

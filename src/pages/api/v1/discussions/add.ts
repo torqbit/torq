@@ -71,7 +71,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userId = token?.id;
     // read file from request
     const { fields, files } = (await readFieldWithFile(req)) as any;
-    console.log(fields, "sd");
     // Comment Data
     const { comment, resourceId, parentCommentId, tagCommentId, caption } = fields;
     const resourceDetail = await prisma.resource.findUnique({
@@ -86,7 +85,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
     });
-    console.log(resourceDetail, "s");
     const isEnrolled = await prisma.courseRegistration.findFirst({
       where: {
         courseId: resourceDetail?.chapter.courseId,

@@ -36,9 +36,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       const isActiveUser = user.isActive ?? true;
-
-      console.log(user, "user details");
-      console.log("is admin user? " + process.env.ADMIN_EMAIL == user.email);
       if (!isActiveUser) {
         return "/in-active-user";
       }

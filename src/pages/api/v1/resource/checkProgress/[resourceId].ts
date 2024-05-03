@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const authorId = Number(token?.id);
+    const authorId = token?.id;
 
     const findProgress = await prisma.courseProgress.findFirst({
       where: {
@@ -35,7 +35,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(200).json({ success: true, completed: false });
     }
   } catch (error) {
-    console.log(error, "d");
     return errorHandler(error, res);
   }
 };

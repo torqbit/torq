@@ -190,7 +190,6 @@ export async function getProgramDetailById(programId: number, checkIsEnrolled = 
 }
 
 export const getAllCourses = async (id: string) => {
-  console.log("hit ");
   const res = await prisma.course.findMany({
     select: {
       courseId: true,
@@ -220,6 +219,5 @@ export const getAllCourses = async (id: string) => {
       },
     },
   });
-  console.log(res, "res");
   return JSON.stringify(res);
 };

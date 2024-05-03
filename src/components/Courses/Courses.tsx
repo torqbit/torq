@@ -35,8 +35,6 @@ const CourseCard: FC<ICourseCard> = ({
   const [enrolled, setEnroll] = useState<string>();
   const [loading, setLoading] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
-
-  console.log(duration, "dur");
   const onCheckErollment = async () => {
     const res = await getFetch(`/api/course/get-enrolled/${courseId}/checkStatus`);
     const result = (await res.json()) as IResponse;
@@ -134,9 +132,7 @@ const Courses: FC<{
             {allCourses.map((course: any, i) => {
               let totalDuration = 0;
               course.chapters.forEach((chap: any) => {
-                console.log(chap, "chap");
                 chap.resource.forEach((r: any) => {
-                  console.log(r, "r");
                   totalDuration = totalDuration + r.video?.videoDuration;
                 });
               });
