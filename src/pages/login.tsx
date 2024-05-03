@@ -85,6 +85,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
     cookieName = appConstant.production.cookieName;
   }
+
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   if (user) {
     return {
