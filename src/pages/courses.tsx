@@ -13,28 +13,38 @@ import ProgramService from "@/services/ProgramService";
 
 const CoursesPage: NextPage = () => {
   const [allCourses, setAllCourses] = useState<Course[] | undefined>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
+    setLoading(true);
     ProgramService.getCoursesByAuthor(
       (res) => {
         setAllCourses(res.courses);
+        setLoading(false);
       },
       (err) => {
+        setLoading(false);
         message.error(`Unable to get the courses due to ${err}`);
       }
     );
   }, []);
   return (
     <Layout2 className={styles.container}>
-      {allCourses && allCourses.filter((c) => c.state === "ACTIVE").length > 0 ? (
-        <Courses allCourses={allCourses.filter((c) => c.state === "ACTIVE")} />
-      ) : (
+      {loading ? (
         <>
-          <div className={styles.no_course_found}>
-            <img src="/img/common/empty.svg" alt="" />
-            <h2>No Courses were found</h2>
-            <p>Contact support team for more information.</p>
-          </div>
+          {allCourses && allCourses.filter((c) => c.state === "ACTIVE").length > 0 ? (
+            <Courses allCourses={allCourses.filter((c) => c.state === "ACTIVE")} />
+          ) : (
+            <>
+              <div className={styles.no_course_found}>
+                <img src="/img/common/empty.svg" alt="" />
+                <h2>No Courses were found</h2>
+                <p>Contact support team for more information.</p>
+              </div>
+            </>
+          )}
         </>
+      ) : (
+        <Spin fullscreen tip="courses loading" />
       )}
     </Layout2>
   );
