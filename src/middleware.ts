@@ -1,14 +1,11 @@
 import { getToken } from "next-auth/jwt";
 import { NextFetchEvent, NextRequest, NextResponse } from "next/server";
-import appConstant from "@/services/appConstant";
 
-export let cookieName = appConstant.development.cookieName;
-
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  cookieName = appConstant.production.cookieName;
-}
+import { getCookieName } from "./lib/utils";
 
 export default async function middleware(req: NextRequest, event: NextFetchEvent) {
+  let cookieName = getCookieName();
+
   const token = await getToken({
     req,
     secret: process.env.NEXT_PUBLIC_SECRET,

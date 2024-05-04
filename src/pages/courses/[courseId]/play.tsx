@@ -1,5 +1,6 @@
 import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
 import LearnCourse from "@/components/LearnCourse/LearnCourse";
+import { getCookieName } from "@/lib/utils";
 import appConstant from "@/services/appConstant";
 import { message } from "antd";
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
@@ -17,10 +18,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { req } = ctx;
   const params = ctx?.params;
 
-  let cookieName = appConstant.development.cookieName;
-  if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-    cookieName = appConstant.production.cookieName;
-  }
+  let cookieName = getCookieName();
+  console.log(cookieName, "cockieName");
 
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
 
