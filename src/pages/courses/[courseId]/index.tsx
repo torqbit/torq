@@ -39,7 +39,6 @@ const LearnCoursesPage: NextPage = () => {
       }
       const res = await postFetch(
         {
-          userId: session?.id,
           courseId: Number(router.query.courseId),
           courseType: courseType,
         },

@@ -27,26 +27,39 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userId = token?.id;
     const body = await req.body;
     const { resourceId, chapterId, sequenceId, courseId } = body;
-    const findTotalResourceCompleted = await prisma.courseProgress.count({
+    const isEnrolled = await prisma.courseRegistration.findFirst({
       where: {
         studentId: userId,
         courseId: Number(courseId),
       },
+      select: {
+        courseId: true,
+      },
     });
-    const newProgress =
-      userId &&
-      (await prisma.courseProgress.create({
-        data: {
-          courseId: Number(courseId),
-          resourceId: resourceId,
-          sequenceId: sequenceId,
+    if (isEnrolled?.courseId) {
+      const findTotalResourceCompleted = await prisma.courseProgress.count({
+        where: {
           studentId: userId,
-          chapterId: chapterId,
-          lessonsCompleted: findTotalResourceCompleted > 0 ? findTotalResourceCompleted + 1 : 1,
+          courseId: Number(courseId),
         },
-      }));
+      });
+      const newProgress =
+        userId &&
+        (await prisma.courseProgress.create({
+          data: {
+            courseId: Number(courseId),
+            resourceId: resourceId,
+            sequenceId: sequenceId,
+            studentId: userId,
+            chapterId: chapterId,
+            lessonsCompleted: findTotalResourceCompleted > 0 ? findTotalResourceCompleted + 1 : 1,
+          },
+        }));
 
-    return res.status(200).json({ success: true, message: "Resource updated successfully" });
+      return res.status(200).json({ success: true, message: "Resource updated successfully" });
+    } else {
+      res.status(400).json({ success: false, error: "You are not enrolled in this course" });
+    }
   } catch (error) {
     return errorHandler(error, res);
   }
