@@ -11,28 +11,3 @@ const UsersPage: NextPage = () => {
   );
 };
 export default UsersPage;
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { req } = ctx;
-  const params = ctx?.params;
-  console.log(params, "p");
-  let cookieName = appConstant.development.cookieName;
-  if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-    cookieName = appConstant.production.cookieName;
-  }
-
-  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
-
-  if (user) {
-    if (user.role === "STUDENT") {
-      return {
-        redirect: {
-          permanent: false,
-          message: "you are not authorized ",
-          destination: "/unauthorized",
-        },
-      };
-    }
-  }
-  return { props: {} };
-};
