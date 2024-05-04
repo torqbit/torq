@@ -9,6 +9,7 @@ import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 import { UploadVideoObjectType, VideoAPIResponse } from "@/types/courses/Course";
+import prisma from "@/lib/prisma";
 
 export const config = {
   api: {
