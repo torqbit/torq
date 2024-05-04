@@ -29,7 +29,7 @@ const CoursesPage: NextPage = () => {
   }, []);
   return (
     <Layout2 className={styles.container}>
-      {loading ? (
+      {!loading ? (
         <>
           {allCourses && allCourses.filter((c) => c.state === "ACTIVE").length > 0 ? (
             <Courses allCourses={allCourses.filter((c) => c.state === "ACTIVE")} />

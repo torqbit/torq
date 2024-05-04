@@ -1,5 +1,6 @@
 import styles from "@/styles/AdminDashboard.module.scss";
 import Layout from "@/components/Layout";
+
 import {
   Button,
   DatePicker,
@@ -22,8 +23,9 @@ import { Role, User } from "@prisma/client";
 import { EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import appConstant from "@/services/appConstant";
-import { NextPage } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import type { DatePickerProps, RangePickerProps } from "antd/es/date-picker";
+import { getToken } from "next-auth/jwt";
 
 type FieldType = {
   name?: string;
@@ -317,6 +319,30 @@ const AdminDashboard: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { req } = ctx;
+
+  let cookieName = appConstant.development.cookieName;
+  if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
+    cookieName = appConstant.production.cookieName;
+  }
+
+  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+
+  if (user) {
+    if (user.role === "STUDENT") {
+      return {
+        redirect: {
+          permanent: false,
+          message: "you are not authorized ",
+          destination: "/unauthorized",
+        },
+      };
+    }
+  }
+  return { props: {} };
 };
 
 export default AdminDashboard;
