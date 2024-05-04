@@ -7,23 +7,37 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import { getToken } from "next-auth/jwt";
+import { getCookieName } from "@/lib/utils";
 
 export const validateReqBody = z.object({
-  userId: z.string(),
   courseId: z.number(),
   courseType: z.string(),
 });
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    let cookieName = getCookieName();
+
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
     const body = await req.body;
-    const { userId, courseId, courseType } = body;
+    const { courseId, courseType } = body;
 
     const course = await prisma.course.findUnique({
       where: {
         courseId: courseId,
       },
     });
+    if (!token || !token.isActive) {
+      return res.status(400).json({
+        success: false,
+        message: "Sorry, You don't have an active user",
+      });
+    }
 
     if (course) {
       const addDays = function (days: number) {
@@ -35,17 +49,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const expiryDate = addDays(Number(course.expiryInDays));
 
       // check is user Active
-      const currentUser = await getUserById(userId);
-      if (!currentUser || !currentUser.isActive) {
-        return res.status(400).json({
-          success: false,
-          message: "Sorry, You don't have an active user",
-        });
-      }
 
       // check user already enrolled
       const alreadyEnrolled = await prisma.courseRegistration.findFirst({
-        where: { courseId: courseId, studentId: userId },
+        where: { courseId: courseId, studentId: token.id },
       });
       if (alreadyEnrolled) {
         return res.status(201).json({
@@ -60,7 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         await prisma.courseRegistration.create({
           data: {
-            studentId: userId,
+            studentId: token.id,
             courseId: courseId,
             expireIn: expiryDate,
             courseState: "ENROLLED",
