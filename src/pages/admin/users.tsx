@@ -1,7 +1,5 @@
 import Users from "@/components/Admin/Users/Users";
-import appConstant from "@/services/appConstant";
-import { GetServerSidePropsContext, NextPage } from "next";
-import { getToken } from "next-auth/jwt";
+import { NextPage } from "next";
 
 const UsersPage: NextPage = () => {
   return (

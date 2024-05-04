@@ -1,31 +1,15 @@
 import styles from "@/styles/AdminDashboard.module.scss";
 import Layout from "@/components/Layout";
 
-import {
-  Button,
-  DatePicker,
-  Drawer,
-  Form,
-  Input,
-  Modal,
-  Select,
-  Space,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
-  message,
-  TableProps,
-} from "antd";
+import { Button, DatePicker, Form, Input, Modal, Select, Space, Switch, Table, Tabs, Tag, message } from "antd";
 import React, { FC, useState } from "react";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { Role, User } from "@prisma/client";
 import { EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import appConstant from "@/services/appConstant";
-import { GetServerSidePropsContext, NextPage } from "next";
+import { NextPage } from "next";
 import type { DatePickerProps, RangePickerProps } from "antd/es/date-picker";
-import { getToken } from "next-auth/jwt";
 
 type FieldType = {
   name?: string;

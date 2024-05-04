@@ -1,7 +1,6 @@
 import AddCourseForm from "@/components/Admin/Content/AddCourseForm";
-import appConstant from "@/services/appConstant";
-import { GetServerSidePropsContext, NextPage } from "next";
-import { getToken } from "next-auth/jwt";
+
+import { NextPage } from "next";
 
 const SettingPage: NextPage = () => {
   return (
