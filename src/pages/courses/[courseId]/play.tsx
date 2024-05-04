@@ -31,7 +31,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         redirect: {
           permanent: false,
           message: "you are not enrolled in this course",
-          destination: "/unauthorized?from=playLesson",
+          destination: "/unauthorized?from=lesson",
         },
       };
     }

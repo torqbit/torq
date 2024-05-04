@@ -14,7 +14,7 @@ const UnAuthorized: NextPage = () => {
             <div>{SvgIcons.lock}</div> <h1>You are not authorized to this page</h1>
           </Flex>
           <Flex align="center" justify="center" gap={20}>
-            {router.query.from === "playLesson" && (
+            {router.query.from === "lesson" && (
               <Button type="primary" onClick={() => router.push("/courses")}>
                 <Flex justify="space-between" gap={10}>
                   Browse Courses {SvgIcons.arrowRight}
