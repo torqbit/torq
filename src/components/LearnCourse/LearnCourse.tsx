@@ -308,6 +308,7 @@ const LearnCourse: FC<{}> = () => {
                       </div>
                     ) : (
                       <iframe
+                        allowFullScreen
                         style={{
                           position: "absolute",
 
