@@ -34,7 +34,7 @@ export const saveToDir = async (fullName: string, sourcePath: string) => {
 
   if (!isDirExist) {
     console.log("hit");
-    throw new Error("Directory does not exist");
+    throw new Error("Local directory for uploading media does not exist");
   }
 
   const destinationPath = path.join(String(process.env.MEDIA_UPLOAD_PATH), fullName);
