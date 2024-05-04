@@ -123,7 +123,7 @@ const Courses: FC<{
   const { data: user } = useSession();
 
   return (
-    <Layout2>
+    <>
       {allCourses.length ? (
         <section className={styles.course_content}>
           <h2>Hello {user?.user?.name}</h2>
@@ -160,7 +160,7 @@ const Courses: FC<{
           </div>
         </>
       )}
-    </Layout2>
+    </>
   );
 };
 

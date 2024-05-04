@@ -9,13 +9,9 @@ import Link from "next/link";
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
 import { getAllCourses } from "@/actions/getCourseById";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { Course } from "@prisma/client";
 
-interface IProps {
-  author: string;
-  allCourses: Course[] | undefined;
-}
 export const convertSecToHourandMin = (seconds: number) => {
   // Calculate hours and minutes
   const hours = Math.floor(seconds / 3600);
@@ -37,10 +33,9 @@ export const convertSecToHourandMin = (seconds: number) => {
 
 const EnrolledCourseList: FC<{
   allCourses: any[] | undefined;
-  author: string;
   handleCourseStatusUpdate: (courseId: number, newState: string) => void;
   handleCourseDelete: (courseId: number) => void;
-}> = ({ allCourses, author, handleCourseStatusUpdate, handleCourseDelete }) => {
+}> = ({ allCourses, handleCourseStatusUpdate, handleCourseDelete }) => {
   const router = useRouter();
   const [modal, contextHolder] = Modal.useModal();
 
@@ -152,7 +147,7 @@ const EnrolledCourseList: FC<{
   );
 };
 
-const Content = (props: IProps) => {
+const Content: NextPage = () => {
   const { data: user } = useSession();
   const [modal, contextWrapper] = Modal.useModal();
   const { globalState, dispatch } = useAppContext();
@@ -163,7 +158,7 @@ const Content = (props: IProps) => {
     refresh: boolean;
   }>({
     fetchCourses: false,
-    courses: props.allCourses,
+    courses: [],
     refresh: false,
   });
   const router = useRouter();
@@ -177,7 +172,7 @@ const Content = (props: IProps) => {
       courseId,
       (res) => {
         if (res.success) {
-          setCoursesAuthored({ ...coursesAuthored, fetchCourses: true });
+          setCoursesAuthored({ ...coursesAuthored, fetchCourses: true, refresh: !coursesAuthored.refresh });
           message.success("Course has been deleted");
         } else {
           message.error(`Course deletion failed due to ${res.error}`);
@@ -190,23 +185,21 @@ const Content = (props: IProps) => {
   };
 
   useEffect(() => {
-    if (coursesAuthored.fetchCourses) {
-      ProgramService.getCoursesByAuthor(
-        (res) => {
-          setCoursesAuthored({
-            ...coursesAuthored,
-            fetchCourses: false,
-            courses: res.courses,
-            refresh: !coursesAuthored.refresh,
-          });
-        },
-        (err) => {
-          setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, refresh: !coursesAuthored.refresh });
-          message.error(`Unable to get the courses due to ${err}`);
-        }
-      );
-    }
-  }, [coursesAuthored.fetchCourses, coursesAuthored.refresh]);
+    ProgramService.getCoursesByAuthor(
+      (res) => {
+        console.log(res, "result");
+        setCoursesAuthored({
+          ...coursesAuthored,
+          fetchCourses: false,
+          courses: res.courses,
+        });
+      },
+      (err) => {
+        setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, refresh: !coursesAuthored.refresh });
+        message.error(`Unable to get the courses due to ${err}`);
+      }
+    );
+  }, [coursesAuthored.refresh]);
 
   const onCourseUpdate = (courseId: number, newState: string) => {
     const currCourse = coursesAuthored.courses?.find((c) => c.courseId === courseId);
@@ -254,7 +247,6 @@ const Content = (props: IProps) => {
       children: (
         <EnrolledCourseList
           allCourses={coursesAuthored.courses}
-          author={props.author}
           handleCourseDelete={onCourseDelete}
           handleCourseStatusUpdate={onCourseUpdate}
         />
@@ -327,7 +319,6 @@ const Content = (props: IProps) => {
             <Button
               type="primary"
               onClick={() => {
-                //dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "content" as ISiderMenu });
                 onCreateDraftCourse();
               }}
               className={styles.add_user_btn}
@@ -347,26 +338,3 @@ const Content = (props: IProps) => {
 };
 
 export default Content;
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const user = await getSession(ctx);
-  if (user) {
-    const allCourses = await getAllCourses(user?.id);
-    if (allCourses.length > 0) {
-      return {
-        props: {
-          author: user.user?.name,
-          allCourses: JSON.parse(allCourses),
-        },
-      };
-    } else {
-      return {
-        props: {},
-      };
-    }
-  } else {
-    return {
-      props: {},
-    };
-  }
-};
