@@ -8,6 +8,7 @@ import fs from "fs";
 import { saveToDir } from "../video/upload";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 import url from "url";
+import prisma from "@/lib/prisma";
 
 export const config = {
   api: {
