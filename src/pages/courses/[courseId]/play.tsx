@@ -17,10 +17,7 @@ export default PlayLesson;
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { req } = ctx;
   const params = ctx?.params;
-
   let cookieName = getCookieName();
-  console.log(cookieName, "cockieName");
-
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
 
   if (user && params) {
