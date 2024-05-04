@@ -14,7 +14,6 @@ import Preview from "./Preview";
 
 import ProgramService from "@/services/ProgramService";
 import {
-  ChapterDetail,
   CourseAPIResponse,
   CourseData,
   IVideoLesson,
@@ -35,7 +34,7 @@ const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
   const [courseTrailerUploading, setCourseTrailerUploading] = useState<boolean>(false);
   const [resourceVideoUploading, setResourceVideoUploading] = useState<boolean>(false);
-
+  const [messageApi, contextHolder] = message.useMessage();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [checkVideoState, setCheckVideoState] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
@@ -399,10 +398,13 @@ const AddCourseForm: FC = () => {
     formData.append("objectId", courseIdStr || "");
     formData.append("objectType", "course");
     const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
+
     if (!postRes.ok) {
       setLoading(false);
       const response = (await postRes.json()) as VideoAPIResponse;
+
       message.error(response.message);
+
       setCourseTrailerUploading(false);
     } else {
       const res = (await postRes.json()) as VideoAPIResponse;
@@ -569,9 +571,11 @@ const AddCourseForm: FC = () => {
     let intervalId: NodeJS.Timer | undefined;
     if (checkVideoState && uploadVideo && uploadVideo.state == "PROCESSING" && typeof intervalId === "undefined") {
       intervalId = setInterval(() => {
+        console.log("updating the video state sec");
         ProgramService.getCourses(
           Number(router.query.id),
           (result) => {
+            console.log(`current state: ${result.courseDetails.tvState}`);
             setUploadVideo({
               ...uploadVideo,
               previewUrl: "",
@@ -639,6 +643,7 @@ const AddCourseForm: FC = () => {
 
   return (
     <Layout2>
+      {contextHolder}
       <section className={styles.add_course_page}>
         <div className={styles.add_course_header}>
           <div className={styles.left_icon}>

@@ -25,7 +25,19 @@ export function getFileExtension(fileName: string) {
 }
 
 export const saveToDir = async (fullName: string, sourcePath: string) => {
-  const destinationPath = path.join("public/resource", fullName);
+  console.log(String(process.env.MEDIA_UPLOAD_PATH), "media env file uplaod path");
+
+  if (!process.env.MEDIA_UPLOAD_PATH) {
+    throw new Error(" Environment variable MEDIA_UPLOAD_PATH is not set.");
+  }
+  const isDirExist = fs.existsSync(String(process.env.MEDIA_UPLOAD_PATH));
+
+  if (!isDirExist) {
+    console.log("hit");
+    throw new Error("Directory does not exist");
+  }
+
+  const destinationPath = path.join(String(process.env.MEDIA_UPLOAD_PATH), fullName);
 
   fs.copyFileSync(sourcePath, destinationPath);
 
@@ -90,7 +102,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         const uploadResponse = await cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
         if (localPath != "") {
+          console.log(`deleting the file - ${localPath}`);
           fs.unlinkSync(localPath);
+        } else {
+          console.log(`unable to delete video : ${localPath} . response ${uploadResponse?.statusCode}`);
         }
 
         return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
@@ -103,7 +118,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(400).json({ success: false, message: "file not recieved" });
     }
   } catch (error) {
-    return res.status(400).json({ success: false, message: error });
+    console.log(error, "er");
+    return res.status(400).json({ success: false, message: `${error}` });
   }
 };
 
