@@ -1,21 +1,7 @@
 import styles from "@/styles/AdminDashboard.module.scss";
 import Layout from "@/components/Layout";
-import {
-  Button,
-  DatePicker,
-  Drawer,
-  Form,
-  Input,
-  Modal,
-  Select,
-  Space,
-  Switch,
-  Table,
-  Tabs,
-  Tag,
-  message,
-  TableProps,
-} from "antd";
+
+import { Button, DatePicker, Form, Input, Modal, Select, Space, Switch, Table, Tabs, Tag, message } from "antd";
 import React, { FC, useState } from "react";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { Role, User } from "@prisma/client";

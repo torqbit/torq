@@ -1,15 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "../../../styles/Dashboard.module.scss";
-import { Button, Dropdown, MenuProps, Modal, Space, Table, Tabs, TabsProps, Tag, message } from "antd";
+import { Button, Dropdown, Modal, Space, Table, Tabs, TabsProps, Tag, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { ISiderMenu, useAppContext } from "../../../components/ContextApi/AppContext";
+import { useAppContext } from "../../../components/ContextApi/AppContext";
 import Layout2 from "@/components/Layout2/Layout2";
-import { getSession, useSession } from "next-auth/react";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
-import { getAllCourses } from "@/actions/getCourseById";
-import { GetServerSidePropsContext, NextPage } from "next";
+import { NextPage } from "next";
 import { Course } from "@prisma/client";
 
 export const convertSecToHourandMin = (seconds: number) => {
