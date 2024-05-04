@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { getToken } from "next-auth/jwt";
 import appConstant from "@/services/appConstant";
+import { getCookieName } from "@/lib/utils";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -81,10 +82,7 @@ const LoginPage: NextPage = () => {
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { req } = ctx;
-  let cookieName = appConstant.development.cookieName;
-  if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-    cookieName = appConstant.production.cookieName;
-  }
+  let cookieName = getCookieName();
 
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   if (user) {

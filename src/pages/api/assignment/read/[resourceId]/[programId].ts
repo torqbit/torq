@@ -4,17 +4,15 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
-import appConstant from "@/services/appConstant";
+
+import { getCookieName } from "@/lib/utils";
 const path = require("path");
 const fs = require("fs");
 
-export let cookieName = appConstant.development.cookieName;
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  cookieName = appConstant.production.cookieName;
-}
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    let cookieName = getCookieName();
+
     const token = await getToken({
       req,
       secret: process.env.NEXT_PUBLIC_SECRET,

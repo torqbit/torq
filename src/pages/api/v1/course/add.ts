@@ -3,17 +3,13 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
-import appConstant from "@/services/appConstant";
 import { getToken } from "next-auth/jwt";
-
-export let cookieName = appConstant.development.cookieName;
-
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  cookieName = appConstant.production.cookieName;
-}
+import { getCookieName } from "@/lib/utils";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    let cookieName = getCookieName();
+
     const token = await getToken({
       req,
       secret: process.env.NEXT_PUBLIC_SECRET,

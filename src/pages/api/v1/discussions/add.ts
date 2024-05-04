@@ -8,11 +8,7 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import appConstant from "@/services/appConstant";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getToken } from "next-auth/jwt";
-export let cookieName = appConstant.development.cookieName;
-
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  cookieName = appConstant.production.cookieName;
-}
+import { getCookieName } from "@/lib/utils";
 
 // Important for NextJS!
 export const config = {
@@ -62,6 +58,8 @@ export const uploadFileToImgKit = async (file: formidable.File, folder: string) 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    let cookieName = getCookieName();
+
     const token = await getToken({
       req,
       secret: process.env.NEXT_PUBLIC_SECRET,

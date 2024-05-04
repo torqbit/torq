@@ -3,16 +3,13 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
-import { StateType } from "@prisma/client";
 import { getToken } from "next-auth/jwt";
-import appConstant from "@/services/appConstant";
-export let cookieName = appConstant.development.cookieName;
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  cookieName = appConstant.production.cookieName;
-}
+import { getCookieName } from "@/lib/utils";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    let cookieName = getCookieName();
+
     const { resourceId } = req.query;
     const token = await getToken({
       req,

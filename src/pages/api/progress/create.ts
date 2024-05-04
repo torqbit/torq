@@ -5,13 +5,8 @@ import withValidation from "@/lib/api-middlewares/with-validation";
 
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import appConstant from "@/services/appConstant";
 import { getToken } from "next-auth/jwt";
-export let cookieName = appConstant.development.cookieName;
-
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  cookieName = appConstant.production.cookieName;
-}
+import { getCookieName } from "@/lib/utils";
 
 export const validateReqBody = z.object({
   resourceId: z.number(),
@@ -22,6 +17,8 @@ export const validateReqBody = z.object({
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    let cookieName = getCookieName();
+
     const token = await getToken({
       req,
       secret: process.env.NEXT_PUBLIC_SECRET,
