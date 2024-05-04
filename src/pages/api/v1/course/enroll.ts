@@ -7,10 +7,9 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { createCourseExpiry } from "@/services/helper";
 
 export const validateReqBody = z.object({
-  userId: z.number(),
+  userId: z.string(),
   courseId: z.number(),
   courseType: z.string(),
 });
