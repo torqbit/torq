@@ -27,7 +27,8 @@ type AppAction =
   | { type: "SET_NOTIFICATION"; payload: INotification[] }
   | { type: "GET_NOTIFICATION"; payload: number }
   | { type: "SET_USER"; payload: Session }
-  | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu };
+  | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
+  | { type: "SWITCH_THEME"; payload: {} };
 
 // Define the initial state
 const initialState: AppState = {
@@ -44,7 +45,7 @@ const AppContext = createContext<{
 });
 
 // Create a provider component
-export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
+export const AppProvider: React.FC<{ children: any; themeSwitcher: () => void }> = ({ children, themeSwitcher }) => {
   const [globalState, dispatch] = useReducer((currentState: AppState, action: AppAction) => {
     switch (action.type) {
       case "SET_NOTIFICATION":
@@ -53,6 +54,9 @@ export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
         return { ...currentState, user: action.payload };
       case "SET_SELECTED_SIDER_MENU":
         return { ...currentState, selectedSiderMenu: action.payload };
+      case "SWITCH_THEME":
+        themeSwitcher();
+        return currentState;
       default:
         return currentState;
     }

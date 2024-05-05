@@ -5,7 +5,7 @@ import React from "react";
 
 export default function MyDocument() {
   return (
-    <Html lang="en" data-theme="light">
+    <Html lang="en" data-theme="dark">
       <Head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/pwa/app-icon-512.png"></link>

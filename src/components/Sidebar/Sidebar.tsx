@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-import { Avatar, Dropdown, Layout, Menu, MenuProps, Modal, Space } from "antd";
+import { Avatar, Button, Dropdown, Layout, Menu, MenuProps, Modal, Space } from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -43,7 +43,9 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               <Image src="/icon/torq-long.svg" alt="torq" width={100} height={40} />
             )}
           </Link>
+          <Button onClick={() => dispatch({ type: "SWITCH_THEME", payload: {} })}>Toggle</Button>
         </div>
+
         <Menu
           mode="inline"
           onSelect={(value) => dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: value.key as ISiderMenu })}
