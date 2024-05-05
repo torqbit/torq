@@ -1,12 +1,8 @@
 import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
 import LearnCourse from "@/components/LearnCourse/LearnCourse";
 import { getCookieName } from "@/lib/utils";
-import appConstant from "@/services/appConstant";
-import { message } from "antd";
-import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { getToken } from "next-auth/jwt";
-import { getSession } from "next-auth/react";
-import { useRouter } from "next/router";
 
 const PlayLesson: NextPage = () => {
   return <LearnCourse />;

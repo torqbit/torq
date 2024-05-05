@@ -23,57 +23,78 @@ const Label: FC<{
   onSelectResource: (resourceId: number) => void;
   setChapterId: (value: number) => void;
   resourceId: number;
+  loading: boolean;
   chapterId: number;
   refresh: boolean;
-
+  currentLessonId?: number;
   icon: ReactNode;
 }> = ({
   title,
   time,
   onSelectResource,
+  loading,
   refresh,
   selectedLesson,
   setChapterId,
+  currentLessonId,
   keyValue,
   icon,
   resourceId,
   chapterId,
 }) => {
   const [completed, setCompleted] = useState<boolean>();
+  const [checkLockLoading, setCheckLockLoading] = useState<boolean>();
+
+  console.log(currentLessonId, "cur");
+
   const checkIsCompleted = async () => {
+    setCheckLockLoading(true);
     const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
     const result = (await res.json()) as IResponse;
 
     if (res.ok && result.success) {
       setCompleted(result.isCompleted);
     }
+    setCheckLockLoading(false);
   };
   useEffect(() => {
     checkIsCompleted();
   }, [refresh]);
   return (
-    <div
-      style={{ padding: resourceId > 0 ? "5px 0px" : 0, paddingLeft: resourceId > 0 ? "20px" : 0 }}
-      className={`${
-        selectedLesson && resourceId === selectedLesson.resourceId ? styles.selectedLable : styles.labelContainer
-      }`}
-      onClick={() => {
-        onSelectResource(resourceId);
-      }}
-    >
-      <Flex justify="space-between" align="center">
-        <div className={styles.title_container}>
-          <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
-            {completed ? SvgIcons.check : icon}
-            <div style={{ cursor: "pointer" }}>{title}</div>
+    <>
+      {loading ? (
+        <Skeleton.Button />
+      ) : (
+        <div
+          style={{ padding: resourceId > 0 ? "5px 0px" : 0, paddingLeft: resourceId > 0 ? "20px" : 0 }}
+          className={`${
+            selectedLesson && resourceId === selectedLesson.resourceId ? styles.selectedLable : styles.labelContainer
+          }`}
+          onClick={() => {
+            onSelectResource(resourceId);
+          }}
+        >
+          <Flex justify="space-between" align="center">
+            <div className={styles.title_container}>
+              <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
+                {completed ? SvgIcons.check : icon}
+                <div style={{ cursor: "pointer" }}>{title}</div>
+              </Flex>
+            </div>
+            <Flex gap={10}>
+              {!checkLockLoading &&
+                currentLessonId &&
+                resourceId > 0 &&
+                selectedLesson?.resourceId !== resourceId &&
+                currentLessonId !== resourceId &&
+                !completed && <div>{SvgIcons.lock}</div>}
+              <Tag className={styles.time_tag}>{time}</Tag>
+            </Flex>
           </Flex>
+          <div className={styles.selected_bar}></div>
         </div>
-        <div>
-          <Tag className={styles.time_tag}>{time}</Tag>
-        </div>
-      </Flex>
-      <div className={styles.selected_bar}></div>
-    </div>
+      )}
+    </>
   );
 };
 
@@ -93,6 +114,8 @@ const LearnCourse: FC<{}> = () => {
   const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
 
   const [chapterId, setChapterId] = useState<number>();
+  const [currentLessonId, serCurrentLessonId] = useState<number>();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
   const { data: session } = useSession();
@@ -105,20 +128,30 @@ const LearnCourse: FC<{}> = () => {
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
-  const checkIsCompleted = async () => {
+  const checkIsCompleted = async (resourceId: number) => {
     setLoadingBtn(true);
-    const res = await getFetch(`/api/progress/get/${selectedLesson?.resourceId}/checkStatus`);
+    const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
     const result = (await res.json()) as IResponse;
 
     if (res.ok && result.success) {
       setCompleted(result.isCompleted);
     }
+    ProgramService.getProgress(
+      Number(router.query.courseId),
+      (result) => {
+        console.log(result, "res");
+        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
+      },
+      (error) => {}
+    );
     setLoadingBtn(false);
+
+    return result.isCompleted;
   };
 
   useEffect(() => {
     if (selectedLesson?.resourceId) {
-      checkIsCompleted();
+      checkIsCompleted(selectedLesson?.resourceId);
     }
   }, [selectedLesson, refresh]);
 
@@ -170,13 +203,35 @@ const LearnCourse: FC<{}> = () => {
     },
   ];
 
-  const onSelectResource = (resourceId: number) => {
-    setLessonLoading(true);
+  const selectResource = (resourceId: number) => {
     setSelectedLesson(
       courseData.chapters
         .find((chapter) => chapter.chapterId === chapterId)
         ?.resource.find((data) => data.resourceId === resourceId)
     );
+  };
+
+  const onSelectResource = async (resourceId: number) => {
+    const isCompleted = await checkIsCompleted(resourceId);
+
+    if (selectedLesson?.resourceId === resourceId) {
+      setLessonLoading(true);
+
+      selectResource(resourceId);
+      setLessonLoading(false);
+    } else {
+      if (isCompleted) {
+        setLessonLoading(true);
+
+        selectResource(resourceId);
+        setLessonLoading(false);
+      } else if (!isCompleted) {
+        getProgressDetail();
+
+        currentLessonId !== resourceId && message.error("First complete the previous lessons");
+        // getProgressDetail();
+      }
+    }
     setLessonLoading(false);
   };
 
@@ -194,6 +249,7 @@ const LearnCourse: FC<{}> = () => {
           icon={SvgIcons.folder}
           time={duration}
           onSelectResource={() => {}}
+          loading={loading}
           resourceId={0}
           chapterId={content.chapterId}
           setChapterId={setChapterId}
@@ -215,6 +271,8 @@ const LearnCourse: FC<{}> = () => {
                 resourceId={res.resourceId}
                 setChapterId={() => {}}
                 selectedLesson={selectedLesson}
+                currentLessonId={currentLessonId}
+                loading={loading}
                 chapterId={0}
                 keyValue={`${i + 1}`}
                 refresh={refresh}
@@ -232,6 +290,8 @@ const LearnCourse: FC<{}> = () => {
       (result) => {
         setSelectedLesson(result.latestProgress.nextLesson);
         setChapterId(result.latestProgress.nextLesson?.chapterId);
+
+        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
         setRefresh(!refresh);
       },
       (error) => {}
@@ -308,6 +368,7 @@ const LearnCourse: FC<{}> = () => {
                       </div>
                     ) : (
                       <iframe
+                        allowFullScreen
                         style={{
                           position: "absolute",
 
