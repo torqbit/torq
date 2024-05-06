@@ -1,11 +1,9 @@
 import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
-import formidable, { IncomingForm } from "formidable";
-import ImageKit from "imagekit";
-import fs from "fs";
+import { IncomingForm } from "formidable";
+
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import appConstant from "@/services/appConstant";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
@@ -35,24 +33,6 @@ export const readFieldWithFile = (req: NextApiRequest) => {
       if (err) reject(err);
       resolve({ fields, files });
     });
-  });
-};
-// create instance of ImageKit
-export const imagekit = new ImageKit({
-  urlEndpoint: process.env.IKIT_URL_ENDPOINT as string,
-  publicKey: process.env.IKIT_PUBLIC_KEY as string,
-  privateKey: process.env.IKIT_PRIVATE_KEY as string,
-});
-
-export const uploadFileToImgKit = async (file: formidable.File, folder: string) => {
-  const fileData = fs.readFileSync(file.filepath);
-  const base64Data = fileData.toString("base64");
-  return await imagekit.upload({
-    file: base64Data,
-    fileName: file?.originalFilename as string,
-    useUniqueFileName: true,
-    overwriteFile: true,
-    folder: folder,
   });
 };
 
@@ -100,22 +80,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (isEnrolled) {
       const upFiles: Array<{ url: string; fileId: string }> = [];
-
-      if (files?.files) {
-        if (files?.files?.length) {
-          const allPromise = files.files.map((file: formidable.File) => {
-            return new Promise(async (resolve, reject) => {
-              const res = await uploadFileToImgKit(file, appConstant.attachmentFileFolder);
-              upFiles.push({ url: res.url, fileId: res.fileId });
-              resolve({});
-            });
-          });
-          await Promise.all(allPromise);
-        } else {
-          const res = await uploadFileToImgKit(files.files, appConstant.attachmentFileFolder);
-          upFiles.push({ url: res.url, fileId: res.fileId });
-        }
-      }
 
       const commentData: ICommentData = {
         comment: comment[0],

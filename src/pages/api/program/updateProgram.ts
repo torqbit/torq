@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 
 import { NextApiResponse, NextApiRequest } from "next";
 import appConstant from "@/services/appConstant";
-import { readFieldWithFile, uploadFileToImgKit } from "../v1/discussions/add/[id]";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
