@@ -1,11 +1,9 @@
 import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/learn";
-import { ICourseDetial, IProgramDetail, ResourceDetails } from "@/lib/types/program";
-import ChapterId from "@/pages/api/chapter/delete/[chapterId]";
+import { ICourseDetial, ResourceDetails } from "@/lib/types/program";
 
 import { ChapterDetail, CourseAPIResponse, CourseInfo } from "@/types/courses/Course";
-import { AssignmentAndTask, Chapter, Course, CourseProgress, Resource } from "@prisma/client";
-import { UploadFile } from "antd";
-import { number } from "zod";
+import { Chapter, Course, Resource } from "@prisma/client";
+
 export interface ICourseList extends Course {
   courseId: number;
   tags: string[];
@@ -29,21 +27,12 @@ export type ApiResponse = {
     progress: string;
     courseId: number;
   }[];
-  program: {
-    aboutProgram: string;
-    banner: string;
-    description: string;
-
-    durationInMonths: number;
-    id: number;
-  };
   newChapter: {
     ChapterId: number;
   };
   deadline: number;
   resource: IResourceDetail;
   allResource: Resource[];
-  getProgram: IProgramDetail;
   courses: Course[];
   getCourse: {
     about: string;
@@ -100,164 +89,6 @@ type FailedApiResponse = {
   error: string;
 };
 class ProgramService {
-  /**
-   * fetching all program
-   */
-  fetchAllProgram = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    fetch(`/api/program/getAllProgram`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-
-  /**
-   * get one Program
-   */
-  getProgram = (
-    programId: number,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    fetch(`/api/program/${programId}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-  /**
-   * Add New Program
-   */
-
-  addNewProgram = (
-    title: string,
-    description: string,
-    durationInMonths: number,
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    fetch(`/api/program/addProgram`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: title,
-        description: description,
-        durationInMonths: durationInMonths,
-      }),
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-
-  /**
-   * Image Upload
-   */
-  imageUpload = (
-    fileList: UploadFile[],
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    fetch(`/api/program/upload`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fileList: fileList,
-      }),
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-
-  /**
-   * update program
-   */
-
-  updateProgarm = (
-    aboutProgram: string,
-    programId: number,
-
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    fetch(`/api/program/updateProgram`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        aboutProgram: aboutProgram,
-        programId: programId,
-      }),
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-
   createDraftCourses = (
     courseId: number | undefined,
     onSuccess: (response: ApiResponse) => void,
@@ -531,60 +362,6 @@ class ProgramService {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ chapterId, name, description, sequenceId }),
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-  updateState = (
-    programId: number | undefined,
-    state: string | undefined,
-
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    fetch(`/api/program/updateState/update`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ programId, state }),
-    }).then((result) => {
-      if (result.status == 400) {
-        result.json().then((r) => {
-          const failedResponse = r as FailedApiResponse;
-          onFailure(failedResponse.error);
-        });
-      } else if (result.status == 200) {
-        result.json().then((r) => {
-          const apiResponse = r as ApiResponse;
-          onSuccess(apiResponse);
-        });
-      }
-    });
-  };
-  deleteProgram = (
-    programId: number | undefined,
-
-    onSuccess: (response: ApiResponse) => void,
-    onFailure: (message: string) => void
-  ) => {
-    fetch(`/api/v1/program/delete/${programId}`, {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
     }).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {

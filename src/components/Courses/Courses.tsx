@@ -36,7 +36,7 @@ const CourseCard: FC<ICourseCard> = ({
   const [loading, setLoading] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
   const onCheckErollment = async () => {
-    const res = await getFetch(`/api/course/get-enrolled/${courseId}/checkStatus`);
+    const res = await getFetch(`/api/v1/course/getEnrolled/${courseId}/checkStatus`);
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
       result.isEnrolled ? setEnroll("enrolled") : setEnroll("notEnrolled");

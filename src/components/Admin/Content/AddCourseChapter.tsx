@@ -1,6 +1,5 @@
-import { Button, Drawer, Form, FormInstance, Input, Select, Space, message } from "antd";
-import { FC, useState } from "react";
-import styles from "@/styles/ProgramCourse.module.scss";
+import { Button, Drawer, Form, FormInstance, Input, Space } from "antd";
+import { FC } from "react";
 import { useRouter } from "next/router";
 
 const AddCourseChapter: FC<{
@@ -36,7 +35,6 @@ const AddCourseChapter: FC<{
   return (
     <>
       <Drawer
-        className={styles.newChapterDetails}
         title={edit ? "Update Chapter" : "New Chapter Details"}
         placement="right"
         maskClosable={false}
@@ -51,7 +49,7 @@ const AddCourseChapter: FC<{
               edit && chapterId ? updateChapter(chapterId) : createChapter(courseId);
             }}
           >
-            <Space className={styles.footerBtn}>
+            <Space>
               <Button onClick={() => {}} type="primary" htmlType="submit">
                 {edit ? "Update" : "Save"}
               </Button>
@@ -69,7 +67,7 @@ const AddCourseChapter: FC<{
         }
       >
         <Form form={form} layout="vertical">
-          <div className={styles.formCourseName}>
+          <div>
             <Form.Item label="Title" name="name" rules={[{ required: true, message: "Please Enter Title" }]}>
               <Input placeholder="Set the title of the chapter" />
             </Form.Item>

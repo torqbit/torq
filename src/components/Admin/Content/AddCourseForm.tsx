@@ -22,10 +22,10 @@ import {
   VideoAPIResponse,
   VideoInfo,
 } from "@/types/courses/Course";
-import AddCourseChapter from "@/components/programs/AddCourseChapter";
+import AddCourseChapter from "@/components/Admin/Content/AddCourseChapter";
 import { Resource, ResourceContentType, courseDifficultyType } from "@prisma/client";
 import { IAddResource, ResourceDetails } from "@/lib/types/program";
-import AddVideoLesson from "@/components/programs/AddVideoLesson";
+import AddVideoLesson from "@/components/Admin/Content/AddVideoLesson";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";

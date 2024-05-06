@@ -1,4 +1,3 @@
-import { UploadVideoObjectType } from "@/types/courses/Course";
 import { ResourceContentType } from "@prisma/client";
 
 interface IChapter {
@@ -6,20 +5,6 @@ interface IChapter {
   description: string;
   sequenceId: number;
   chapterId: number;
-}
-
-export interface IProgramDetail {
-  id: number;
-  thumbnail: string;
-  durationInMonths: number;
-  aboutProgram: string;
-  description: string;
-  title: string;
-  authorId: string;
-  banner: string;
-  programType: string;
-  state: string;
-  course: ICourseDetial[];
 }
 
 export interface ICourseDetial {
@@ -58,30 +43,4 @@ export interface ResourceDetails {
   content: string;
   videoId: number;
   courseId?: number;
-}
-
-export interface allProgram {
-  aboutProgram: string;
-  banner: string;
-  description: string;
-  durationInMonths: number;
-  id: number;
-  skills: string[];
-  state: string;
-  authorId: string;
-  programType: string;
-  course: [
-    {
-      description: string;
-      durationInMonths: number;
-      authorId: string;
-      id: number;
-      programId: number;
-      skills: string[];
-      title: string;
-      videoDuration: number;
-    }
-  ];
-  thumbnail: string;
-  title: string;
 }

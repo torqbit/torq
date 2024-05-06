@@ -6,7 +6,6 @@ export default {
   privatePath: ["/add-course"],
   attachmentFileFolder: "discussion-attachment",
   assignmentFileFolder: "assignment-files",
-  IMG_KIT_PROGRAM_FOLDER: "/console/programs",
   assignmentMaxScore: 10,
   userRole: {
     STUDENT: "STUDENT",

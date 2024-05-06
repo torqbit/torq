@@ -1,31 +1,10 @@
-import {
-  Button,
-  Drawer,
-  Form,
-  FormInstance,
-  Input,
-  InputNumber,
-  Segmented,
-  Upload,
-  Select,
-  message,
-  Space,
-  Popconfirm,
-  MenuProps,
-  Dropdown,
-  Flex,
-  Tooltip,
-} from "antd";
-import { FC, useEffect, useState } from "react";
+import { Button, Drawer, Form, FormInstance, Input, Upload, Space, Tooltip } from "antd";
+import { FC } from "react";
 import styles from "@/styles/AddCourse.module.scss";
-import { useRouter } from "next/router";
-import { CloseOutlined, EllipsisOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Resource, ResourceContentType } from "@prisma/client";
-import appConstant from "@/services/appConstant";
-import { IAddResource } from "@/lib/types/program";
+import { CloseOutlined, LoadingOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
-import SvgIcons from "../SvgIcons";
-import { IVideoLesson, UploadedResourceDetail, VideoInfo } from "@/types/courses/Course";
+import SvgIcons from "../../SvgIcons";
+import { IVideoLesson } from "@/types/courses/Course";
 
 const AddVideoLesson: FC<{
   formData: FormInstance;
@@ -54,8 +33,6 @@ const AddVideoLesson: FC<{
   onUploadVideo,
   currResId,
 }) => {
-  const router = useRouter();
-
   return (
     <>
       <Drawer
@@ -148,7 +125,7 @@ const AddVideoLesson: FC<{
                 <div>
                   <Form.Item
                     name="videoUrl"
-                    label="Video URL"
+                    label="Upload Video"
                     rules={[{ required: true, message: "Please Enter Description" }]}
                   >
                     <Upload

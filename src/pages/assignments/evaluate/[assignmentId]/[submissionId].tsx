@@ -5,13 +5,13 @@ import EditorJS from "@editorjs/editorjs";
 import { IAllAssignment } from "../..";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
 import CodeBlock from "@/components/CodeBlock/CodeBlock";
 import Link from "next/link";
 import appConstant from "@/services/appConstant";
 import PreviewCode from "@/components/PreviewCode/PreviewCode";
 import CustomEditorJS from "@/components/Editorjs/CustomEditorJS";
 import { useSession } from "next-auth/react";
+import Layout2 from "@/components/Layout2/Layout2";
 
 interface IState {
   comment: string;
@@ -37,8 +37,7 @@ const AssignmentEvaluate = () => {
       const res = await getFetch(`/api/assignment/evaluate/${id}`);
       const result = (await res.json()) as IResponse;
       if (res.ok && result.success) {
-        const assignInfo: IAllAssignment =
-          result.assignmentInfo as IAllAssignment;
+        const assignInfo: IAllAssignment = result.assignmentInfo as IAllAssignment;
         setAssignmentInfo(assignInfo);
         setCode(assignInfo.submissionTask.content as any);
 
@@ -132,19 +131,13 @@ const AssignmentEvaluate = () => {
   };
 
   return (
-    <Layout className={styles.assignment_evaluation_page}>
+    <Layout2 className={styles.assignment_evaluation_page}>
       <div className={styles.center_content}>
         <Space align="center" style={{ marginBottom: 30 }}>
           <h2>Evaluate Assignment</h2>{" "}
-          {assignmentInfo?.submissionTask.isEvaluated && (
-            <Tag color="green">{assignmentInfo?.submissionStatus}</Tag>
-          )}
+          {assignmentInfo?.submissionTask.isEvaluated && <Tag color="green">{assignmentInfo?.submissionStatus}</Tag>}
         </Space>
-        <Space
-          direction="vertical"
-          style={{ width: "100%", marginTop: 40 }}
-          size="large"
-        >
+        <Space direction="vertical" style={{ width: "100%", marginTop: 40 }} size="large">
           <Space style={{ width: "100%" }} direction="vertical" size="middle">
             <Tabs
               type="card"
@@ -174,21 +167,13 @@ const AssignmentEvaluate = () => {
               min={0}
               value={state.score as number}
               max={appConstant.assignmentMaxScore}
-              onChange={(e) =>
-                setState({ ...state, score: Number(e.target.value) })
-              }
+              onChange={(e) => setState({ ...state, score: Number(e.target.value) })}
               placeholder="Score"
             />
           </Space>
           <Space>
-            <Button
-              type="primary"
-              className={styles.submit_btn}
-              onClick={onSubmitEvaluate}
-            >
-              {assignmentInfo?.submissionTask.isEvaluated
-                ? "Re-submit"
-                : "Submit"}
+            <Button type="primary" className={styles.submit_btn} onClick={onSubmitEvaluate}>
+              {assignmentInfo?.submissionTask.isEvaluated ? "Re-submit" : "Submit"}
             </Button>
             <Link href="/assignments">
               <Button className={styles.submit_btn}>Back</Button>
@@ -196,7 +181,7 @@ const AssignmentEvaluate = () => {
           </Space>
         </Space>
       </div>
-    </Layout>
+    </Layout2>
   );
 };
 
