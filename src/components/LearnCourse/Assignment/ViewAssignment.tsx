@@ -1,11 +1,9 @@
-import CustomEditorJS from "@/components/Editorjs/CustomEditorJS";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import style from "@/styles/LearnLecture.module.scss";
-import EditorJS from "@editorjs/editorjs";
+
 import { TabsProps, Tabs, Button, Popconfirm, message, Tag, Flex } from "antd";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import moment from "moment";
-import { daysRemaining } from "@/services/helper";
 import appConstant from "@/services/appConstant";
 import { useSession } from "next-auth/react";
 import { IResource } from "@/lib/types/learn";
@@ -13,8 +11,6 @@ import { SubmissionStatus } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { Document, Page, pdfjs } from "react-pdf";
-import CountDown from "@/components/programs/CountDown";
-import { LeftCircleOutlined } from "@ant-design/icons";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -87,7 +83,7 @@ const ViewAssignment: FC<{
   loadingPage: boolean;
   setCompleted: (value: boolean) => void;
 }> = ({ sltResource, courseId, loadingPage, resLocked, getProgressDetail, onRefresh, setCompleted }) => {
-  const ref = React.useRef<EditorJS>();
+  const ref = React.useRef();
   const { dispatch } = useAppContext();
   const router = useRouter();
   const { data: session } = useSession();
@@ -239,9 +235,7 @@ const ViewAssignment: FC<{
                   style={{
                     color: isDaysLeft ? "#4ece91" : "#ff0000",
                   }}
-                >
-                  <CountDown id={sltResource.resourceId} onMarkAsCompleted={onMarkAsCompleted} />
-                </span>
+                ></span>
               </Flex>
             ) : (
               <Tag color={assignmentInfo.submissionStatus === "SUBMITTED" ? "#87d068" : "#2db7f5"}>

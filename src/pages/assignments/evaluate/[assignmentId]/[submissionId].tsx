@@ -1,7 +1,6 @@
 import { Button, Input, Space, Tabs, Tag, message } from "antd";
 import styles from "@/styles/AssignmentEvaluation.module.scss";
 import React from "react";
-import EditorJS from "@editorjs/editorjs";
 import { IAllAssignment } from "../..";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { useRouter } from "next/router";
@@ -9,7 +8,6 @@ import CodeBlock from "@/components/CodeBlock/CodeBlock";
 import Link from "next/link";
 import appConstant from "@/services/appConstant";
 import PreviewCode from "@/components/PreviewCode/PreviewCode";
-import CustomEditorJS from "@/components/Editorjs/CustomEditorJS";
 import { useSession } from "next-auth/react";
 import Layout2 from "@/components/Layout2/Layout2";
 
@@ -19,7 +17,7 @@ interface IState {
 }
 
 const AssignmentEvaluate = () => {
-  const ref = React.useRef<EditorJS>();
+  const ref = React.useRef();
   const router = useRouter();
   const { data: session } = useSession();
   const { assignmentId, submissionId } = router.query;
@@ -66,16 +64,7 @@ const AssignmentEvaluate = () => {
     langTabs?.push({
       key: "assignment",
       label: "Assignment",
-      children: (
-        <CustomEditorJS
-          holder="assign_readOnly2"
-          editorRef={ref}
-          editorData={assignmentInfo?.resource.assignment}
-          className="evaluate_assign_editor_view"
-          readOnly={true}
-          placeholder={""}
-        />
-      ),
+      children: "",
     });
     assignmentInfo?.resource.assignmentLang.map((lang, i) => {
       langTabs.push({
