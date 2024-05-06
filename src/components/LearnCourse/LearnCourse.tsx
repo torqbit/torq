@@ -66,9 +66,12 @@ const Label: FC<{
         <Skeleton.Button />
       ) : (
         <div
-          style={{ padding: resourceId > 0 ? "5px 0px" : 0, paddingLeft: resourceId > 0 ? "20px" : 0 }}
-          className={`${
-            selectedLesson && resourceId === selectedLesson.resourceId ? styles.selectedLable : styles.labelContainer
+          style={{
+            padding: resourceId > 0 ? "5px 0px" : 0,
+            paddingLeft: resourceId > 0 ? "20px" : 0,
+          }}
+          className={`${selectedLesson && resourceId === selectedLesson.resourceId && styles.selectedLable} ${
+            resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
           }`}
           onClick={() => {
             onSelectResource(resourceId);
@@ -81,15 +84,15 @@ const Label: FC<{
                 <div style={{ cursor: "pointer" }}>{title}</div>
               </Flex>
             </div>
-            <Flex gap={10}>
+            <div className={styles.timeContainer}>
               {!checkLockLoading &&
                 currentLessonId &&
                 resourceId > 0 &&
                 selectedLesson?.resourceId !== resourceId &&
                 currentLessonId !== resourceId &&
-                !completed && <div>{SvgIcons.lock}</div>}
+                !completed && <div className={styles.lockICon}>{SvgIcons.outlinedLock}</div>}
               <Tag className={styles.time_tag}>{time}</Tag>
-            </Flex>
+            </div>
           </Flex>
           <div className={styles.selected_bar}></div>
         </div>
