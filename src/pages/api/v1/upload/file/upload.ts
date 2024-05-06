@@ -3,12 +3,12 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 
-import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { saveToDir } from "../video/upload";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 import url from "url";
 import prisma from "@/lib/prisma";
+import { readFieldWithFile } from "../../discussions/add";
 
 export const config = {
   api: {
@@ -56,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         );
         if (existingFilePath) {
           const deletionResponse = await cms.deleteFile(`${existingFilePath}`, serviceProvider);
-          if (!deletionResponse.success) {
+          if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
             throw new Error(`Unable to delete the file due to : ${deletionResponse.message}`);
           }
         }

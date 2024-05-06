@@ -4,7 +4,6 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 
 import { IAttachedFiles } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CommentBox";
-import { imagekit } from "../add";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -13,19 +12,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         id: Number(req.query.id),
       },
     });
-
-    const attachedFile: IAttachedFiles[] = comment?.attachedFiles as any[];
-
-    if (attachedFile && attachedFile?.length) {
-      const allPromise = attachedFile.map((file) => {
-        return new Promise(async (resolve, reject) => {
-          const res = await imagekit.deleteFile(file?.fileId);
-          resolve({});
-        });
-      });
-
-      await Promise.all(allPromise);
-    }
 
     const deletedCmt = await prisma.discussion.delete({
       where: {

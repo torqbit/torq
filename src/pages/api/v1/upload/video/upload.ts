@@ -5,11 +5,11 @@ import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 
 import path from "path";
 
-import { readFieldWithFile } from "@/pages/api/utils";
 import fs from "fs";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
-import { UploadVideoObjectType, VideoAPIResponse } from "@/types/courses/Course";
+import { UploadVideoObjectType } from "@/types/courses/Course";
 import prisma from "@/lib/prisma";
+import { readFieldWithFile } from "../../discussions/add";
 
 export const config = {
   api: {
@@ -97,7 +97,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         );
         if (needDeletion && videoProviderId) {
           const deletionResponse = await cms.deleteVideo(videoProviderId, objectId, objectType, serviceProvider);
-          if (!deletionResponse.success) {
+          if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
             throw new Error(`Unable to delete the video due to : ${deletionResponse.message}`);
           }
         }
