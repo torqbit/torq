@@ -42,6 +42,21 @@
   }
 }
 
+.lockICon {
+  color: #c4c4c4;
+}
+.lessonLabelContainer {
+  min-width: 300px;
+
+  .selected_bar {
+    display: none;
+  }
+  .time_tag {
+    color: var(--font-seconadary);
+    background-color: var(--bg-secondary);
+  }
+}
+
 .labelContainer {
   min-width: 300px;
   .selected_bar {
@@ -50,6 +65,14 @@
   .time_tag {
     color: var(--font-seconadary);
     background-color: var(--bg-secondary);
+  }
+}
+.timeContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  .lockICon {
+    margin-bottom: -5px;
   }
 }
 .selectedLable {
