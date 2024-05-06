@@ -3,13 +3,9 @@
 .dashboard_content {
   padding: 40px;
 
-  h2 {
-    color: var(--font-primary);
-  }
-
   .enrolled_course_list {
     width: 100%;
-    background-color: #fff;
+    background-color: var(--bg-primary);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 
     .enroll_course_item {
@@ -106,7 +102,7 @@
       h3,
       p {
         margin: 0 15px;
-        color: var(--font-label);
+        color: var(--font-secondary);
       }
 
       h3 {
@@ -117,7 +113,7 @@
       p {
         font-size: 14px;
         margin-bottom: 20px;
-        color: var(--font-label);
+        color: var(--font-secondary);
       }
 
       .card_footer {

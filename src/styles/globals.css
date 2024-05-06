@@ -8,7 +8,7 @@ body {
   background-color: var(--bg-secondary);
 }
 
-:root {
+:root[data-theme="light"] {
   --bg-secondary: #eee;
   --bg-primary: #fff;
   --font-secondary: #666;
@@ -30,6 +30,7 @@ body {
   --hd-box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
   --box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
   --card-bg: #fff;
+  --btn-primary: #5b63d3;
   --border-radius: 4px;
   --ft-color-dull: #848484;
   --ft-color: #0e1326;
@@ -42,24 +43,13 @@ body {
   --hover-bg: var(--header-bg);
 }
 
-:root[data-theme="light"] {
-  --header-bg: #fff;
-  --main-bg: #f0f0f0;
-  --ft-color: black;
-  --ft-color-dull: #848484;
-  --card-bg: #fff;
-  --hd-box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
-  --ft-color: #0e1326;
-  --theme-btn-bg: #fff;
-  --label-color: #68696d;
-  --primary: #4096ff;
-  --border-color: #d9d9d9;
-  --hover-bg: var(--header-bg);
-}
-
 :root[data-theme="dark"] {
-  --header-bg: #0e1326;
-  --main-bg: #394165;
+  --bg-secondary: #202433;
+  --bg-primary: #283040;
+  --font-primary: #fff;
+  --btn-primary: #5b63d3;
+  --font-secondary: #939db8;
+  --border-color: #2f3647;
   --ft-color: #fff;
   --card-bg: #0e1326;
   --hd-box-shadow: 0px 0px 35px 4px rgba(0, 0, 0, 0.29);
@@ -67,8 +57,16 @@ body {
   --theme-btn-bg: #394165;
   --label-color: #68696d;
   --primary: #4096ff;
-  --border-color: #d9d9d9;
   --hover-bg: var(--header-bg);
+}
+
+h1,
+h2 {
+  color: var(--font-primary);
+}
+
+h3 {
+  color: var(--font-secondary);
 }
 
 a {
@@ -78,6 +76,14 @@ a {
 
 .ant-divider-horizontal {
   margin: 10px 0;
+}
+
+.ant-empty-normal .ant-description {
+  color: var(--font-secondary);
+}
+
+.ant-tabs-top > .ant-tabs-nav::before {
+  border: 1px solid var(--border-color);
 }
 
 input {
@@ -409,9 +415,9 @@ input {
 
 .main_sider .ant-menu-item-selected,
 .main_sider .ant-menu-item-active {
-  border-right: 3px solid rgb(105, 106, 107);
-  background-color: rgba(0, 0, 0, 0.06);
-  color: #000;
+  border-right: 3px solid var(--btn-primary);
+  background-color: var(--bg-secondary);
+  color: var(--font-primary);
 }
 
 /* ++++++++++++++++++ Users Table ++++++++++++++++++++++++ */

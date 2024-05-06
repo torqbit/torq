@@ -4,6 +4,9 @@ export default {
     colorText: "#666",
   },
   components: {
+    Layout: {
+      bodyBg: "#f5f5f5",
+    },
     Menu: {
       itemColor: "#666",
     },

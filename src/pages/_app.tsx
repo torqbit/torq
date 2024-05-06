@@ -12,13 +12,23 @@ import { AppProvider } from "@/components/ContextApi/AppContext";
 import darkThemConfig from "@/services/darkThemConfig";
 
 function App({ Component, pageProps }: AppProps<{ session: Session }>) {
-  const [currentTheme, setCurrentTheme] = useState(false);
+  const [enabledDarkTheme, setCurrentTheme] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setCurrentTheme(!currentTheme)}>Toggle</Button>
-      <ConfigProvider theme={currentTheme ? antThemeConfig : darkThemConfig}>
-        <AppProvider themeSwitcher={() => setCurrentTheme(!currentTheme)}>
+      <ConfigProvider theme={enabledDarkTheme ? darkThemConfig : antThemeConfig}>
+        <AppProvider
+          themeSwitcher={() => {
+            let mainHTML = document.getElementsByTagName("html").item(0);
+            if (mainHTML != null) {
+              console.log(`setting current theme to - ${enabledDarkTheme ? "dark" : "light"}`);
+              const currentTheme = mainHTML.getAttribute("data-theme");
+              mainHTML.setAttribute("data-theme", enabledDarkTheme ? "light" : "dark");
+            }
+
+            setCurrentTheme(!enabledDarkTheme);
+          }}
+        >
           <SessionProvider session={pageProps.session}>
             <NextNProgress />
             <Component {...pageProps} />
