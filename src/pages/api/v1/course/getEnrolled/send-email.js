@@ -1,4 +1,4 @@
-import { transporter } from "../../../../../services/email/transporter";
+import { transporter } from "../../../../../../services/email/transporter";
 
 const handler = async (req, res) => {
   try {

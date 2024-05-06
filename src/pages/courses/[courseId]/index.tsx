@@ -23,7 +23,7 @@ const LearnCoursesPage: NextPage = () => {
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
   const onCheckErollment = async () => {
-    const res = await getFetch(`/api/course/get-enrolled/${router.query.courseId}/checkStatus`);
+    const res = await getFetch(`/api/v1/course/getEnrolled/${router.query.courseId}/checkStatus`);
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
       setEnroll(result.isEnrolled);

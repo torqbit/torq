@@ -1,5 +1,5 @@
 import styles from "@/styles/AssignmentEvaluation.module.scss";
-import Layout from "@/components/Layout";
+
 import { Button, Table, Tag, message } from "antd";
 import React, { FC } from "react";
 import { IResponse, getFetch } from "@/services/request";
@@ -8,6 +8,7 @@ import moment from "moment";
 import { NextPage } from "next";
 import Link from "next/link";
 import appConstant from "@/services/appConstant";
+import Layout2 from "@/components/Layout2/Layout2";
 
 interface ISubmissionTask extends SubmissionTask {
   user: {
@@ -26,9 +27,7 @@ export interface IAllAssignment extends AssignmentAndTask {
 }
 
 const AssignmentTable: FC = () => {
-  const [allAssignment, setAllAssignment] = React.useState<IAllAssignment[]>(
-    []
-  );
+  const [allAssignment, setAllAssignment] = React.useState<IAllAssignment[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const getAllAssignment = async () => {
@@ -52,11 +51,7 @@ const AssignmentTable: FC = () => {
     {
       title: "SubmittedAt",
       render: (a: IAllAssignment) => {
-        return (
-          <span>
-            {moment(a.submissionTask.createdAt).format("MMM-DD-YY  hh:mm a")}
-          </span>
-        );
+        return <span>{moment(a.submissionTask.createdAt).format("MMM-DD-YY  hh:mm a")}</span>;
       },
       key: "createdAt",
     },
@@ -81,13 +76,7 @@ const AssignmentTable: FC = () => {
       title: "Evaluation On",
       render: (a: IAllAssignment) => {
         if (a.submissionTask.evaluatedOn) {
-          return (
-            <span>
-              {moment(a.submissionTask.evaluatedOn).format(
-                "MMM-DD-YY  hh:mm a"
-              )}
-            </span>
-          );
+          return <span>{moment(a.submissionTask.evaluatedOn).format("MMM-DD-YY  hh:mm a")}</span>;
         } else {
           return "--";
         }
@@ -142,24 +131,19 @@ const AssignmentTable: FC = () => {
   ];
   return (
     <section className={styles.user_tab}>
-      <Table
-        dataSource={allAssignment}
-        className={styles.assignment_tables}
-        columns={columns}
-        loading={loading}
-      />
+      <Table dataSource={allAssignment} className={styles.assignment_tables} columns={columns} loading={loading} />
     </section>
   );
 };
 
 const SubmittedAssignment: NextPage = () => {
   return (
-    <Layout className={styles.assignment_list_page}>
+    <Layout2 className={styles.assignment_list_page}>
       <div className={styles.center_content}>
         <h2>Submitted Assignments</h2>
         <AssignmentTable />
       </div>
-    </Layout>
+    </Layout2>
   );
 };
 

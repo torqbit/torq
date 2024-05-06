@@ -4,9 +4,9 @@ import styles from "@/styles/Profile.module.scss";
 import { getSession, useSession } from "next-auth/react";
 import Layout2 from "@/components/Layout2/Layout2";
 import { Button, Form, Input, Tabs, TabsProps, message } from "antd";
-import SvgIcons from "@/components/SvgIcons";
+
 import { postFetch, IResponse } from "@/services/request";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { Session } from "next-auth";
 
 const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
@@ -63,12 +63,8 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
   );
 };
 
-interface IProps {
-  session: Session;
-}
-
-const Setting = (props: IProps) => {
-  const { session } = props;
+const Setting: NextPage = () => {
+  const { data: user } = useSession();
 
   const onChange = (key: string) => {};
 
@@ -76,13 +72,13 @@ const Setting = (props: IProps) => {
     {
       key: "1",
       label: "Profile",
-      children: <ProfileSetting user={session} />,
+      children: user && <ProfileSetting user={user} />,
     },
   ];
   return (
     <Layout2>
       <section className={styleLayout.setting_content}>
-        <h2>Hello {session?.user?.name}</h2>
+        <h2>Hello {user?.user?.name}</h2>
         <h3>Setting</h3>
 
         <Tabs defaultActiveKey="1" className="content_tab" items={items} onChange={onChange} />
@@ -92,12 +88,3 @@ const Setting = (props: IProps) => {
 };
 
 export default Setting;
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const user = await getSession(ctx);
-  return {
-    props: {
-      session: user,
-    },
-  };
-};

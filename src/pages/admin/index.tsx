@@ -1,5 +1,4 @@
 import styles from "@/styles/AdminDashboard.module.scss";
-import Layout from "@/components/Layout";
 
 import { Button, DatePicker, Form, Input, Modal, Select, Space, Switch, Table, Tabs, Tag, message } from "antd";
 import React, { FC, useState } from "react";
@@ -10,6 +9,7 @@ import moment from "moment";
 import appConstant from "@/services/appConstant";
 import { NextPage } from "next";
 import type { DatePickerProps, RangePickerProps } from "antd/es/date-picker";
+import Layout2 from "@/components/Layout2/Layout2";
 
 type FieldType = {
   name?: string;
@@ -251,7 +251,7 @@ const AdminDashboard: NextPage = () => {
   };
 
   return (
-    <Layout className={styles.admin_dashboard_page}>
+    <Layout2 className={styles.admin_dashboard_page}>
       <div className={styles.center_content}>
         {contextholder}
         <div className={styles.adminHeader}>
@@ -301,7 +301,7 @@ const AdminDashboard: NextPage = () => {
           ]}
         />
       </div>
-    </Layout>
+    </Layout2>
   );
 };
 

@@ -46,6 +46,8 @@
   color: #c4c4c4;
 }
 .lessonLabelContainer {
+  border-top: 2px solid var(--bg-secondary);
+
   min-width: 300px;
 
   .selected_bar {

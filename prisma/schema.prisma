@@ -19,7 +19,7 @@ enum Role {
 }
 
 model User {
-  id                   String                  @id @default(cuid())
+  id                   String               @id @default(cuid())
   name                 String?
   email                String?              @unique
   phone                String?
@@ -44,8 +44,8 @@ model User {
 
 //****** Account Schema ******//
 model Account {
-  id                 String    @id @default(cuid())
-  userId             String     @map("user_id")
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
   type               String
   provider           String
   providerAccountId  String  @map("provider_account_id")
@@ -70,13 +70,13 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
-  userId       String      @map("user_id")
+  userId       String   @map("user_id")
   expires      DateTime
   accessToken  String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -115,7 +115,6 @@ enum courseDifficultyType {
 
 model Course {
   courseId          Int                   @id @default(autoincrement())
-  programId         Int?                  @default(1)
   name              String
   about             String                @db.Text()
   description       String                @db.Text()
@@ -126,7 +125,7 @@ model Course {
   tvState           VideoState?
   thumbnail         String?
   icon              String?
-  authorId          String                   @map("user_id")
+  authorId          String                @map("user_id")
   skills            Json?
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @default(now())
@@ -141,12 +140,10 @@ model Course {
   totalResources    Int                   @default(0)
   state             StateType             @default(DRAFT)
   chapters          Chapter[]
-  program           Program?              @relation(fields: [programId], references: [id])
   CourseRegistraion CourseRegistration[]
   courseProgress    CourseProgress[]
 
   @@unique([courseId, name])
-  @@index([programId])
   @@index([authorId])
 }
 
@@ -259,7 +256,7 @@ model CourseProgress {
   sequenceId       Int
   lessonsCompleted Int      @default(0)
   resourceId       Int
-  studentId        String      @map("user_id")
+  studentId        String   @map("user_id")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
@@ -396,32 +393,6 @@ model UserJoinWaiting {
 }
 
 //****** UserJoinWaiting Schema End******//
-enum ProgramType {
-  PAID
-  FREE
-}
-
-model Program {
-  id               Int         @default(autoincrement()) @db.Int()
-  authorId         Int         @map("user_id")
-  title            String      @db.Text()
-  description      String?     @db.Text()
-  durationInMonths Int
-  thumbnail        String?     @db.Text()
-  banner           String?     @db.Text()
-  skills           Json?
-  aboutProgram     String?     @db.Text()
-  state            StateType
-  course           Course[]
-  programType      ProgramType @default(FREE)
-
-  programPrice Float? @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  @@unique([id])
-}
 
 model ServiceProvider {
   id             Int      @default(autoincrement()) @db.Int()
