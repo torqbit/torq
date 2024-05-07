@@ -5,15 +5,20 @@ import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
 import { useAppContext } from "../ContextApi/AppContext";
-import { Badge, Layout, MenuProps } from "antd";
+import { Badge, ConfigProvider, Layout, MenuProps } from "antd";
 
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
+import { UserSession } from "@/lib/types/user";
+import darkThemConfig from "@/services/darkThemConfig";
+import antThemeConfig from "@/services/antThemeConfig";
+import { Theme } from "@prisma/client";
+import { postFetch } from "@/services/request";
 
 const { Content } = Layout;
 
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
-  const { data: user } = useSession();
+  const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
 
   const [theme, setTheme] = React.useState(false);
@@ -27,6 +32,22 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       return !prv;
     });
   };
+
+  const updateTheme = async (theme: Theme) => {
+    dispatch({
+      type: "SET_USER",
+      payload: { ...user?.user, theme: theme },
+    });
+    let mainHTML = document.getElementsByTagName("html").item(0);
+    if (mainHTML != null) {
+      mainHTML.setAttribute("data-theme", theme);
+    }
+    const response = await postFetch({ theme: theme }, "/api/v1/user/theme");
+    if (response.ok) {
+      update({ theme: theme });
+    }
+  };
+
   const authorSiderMenu: MenuProps["items"] = [
     {
       type: "group",
@@ -84,6 +105,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       label: "ACCOUNT",
       key: "group",
     },
+
     {
       label: <Link href="/setting">Setting</Link>,
       key: "setting",
@@ -105,24 +127,33 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     },
   ];
   useEffect(() => {
-    const theme = document?.documentElement?.getAttribute("data-theme");
-    theme === "dark" ? setTheme(true) : setTheme(false);
-  }, []);
+    if (user) {
+      console.log(user);
+      const userSession = user.user as UserSession;
+      console.log(globalState.theme);
+      dispatch({
+        type: "SET_USER",
+        payload: userSession,
+      });
+    }
+  }, [user]);
 
   return (
     <>
-      <Head>
-        <title>Torq | Learn to lead</title>
-        <meta name="description" content="Learn, build and solve the problems that matters the most" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <ConfigProvider theme={globalState.session?.theme == "dark" ? darkThemConfig : antThemeConfig}>
+        <Head>
+          <title>Torq | Learn to lead</title>
+          <meta name="description" content="Learn, build and solve the problems that matters the most" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <Layout hasSider className="default-container">
-        <Sidebar menu={user?.role == "AUTHOR" ? usersMenu.concat(authorSiderMenu) : usersMenu} />
-        <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
-          <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
+        <Layout hasSider className="default-container">
+          <Sidebar menu={user?.role == "AUTHOR" ? usersMenu.concat(authorSiderMenu) : usersMenu} />
+          <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
+            <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
+          </Layout>
         </Layout>
-      </Layout>
+      </ConfigProvider>
     </>
   );
 };
