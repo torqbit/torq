@@ -1,12 +1,27 @@
-import { Course } from "@prisma/client";
+import { Course, Discussion } from "@prisma/client";
 
 import { getFetch, postFetch } from "./request";
-import { INotification } from "@/components/Header/Header";
 
 export interface ICourseList extends Course {
   courseId: number;
   tags: string[];
   enrollCourses: string[];
+}
+
+export interface INotification extends Notification {
+  comment: Discussion;
+  tagComment: any;
+  resource: {
+    resourceId: number;
+    chapterId: number;
+    chapter: {
+      courseId: number;
+    };
+  };
+  fromUser: {
+    name: string;
+    image: string;
+  };
 }
 
 export type ApiResponse = {

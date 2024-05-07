@@ -11,7 +11,16 @@ datasource db {
 
 //****  DB CONFIG END  ****//
 
+
+
 //****** User Schema  *****//
+enum Theme {
+  light
+  dark
+  system
+}
+
+
 enum Role {
   STUDENT
   AUTHOR
@@ -27,6 +36,7 @@ model User {
   emailVerified        DateTime?
   isActive             Boolean              @default(true)
   role                 Role                 @default(STUDENT)
+  theme                Theme                @default(light)
   dateJoined           DateTime             @default(now())
   createdAt            DateTime             @default(now())
   CourseRegistration   CourseRegistration[]

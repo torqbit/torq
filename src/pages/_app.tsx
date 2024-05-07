@@ -16,22 +16,21 @@ function App({ Component, pageProps }: AppProps<{ session: Session }>) {
 
   return (
     <>
-      <ConfigProvider theme={enabledDarkTheme ? darkThemConfig : antThemeConfig}>
-        <AppProvider
-          themeSwitcher={() => {
-            let mainHTML = document.getElementsByTagName("html").item(0);
-            if (mainHTML != null) {
-              mainHTML.setAttribute("data-theme", enabledDarkTheme ? "light" : "dark");
-            }
-            setCurrentTheme(!enabledDarkTheme);
-          }}
-        >
-          <SessionProvider session={pageProps.session}>
-            <NextNProgress />
-            <Component {...pageProps} />
-          </SessionProvider>
-        </AppProvider>
-      </ConfigProvider>
+      <AppProvider
+        themeSwitcher={() => {
+          // console.log(pageProps.session);
+          // let mainHTML = document.getElementsByTagName("html").item(0);
+          // if (mainHTML != null) {
+          //   mainHTML.setAttribute("data-theme", enabledDarkTheme ? "light" : "dark");
+          // }
+          // setCurrentTheme(!enabledDarkTheme);
+        }}
+      >
+        <SessionProvider session={pageProps.session}>
+          <NextNProgress />
+          <Component {...pageProps} />
+        </SessionProvider>
+      </AppProvider>
     </>
   );
 }
