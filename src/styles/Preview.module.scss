@@ -1,5 +1,12 @@
 .preview_container {
   padding: 40px;
+  .coursehHeaderLinks {
+    font-size: 20;
+    color: var(--font-secondary);
+    a:hover {
+      color: var(--font-primary);
+    }
+  }
   .video_container {
     width: 800px;
     height: 450px;
@@ -18,13 +25,13 @@
     p {
       margin: 0;
       padding: 0;
-      color: #fff;
+      color: var(--font-secondary);
 
       max-width: 400px;
     }
 
     p {
-      color: #888;
+      color: var(--font-secondary);
     }
     padding: 20px;
     display: flex;
@@ -45,14 +52,14 @@
     .resContainer {
       height: 35px;
 
-      border-bottom: 1px solid #a7a4a4b9;
+      border-bottom: 1px solid var(--border-color);
 
       padding: 5px 0px;
       padding-left: 20px;
     }
   }
   .time_tag {
-    color: #666;
+    color: var(--font-secondary);
     padding: 0px 10px;
   }
 }

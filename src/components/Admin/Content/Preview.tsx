@@ -120,7 +120,7 @@ const Preview: FC<{
   return (
     <section className={styles.preview_container}>
       <Space direction="vertical">
-        <div style={{ fontSize: 20 }}>
+        <div style={{ fontSize: 20 }} className={styles.coursehHeaderLinks}>
           {courseDetail && !addContentPreview && (
             <Flex>
               <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
@@ -154,6 +154,7 @@ const Preview: FC<{
             ) : (
               <Button
                 className={styles.save_btn}
+                type="primary"
                 onClick={() => {
                   !addContentPreview && onEnrollCourse && onEnrollCourse();
                 }}

@@ -52,7 +52,7 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
               <Input placeholder="Phone" min={0} maxLength={12} />
             </Form.Item>
             <Form.Item noStyle>
-              <Button type="primary" htmlType="submit" className={styles.update_profile_btn}>
+              <Button type="primary" htmlType="submit">
                 Update
               </Button>
             </Form.Item>

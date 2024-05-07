@@ -385,9 +385,9 @@ input {
   transform: rotate(180deg);
 }
 
-.ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+/* .ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   background-color: #eee;
-}
+} */
 
 .ant-drawer .ant-drawer-header {
   border-bottom: none;
@@ -428,7 +428,8 @@ input {
 }
 .users_table .ant-table-tbody tr td {
   font-size: 13px;
-  background-color: #fff;
+  /* background-color: #fff; */
+  /* background-color: var(--bg-primary); */
 }
 
 .users_table .ant_table {

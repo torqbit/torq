@@ -307,6 +307,7 @@ const Users: FC = () => {
                 Submit
               </Button>
               <Button
+                danger
                 onClick={() => {
                   onClose();
                 }}
