@@ -31,6 +31,11 @@
     margin: 0;
     padding: 0;
     margin-bottom: 20px;
+    color: var(--font-secondary);
+    a:hover {
+      color: var(--font-primary);
+    }
+    // color: #939db8;
   }
 
   .lessons_container {
@@ -81,7 +86,7 @@
   position: relative;
   min-width: 300px;
 
-  background-color: var(--bg-selected);
+  background-color: var(--bg-secondary);
   .time_tag {
     background-color: var(--bg-primary);
   }
@@ -92,8 +97,8 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 3px;
+    width: 250px;
     height: 33px;
-    background-color: var(--selected-side-bar);
+    background-color: var(--bg-secondary);
   }
 }

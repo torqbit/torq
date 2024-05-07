@@ -3,16 +3,22 @@
   margin: 0 auto;
   padding: 10px;
   h1 {
-    color: #000;
+    color: var(--font-primary);
     margin-top: 20px;
     margin-bottom: 30px;
   }
   .header_link {
-    color: #000;
+    color: var(--font-secondary);
 
     margin: 20px 0px;
+    span {
+      font-size: 20px;
+    }
     a {
       font-size: 20px;
+    }
+    > a:hover {
+      color: var(--font-primary);
     }
   }
 }
@@ -20,6 +26,7 @@
 .media_storage {
   max-width: 600px;
   margin: 20px 10px;
+
   .header {
     display: flex;
     align-items: center;
@@ -42,11 +49,11 @@
     gap: 30px;
     .storage {
       padding: 10px 20px;
-      background-color: #fff;
+      background-color: var(--bg-primary);
       input {
         max-width: 300px;
         height: 40px;
-        border: 1px solid #eee;
+        border: 1px solid var(--border-color);
         border-top-left-radius: 4px;
         padding: 5px 10px;
         border-bottom-left-radius: 4px;

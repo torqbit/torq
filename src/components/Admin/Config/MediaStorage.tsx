@@ -14,7 +14,7 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
         <div className={styles.header}>
           <h4>Media Storage</h4>
           <Space>
-            <Button>Discard</Button>
+            <Button danger>Discard</Button>
             <Button className={styles.submit_btn} type="primary" htmlType="submit">
               <div>{form.getFieldValue("accessKey") ? "Update Config" : "Save Config"} </div>
               {SvgIcons.arrowRight}
@@ -28,6 +28,7 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
             <Form.Item
               name={"accessKey"}
               label={"API Access Key"}
+              style={{ width: 300 }}
               rules={[{ required: true, message: "Enter API Access Key" }]}
             >
               <Input.Password placeholder="Please enter  access key" />
@@ -50,6 +51,7 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
           <div className={styles.storage}>
             <h4>Configure File Storage - Bunny.net</h4>
             <Form.Item
+              style={{ width: 300 }}
               name={"storagePassword"}
               label={"Storage Access Password"}
               rules={[{ required: true, message: "Storage Access Password is required" }]}

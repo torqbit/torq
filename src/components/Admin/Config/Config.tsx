@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
 
 import Layout2 from "@/components/Layout2/Layout2";
-import Link from "next/link";
 
 import styles from "@/styles/Config.module.scss";
 
-import { Button, Flex, Form, FormInstance, Tabs, TabsProps, message } from "antd";
+import { Flex, Form, Tabs, TabsProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import MediaStorage from "./MediaStorage";
 import { useSession } from "next-auth/react";
@@ -13,9 +12,7 @@ import ProgramService from "@/services/ProgramService";
 
 const Config: FC = () => {
   const { data: user } = useSession();
-
   const [loading, setLoading] = useState<boolean>(false);
-
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
 
@@ -91,7 +88,7 @@ const Config: FC = () => {
         <Flex align="center" gap={3} className={styles.header_link}>
           <a href="#">Adminstration</a>
           {SvgIcons.chevronRight}
-          <a href="#">Configuration</a>
+          <span> Configuration</span>
         </Flex>
         <Tabs
           tabBarGutter={40}
