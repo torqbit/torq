@@ -21,11 +21,8 @@ function App({ Component, pageProps }: AppProps<{ session: Session }>) {
           themeSwitcher={() => {
             let mainHTML = document.getElementsByTagName("html").item(0);
             if (mainHTML != null) {
-              console.log(`setting current theme to - ${enabledDarkTheme ? "dark" : "light"}`);
-              const currentTheme = mainHTML.getAttribute("data-theme");
               mainHTML.setAttribute("data-theme", enabledDarkTheme ? "light" : "dark");
             }
-
             setCurrentTheme(!enabledDarkTheme);
           }}
         >
