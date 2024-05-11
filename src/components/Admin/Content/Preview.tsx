@@ -79,8 +79,6 @@ const Preview: FC<{
   isCourseCompleted,
   courseDetail,
 }) => {
-  const { globalState, dispatch } = useAppContext();
-
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
@@ -151,18 +149,18 @@ const Preview: FC<{
           }
           <div className={styles.video_player_info}>
             <Space direction="vertical">
-              <h2 style={{ color: `${globalState.theme === "light" && "#fff"}` }}>{courseDetail?.name}</h2>
+              <h2>{courseDetail?.name}</h2>
               <p>{courseDetail?.description}</p>
             </Space>
 
             {enrolled && isCourseCompleted ? (
               <Link href={`/courses/${chapter[0]?.courseId}/play`}>
-                <Button>Rewatch</Button>
+                <Button type="primary">Rewatch</Button>
               </Link>
             ) : (
               <Button
                 className={styles.save_btn}
-                type={globalState.theme === "dark" ? "primary" : "default"}
+                type="primary"
                 onClick={() => {
                   !addContentPreview && onEnrollCourse && onEnrollCourse();
                 }}

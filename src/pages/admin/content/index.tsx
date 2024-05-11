@@ -148,7 +148,6 @@ const EnrolledCourseList: FC<{
 const Content: NextPage = () => {
   const { data: user } = useSession();
   const [modal, contextWrapper] = Modal.useModal();
-  const { globalState, dispatch } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [coursesAuthored, setCoursesAuthored] = useState<{
     fetchCourses: boolean;

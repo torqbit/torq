@@ -49,7 +49,6 @@ const AddCourseForm: FC = () => {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [videoForm] = Form.useForm();
-  const { globalState, dispatch } = useAppContext();
 
   const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
   const onRefresh = () => {
@@ -654,7 +653,7 @@ const AddCourseForm: FC = () => {
           </div>
           <div>
             <Dropdown.Button
-              type={globalState.theme === "dark" ? "primary" : "default"}
+              type="primary"
               onClick={() => {
                 courseData.state === "DRAFT" ? onPublishCourse("ACTIVE") : onPublishCourse("DRAFT");
               }}
