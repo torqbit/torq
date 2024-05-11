@@ -58,7 +58,11 @@ export const AppProvider: React.FC<{ children: any; themeSwitcher: () => void }>
       case "SET_SELECTED_SIDER_MENU":
         return { ...currentState, selectedSiderMenu: action.payload };
       case "SWITCH_THEME":
-        themeSwitcher();
+        console.log("switching theme to " + action.payload);
+        let mainHTML = document.getElementsByTagName("html").item(0);
+        if (mainHTML != null) {
+          mainHTML.setAttribute("data-theme", action.payload);
+        }
         return { ...currentState, theme: action.payload };
 
       default:

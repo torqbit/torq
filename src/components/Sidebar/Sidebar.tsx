@@ -25,10 +25,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
       type: "SET_USER",
       payload: { ...user?.user, theme: theme },
     });
-    let mainHTML = document.getElementsByTagName("html").item(0);
-    if (mainHTML != null) {
-      mainHTML.setAttribute("data-theme", theme);
-    }
+
     const response = await postFetch({ theme: theme }, "/api/v1/user/theme");
     if (response.ok) {
       update({ theme: theme });
