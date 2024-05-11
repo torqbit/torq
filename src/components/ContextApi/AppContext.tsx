@@ -1,6 +1,8 @@
 import { createContext, Dispatch, useContext, useReducer } from "react";
-import { INotification } from "../Header/Header";
 import { Session } from "next-auth";
+import { INotification } from "@/services/NotificationService";
+import { UserSession } from "@/lib/types/user";
+import { Theme } from "@prisma/client";
 
 export type ISiderMenu =
   | "dashboard"
@@ -19,16 +21,17 @@ export type ISiderMenu =
 type AppState = {
   notifications?: INotification[];
   selectedSiderMenu: ISiderMenu;
-  user?: Session;
+  session?: UserSession;
+  theme?: Theme;
 };
 
 // Define your action type
 type AppAction =
   | { type: "SET_NOTIFICATION"; payload: INotification[] }
   | { type: "GET_NOTIFICATION"; payload: number }
-  | { type: "SET_USER"; payload: Session }
+  | { type: "SET_USER"; payload: UserSession }
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
-  | { type: "SWITCH_THEME"; payload: {} };
+  | { type: "SWITCH_THEME"; payload: Theme };
 
 // Define the initial state
 const initialState: AppState = {
@@ -51,12 +54,17 @@ export const AppProvider: React.FC<{ children: any; themeSwitcher: () => void }>
       case "SET_NOTIFICATION":
         return { ...currentState, notifications: action.payload };
       case "SET_USER":
-        return { ...currentState, user: action.payload };
+        return { ...currentState, session: action.payload };
       case "SET_SELECTED_SIDER_MENU":
         return { ...currentState, selectedSiderMenu: action.payload };
       case "SWITCH_THEME":
-        themeSwitcher();
-        return currentState;
+        console.log("switching theme to " + action.payload);
+        let mainHTML = document.getElementsByTagName("html").item(0);
+        if (mainHTML != null) {
+          mainHTML.setAttribute("data-theme", action.payload);
+        }
+        return { ...currentState, theme: action.payload };
+
       default:
         return currentState;
     }

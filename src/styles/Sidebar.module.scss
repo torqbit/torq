@@ -6,6 +6,10 @@
 
   .logo {
     padding: 15px 16px 30px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 30px;
   }
 
   .user_profile {
@@ -46,13 +50,13 @@
 
   .not_collapsed {
     right: 0;
-    top: 14px;
+    top: 18px;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
   }
   .collapsed {
     right: -30px;
-    top: 14px;
+    top: 18px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
     border-left: 0;

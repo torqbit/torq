@@ -665,7 +665,6 @@ class ProgramService {
   };
   uploadVideo = (
     formData: FormData,
-
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -871,7 +870,6 @@ class ProgramService {
 
   getCredentials = (
     provider_name: string,
-
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
