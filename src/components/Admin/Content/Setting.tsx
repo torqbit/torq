@@ -234,7 +234,11 @@ const CourseSetting: FC<{
                       <div className={styles.bannerStatus}>{courseBannerUploading && "Uploading"}</div>
                     </>
                   ) : (
-                    <button style={{ border: 0, background: "none", width: 150, height: 150 }} type="button">
+                    <button
+                      className={styles.upload_img_button}
+                      style={{ border: 0, background: "none", width: 150, height: 150 }}
+                      type="button"
+                    >
                       {courseBannerUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
                       {!courseBannerUploading ? (
                         <div style={{ marginTop: 8 }}>Upload Image</div>

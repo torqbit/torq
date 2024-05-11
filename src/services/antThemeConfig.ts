@@ -26,7 +26,7 @@ export default {
     },
     Button: {
       groupBorderColor: "#000",
-      colorPrimary: "#000",
+      colorPrimary: "#5b63d3",
       colorPrimaryHover: "#666",
       colorPrimaryActive: "#000",
     },
@@ -48,6 +48,7 @@ export default {
     },
     Drawer: {
       zIndexPopup: 1001,
+      padding: 10,
     },
     Collapse: {
       contentPadding: "0px",

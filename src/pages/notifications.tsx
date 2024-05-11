@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 const NotificationList: FC = () => {
   const { data: user } = useSession();
   const router = useRouter();
+
   const [loading, setLoading] = useState(false);
   const { globalState, dispatch } = useAppContext();
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({

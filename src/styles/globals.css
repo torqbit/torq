@@ -23,6 +23,9 @@ body {
   --chapter-list: #888888;
   --header-bg: #fff;
   --main-bg: #f0f0f0;
+  --draft-bg: #f6eee3;
+  --publish-bg: #eee;
+
   --ft-color: black;
   --section-dark: #05091d;
   --section-light: #394165;
@@ -49,6 +52,9 @@ body {
   --font-primary: #fff;
   --btn-primary: #5b63d3;
   --font-secondary: #939db8;
+  --draft-bg: #202433;
+  --publish-bg: #202433;
+
   --border-color: #2f3647;
   --ft-color: #fff;
   --card-bg: #0e1326;
@@ -84,10 +90,6 @@ a {
 
 .ant-tabs-top > .ant-tabs-nav::before {
   border: 1px solid var(--border-color);
-}
-
-input {
-  border: none;
 }
 
 * {
@@ -346,7 +348,7 @@ input {
 
 .ant-input-affix-wrapper {
   padding: 0px !important;
-  border: none;
+
   outline: none;
   border-radius: 4px;
   /* height: 40px; */
@@ -362,7 +364,6 @@ input {
 }
 
 .ant-input-affix-wrapper-focused {
-  border: none;
   outline: none;
 }
 

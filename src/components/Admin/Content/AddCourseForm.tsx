@@ -29,6 +29,7 @@ import AddVideoLesson from "@/components/Admin/Content/AddVideoLesson";
 
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
@@ -571,11 +572,9 @@ const AddCourseForm: FC = () => {
     let intervalId: NodeJS.Timer | undefined;
     if (checkVideoState && uploadVideo && uploadVideo.state == "PROCESSING" && typeof intervalId === "undefined") {
       intervalId = setInterval(() => {
-        console.log("updating the video state sec");
         ProgramService.getCourses(
           Number(router.query.id),
           (result) => {
-            console.log(`current state: ${result.courseDetails.tvState}`);
             setUploadVideo({
               ...uploadVideo,
               previewUrl: "",
@@ -654,6 +653,7 @@ const AddCourseForm: FC = () => {
           </div>
           <div>
             <Dropdown.Button
+              type="primary"
               onClick={() => {
                 courseData.state === "DRAFT" ? onPublishCourse("ACTIVE") : onPublishCourse("DRAFT");
               }}

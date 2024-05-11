@@ -148,8 +148,9 @@ const EnrolledCourseList: FC<{
 const Content: NextPage = () => {
   const { data: user } = useSession();
   const [modal, contextWrapper] = Modal.useModal();
-  const { globalState, dispatch } = useAppContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [messageApi, contextMessageHolder] = message.useMessage();
+
   const [coursesAuthored, setCoursesAuthored] = useState<{
     fetchCourses: boolean;
     courses: Course[] | undefined;
@@ -171,13 +172,13 @@ const Content: NextPage = () => {
       (res) => {
         if (res.success) {
           setCoursesAuthored({ ...coursesAuthored, fetchCourses: true, refresh: !coursesAuthored.refresh });
-          message.success("Course has been deleted");
+          messageApi.success("Course has been deleted");
         } else {
-          message.error(`Course deletion failed due to ${res.error}`);
+          messageApi.error(`Course deletion failed due to ${res.error}`);
         }
       },
       (err) => {
-        message.error(err);
+        messageApi.error(err);
       }
     );
   };
@@ -194,7 +195,7 @@ const Content: NextPage = () => {
       },
       (err) => {
         setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, refresh: !coursesAuthored.refresh });
-        message.error(`Unable to get the courses due to ${err}`);
+        messageApi.error(`Unable to get the courses due to ${err}`);
       }
     );
   }, [coursesAuthored.refresh]);
@@ -207,14 +208,14 @@ const Content: NextPage = () => {
         newState,
         (res) => {
           if (res.success) {
-            message.success(`Course status has been updated`);
+            messageApi.success(`Course status has been updated`);
             setCoursesAuthored({ ...coursesAuthored, fetchCourses: true, refresh: !coursesAuthored.refresh });
           } else {
-            message.error(`Course status update failed due to ${res.error}`);
+            messageApi.error(`Course status update failed due to ${res.error}`);
           }
         },
         (err) => {
-          message.error(`Course status update failed due to ${err}`);
+          messageApi.error(`Course status update failed due to ${err}`);
         }
       );
     } else if (currCourse && newState === "DRAFT") {
@@ -223,18 +224,18 @@ const Content: NextPage = () => {
         newState,
         (res) => {
           if (res.success) {
-            message.success(`Course status has been updated`);
+            messageApi.success(`Course status has been updated`);
             setCoursesAuthored({ ...coursesAuthored, fetchCourses: true, refresh: !coursesAuthored.refresh });
           } else {
-            message.error(`Course status update failed due to ${res.error}`);
+            messageApi.error(`Course status update failed due to ${res.error}`);
           }
         },
         (err) => {
-          message.error(`Course status update failed due to ${err}`);
+          messageApi.error(`Course status update failed due to ${err}`);
         }
       );
     } else {
-      message.error("Minimum two published lessons are required to publish the course");
+      messageApi.error("Minimum two published lessons are required to publish the course");
     }
   };
 
@@ -305,6 +306,8 @@ const Content: NextPage = () => {
 
   return (
     <Layout2>
+      {contextMessageHolder}
+
       <section className={styles.dashboard_content}>
         <h2>Hello {user?.user?.name}</h2>
         <h3>Content</h3>

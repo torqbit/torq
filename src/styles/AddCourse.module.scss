@@ -136,6 +136,16 @@
 }
 
 .newResDetails {
+  .headerWrapper {
+    background-color: var(--bg-primary);
+  }
+  .body {
+    background-color: var(--bg-secondary);
+  }
+  .footer {
+    background-color: var(--bg-primary);
+    border: var(--border-color);
+  }
   .footerBtn {
     padding: 10px 60px;
     display: flex;

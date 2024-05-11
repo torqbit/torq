@@ -1,6 +1,7 @@
 import { Button, Drawer, Form, FormInstance, Input, Space } from "antd";
 import { FC } from "react";
 import { useRouter } from "next/router";
+import styles from "@/styles/AddChapterForm.module.scss";
 
 const AddCourseChapter: FC<{
   showChapterDrawer: (value: boolean) => void;
@@ -35,8 +36,10 @@ const AddCourseChapter: FC<{
   return (
     <>
       <Drawer
+        className={styles.add_chapter_wrapper}
         title={edit ? "Update Chapter" : "New Chapter Details"}
         placement="right"
+        classNames={{ header: styles.headerWrapper, body: styles.body, footer: styles.footer }}
         maskClosable={false}
         onClose={() => {
           onClose();

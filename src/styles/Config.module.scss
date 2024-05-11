@@ -26,6 +26,13 @@
 .media_storage {
   max-width: 600px;
   margin: 20px 10px;
+  .suffix {
+    border: none;
+  }
+
+  .password_input {
+    border: 1px solid;
+  }
 
   .header {
     display: flex;
@@ -53,9 +60,10 @@
       input {
         max-width: 300px;
         height: 40px;
-        border: 1px solid var(--border-color);
         border-top-left-radius: 4px;
         padding: 5px 10px;
+
+        border-radius: 4px;
         border-bottom-left-radius: 4px;
       }
     }

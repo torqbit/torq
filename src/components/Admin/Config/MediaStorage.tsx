@@ -31,7 +31,7 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
               style={{ width: 300 }}
               rules={[{ required: true, message: "Enter API Access Key" }]}
             >
-              <Input.Password placeholder="Please enter  access key" />
+              <Input.Password classNames={{ suffix: styles.suffix }} placeholder="Please enter  access key" />
             </Form.Item>
             <Form.Item
               name={"libraryId"}
@@ -56,7 +56,10 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
               label={"Storage Access Password"}
               rules={[{ required: true, message: "Storage Access Password is required" }]}
             >
-              <Input.Password placeholder="Please enter storage access password" />
+              <Input.Password
+                classNames={{ suffix: styles.suffix }}
+                placeholder="Please enter storage access password"
+              />
             </Form.Item>
             <Form.Item name={"storageZone"} label={"Storage Zone"} rules={[{ required: true, message: "Required!" }]}>
               <Input placeholder="Please enter storage zone" />

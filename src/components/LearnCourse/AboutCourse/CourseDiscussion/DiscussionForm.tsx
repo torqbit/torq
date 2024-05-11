@@ -116,9 +116,6 @@ const QAForm: FC<{
         <Skeleton.Input style={{ height: 80, width: 890 }} />
       ) : (
         <Input.TextArea
-          style={{
-            margin: "40px 0px 0px 0px",
-          }}
           placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.shiftKey) {
@@ -134,12 +131,18 @@ const QAForm: FC<{
       {loadingPage ? (
         <Skeleton.Input style={{ width: 890 }} />
       ) : (
-        <Flex align="center" style={{ marginTop: 10 }} justify="right" className={styles.qa_form_footer}>
+        <Flex align="center" justify="right" className={styles.qa_form_footer}>
           <Space>
             {loading ? (
               <LoadingOutlined rev={undefined} style={{ fontSize: 20, color: "#4096ff" }} spin />
             ) : (
-              <Button type="primary" onClick={() => onPostQA()} title="Post">
+              <Button
+                type="primary"
+                className={styles.comment_post_btn}
+                style={{ marginTop: 10, marginBottom: 10 }}
+                onClick={() => onPostQA()}
+                title="Post"
+              >
                 <Flex align="center" gap={10}>
                   Post
                   {SvgIcons.send}
