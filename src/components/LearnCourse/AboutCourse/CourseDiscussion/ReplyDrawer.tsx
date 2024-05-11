@@ -10,6 +10,7 @@ import { useMediaPredicate } from "react-media-hook";
 import { Element, animateScroll as scroll, scrollSpy, scroller } from "react-scroll";
 import DiscussionsService from "@/services/DiscussionsService";
 import { error } from "console";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 
 const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
@@ -24,6 +25,7 @@ const ReplyDrawer: FC<{
   const [refresh, setRefresh] = useState<boolean>(false);
   const isMax415Width = useMediaPredicate("(max-width: 415px)");
   const scrollRef = useRef<any>(null);
+  const { globalState, dispatch } = useAppContext();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -89,6 +91,7 @@ const ReplyDrawer: FC<{
         width={isMax415Width ? "100%" : 500}
         bodyStyle={{ background: "#eee", padding: 0 }}
         className={styles.reply_drawer}
+        classNames={{ header: styles.headerWrapper }}
         placement="right"
         onClose={onCloseDrawer}
         open={replyDrawer.isOpen}

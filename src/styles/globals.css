@@ -23,6 +23,9 @@ body {
   --chapter-list: #888888;
   --header-bg: #fff;
   --main-bg: #f0f0f0;
+  --draft-bg: #f6eee3;
+  --publish-bg: #eee;
+
   --ft-color: black;
   --section-dark: #05091d;
   --section-light: #394165;
@@ -30,7 +33,7 @@ body {
   --hd-box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
   --box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
   --card-bg: #fff;
-  --btn-primary: #5b63d3;
+  --btn-primary: #696a6b;
   --border-radius: 4px;
   --ft-color-dull: #848484;
   --ft-color: #0e1326;
@@ -49,6 +52,9 @@ body {
   --font-primary: #fff;
   --btn-primary: #5b63d3;
   --font-secondary: #939db8;
+  --draft-bg: #202433;
+  --publish-bg: #202433;
+
   --border-color: #2f3647;
   --ft-color: #fff;
   --card-bg: #0e1326;

@@ -328,7 +328,7 @@
             margin: 0;
           }
           .resource_name {
-            color: var(--primary);
+            color: var(--font-primary);
           }
           .comment_time {
             color: var(--label-color);
@@ -379,9 +379,18 @@
   position: relative;
   overflow-x: hidden;
 
+  .headerWrapper {
+    background-color: var(--bg-secondary);
+  }
+
   .list_reply_cmt {
+    min-height: 75vh;
     background-color: var(--bg-primary);
     padding: 10px 20px 20px 20px;
+    color: var(--font-primary);
+    .comment_time {
+      color: var(--label-color);
+    }
   }
   .comment_box {
     gap: 0 10px;
@@ -401,7 +410,7 @@
     .qa_form_input {
       width: 100%;
       border: 0;
-      height: 50px;
+      // height: 50px;
       border-radius: 0;
       // background-color: var(--bg-secondary);
     }

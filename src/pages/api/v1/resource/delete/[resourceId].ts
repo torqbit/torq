@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (findResource) {
-
+      console.log(findResource, "r");
       const videoLesson = await prisma.video.findUnique({
         where: {
           resourceId: Number(resourceId),
@@ -24,8 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           providerVideoId: true,
         },
       });
-
-
+      console.log(videoLesson, "v");
       if (videoLesson) {
         const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
           where: {
@@ -46,7 +45,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             serviceProvider
           );
         }
-        const [updateSeq, deleteCourse] = await prisma.$transaction([
+        const [updateSeq, deleteResource] = await prisma.$transaction([
+          prisma.$executeRaw`UPDATE Resource SET sequenceId = sequenceId - 1  WHERE sequenceId > ${findResource.sequenceId}  AND  chapterId = ${findResource.chapterId};`,
+          prisma.resource.delete({
+            where: {
+              resourceId: Number(resourceId),
+            },
+          }),
+        ]);
+      }
+      if (!videoLesson) {
+        const [updateSeq, deleteResource] = await prisma.$transaction([
           prisma.$executeRaw`UPDATE Resource SET sequenceId = sequenceId - 1  WHERE sequenceId > ${findResource.sequenceId}  AND  chapterId = ${findResource.chapterId};`,
           prisma.resource.delete({
             where: {

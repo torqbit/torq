@@ -36,11 +36,12 @@
     width: 30px;
     height: 34px;
 
-    background-color: #fff;
+    background-color: var(--btn-primary);
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #eee;
+    border: 1px solid var(--border-color);
+    color: var(--font-primary);
     border-right: 0;
     cursor: pointer;
     &:hover {
@@ -60,6 +61,9 @@
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
     border-left: 0;
-    border-right: 1px solid #eee;
+    border-right: 1px solid var(--border-color);
+  }
+  .sidebar_dropdown_icon {
+    color: var(--font-secondary);
   }
 }

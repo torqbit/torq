@@ -45,8 +45,6 @@ const Label: FC<{
   const [completed, setCompleted] = useState<boolean>();
   const [checkLockLoading, setCheckLockLoading] = useState<boolean>();
 
-  console.log(currentLessonId, "cur");
-
   const checkIsCompleted = async () => {
     setCheckLockLoading(true);
     const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
@@ -142,7 +140,6 @@ const LearnCourse: FC<{}> = () => {
     ProgramService.getProgress(
       Number(router.query.courseId),
       (result) => {
-        console.log(result, "res");
         serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
       },
       (error) => {}

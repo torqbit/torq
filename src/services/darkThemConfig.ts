@@ -6,6 +6,7 @@ export default {
     colorBorder: "#2f3647",
     colorTextPlaceholder: "#2f3647",
     colorPrimary: "#5b63d3",
+    colorTextDisabled: "#68696d",
   },
   components: {
     Layout: {
@@ -19,10 +20,12 @@ export default {
       buttonSolidCheckedActiveBg: "#000",
       buttonSolidCheckedBg: "#000",
       buttonSolidCheckedHoverBg: "#000",
+      colorBorder: "#68696d",
     },
     Sider: {
       color: "#666",
     },
+
     Card: {
       paddingLG: 0,
     },
@@ -73,10 +76,11 @@ export default {
     },
     Drawer: {
       zIndexPopup: 1001,
+      padding: 10,
+      colorIcon: "#939db8",
     },
     Collapse: {
       contentPadding: "0px",
-
       headerBg: "#283040",
       colorText: "#939db8",
 
@@ -101,6 +105,10 @@ export default {
     },
     Switch: {
       colorPrimaryHover: "#68696d",
+    },
+    Popconfirm: {
+      colorTextHeading: "#939db8",
+      colorText: "#939db8",
     },
   },
 };

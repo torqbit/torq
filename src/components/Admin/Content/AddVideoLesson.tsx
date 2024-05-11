@@ -36,6 +36,7 @@ const AddVideoLesson: FC<{
   return (
     <>
       <Drawer
+        classNames={{ header: styles.headerWrapper, body: styles.body, footer: styles.footer }}
         width={400}
         maskClosable={false}
         closeIcon={false}
@@ -54,8 +55,8 @@ const AddVideoLesson: FC<{
         }
         placement="right"
         onClose={() => {
-          setResourceDrawer(false);
           currResId && !isEdit && onDeleteResource(currResId);
+          setResourceDrawer(false);
           formData.resetFields();
           onRefresh();
         }}

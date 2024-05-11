@@ -116,7 +116,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
             placement="bottomRight"
             arrow={{ pointAtCenter: true }}
           >
-            {SvgIcons.threeDots}
+            <div className={styles.sidebar_dropdown_icon}> {SvgIcons.threeDots}</div>
           </Dropdown>
         )}
       </Space>

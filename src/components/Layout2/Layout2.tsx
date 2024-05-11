@@ -129,7 +129,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   useEffect(() => {
     if (user) {
       const userSession = user.user as UserSession;
-      console.log(globalState.theme);
       dispatch({
         type: "SET_USER",
         payload: userSession,

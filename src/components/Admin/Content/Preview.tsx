@@ -1,3 +1,4 @@
+import { useAppContext } from "@/components/ContextApi/AppContext";
 import SvgIcons from "@/components/SvgIcons";
 import { IResourceDetail } from "@/lib/types/learn";
 import { convertSecToHourandMin } from "@/pages/admin/content";
@@ -78,19 +79,26 @@ const Preview: FC<{
   isCourseCompleted,
   courseDetail,
 }) => {
+  const { globalState, dispatch } = useAppContext();
+
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
   const [render, setRender] = useState(renderKey);
 
   const items = chapter.map((content, i) => {
+    let totalTime = 0;
+    content.resource.forEach((data) => {
+      totalTime = totalTime + data.video?.videoDuration;
+    });
+    const duration = convertSecToHourandMin(totalTime);
     return {
       key: `${i + 1}`,
       label: (
         <Label
           title={content.name}
           icon={SvgIcons.folder}
-          time={""}
+          time={duration}
           onRender={setRender}
           render={render}
           keyValue={`${i + 1}`}
@@ -143,7 +151,7 @@ const Preview: FC<{
           }
           <div className={styles.video_player_info}>
             <Space direction="vertical">
-              <h2>{courseDetail?.name}</h2>
+              <h2 style={{ color: `${globalState.theme === "light" && "#fff"}` }}>{courseDetail?.name}</h2>
               <p>{courseDetail?.description}</p>
             </Space>
 
@@ -154,7 +162,7 @@ const Preview: FC<{
             ) : (
               <Button
                 className={styles.save_btn}
-                type="primary"
+                type={globalState.theme === "dark" ? "primary" : "default"}
                 onClick={() => {
                   !addContentPreview && onEnrollCourse && onEnrollCourse();
                 }}

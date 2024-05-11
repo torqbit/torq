@@ -63,7 +63,7 @@
     display: flex;
     max-width: 500px;
     height: 230px;
-    background-color: #fff;
+    background-color: var(--bg-primary);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 
     .card_content,
@@ -86,6 +86,7 @@
         margin-top: 10px;
       }
       .card_title {
+        color: var(--font-primary);
         padding-top: 10px;
       }
       .badge {
@@ -124,7 +125,7 @@
         padding: 10px 10px;
 
         .course_duration {
-          color: var(--font-label);
+          color: var(--font-secondary);
 
           font-size: 13px;
         }
@@ -217,15 +218,18 @@
         }
         right: 50%;
         .bannerStatus {
-          color: var(--bg-primary);
+          color: var(--font-primary);
           position: absolute;
           top: 70%;
+        }
+        .upload_img_button {
+          color: var(--font-secondary);
         }
       }
 
       .course_info {
         padding: 10px 15px;
-        background-color: #fff;
+        background-color: var(--bg-primary);
         width: 100%;
 
         h3 {
@@ -239,7 +243,7 @@
       }
 
       .course_thumbnails {
-        background-color: #fff;
+        background-color: var(--bg-primary);
         padding: 10px 20px;
         margin-top: 20px;
 
@@ -265,8 +269,15 @@
         }
 
         .video_status_ready {
-          color: var(--bg-primary);
-          background-color: var(--font-primary);
+          color: var(--font-primary);
+          background-color: var(--bg-secondary);
+          transform: translate(-50%, -50%);
+
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: var(--font-label);
+          }
         }
 
         .video_status_loading {
@@ -275,7 +286,8 @@
 
         .camera_btn_img,
         .camera_btn {
-          background-color: var(--font-secondary);
+          background-color: var(--bg-secondary);
+
           height: 36px;
           width: 36px;
           position: absolute;
@@ -286,7 +298,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          color: white;
+          color: var(--font-primary);
           transition: background-color 0.3s;
 
           &:hover {
@@ -306,7 +318,7 @@
 
         .camera_btn_img {
           right: 110px;
-          color: #eee;
+          color: var(--font-primary);
         }
 
         .row_1,
@@ -341,7 +353,7 @@
       }
 
       .course_pricing {
-        background-color: #fff;
+        background-color: var(--bg-primary);
         padding: 10px 20px;
         margin-top: 20px;
 
@@ -353,7 +365,7 @@
           p {
             margin-top: 10px;
             max-width: 200px;
-            color: #666;
+            color: var(--font-secondary);
           }
 
           .free_course {
@@ -364,7 +376,7 @@
               align-items: center;
 
               > div {
-                border: 1px solid #eee;
+                border: 1px solid var(--border-color);
                 padding: 2px 10px;
                 border-radius: 4px;
               }
@@ -379,7 +391,7 @@
               > div:last-child {
                 height: 32px;
 
-                background-color: #eee;
+                background-color: var(--bg-secondary);
                 border-top-left-radius: 0px;
 
                 border-bottom-left-radius: 0px;
@@ -392,6 +404,9 @@
               margin-top: 0;
             }
 
+            p {
+              color: var(--label-color);
+            }
             .paid_overview {
               display: flex;
               align-items: center;
@@ -403,7 +418,7 @@
                 align-items: center;
 
                 > div {
-                  border: 1px solid #eee;
+                  border: 1px solid var(--border-color);
                   padding: 2px 10px;
                   border-radius: 4px;
                 }
@@ -419,7 +434,7 @@
                 > div:last-child {
                   height: 32px;
 
-                  background-color: #eee;
+                  background-color: var(--bg-secondary);
                   border-top-left-radius: 0px;
 
                   border-bottom-left-radius: 0px;

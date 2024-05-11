@@ -9,14 +9,16 @@
   }
   .draft_btn {
     Button {
-      background-color: #f6eee3;
-      color: #666;
+      background-color: var(--draft-bg);
+      color: var(--font-primary);
     }
   }
   .publish_btn {
+    background-color: var(--draft-bg);
+
     Button {
-      background-color: #eee;
-      color: #666;
+      background-color: var(--publish-bg);
+      color: var(--font-primary);
     }
   }
   .labelContainer {
