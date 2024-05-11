@@ -33,7 +33,7 @@ body {
   --hd-box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
   --box-shadow: 0 7px 30px -10px rgba(150, 170, 180, 0.5);
   --card-bg: #fff;
-  --btn-primary: #696a6b;
+  --btn-primary: #5b63d3;
   --border-radius: 4px;
   --ft-color-dull: #848484;
   --ft-color: #0e1326;
@@ -90,10 +90,6 @@ a {
 
 .ant-tabs-top > .ant-tabs-nav::before {
   border: 1px solid var(--border-color);
-}
-
-input {
-  border: none;
 }
 
 * {
@@ -352,7 +348,7 @@ input {
 
 .ant-input-affix-wrapper {
   padding: 0px !important;
-  border: none;
+
   outline: none;
   border-radius: 4px;
   /* height: 40px; */
@@ -368,7 +364,6 @@ input {
 }
 
 .ant-input-affix-wrapper-focused {
-  border: none;
   outline: none;
 }
 

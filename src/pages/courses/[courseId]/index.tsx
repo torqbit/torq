@@ -18,6 +18,7 @@ const LearnCoursesPage: NextPage = () => {
   const [enrolled, setEnroll] = useState<boolean>();
   const [courseType, setCourseType] = useState<string>();
   const [courseDetail, setCourseDetail] = useState<CourseInfo>();
+  const [messageApi, contextMessageHolder] = message.useMessage();
 
   const [loading, setLoading] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
@@ -59,11 +60,11 @@ const LearnCoursesPage: NextPage = () => {
           });
         }
       } else {
-        message.error(result.error);
+        messageApi.error(result.error);
         setLoading(false);
       }
     } catch (err: any) {
-      message.error("Error while enrolling course ", err?.message);
+      messageApi.error("Error while enrolling course ", err?.message);
       setLoading(false);
     }
   };
@@ -98,6 +99,7 @@ const LearnCoursesPage: NextPage = () => {
 
   return (
     <Layout2>
+      {contextMessageHolder}
       {chapterList?.length ? (
         <Preview
           videoUrl={videoUrl}

@@ -3,7 +3,7 @@ export default {
     borderRadius: 4,
     colorText: "#fff",
     colorBgContainer: "#283040",
-    colorBorder: "#2f3647",
+    colorBorder: "#5d6a8b",
     colorTextPlaceholder: "#2f3647",
     colorPrimary: "#5b63d3",
     colorTextDisabled: "#68696d",
@@ -45,8 +45,10 @@ export default {
       colorPrimaryHover: "#939db8",
       hoverBg: "#222938",
       colorTextPlaceholder: "#939db8",
+
       activeBorderColor: "#939db8",
     },
+
     Select: {
       colorPrimaryHover: "#939db8",
       activeBorderColor: "#939db8",
@@ -109,6 +111,9 @@ export default {
     Popconfirm: {
       colorTextHeading: "#939db8",
       colorText: "#939db8",
+    },
+    Message: {
+      contentBg: "#283040",
     },
   },
 };

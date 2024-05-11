@@ -13,6 +13,8 @@ import ProgramService from "@/services/ProgramService";
 
 const CoursesPage: NextPage = () => {
   const [allCourses, setAllCourses] = useState<Course[] | undefined>([]);
+  const [messageApi, contextMessageHolder] = message.useMessage();
+
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     setLoading(true);
@@ -23,12 +25,13 @@ const CoursesPage: NextPage = () => {
       },
       (err) => {
         setLoading(false);
-        message.error(`Unable to get the courses due to ${err}`);
+        messageApi.error(`Unable to get the courses due to ${err}`);
       }
     );
   }, []);
   return (
     <Layout2 className={styles.container}>
+      {contextMessageHolder}
       {!loading ? (
         <>
           {allCourses && allCourses.filter((c) => c.state === "ACTIVE").length > 0 ? (

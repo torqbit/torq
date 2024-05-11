@@ -100,6 +100,8 @@ const Label: FC<{
 };
 
 const LearnCourse: FC<{}> = () => {
+  const [messageApi, contextMessageHolder] = message.useMessage();
+
   const [courseData, setCourseData] = useState<{
     name: string;
     description: string;
@@ -170,7 +172,7 @@ const LearnCourse: FC<{}> = () => {
       );
       const result = (await res.json()) as IResponse;
       if (res.ok && result.success) {
-        message.success(result.message);
+        messageApi.success(result.message);
         setRefresh(!refresh);
         getProgressDetail();
         ProgramService.getProgress(
@@ -181,10 +183,10 @@ const LearnCourse: FC<{}> = () => {
           (error) => {}
         );
       } else {
-        message.error(result.error);
+        messageApi.error(result.error);
       }
     } catch (err) {
-      message.error(appConstant.cmnErrorMsg);
+      messageApi.error(appConstant.cmnErrorMsg);
     }
   };
   const items: TabsProps["items"] = [
@@ -228,7 +230,7 @@ const LearnCourse: FC<{}> = () => {
       } else if (!isCompleted) {
         getProgressDetail();
 
-        currentLessonId !== resourceId && message.error("First complete the previous lessons");
+        currentLessonId !== resourceId && messageApi.error("First complete the previous lessons");
         // getProgressDetail();
       }
     }
@@ -324,6 +326,7 @@ const LearnCourse: FC<{}> = () => {
   }, [router.query.courseId]);
   return (
     <Layout2>
+      {contextMessageHolder}
       {!loading ? (
         <section className={styles.learn_course_page}>
           <div className={styles.learn_breadcrumb}>

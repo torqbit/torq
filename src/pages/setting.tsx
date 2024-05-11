@@ -10,18 +10,21 @@ import { GetServerSidePropsContext, NextPage } from "next";
 import { Session } from "next-auth";
 
 const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
+  const [messageApi, contextMessageHolder] = message.useMessage();
+
   const onUpdateProfile = async (info: { name: string; phone: string }) => {
     const res = await postFetch({ name: info.name, userId: user?.id, phone: info.phone }, "/api/user/update");
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
-      message.success(result.message);
+      messageApi.success(result.message);
       window.location.reload();
     } else {
-      message.error(result.error);
+      messageApi.error(result.error);
     }
   };
   return (
     <section className={styles.user_profile_page}>
+      {contextMessageHolder}
       <div className={styles.content_center}>
         <div className={styles.left_content}>
           <img
