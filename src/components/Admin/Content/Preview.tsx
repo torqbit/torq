@@ -51,9 +51,7 @@ const Label: FC<{
           </Flex>
         </div>
         <div>
-          <Tag color="#eee" className={styles.time_tag}>
-            {time}
-          </Tag>
+          <Tag className={styles.time_tag}>{time}</Tag>
         </div>
       </Flex>
     </div>

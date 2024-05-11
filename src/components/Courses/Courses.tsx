@@ -1,10 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "../../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
-import { Button, Modal, Space, Tag, message } from "antd";
-import SvgIcons from "@/components/SvgIcons";
-import Layout2 from "@/components/Layout2/Layout2";
-import { Course } from "@prisma/client";
+import { Modal, Tag, message } from "antd";
 import { useRouter } from "next/router";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import ProgramService from "@/services/ProgramService";
