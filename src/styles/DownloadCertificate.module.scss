@@ -1,0 +1,23 @@
+.certificate_page {
+  padding: 100px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  h1 {
+    margin-bottom: 20px;
+  }
+  .certificate_image {
+    width: 900px;
+    img {
+      width: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .download_btn {
+    width: 300px;
+    height: 40px;
+    margin-top: 40px;
+  }
+}

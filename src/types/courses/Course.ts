@@ -37,7 +37,7 @@ export interface CourseData {
 }
 export interface CourseInfo {
   about: string;
-  authorId: number;
+  authorId: string;
   sequenceId: number;
   skills: string[];
   tvThumbnail: string;
@@ -58,6 +58,9 @@ export interface CourseInfo {
   name: string;
   programId: number;
   state: string;
+  user: {
+    name: string;
+  };
   tags: string[];
 }
 

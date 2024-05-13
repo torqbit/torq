@@ -637,6 +637,28 @@ class ProgramService {
     });
   };
 
+  getUser = (userId: number, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    fetch(`/api/v1/resource/addVideo`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200 || result.status == 403) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
   deleteResource = (
     resourceId: number,
     courseId: number,
