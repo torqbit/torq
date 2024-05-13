@@ -1,25 +1,22 @@
+import { certificateConfig } from "@/lib/certificatesConfig";
 import styles from "@/styles/Certificate.module.scss";
 import { Flex, Image, Space } from "antd";
 
-const Certificate = () => {
-  const imgPaths = [
-    {
-      path: "/certificates/preview/golden-standard.png",
-      name: "Golden Standard",
-    },
-    {
-      path: "/certificates/preview/golden-luxury.png",
-      name: "Golden Luxury",
-    },
-  ];
+const CertificateTemplates = () => {
   return (
     <section className={styles.Certificate_template_container}>
       <h1>Certificate templates</h1>
       <Flex align="center" gap={20}>
-        {imgPaths.map((certificate, i) => {
+        {certificateConfig.map((certificate, i) => {
           return (
             <Space direction="vertical" key={i} className={styles.certificate_wrapper}>
-              <Image height={150} width={220} className={styles.image_wrapper} src={certificate.path} />
+              <Image
+                height={150}
+                width={220}
+                className={styles.image_wrapper}
+                src={certificate.previewPath}
+                alt={certificate.id}
+              />
               <div>{certificate.name}</div>
             </Space>
           );
@@ -28,4 +25,4 @@ const Certificate = () => {
     </section>
   );
 };
-export default Certificate;
+export default CertificateTemplates;
