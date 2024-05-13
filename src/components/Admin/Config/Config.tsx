@@ -9,6 +9,7 @@ import SvgIcons from "@/components/SvgIcons";
 import MediaStorage from "./MediaStorage";
 import { useSession } from "next-auth/react";
 import ProgramService from "@/services/ProgramService";
+import CertificateTemplates from "./Certificate";
 
 const Config: FC = () => {
   const { data: user } = useSession();
@@ -75,7 +76,7 @@ const Config: FC = () => {
       key: "2",
       label: "Certificate templates",
 
-      children: "content of tab 2",
+      children: <CertificateTemplates />,
     },
   ];
 
