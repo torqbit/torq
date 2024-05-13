@@ -1,7 +1,7 @@
 export const certificateConfig = [
   {
     id: "golden-luxury",
-    path: "/img/certificates/templates/golden-luxury.png",
+    path: "/certificates/templates/golden-luxury.png",
     coordinates: {
       student: {
         x: 1000,
@@ -23,7 +23,7 @@ export const certificateConfig = [
   },
   {
     id: "golden-standard",
-    path: "/img/certificates/templates/golden-standard.png",
+    path: "/certificates/templates/golden-standard.png",
     coordinates: {
       student: {
         x: 1000,

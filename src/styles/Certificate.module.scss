@@ -1,0 +1,13 @@
+.Certificate_template_container {
+  .certificate_wrapper {
+    background-color: var(--bg-primary);
+    padding: 10px;
+    > div:last-child {
+      padding-left: 5px;
+    }
+
+    .image_wrapper {
+      object-fit: contain;
+    }
+  }
+}
