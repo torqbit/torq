@@ -7,6 +7,7 @@ import styles from "@/styles/Preview.module.scss";
 import { ChapterDetail, CourseData, CourseInfo, VideoInfo } from "@/types/courses/Course";
 import { Button, Collapse, Flex, Space, Tag } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { FC, ReactNode, useEffect, useState } from "react";
 
@@ -67,6 +68,7 @@ const Preview: FC<{
   enrolled?: boolean;
   isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
+  certificateIssuedId?: string;
 }> = ({
   uploadVideo,
   chapter,
@@ -76,12 +78,13 @@ const Preview: FC<{
   enrolled,
   isCourseCompleted,
   courseDetail,
+  certificateIssuedId,
 }) => {
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
   const [render, setRender] = useState(renderKey);
-
+  const router = useRouter();
   const items = chapter.map((content, i) => {
     let totalTime = 0;
     content.resource.forEach((data) => {
@@ -152,9 +155,18 @@ const Preview: FC<{
             </Space>
 
             {enrolled && isCourseCompleted ? (
-              <Link href={`/courses/${chapter[0]?.courseId}/play`}>
-                <Button type="primary">Rewatch</Button>
-              </Link>
+              <Space>
+                <Button
+                  onClick={() => {
+                    router.push(`/courses/${router.query.courseId}/certificate/${certificateIssuedId}`);
+                  }}
+                >
+                  View Certificate
+                </Button>
+                <Link href={`/courses/${chapter[0]?.courseId}/play`}>
+                  <Button type="primary">Rewatch</Button>
+                </Link>
+              </Space>
             ) : (
               <Button
                 className={styles.save_btn}

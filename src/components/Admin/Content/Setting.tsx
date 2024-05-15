@@ -19,6 +19,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
 import ImgCrop from "antd-img-crop";
+import { certificateConfig } from "@/lib/certificatesConfig";
 
 const { TextArea } = Input;
 
@@ -138,6 +139,31 @@ const CourseSetting: FC<{
                 return (
                   <Select.Option key={i} value={`${difficulty}`}>
                     {difficulty}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="certificate_template"
+            label="Certificate Template"
+            rules={[
+              {
+                required: true,
+                message: "Required Certificate template level",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Choose Certificate Template"
+              onChange={(e) => {
+                form.setFieldValue("certificate_template", e);
+              }}
+            >
+              {certificateConfig.map((certificate, i) => {
+                return (
+                  <Select.Option key={i} value={`${certificate.id}`}>
+                    {certificate.name}
                   </Select.Option>
                 );
               })}

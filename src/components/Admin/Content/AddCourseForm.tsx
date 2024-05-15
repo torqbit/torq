@@ -105,6 +105,7 @@ const AddCourseForm: FC = () => {
   };
 
   const onSubmit = () => {
+    console.log("hit");
     ProgramService.getCourses(
       Number(router.query.id),
       (result: CourseAPIResponse) => {
@@ -118,7 +119,10 @@ const AddCourseForm: FC = () => {
           tvProviderId: result.courseDetails.tvProviderId || "",
           courseId: Number(router.query.id),
           difficultyLevel: form.getFieldsValue().course_difficulty,
+          certificateTemplate: form.getFieldsValue().certificate_template,
         };
+
+        console.log(course, "course ");
 
         ProgramService.updateCourse(
           course,
@@ -619,6 +623,8 @@ const AddCourseForm: FC = () => {
           form.setFieldValue("course_description", result.courseDetails.description);
           form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
           form.setFieldValue("course_difficulty", result.courseDetails.difficultyLevel);
+          form.setFieldValue("certificate_template", result.courseDetails.certificateTemplate);
+
           if (result.courseDetails.chapters.length > 0 || result.courseDetails.videoUrl) {
             setTabActive(true);
           }

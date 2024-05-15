@@ -1,0 +1,27 @@
+.certificate_page {
+  padding: 40px;
+  .certificate_header {
+    color: var(--font-secondary);
+    :hover {
+      color: var(--font-primary);
+    }
+  }
+  .certificate_image {
+    padding: 20px;
+    background-color: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    button {
+      margin-top: 20px;
+      width: 200px;
+    }
+  }
+  .about_description {
+    font-size: 18px;
+    color: var(--font-secondary);
+
+    span {
+      color: var(--ft-color-dull);
+    }
+  }
+}

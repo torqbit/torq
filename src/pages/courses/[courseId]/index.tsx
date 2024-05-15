@@ -17,6 +17,8 @@ const LearnCoursesPage: NextPage = () => {
   const { data: session } = useSession();
   const [enrolled, setEnroll] = useState<boolean>();
   const [courseType, setCourseType] = useState<string>();
+  const [certificateIssuedId, setCertificateIssuedId] = useState<string>();
+
   const [courseDetail, setCourseDetail] = useState<CourseInfo>();
   const [messageApi, contextMessageHolder] = message.useMessage();
 
@@ -71,10 +73,13 @@ const LearnCoursesPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.courseId) {
-      ProgramService.getProgress(
+      ProgramService.getCertificate(
         Number(router.query.courseId),
         (result) => {
-          setCourseCompleted(result.latestProgress.completed);
+          if (result.certificateDetail.getIssuedCertificate.imagePath) {
+            setCourseCompleted(true);
+            setCertificateIssuedId(result.certificateDetail.getIssuedCertificate.id);
+          }
         },
         (error) => {}
       );
@@ -108,6 +113,7 @@ const LearnCoursesPage: NextPage = () => {
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
           isCourseCompleted={isCourseCompleted}
+          certificateIssuedId={certificateIssuedId}
         />
       ) : (
         <Spin tip="Loading..." fullscreen />

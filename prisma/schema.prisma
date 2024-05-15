@@ -11,15 +11,12 @@ datasource db {
 
 //****  DB CONFIG END  ****//
 
-
-
 //****** User Schema  *****//
 enum Theme {
   light
   dark
   system
 }
-
 
 enum Role {
   STUDENT
@@ -48,6 +45,7 @@ model User {
   toUserNotification   Notification[]       @relation("toUser")
   submissionTask       SubmissionTask[]     @relation("user")
   evaluatedAssignment  SubmissionTask[]     @relation("evaluatedByUser")
+  courseCertificate    CourseCertificates[]
 }
 
 //****** User Schema End ******//
@@ -124,34 +122,35 @@ enum courseDifficultyType {
 }
 
 model Course {
-  courseId          Int                   @id @default(autoincrement())
-  name              String
-  about             String                @db.Text()
-  description       String                @db.Text()
-  tvProviderId      String?
-  tvProviderName    String?
-  tvUrl             String?
-  tvThumbnail       String?
-  tvState           VideoState?
-  thumbnail         String?
-  icon              String?
-  authorId          String                @map("user_id")
-  skills            Json?
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @default(now())
-  courseType        CourseType            @default(FREE)
-  isActive          Boolean               @default(true)
-  coursePrice       Float?                @default(0)
-  sequenceId        Int?
-  expiryInDays      Int                   @default(365)
-  difficultyLevel   courseDifficultyType?
-  durationInMonths  Int                   @default(12)
-  user              User                  @relation(name: "userCourse", fields: [authorId], references: [id])
-  totalResources    Int                   @default(0)
-  state             StateType             @default(DRAFT)
-  chapters          Chapter[]
-  CourseRegistraion CourseRegistration[]
-  courseProgress    CourseProgress[]
+  courseId            Int                   @id @default(autoincrement())
+  name                String
+  about               String                @db.Text()
+  description         String                @db.Text()
+  tvProviderId        String?
+  tvProviderName      String?
+  tvUrl               String?
+  tvThumbnail         String?
+  tvState             VideoState?
+  thumbnail           String?
+  icon                String?
+  authorId            String                @map("user_id")
+  skills              Json?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now())
+  courseType          CourseType            @default(FREE)
+  isActive            Boolean               @default(true)
+  coursePrice         Float?                @default(0)
+  sequenceId          Int?
+  certificateTemplate String?
+  expiryInDays        Int                   @default(365)
+  difficultyLevel     courseDifficultyType?
+  durationInMonths    Int                   @default(12)
+  user                User                  @relation(name: "userCourse", fields: [authorId], references: [id])
+  totalResources      Int                   @default(0)
+  state               StateType             @default(DRAFT)
+  chapters            Chapter[]
+  CourseRegistraion   CourseRegistration[]
+  courseProgress      CourseProgress[]
 
   @@unique([courseId, name])
   @@index([authorId])
@@ -412,4 +411,16 @@ model ServiceProvider {
   dt_added       DateTime @default(now())
 
   @@unique([id])
+}
+
+model CourseCertificates {
+  id        String   @id @default(cuid())
+  studentId String      
+  courseId  Int
+  imagePath String?
+  pdfPath   String?
+  issueDate DateTime @default(now())
+  student   User     @relation(fields: [studentId], references: [id])
+
+  @@index([studentId])
 }
