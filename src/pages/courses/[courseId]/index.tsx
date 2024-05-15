@@ -76,9 +76,9 @@ const LearnCoursesPage: NextPage = () => {
       ProgramService.getCertificate(
         Number(router.query.courseId),
         (result) => {
-          if (result.certificateDetail.getIssuedCertificate.imagePath) {
+          if (result.certificateDetail.getIssuedCertificate?.imagePath) {
             setCourseCompleted(true);
-            setCertificateIssuedId(result.certificateDetail.getIssuedCertificate.id);
+            setCertificateIssuedId(result.certificateDetail?.getIssuedCertificate.id);
           }
         },
         (error) => {}

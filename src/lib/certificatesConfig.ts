@@ -6,9 +6,9 @@ export const certificateConfig = [
     previewPath: "/certificates/preview/golden-standard.png",
     color: {
       student: "#d8b357",
-      authorSignature: "#fff",
-      date: "#fff",
-      description: "#fff",
+      authorSignature: "#000",
+      date: "#000",
+      description: "#000",
     },
     coordinates: {
       student: {

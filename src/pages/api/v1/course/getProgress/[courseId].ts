@@ -21,8 +21,10 @@ export const addNameAndCourse = async (
 ) => {
   return new Promise(async (resolve: (value: string) => void, reject) => {
     if (certificateId && certificateIssueId) {
+      console.log(certificateId, "id of certificate");
       const certificateData = certificateConfig.find((c) => c.id === certificateId);
-      const filePath = path.join(process.cwd(), "/public/certificates/templates/golden-luxury.png");
+      console.log(certificateData, "certificate data");
+      const filePath = path.join(process.cwd(), `/public/${certificateData?.path}`);
       const italicPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Italic.ttf");
       const regularPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Regular.ttf");
       const kalamPath = path.join(process.cwd(), "/public/DM_Serif_Display/Kalam-Regular.ttf");
@@ -40,7 +42,8 @@ export const addNameAndCourse = async (
         ctx.fillText(
           descripiton,
           Number(certificateData?.coordinates.description.x),
-          Number(certificateData?.coordinates.description.y)
+          Number(certificateData?.coordinates.description.y),
+          1200
         );
         ctx.font = '50px "Kaushan Script"';
         ctx.fillStyle = certificateData?.color.student as string;
@@ -72,6 +75,7 @@ export const addNameAndCourse = async (
         fs.writeFileSync(outputPath, buffer);
         // Convert the canvas to a data URL
         let dataURL = canvas.toDataURL("image/png");
+        console.log(dataURL, "d url");
         // Execute the callback with the data URL
         // resolve(dataURL.split(",")[1]);
         resolve(outputPath);
@@ -211,7 +215,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             });
 
             certificateIssueId = createCertificate.id;
-            let description = `who has successfully completed the course ${course?.name}, an online course  authored by ${course?.user.name} and offered by Torqbit`;
+            let description = `who has successfully completed the course ${course?.name}, an online course   authored by ${course?.user.name} and offered by Torqbit`;
 
             const updatedImg =
               token?.name &&
@@ -292,7 +296,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           latestProgress: {
             nextChap: nextChap,
             nextLesson: nextLesson,
-            completed: true,
+            completed: false,
             certificateIssueId: certificateIssueId,
           },
         });
