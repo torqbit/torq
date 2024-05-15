@@ -37,10 +37,14 @@ export interface CourseData {
 }
 export interface CourseInfo {
   about: string;
+
   authorId: number;
   user: {
     name: string;
   };
+
+  authorId: string;
+
   sequenceId: number;
   skills: string[];
   tvThumbnail: string;
@@ -59,6 +63,7 @@ export interface CourseInfo {
   expiryInDays: number;
   durationInMonths: number;
   difficultyLevel: courseDifficultyType;
+  certificateTemplate: string;
   name: string;
   programId: number;
   state: string;
