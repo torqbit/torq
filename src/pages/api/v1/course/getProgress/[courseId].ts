@@ -5,90 +5,12 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
-import { date } from "zod";
-import moment from "moment";
-import { certificateConfig } from "@/lib/certificatesConfig";
-import { createCanvas, loadImage, registerFont } from "canvas";
-import fs from "fs";
-import path, { join } from "path";
-import { ContentManagementService } from "@/services/cms/ContentManagementService";
-export const addNameAndCourse = async (
-  descripiton: string,
-  studentName: string,
-  authorName: string,
-  certificateIssueId: string,
-  certificateId?: string
-) => {
-  return new Promise(async (resolve: (value: string) => void, reject) => {
-    if (certificateId && certificateIssueId) {
-      console.log(certificateId, "id of certificate");
-      const certificateData = certificateConfig.find((c) => c.id === certificateId);
-      console.log(certificateData, "certificate data");
-      const filePath = path.join(process.cwd(), `/public/${certificateData?.path}`);
-      const italicPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Italic.ttf");
-      const regularPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Regular.ttf");
-      const kalamPath = path.join(process.cwd(), "/public/DM_Serif_Display/Kalam-Regular.ttf");
 
-      const kaushanPath = path.join(process.cwd(), "/public/DM_Serif_Display/KaushanScript-Regular.ttf");
-      registerFont(kalamPath, { family: "Kalam" });
-      registerFont(kaushanPath, { family: "Kaushan Script" });
-      const canvas = createCanvas(2000, 1414);
-      const ctx = canvas.getContext("2d");
-      certificateData?.color &&
-        loadImage(filePath).then((image) => {
-          ctx.drawImage(image, 0, 0);
-          ctx.font = '40px "Kaushan Script"';
-          ctx.fillStyle = certificateData.color.description as string;
-          ctx.textAlign = "center";
-          ctx.fillText(
-            descripiton,
-            Number(certificateData?.coordinates.description.x),
-            Number(certificateData?.coordinates.description.y),
-            1200
-          );
-          ctx.font = '50px "Kaushan Script"';
-          ctx.fillStyle = certificateData?.color.student as string;
-          ctx.textAlign = "center";
-          ctx.fillText(
-            studentName,
-            Number(certificateData?.coordinates.student.x),
-            Number(certificateData?.coordinates.student.y)
-          );
-          ctx.font = '40px "Kalam"';
-          ctx.fillStyle = certificateData?.color.authorSignature as string;
-          ctx.textAlign = "center";
-          ctx.fillText(
-            authorName,
-            Number(certificateData?.coordinates.authorSignature.x),
-            Number(certificateData?.coordinates.authorSignature.y)
-          );
-          ctx.font = '40px "Kaushan Script"';
-          ctx.fillStyle = certificateData?.color.date as string;
-          ctx.textAlign = "center";
-          ctx.fillText(
-            moment(new Date()).format("MMM-DD-YY  hh:mm a"),
-            Number(certificateData?.coordinates.dateOfCompletion.x),
-            Number(certificateData?.coordinates.dateOfCompletion.y)
-          );
-          const buffer = canvas.toBuffer("image/png");
-          console.log(buffer, "b");
-          const outputPath = path.join(process.cwd(), `/public/resource/${certificateIssueId}.png`);
-          fs.writeFileSync(outputPath, buffer);
-          // Convert the canvas to a data URL
-          let dataURL = canvas.toDataURL("image/png");
-          console.log(dataURL, "d url");
-          // Execute the callback with the data URL
-          // resolve(dataURL.split(",")[1]);
-          resolve(outputPath);
-          image.onerror = function (err) {
-            console.log("add label err", err);
-            reject(new Error("Error loading image."));
-          };
-        });
-    }
-    // save to local
-  });
-};
+import fs from "fs";
+
+import { ContentManagementService } from "@/services/cms/ContentManagementService";
+import { addNameAndCourse } from "@/lib/addCertificate";
+import appConstant from "@/services/appConstant";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -102,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-    console.log(req.query, "q");
+
     const authorId = token?.id;
 
     const course = await prisma.course.findUnique({
@@ -241,8 +163,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
               const fileBuffer = fs.readFileSync(updatedImg as string);
               let fullName = `${certificateIssueId}.png`;
-              let dir = "/courses/certificates/";
-              const bannerPath = `${dir}${fullName}`;
+              const bannerPath = `${appConstant.certificateDirectory}${fullName}`;
               const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
               if (updatedImg) {
                 fs.unlinkSync(updatedImg);

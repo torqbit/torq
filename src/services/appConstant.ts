@@ -7,6 +7,7 @@ export default {
   attachmentFileFolder: "discussion-attachment",
   assignmentFileFolder: "assignment-files",
   assignmentMaxScore: 10,
+  certificateDirectory: "/courses/certificates/",
   userRole: {
     STUDENT: "STUDENT",
     AUTHOR: "AUTHOR",
