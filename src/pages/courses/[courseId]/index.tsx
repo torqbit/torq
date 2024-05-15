@@ -71,13 +71,16 @@ const LearnCoursesPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.courseId) {
-      ProgramService.getProgress(
-        Number(router.query.courseId),
-        (result) => {
-          setCourseCompleted(result.latestProgress.completed);
-        },
-        (error) => {}
-      );
+     
+        ProgramService.getProgress(
+          Number(router.query.courseId),
+          courseDetail?.certificateTemplate,
+
+          (result) => {
+            setCourseCompleted(result.latestProgress.completed);
+          },
+          (error) => {}
+        );
     }
   }, []);
 

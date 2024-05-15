@@ -38,6 +38,9 @@ export interface CourseData {
 export interface CourseInfo {
   about: string;
   authorId: number;
+  user: {
+    name: string;
+  };
   sequenceId: number;
   skills: string[];
   tvThumbnail: string;
@@ -47,6 +50,7 @@ export interface CourseInfo {
   thumbnail: string;
   videoUrl: string;
   chapters: ChapterDetail[];
+  certificateTemplate: string;
   courseId: number;
   coursePrice: number;
   courseType: string;

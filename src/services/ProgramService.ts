@@ -21,6 +21,7 @@ export type ApiResponse = {
     nextChap: ChapterDetail;
     nextLesson: IResourceDetail;
     completed: boolean;
+    certificateIssueId: string;
   };
   progress: {
     courseName: string;
@@ -792,11 +793,11 @@ class ProgramService {
 
   getProgress = (
     courseId: number,
-
+    certificateId: string,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/course/getProgress/${courseId}`, {
+    fetch(`/api/v1/course/getProgress/${courseId}?certificateId=${certificateId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",

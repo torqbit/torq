@@ -12,6 +12,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         courseId: Number(courseId),
       },
       include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
         chapters: {
           where: {
             courseId: Number(courseId),
