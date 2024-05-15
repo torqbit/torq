@@ -1,0 +1,41 @@
+import prisma from "@/lib/prisma";
+import { NextApiResponse, NextApiRequest } from "next";
+import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import { withMethods } from "@/lib/api-middlewares/with-method";
+import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { courseId } = req.query;
+    const course = await prisma.course.findUnique({
+      where: {
+        courseId: Number(courseId),
+      },
+      include: {
+        chapters: {
+          where: {
+            courseId: Number(courseId),
+            state: "ACTIVE",
+          },
+          include: {
+            resource: {
+              include: {
+                video: {},
+              },
+            },
+          },
+        },
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "Fetched course lessons",
+      courseDetails: course,
+    });
+  } catch (error) {
+    return errorHandler(error, res);
+  }
+};
+
+export default withMethods(["GET"], withAuthentication(handler));

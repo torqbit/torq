@@ -1,22 +1,21 @@
-import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
-import Layout2 from "../Layout2/Layout2";
-import styles from "@/styles/LearnCourses.module.scss";
-import { FC, ReactNode, useEffect, useState } from "react";
-import SvgIcons from "../SvgIcons";
-import { useRouter } from "next/router";
+import Layout2 from "@/components/Layout2/Layout2";
+import SvgIcons from "@/components/SvgIcons";
 import ProgramService from "@/services/ProgramService";
 import { ChapterDetail } from "@/types/courses/Course";
-import { IResourceDetail } from "@/lib/types/learn";
-
-import Link from "next/link";
-
+import styles from "@/styles/LearnCourses.module.scss";
+import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
+import { NextPage } from "next";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { FC, ReactNode, useEffect, useState } from "react";
+import { IResourceDetail } from "@/lib/types/learn";
+import { convertSecToHourandMin } from "@/pages/admin/content";
+import QADiscssionTab from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
-import { convertSecToHourandMin } from "@/pages/admin/content";
-import QADiscssionTab from "./AboutCourse/CourseDiscussion/CourseDiscussion";
 
-const Label: FC<{
+const LessonItem: FC<{
   title: string;
   time: string;
   keyValue: string;
@@ -44,21 +43,7 @@ const Label: FC<{
   chapterId,
 }) => {
   const [completed, setCompleted] = useState<boolean>();
-  const [checkLockLoading, setCheckLockLoading] = useState<boolean>();
 
-  const checkIsCompleted = async () => {
-    setCheckLockLoading(true);
-    const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
-    const result = (await res.json()) as IResponse;
-
-    if (res.ok && result.success) {
-      setCompleted(result.isCompleted);
-    }
-    setCheckLockLoading(false);
-  };
-  useEffect(() => {
-    checkIsCompleted();
-  }, [refresh]);
   return (
     <>
       {loading ? (
@@ -94,9 +79,9 @@ const Label: FC<{
   );
 };
 
-const LearnCourse: FC<{}> = () => {
-  const [messageApi, contextMessageHolder] = message.useMessage();
-
+const LessonPage: NextPage = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const [courseData, setCourseData] = useState<{
     name: string;
     description: string;
@@ -108,23 +93,37 @@ const LearnCourse: FC<{}> = () => {
     expiryInDays: 365,
     chapters: [],
   });
-
   const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
-
+  const [messageApi, contextMessageHolder] = message.useMessage();
   const [chapterId, setChapterId] = useState<number>();
   const [currentLessonId, serCurrentLessonId] = useState<number>();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
   const { data: session } = useSession();
-
-  const router = useRouter();
 
   const [isCompleted, setCompleted] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+
+  useEffect(() => {
+    router.query.courseId &&
+      ProgramService.getCourseLessons(
+        Number(router.query.courseId),
+        (result) => {
+          setCourseData({
+            ...courseData,
+            name: result.courseDetails?.name,
+            expiryInDays: result.courseDetails?.expiryInDays,
+            chapters: result.courseDetails?.chapters,
+          });
+        },
+        (error) => {
+          setLoading(false);
+        }
+      );
+  }, [router.query.courseId]);
 
   const checkIsCompleted = async (resourceId: number) => {
     setLoadingBtn(true);
@@ -145,60 +144,6 @@ const LearnCourse: FC<{}> = () => {
 
     return result.isCompleted;
   };
-
-  useEffect(() => {
-    if (selectedLesson?.resourceId) {
-      checkIsCompleted(selectedLesson?.resourceId);
-    }
-  }, [selectedLesson, refresh]);
-
-  const onMarkAsCompleted = async () => {
-    try {
-      if (isCompleted) return;
-
-      const res = await postFetch(
-        {
-          chapterId: selectedLesson?.chapterId,
-          courseId: Number(router.query.courseId),
-          sequenceId: selectedLesson?.sequenceId,
-          resourceId: selectedLesson?.resourceId,
-        },
-        `/api/progress/create`
-      );
-      const result = (await res.json()) as IResponse;
-      if (res.ok && result.success) {
-        messageApi.success(result.message);
-        setRefresh(!refresh);
-        getProgressDetail();
-        ProgramService.getProgress(
-          Number(router.query.courseId),
-          (result) => {
-            setCourseCompleted(result.latestProgress.completed);
-          },
-          (error) => {}
-        );
-      } else {
-        messageApi.error(result.error);
-      }
-    } catch (err) {
-      messageApi.error(appConstant.cmnErrorMsg);
-    }
-  };
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "About",
-      children: selectedLesson?.description,
-    },
-    {
-      key: "2",
-      label: "Q & A",
-
-      children: session && selectedLesson && (
-        <QADiscssionTab loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />
-      ),
-    },
-  ];
 
   const selectResource = (resourceId: number) => {
     setSelectedLesson(
@@ -241,7 +186,7 @@ const LearnCourse: FC<{}> = () => {
     return {
       key: `${content.chapterId}`,
       label: (
-        <Label
+        <LessonItem
           title={content.name}
           icon={SvgIcons.folder}
           time={duration}
@@ -260,7 +205,7 @@ const LearnCourse: FC<{}> = () => {
         .map((res: IResourceDetail, i: any) => {
           return (
             <div className={styles.resContainer}>
-              <Label
+              <LessonItem
                 title={res.name}
                 icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
                 time={convertSecToHourandMin(res.video?.videoDuration)}
@@ -281,6 +226,22 @@ const LearnCourse: FC<{}> = () => {
     };
   });
 
+  const items: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "About",
+      children: selectedLesson?.description,
+    },
+    {
+      key: "2",
+      label: "Q & A",
+
+      children: session && selectedLesson && (
+        <QADiscssionTab loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />
+      ),
+    },
+  ];
+
   const getProgressDetail = () => {
     ProgramService.getProgress(
       Number(router.query.courseId),
@@ -295,33 +256,41 @@ const LearnCourse: FC<{}> = () => {
     );
   };
 
-  useEffect(() => {
-    setLoading(true);
-    router.query.courseId &&
-      ProgramService.getCourses(
-        Number(router.query.courseId),
-        (result) => {
-          if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {
-            router.push("/courses");
-          }
-          setCourseData({
-            ...courseData,
-            name: result.courseDetails?.name,
-            expiryInDays: result.courseDetails?.expiryInDays,
-            chapters: result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE"),
-          });
-          getProgressDetail();
+  const onMarkAsCompleted = async () => {
+    try {
+      if (isCompleted) return;
 
-          setLoading(false);
+      const res = await postFetch(
+        {
+          chapterId: selectedLesson?.chapterId,
+          courseId: Number(router.query.courseId),
+          sequenceId: selectedLesson?.sequenceId,
+          resourceId: selectedLesson?.resourceId,
         },
-        (error) => {
-          setLoading(false);
-        }
+        `/api/progress/create`
       );
-  }, [router.query.courseId]);
+      const result = (await res.json()) as IResponse;
+      if (res.ok && result.success) {
+        messageApi.success(result.message);
+        setRefresh(!refresh);
+        getProgressDetail();
+        ProgramService.getProgress(
+          Number(router.query.courseId),
+          (result) => {
+            setCourseCompleted(result.latestProgress.completed);
+          },
+          (error) => {}
+        );
+      } else {
+        messageApi.error(result.error);
+      }
+    } catch (err) {
+      messageApi.error(appConstant.cmnErrorMsg);
+    }
+  };
+
   return (
     <Layout2>
-      {contextMessageHolder}
       {!loading ? (
         <section className={styles.learn_course_page}>
           <div className={styles.learn_breadcrumb}>
@@ -337,47 +306,18 @@ const LearnCourse: FC<{}> = () => {
               <div className={styles.video_container}>
                 {selectedLesson?.video?.videoUrl && !loadingLesson ? (
                   <>
-                    {isCourseCompleted ? (
-                      <div
-                        className={styles.video_completed_screen}
-                        style={{
-                          position: "absolute",
-                          width: 800,
-                          height: 450,
-                          outline: "none",
-                          border: "none",
-                        }}
-                      >
-                        <div>Congratulations! You have successfully completed the course</div>
-                        <Space>
-                          <Link href={"/dashboard"}>
-                            <Button>Go Home</Button>
-                          </Link>
-                          <Button
-                            type="primary"
-                            onClick={() => {
-                              getProgressDetail();
-                              setCourseCompleted(false);
-                            }}
-                          >
-                            Rewatch
-                          </Button>
-                        </Space>
-                      </div>
-                    ) : (
-                      <iframe
-                        allowFullScreen
-                        style={{
-                          position: "absolute",
+                    <iframe
+                      allowFullScreen
+                      style={{
+                        position: "absolute",
 
-                          width: 800,
-                          height: 450,
-                          outline: "none",
-                          border: "none",
-                        }}
-                        src={selectedLesson.video.videoUrl}
-                      ></iframe>
-                    )}
+                        width: 800,
+                        height: 450,
+                        outline: "none",
+                        border: "none",
+                      }}
+                      src={selectedLesson.video.videoUrl}
+                    ></iframe>
                   </>
                 ) : (
                   <Skeleton.Image
@@ -452,4 +392,4 @@ const LearnCourse: FC<{}> = () => {
   );
 };
 
-export default LearnCourse;
+export default LessonPage;
