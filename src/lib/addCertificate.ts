@@ -17,8 +17,6 @@ export const addNameAndCourse = async (
       const certificateData = certificateConfig.find((c) => c.id === certificateId);
 
       const filePath = path.join(process.cwd(), `/public/${certificateData?.path}`);
-      const italicPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Italic.ttf");
-      const regularPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Regular.ttf");
       const kalamPath = path.join(process.cwd(), "/public/DM_Serif_Display/Kalam-Regular.ttf");
       const kaushanPath = path.join(process.cwd(), "/public/DM_Serif_Display/KaushanScript-Regular.ttf");
 
