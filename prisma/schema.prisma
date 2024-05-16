@@ -272,7 +272,7 @@ model CourseProgress {
   resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
   course           Course   @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
-  @@unique([courseProgressId, resourceId])
+  @@unique([studentId, resourceId])
   @@index([resourceId])
   @@index([courseId])
 }
