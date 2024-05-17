@@ -1,7 +1,7 @@
 import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/learn";
 import { ICourseDetial, ResourceDetails } from "@/lib/types/program";
 
-import { ChapterDetail, CourseAPIResponse, CourseInfo } from "@/types/courses/Course";
+import { ChapterDetail, CourseAPIResponse, CourseInfo, CourseLessonAPIResponse } from "@/types/courses/Course";
 import { Chapter, Course, Resource } from "@prisma/client";
 
 export interface ICourseList extends Course {
@@ -151,7 +151,7 @@ class ProgramService {
 
   getCourseLessons = (
     courseId: number,
-    onSuccess: (response: CourseAPIResponse) => void,
+    onSuccess: (response: CourseLessonAPIResponse) => void,
     onFailure: (message: string) => void
   ) => {
     fetch(`/api/v1/course/${courseId}/lessons`, {
@@ -168,7 +168,7 @@ class ProgramService {
         });
       } else if (result.status == 200) {
         result.json().then((r) => {
-          const apiResponse = r as CourseAPIResponse;
+          const apiResponse = r as CourseLessonAPIResponse;
           onSuccess(apiResponse);
         });
       }

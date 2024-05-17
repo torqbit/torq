@@ -21,12 +21,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const resultRows = await prisma.$queryRaw<
       any[]
     >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.name as lessonName, vi.id as videoId, vi.videoUrl, ch.chapterId, 
-    ch.name as chapterName, cp.resourceId as watchedRes FROM testconsole.Course as co 
-   INNER JOIN testconsole.CourseRegistration as cr ON co.courseId = cr.courseId
-   INNER JOIN testconsole.Chapter as ch ON co.courseId = ch.courseId
-   INNER JOIN testconsole.Resource as re ON ch.chapterId = re.chapterId
-   INNER JOIN testconsole.Video as vi ON re.resourceId = vi.resourceId
-   LEFT OUTER JOIN testconsole.CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId AND cp.chapterId = ch.chapterId
+    ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
+   INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
+   INNER JOIN Chapter as ch ON co.courseId = ch.courseId
+   INNER JOIN Resource as re ON ch.chapterId = re.chapterId
+   INNER JOIN Video as vi ON re.resourceId = vi.resourceId
+   LEFT OUTER JOIN CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId AND cp.chapterId = ch.chapterId
    WHERE cr.studentId = ${token?.id}
    AND co.courseId = ${courseId}
    ORDER BY chapterSeq, resourceSeq`;
@@ -86,6 +86,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       lessons: chapterLessons,
     });
   } catch (error) {
+    console.log(error)
     return errorHandler(error, res);
   }
 };

@@ -1,7 +1,7 @@
 import Layout2 from "@/components/Layout2/Layout2";
 import SvgIcons from "@/components/SvgIcons";
 import ProgramService from "@/services/ProgramService";
-import { ChapterDetail } from "@/types/courses/Course";
+import { ChapterDetail, CourseLessons } from "@/types/courses/Course";
 import styles from "@/styles/LearnCourses.module.scss";
 import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
 import { NextPage } from "next";
@@ -42,46 +42,47 @@ const LessonItem: FC<{
   resourceId,
   chapterId,
 }) => {
-  const [completed, setCompleted] = useState<boolean>();
+    const [completed, setCompleted] = useState<boolean>();
 
-  return (
-    <>
-      {loading ? (
-        <Skeleton.Button />
-      ) : (
-        <div
-          style={{
-            padding: resourceId > 0 ? "5px 0px" : 0,
-            paddingLeft: resourceId > 0 ? "20px" : 0,
-          }}
-          className={`${selectedLesson && resourceId === selectedLesson.resourceId && styles.selectedLable} ${
-            resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
-          }`}
-          onClick={() => {
-            onSelectResource(resourceId);
-          }}
-        >
-          <Flex justify="space-between" align="center">
-            <div className={styles.title_container}>
-              <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
-                {completed ? SvgIcons.check : icon}
-                <div style={{ cursor: "pointer" }}>{title}</div>
-              </Flex>
-            </div>
-            <div className={styles.timeContainer}>
-              <Tag className={styles.time_tag}>{time}</Tag>
-            </div>
-          </Flex>
-          <div className={styles.selected_bar}></div>
-        </div>
-      )}
-    </>
-  );
-};
+    return (
+      <>
+        {loading ? (
+          <Skeleton.Button />
+        ) : (
+          <div
+            style={{
+              padding: resourceId > 0 ? "5px 0px" : 0,
+              paddingLeft: resourceId > 0 ? "20px" : 0,
+            }}
+            className={`${selectedLesson && resourceId === selectedLesson.resourceId && styles.selectedLable} ${resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
+              }`}
+            onClick={() => {
+              onSelectResource(resourceId);
+            }}
+          >
+            <Flex justify="space-between" align="center">
+              <div className={styles.title_container}>
+                <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
+                  {completed ? SvgIcons.check : icon}
+                  <div style={{ cursor: "pointer" }}>{title}</div>
+                </Flex>
+              </div>
+              <div className={styles.timeContainer}>
+                <Tag className={styles.time_tag}>{time}</Tag>
+              </div>
+            </Flex>
+            <div className={styles.selected_bar}></div>
+          </div>
+        )}
+      </>
+    );
+  };
+
 
 const LessonPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([])
   const [courseData, setCourseData] = useState<{
     name: string;
     description: string;
@@ -112,12 +113,7 @@ const LessonPage: NextPage = () => {
       ProgramService.getCourseLessons(
         Number(router.query.courseId),
         (result) => {
-          setCourseData({
-            ...courseData,
-            name: result.courseDetails?.name,
-            expiryInDays: result.courseDetails?.expiryInDays,
-            chapters: result.courseDetails?.chapters,
-          });
+          setCourseLessons(result.lessons)
         },
         (error) => {
           setLoading(false);
@@ -138,7 +134,7 @@ const LessonPage: NextPage = () => {
       (result) => {
         serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
       },
-      (error) => {}
+      (error) => { }
     );
     setLoadingBtn(false);
 
@@ -177,9 +173,9 @@ const LessonPage: NextPage = () => {
     setLessonLoading(false);
   };
 
-  const lessonItems = courseData.chapters?.map((content, i) => {
+  const lessonItems = courseLessons.map((content, i) => {
     let totalTime = 0;
-    content.resource.forEach((data) => {
+    content.lessons.forEach((data) => {
       totalTime = totalTime + data.video?.videoDuration;
     });
     const duration = convertSecToHourandMin(totalTime);
@@ -190,7 +186,7 @@ const LessonPage: NextPage = () => {
           title={content.name}
           icon={SvgIcons.folder}
           time={duration}
-          onSelectResource={() => {}}
+          onSelectResource={() => { }}
           loading={loading}
           resourceId={0}
           chapterId={content.chapterId}
@@ -211,7 +207,7 @@ const LessonPage: NextPage = () => {
                 time={convertSecToHourandMin(res.video?.videoDuration)}
                 onSelectResource={onSelectResource}
                 resourceId={res.resourceId}
-                setChapterId={() => {}}
+                setChapterId={() => { }}
                 selectedLesson={selectedLesson}
                 currentLessonId={currentLessonId}
                 loading={loading}
@@ -252,7 +248,7 @@ const LessonPage: NextPage = () => {
         serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
         setRefresh(!refresh);
       },
-      (error) => {}
+      (error) => { }
     );
   };
 
@@ -279,7 +275,7 @@ const LessonPage: NextPage = () => {
           (result) => {
             setCourseCompleted(result.latestProgress.completed);
           },
-          (error) => {}
+          (error) => { }
         );
       } else {
         messageApi.error(result.error);
