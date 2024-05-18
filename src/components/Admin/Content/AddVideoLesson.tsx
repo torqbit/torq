@@ -46,7 +46,10 @@ const AddVideoLesson: FC<{
             <Space className={styles.drawerTitle}>
               <CloseOutlined
                 onClick={() => {
+                  currResId && !isEdit && onDeleteResource(currResId);
                   setResourceDrawer(false);
+                  formData.resetFields();
+                  onRefresh();
                 }}
               />
               New Resource Details
@@ -54,12 +57,6 @@ const AddVideoLesson: FC<{
           </div>
         }
         placement="right"
-        onClose={() => {
-          currResId && !isEdit && onDeleteResource(currResId);
-          setResourceDrawer(false);
-          formData.resetFields();
-          onRefresh();
-        }}
         open={showResourceDrawer}
         footer={
           <Form
