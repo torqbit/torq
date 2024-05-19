@@ -8,7 +8,7 @@ import { Course } from "@prisma/client";
 import Courses from "@/components/Courses/Courses";
 import { getAllCourses } from "@/actions/getCourseById";
 import { Spin, message } from "antd";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import ProgramService from "@/services/ProgramService";
 
 const CoursesPage: NextPage = () => {

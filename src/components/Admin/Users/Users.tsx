@@ -16,7 +16,7 @@ import {
   message,
 } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import { User } from "@prisma/client";

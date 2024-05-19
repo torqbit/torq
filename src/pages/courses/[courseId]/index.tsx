@@ -1,5 +1,5 @@
 import Preview from "@/components/Admin/Content/Preview";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import LearnCourse from "@/components/LearnCourse/LearnCourse";
 import ProgramService from "@/services/ProgramService";
 import { IResponse, getFetch, postFetch } from "@/services/request";

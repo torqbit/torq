@@ -1,9 +1,8 @@
-import Layout2 from "@/components/Layout2/Layout2";
 import SvgIcons from "@/components/SvgIcons";
 import ProgramService from "@/services/ProgramService";
-import { ChapterDetail, CourseLessons } from "@/types/courses/Course";
+import { ChapterDetail, CourseLessons, VideoLesson } from "@/types/courses/Course";
 import styles from "@/styles/LearnCourses.module.scss";
-import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
+import { Avatar, Button, Collapse, Flex, List, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -14,6 +13,7 @@ import { convertSecToHourandMin } from "@/pages/admin/content";
 import QADiscssionTab from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
+import Layout2 from "@/components/Layouts/Layout2";
 
 const LessonItem: FC<{
   title: string;
@@ -21,10 +21,8 @@ const LessonItem: FC<{
   keyValue: string;
   selectedLesson: IResourceDetail | undefined;
   onSelectResource: (resourceId: number) => void;
-  setChapterId: (value: number) => void;
   resourceId: number;
   loading: boolean;
-  chapterId: number;
   refresh: boolean;
   currentLessonId?: number;
   icon: ReactNode;
@@ -35,54 +33,52 @@ const LessonItem: FC<{
   loading,
   refresh,
   selectedLesson,
-  setChapterId,
   currentLessonId,
   keyValue,
   icon,
   resourceId,
-  chapterId,
 }) => {
-    const [completed, setCompleted] = useState<boolean>();
+  const [completed, setCompleted] = useState<boolean>();
 
-    return (
-      <>
-        {loading ? (
-          <Skeleton.Button />
-        ) : (
-          <div
-            style={{
-              padding: resourceId > 0 ? "5px 0px" : 0,
-              paddingLeft: resourceId > 0 ? "20px" : 0,
-            }}
-            className={`${selectedLesson && resourceId === selectedLesson.resourceId && styles.selectedLable} ${resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
-              }`}
-            onClick={() => {
-              onSelectResource(resourceId);
-            }}
-          >
-            <Flex justify="space-between" align="center">
-              <div className={styles.title_container}>
-                <Flex gap={10} align="center" onClick={() => setChapterId(chapterId)}>
-                  {completed ? SvgIcons.check : icon}
-                  <div style={{ cursor: "pointer" }}>{title}</div>
-                </Flex>
-              </div>
-              <div className={styles.timeContainer}>
-                <Tag className={styles.time_tag}>{time}</Tag>
-              </div>
-            </Flex>
-            <div className={styles.selected_bar}></div>
-          </div>
-        )}
-      </>
-    );
-  };
-
+  return (
+    <>
+      {loading ? (
+        <Skeleton.Button />
+      ) : (
+        <div
+          style={{
+            padding: resourceId > 0 ? "5px 0px" : 0,
+            paddingLeft: resourceId > 0 ? "20px" : 0,
+          }}
+          className={`${selectedLesson && resourceId === selectedLesson.resourceId && styles.selectedLable} ${
+            resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
+          }`}
+          onClick={() => {
+            onSelectResource(resourceId);
+          }}
+        >
+          <Flex justify="space-between" align="center">
+            <div className={styles.title_container}>
+              <Flex gap={10} align="center">
+                {completed ? SvgIcons.check : icon}
+                <div style={{ cursor: "pointer" }}>{title}</div>
+              </Flex>
+            </div>
+            <div className={styles.timeContainer}>
+              <Tag className={styles.time_tag}>{time}</Tag>
+            </div>
+          </Flex>
+          <div className={styles.selected_bar}></div>
+        </div>
+      )}
+    </>
+  );
+};
 
 const LessonPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([])
+  const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([]);
   const [courseData, setCourseData] = useState<{
     name: string;
     description: string;
@@ -113,7 +109,7 @@ const LessonPage: NextPage = () => {
       ProgramService.getCourseLessons(
         Number(router.query.courseId),
         (result) => {
-          setCourseLessons(result.lessons)
+          setCourseLessons(result.lessons);
         },
         (error) => {
           setLoading(false);
@@ -134,7 +130,7 @@ const LessonPage: NextPage = () => {
       (result) => {
         serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
       },
-      (error) => { }
+      (error) => {}
     );
     setLoadingBtn(false);
 
@@ -173,51 +169,47 @@ const LessonPage: NextPage = () => {
     setLessonLoading(false);
   };
 
-  const lessonItems = courseLessons.map((content, i) => {
+  const lessonItems = courseLessons.map((content, index) => {
     let totalTime = 0;
     content.lessons.forEach((data) => {
-      totalTime = totalTime + data.video?.videoDuration;
+      totalTime = totalTime + data.videoDuration;
     });
     const duration = convertSecToHourandMin(totalTime);
+    const videoLessons = (
+      <List
+        size="small"
+        itemLayout="horizontal"
+        dataSource={content.lessons}
+        renderItem={(item, index) => (
+          <List.Item style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ display: "flex" }}>
+              <i style={{ height: 20 }}>{item.isWatched ? SvgIcons.check : SvgIcons.playBtn}</i>
+              <p style={{ marginBottom: 0, marginLeft: 5 }}>{item.title}</p>
+            </div>
+
+            <div>
+              <Tag className={styles.time_tag}>{convertSecToHourandMin(item.videoDuration)}</Tag>
+            </div>
+          </List.Item>
+        )}
+      />
+    );
     return {
-      key: `${content.chapterId}`,
+      key: `${index}`,
       label: (
         <LessonItem
-          title={content.name}
+          title={content.chapterName}
           icon={SvgIcons.folder}
           time={duration}
-          onSelectResource={() => { }}
+          onSelectResource={() => {}}
           loading={loading}
           resourceId={0}
-          chapterId={content.chapterId}
-          setChapterId={setChapterId}
           selectedLesson={undefined}
-          keyValue={`${content.chapterId}`}
+          keyValue={`${content.chapterSeq}`}
           refresh={refresh}
         />
       ),
-      children: content.resource
-        .filter((r) => r.state === "ACTIVE")
-        .map((res: IResourceDetail, i: any) => {
-          return (
-            <div className={styles.resContainer}>
-              <LessonItem
-                title={res.name}
-                icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-                time={convertSecToHourandMin(res.video?.videoDuration)}
-                onSelectResource={onSelectResource}
-                resourceId={res.resourceId}
-                setChapterId={() => { }}
-                selectedLesson={selectedLesson}
-                currentLessonId={currentLessonId}
-                loading={loading}
-                chapterId={0}
-                keyValue={`${i + 1}`}
-                refresh={refresh}
-              />
-            </div>
-          );
-        }),
+      children: videoLessons,
       showArrow: false,
     };
   });
@@ -248,7 +240,7 @@ const LessonPage: NextPage = () => {
         serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
         setRefresh(!refresh);
       },
-      (error) => { }
+      (error) => {}
     );
   };
 
@@ -275,7 +267,7 @@ const LessonPage: NextPage = () => {
           (result) => {
             setCourseCompleted(result.latestProgress.completed);
           },
-          (error) => { }
+          (error) => {}
         );
       } else {
         messageApi.error(result.error);
@@ -289,16 +281,15 @@ const LessonPage: NextPage = () => {
     <Layout2>
       {!loading ? (
         <section className={styles.learn_course_page}>
-          <div className={styles.learn_breadcrumb}>
-            <Flex style={{ fontSize: 20 }}>
-              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
-              <Link href={`/courses/${router.query.courseId}`}> {courseData.name}</Link>
-              <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Play
-            </Flex>
-          </div>
-
           <Flex align="start" justify="space-between">
             <div className={styles.lessons_video_player_wrapper}>
+              <div className={styles.learn_breadcrumb}>
+                <Flex style={{ fontSize: 20 }}>
+                  <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
+                  <Link href={`/courses/${router.query.courseId}`}> {courseData.name}</Link>
+                  <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Play
+                </Flex>
+              </div>
               <div className={styles.video_container}>
                 {selectedLesson?.video?.videoUrl && !loadingLesson ? (
                   <>

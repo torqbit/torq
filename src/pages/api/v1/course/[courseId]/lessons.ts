@@ -20,13 +20,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const resultRows = await prisma.$queryRaw<
       any[]
-    >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.name as lessonName, vi.id as videoId, vi.videoUrl, ch.chapterId, 
+    >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.name as lessonName, vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
     ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
    INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
    INNER JOIN Chapter as ch ON co.courseId = ch.courseId
    INNER JOIN Resource as re ON ch.chapterId = re.chapterId
    INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-   LEFT OUTER JOIN CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId AND cp.chapterId = ch.chapterId
+   LEFT OUTER JOIN CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId
    WHERE cr.studentId = ${token?.id}
    AND co.courseId = ${courseId}
    ORDER BY chapterSeq, resourceSeq`;
@@ -38,6 +38,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         chapter.lessons.push({
           videoId: r.videoId,
           title: r.lessonName,
+          videoDuration: r.videoDuration,
+          lessonId: r.resourceId,
           videoUrl: r.videoUrl,
           isWatched: r.watchedRes != null,
         });
@@ -49,35 +51,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             {
               videoId: r.videoId,
               title: r.lessonName,
+              videoDuration: r.videoDuration,
+              lessonId: r.resourceId,
               videoUrl: r.videoUrl,
               isWatched: r.watchedRes != null,
             },
           ],
         });
       }
-    });
-
-    console.log(chapterLessons);
-
-    const course = await prisma.course.findUnique({
-      where: {
-        courseId: Number(courseId),
-      },
-      include: {
-        chapters: {
-          where: {
-            courseId: Number(courseId),
-            state: "ACTIVE",
-          },
-          include: {
-            resource: {
-              include: {
-                video: {},
-              },
-            },
-          },
-        },
-      },
     });
     return res.status(200).json({
       success: true,
@@ -86,7 +67,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       lessons: chapterLessons,
     });
   } catch (error) {
-    console.log(error)
     return errorHandler(error, res);
   }
 };

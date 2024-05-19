@@ -262,9 +262,6 @@ model CourseRegistration {
 model CourseProgress {
   courseProgressId Int      @id @default(autoincrement())
   courseId         Int
-  chapterId        Int
-  sequenceId       Int
-  lessonsCompleted Int      @default(0)
   resourceId       Int
   studentId        String   @map("user_id")
   createdAt        DateTime @default(now())

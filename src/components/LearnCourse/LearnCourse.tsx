@@ -1,5 +1,5 @@
 import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
-import Layout2 from "../Layout2/Layout2";
+import Layout2 from "../Layouts/Layout2";
 import styles from "@/styles/LearnCourses.module.scss";
 import { FC, ReactNode, useEffect, useState } from "react";
 import SvgIcons from "../SvgIcons";

@@ -38,7 +38,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const updateProgress = prisma.courseProgress.create({
       data: {
-        chapterId: chapterId,
         resourceId: resourceId,
         courseId: courseId,
         studentId: userId,

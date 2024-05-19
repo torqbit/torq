@@ -12,41 +12,12 @@ import Link from "next/link";
 import { UserSession } from "@/lib/types/user";
 import darkThemConfig from "@/services/darkThemConfig";
 import antThemeConfig from "@/services/antThemeConfig";
-import { Theme } from "@prisma/client";
-import { postFetch } from "@/services/request";
 
 const { Content } = Layout;
 
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
-
-  const [theme, setTheme] = React.useState(false);
-  const onThemeChange = () => {
-    setTheme((prv) => {
-      if (!prv) {
-        document.documentElement.setAttribute("data-theme", "dark");
-      } else {
-        document.documentElement.setAttribute("data-theme", "light");
-      }
-      return !prv;
-    });
-  };
-
-  const updateTheme = async (theme: Theme) => {
-    dispatch({
-      type: "SET_USER",
-      payload: { ...user?.user, theme: theme },
-    });
-    let mainHTML = document.getElementsByTagName("html").item(0);
-    if (mainHTML != null) {
-      mainHTML.setAttribute("data-theme", theme);
-    }
-    const response = await postFetch({ theme: theme }, "/api/v1/user/theme");
-    if (response.ok) {
-      update({ theme: theme });
-    }
-  };
 
   const authorSiderMenu: MenuProps["items"] = [
     {

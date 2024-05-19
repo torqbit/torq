@@ -3,7 +3,7 @@ import styles from "../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
 import { List, Space, Tabs, TabsProps } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import ProgramService from "@/services/ProgramService";
 import Link from "next/link";
 import { NextPage } from "next";
