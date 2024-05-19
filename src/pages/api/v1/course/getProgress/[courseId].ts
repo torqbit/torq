@@ -9,8 +9,11 @@ import { getCookieName } from "@/lib/utils";
 import fs from "fs";
 
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
-import { addNameAndCourse } from "@/lib/addCertificate";
+
 import appConstant from "@/services/appConstant";
+import path from "path";
+import { FileUploadResponse } from "@/types/courses/Course";
+import { generatingCertificate } from "@/lib/addCertificate";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -136,65 +139,109 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 studentId: String(token?.id),
               },
             });
+            const onComplete = async (
+              pdfTempPath: string,
+              imgPath: string,
+              certificateIssueId: string,
+              cms: ContentManagementService
+            ) => {
+              const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+                where: {
+                  service_type: "media",
+                },
+              });
+              if (serviceProviderResponse && pdfTempPath && imgPath) {
+                const serviceProvider = cms.getServiceProvider(
+                  serviceProviderResponse?.provider_name,
+                  serviceProviderResponse?.providerDetail
+                );
+                const pdfBuffer = fs.readFileSync(pdfTempPath);
+
+                const imgBuffer = fs.readFileSync(imgPath as string);
+                let imgName = `${certificateIssueId}.png`;
+                let pdfName = `${certificateIssueId}.pdf`;
+
+                const fileImgPath = path.join(appConstant.certificateDirectory, imgName);
+                const pdfPath = path.join(appConstant.certificateDirectory, pdfName);
+                const fileArray = [
+                  {
+                    fileBuffer: imgBuffer,
+                    fullName: imgName,
+                    filePath: fileImgPath,
+                    name: "img",
+                  },
+                  {
+                    fileBuffer: pdfBuffer,
+                    fullName: pdfName,
+                    filePath: pdfPath,
+                    name: "pdf",
+                  },
+                ];
+
+                const arrayResponse = fileArray.forEach(async (file) => {
+                  const response = await cms.uploadFile(
+                    file.fullName,
+                    file.fileBuffer,
+                    file.filePath,
+
+                    serviceProvider
+                  );
+                  console.log(response, "inside data");
+
+                  let data =
+                    file.name === "img"
+                      ? {
+                          imagePath: response.fileCDNPath,
+                        }
+                      : {
+                          pdfPath: response.fileCDNPath,
+                        };
+                  console.log(data, "data");
+                  const updateCourseCertificate = await prisma.courseCertificates.updateMany({
+                    where: {
+                      studentId: token?.id,
+                      courseId: Number(courseId),
+                    },
+                    data,
+                  });
+                });
+
+                if (pdfTempPath && imgPath) {
+                  fs.unlinkSync(imgPath);
+                  fs.unlinkSync(pdfTempPath);
+                }
+
+                nextChap = course?.chapters[0];
+                nextLesson = nextChap?.resource[0];
+                completed = true;
+
+                return res.status(200).json({
+                  courseDetails: course,
+                  latestProgress: {
+                    nextChap: nextChap,
+                    nextLesson: nextLesson,
+                    completed: true,
+                    certificateIssueId: certificateIssueId,
+                  },
+                });
+              } else {
+                throw new Error("No Media Provder has been configured");
+              }
+            };
 
             certificateIssueId = createCertificate.id;
             let description = `who has successfully completed the course ${course?.name}, an online course   authored by ${course?.user.name} and offered by Torqbit`;
 
-            const updatedImg =
-              token?.name &&
-              (await addNameAndCourse(
-                description,
-                token?.name,
-                course?.user.name as string,
-                certificateIssueId,
-                String(certificateId)
-              ));
+            generatingCertificate(
+              certificateIssueId,
+              description,
+              token?.name as string,
+              course?.user.name as string,
 
-            const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
-              where: {
-                service_type: "media",
-              },
-            });
-            if (serviceProviderResponse) {
-              const serviceProvider = cms.getServiceProvider(
-                serviceProviderResponse?.provider_name,
-                serviceProviderResponse?.providerDetail
-              );
-
-              const fileBuffer = fs.readFileSync(updatedImg as string);
-              let fullName = `${certificateIssueId}.png`;
-              const bannerPath = `${appConstant.certificateDirectory}${fullName}`;
-              const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
-              if (updatedImg) {
-                fs.unlinkSync(updatedImg);
-              }
-
-              const updateCourseCertificate = await prisma.courseCertificates.updateMany({
-                where: {
-                  studentId: token?.id,
-                  courseId: Number(courseId),
-                },
-                data: {
-                  imagePath: uploadResponse.fileCDNPath,
-                },
-              });
-
-              nextChap = course?.chapters[0];
-              nextLesson = nextChap?.resource[0];
-              completed = true;
-
-              return res.status(uploadResponse?.statusCode || 200).json({
-                courseDetails: course,
-                latestProgress: {
-                  nextChap: nextChap,
-                  nextLesson: nextLesson,
-                  completed: true,
-                  certificateIssueId: certificateIssueId,
-                },
-              });
-            } else {
-              throw new Error("No Media Provder has been configured");
-            }
+              String(certificateId),
+              onComplete,
+              cms
+            );
           } else {
             let progressData = {
               nextChap: nextChap,
