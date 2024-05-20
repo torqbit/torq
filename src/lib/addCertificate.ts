@@ -8,6 +8,16 @@ const PDFDocument = require("pdfkit");
 import path, { join } from "path";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 
+export const getDateAndYear = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const monthNumber = currentDate.getMonth();
+  const day = currentDate.getDate();
+  const date = new Date(year, monthNumber, day); // 2009-11-10
+  const monthName = date.toLocaleString("default", { month: "long" });
+  return `${monthName} ${day}, ${year}`;
+};
+
 export const onCreateImg = async (
   descripiton: string,
   studentName: string,
@@ -39,33 +49,29 @@ export const onCreateImg = async (
       ctx.textAlign = "center";
       ctx.fillText(
         descripiton,
-        Number(certificateData?.coordinates.description.x),
-        Number(certificateData?.coordinates.description.y),
+        certificateData?.coordinates.description.x,
+        certificateData?.coordinates.description.y,
         1200
       );
       ctx.font = '50px "Kaushan Script"';
       ctx.fillStyle = certificateData?.color.student as string;
       ctx.textAlign = "center";
-      ctx.fillText(
-        studentName,
-        Number(certificateData?.coordinates.student.x),
-        Number(certificateData?.coordinates.student.y)
-      );
+      ctx.fillText(studentName, certificateData?.coordinates.student.x, certificateData?.coordinates.student.y);
       ctx.font = '40px "Kalam"';
       ctx.fillStyle = certificateData?.color.authorSignature as string;
       ctx.textAlign = "center";
       ctx.fillText(
         authorName,
-        Number(certificateData?.coordinates.authorSignature.x),
-        Number(certificateData?.coordinates.authorSignature.y)
+        certificateData?.coordinates.authorSignature.x,
+        certificateData?.coordinates.authorSignature.y
       );
       ctx.font = '40px "Kaushan Script"';
       ctx.fillStyle = certificateData?.color.date as string;
       ctx.textAlign = "center";
       ctx.fillText(
-        moment(new Date()).format("MMM-DD-YY  hh:mm a"),
-        Number(certificateData?.coordinates.dateOfCompletion.x),
-        Number(certificateData?.coordinates.dateOfCompletion.y)
+        getDateAndYear(),
+        certificateData?.coordinates.dateOfCompletion.x,
+        certificateData?.coordinates.dateOfCompletion.y
       );
       const buffer = canvas.toBuffer("image/png");
 
