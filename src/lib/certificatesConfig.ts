@@ -4,6 +4,12 @@ export const certificateConfig = [
     name: "Golden Standard",
     path: "/certificates/templates/golden-standard.png",
     previewPath: "/certificates/preview/golden-standard.png",
+    color: {
+      student: "#d8b357",
+      authorSignature: "#000",
+      date: "#000",
+      description: "#000",
+    },
     coordinates: {
       student: {
         x: 1000,
@@ -28,6 +34,12 @@ export const certificateConfig = [
     name: "Golden Luxury",
     path: "/certificates/templates/golden-luxury.png",
     previewPath: "/certificates/preview/golden-luxury.png",
+    color: {
+      student: "#d8b357",
+      authorSignature: "#fff",
+      date: "#fff",
+      description: "#fff",
+    },
     coordinates: {
       student: {
         x: 1000,

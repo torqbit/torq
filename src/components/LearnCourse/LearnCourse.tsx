@@ -106,21 +106,29 @@ const LearnCourse: FC<{}> = () => {
     name: string;
     description: string;
     expiryInDays: number;
+    authorName: string;
     chapters: ChapterDetail[];
+    certificateId: string;
   }>({
     name: "",
     description: "",
     expiryInDays: 365,
+    authorName: "",
     chapters: [],
+    certificateId: "",
   });
 
   const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
 
   const [chapterId, setChapterId] = useState<number>();
   const [currentLessonId, serCurrentLessonId] = useState<number>();
-
+  const [certificateImg, setCertificateImg] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [certificateId, setCertificateId] = useState<string>();
+
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
+  const [certificateLoading, setcertificateLoading] = useState<boolean>(false);
+
   const { data: session } = useSession();
 
   const router = useRouter();
@@ -141,8 +149,10 @@ const LearnCourse: FC<{}> = () => {
     }
     ProgramService.getProgress(
       Number(router.query.courseId),
+      courseData.certificateId,
       (result) => {
-        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
+        serCurrentLessonId(result.latestProgress.nextLesson?.resourceId);
+        setCertificateId(result.latestProgress.certificateIssueId);
       },
       (error) => {}
     );
@@ -177,8 +187,15 @@ const LearnCourse: FC<{}> = () => {
         getProgressDetail();
         ProgramService.getProgress(
           Number(router.query.courseId),
-          (result) => {
+          courseData.certificateId,
+          async (result) => {
             setCourseCompleted(result.latestProgress.completed);
+
+            if (result.latestProgress.completed) {
+              setcertificateLoading(true);
+
+              setcertificateLoading(false);
+            }
           },
           (error) => {}
         );
@@ -289,11 +306,12 @@ const LearnCourse: FC<{}> = () => {
   const getProgressDetail = () => {
     ProgramService.getProgress(
       Number(router.query.courseId),
+      courseData.certificateId,
+
       (result) => {
         setSelectedLesson(result.latestProgress.nextLesson);
         setChapterId(result.latestProgress.nextLesson?.chapterId);
-
-        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
+        serCurrentLessonId(result.latestProgress.nextLesson?.resourceId);
         setRefresh(!refresh);
       },
       (error) => {}
@@ -309,11 +327,14 @@ const LearnCourse: FC<{}> = () => {
           if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {
             router.push("/courses");
           }
+
           setCourseData({
             ...courseData,
             name: result.courseDetails?.name,
             expiryInDays: result.courseDetails?.expiryInDays,
             chapters: result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE"),
+            authorName: result.courseDetails.user.name,
+            certificateId: result.courseDetails.certificateTemplate,
           });
           getProgressDetail();
 
@@ -355,17 +376,13 @@ const LearnCourse: FC<{}> = () => {
                       >
                         <div>Congratulations! You have successfully completed the course</div>
                         <Space>
-                          <Link href={"/dashboard"}>
-                            <Button>Go Home</Button>
-                          </Link>
                           <Button
-                            type="primary"
-                            onClick={() => {
-                              getProgressDetail();
-                              setCourseCompleted(false);
-                            }}
+                            loading={certificateLoading}
+                            onClick={() =>
+                              router.push(`/courses/${router.query.courseId}/certificate/${certificateId}`)
+                            }
                           >
-                            Rewatch
+                            View Certificate
                           </Button>
                         </Space>
                       </div>

@@ -14,6 +14,7 @@
     "start:prod": "cross-env NODE_ENV=production & next start"
   },
   "dependencies": {
+    "@ant-design/cssinjs": "1.18.1",
     "@ant-design/icons": "^5.2.6",
     "@codemirror/lang-css": "^6.2.0",
     "@codemirror/lang-html": "^6.4.5",
@@ -26,10 +27,10 @@
     "@uiw/react-codemirror": "^4.21.5",
     "antd": "5.12.4",
     "antd-img-crop": "^4.18.0",
+    "canvas": "^2.11.2",
     "dotenv": "^16.3.1",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
-    "@ant-design/cssinjs": "1.18.1",
     "formidable": "^3.5.1",
     "moment": "^2.29.4",
     "mv": "^2.1.1",
@@ -39,6 +40,7 @@
     "next-pwa": "^5.6.0",
     "nextjs-progressbar": "^0.0.16",
     "nodemailer": "^6.9.7",
+    "pdfkit": "^0.15.0",
     "raw-body": "^2.5.2",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
