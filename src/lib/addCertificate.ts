@@ -18,10 +18,10 @@ export const onCreateImg = async (
   const certificateData = certificateConfig.find((c) => c.id === certificateId);
 
   const filePath = path.join(process.cwd(), `/public/${certificateData?.path}`);
-  const italicPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Italic.ttf");
-  const regularPath = path.join(process.cwd(), "/public/DM_Serif_Display/DMSerifDisplay-Regular.ttf");
-  const kalamPath = path.join(process.cwd(), "/public/DM_Serif_Display/Kalam-Regular.ttf");
-  const kaushanPath = path.join(process.cwd(), "/public/DM_Serif_Display/KaushanScript-Regular.ttf");
+  const italicPath = path.join(process.cwd(), "/public/fonts/DM_Serif_Display/DMSerifDisplay-Italic.ttf");
+  const regularPath = path.join(process.cwd(), "/public/fonts/DM_Serif_Display/DMSerifDisplay-Regular.ttf");
+  const kalamPath = path.join(process.cwd(), "/public/fonts/Kalam-Regular.ttf");
+  const kaushanPath = path.join(process.cwd(), "/public/fonts/KaushanScript-Regular.ttf");
   const outputPath = path.join(`${process.env.MEDIA_UPLOAD_PATH}`, `${certificateIssueId}.png`);
 
   registerFont(kalamPath, { family: "Kalam" });
