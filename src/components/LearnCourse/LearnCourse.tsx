@@ -122,7 +122,7 @@ const LearnCourse: FC<{}> = () => {
 
   const [chapterId, setChapterId] = useState<number>();
   const [currentLessonId, serCurrentLessonId] = useState<number>();
-  const [certificateImg, setCertificateImg] = useState<any>();
+  const [certificatePdfPath, setCertificatePdfPath] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const [certificateId, setCertificateId] = useState<string>();
 
@@ -337,6 +337,13 @@ const LearnCourse: FC<{}> = () => {
             certificateId: result.courseDetails.certificateTemplate,
           });
           getProgressDetail();
+          ProgramService.getCertificate(
+            Number(router.query.courseId),
+            (result) => {
+              setCertificateId(String(result?.certificateDetail?.getIssuedCertificate?.id));
+            },
+            (error) => {}
+          );
 
           setLoading(false);
         },

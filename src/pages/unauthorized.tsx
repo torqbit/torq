@@ -11,7 +11,7 @@ const UnAuthorized: NextPage = () => {
       <section style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Space direction="vertical">
           <Flex justify="center" gap={10}>
-            <div>{SvgIcons.lock}</div> <h1>You are not authorized to this page</h1>
+            <div>{SvgIcons.lock}</div> <h1>You are not authorized to view this page</h1>
           </Flex>
           <Flex align="center" justify="center" gap={20}>
             {router.query.from === "lesson" && (
