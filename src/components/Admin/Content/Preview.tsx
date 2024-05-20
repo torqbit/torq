@@ -83,7 +83,6 @@ const Preview: FC<{
     return `${i + 1}`;
   });
   const [render, setRender] = useState(renderKey);
-  const [certificateId, setCertificateId] = useState<string>();
 
   const items = chapter.map((content, i) => {
     let totalTime = 0;
@@ -125,15 +124,16 @@ const Preview: FC<{
     };
   });
 
-  useEffect(() => {
+  const onViewCertificate = () => {
     ProgramService.getCertificate(
       Number(router.query.courseId),
       (result) => {
-        setCertificateId(String(result.certificateDetail.getIssuedCertificate?.id));
+        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        router.push(`/courses/${router.query.courseId}/certificate/${id}`);
       },
       (error) => {}
     );
-  }, [router.query.courseId]);
+  };
   return (
     <section className={styles.preview_container}>
       <Space direction="vertical">
@@ -166,9 +166,7 @@ const Preview: FC<{
 
             {enrolled && isCourseCompleted ? (
               <Flex align="center" gap={10}>
-                <Link href={`/courses/${router.query.courseId}/certificate/${certificateId}`}>
-                  <Button>View Certificate</Button>
-                </Link>
+                <Button onClick={onViewCertificate}>View Certificate</Button>
 
                 <Link href={`/courses/${chapter[0]?.courseId}/play`}>
                   <Button type="primary">Rewatch</Button>

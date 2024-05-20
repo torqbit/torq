@@ -799,11 +799,11 @@ class ProgramService {
 
   getProgress = (
     courseId: number,
-    certificateId: string,
+
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/course/getProgress/${courseId}?certificateId=${certificateId}`, {
+    fetch(`/api/v1/course/getProgress/${courseId}`, {
       method: "GET",
       headers: {
         Accept: "application/json",

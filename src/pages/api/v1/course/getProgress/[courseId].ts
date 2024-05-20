@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     let cookieName = getCookieName();
 
-    const { courseId, certificateId } = req.query;
+    const { courseId } = req.query;
     const token = await getToken({
       req,
       secret: process.env.NEXT_PUBLIC_SECRET,
@@ -128,7 +128,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           currChapter?.resource.length === currentResource?.sequenceId
         ) {
           completed = true;
-          if (!findExistingCertificate && certificateId) {
+          if (!findExistingCertificate) {
             const createCertificate = await prisma.courseCertificates.create({
               data: {
                 courseId: Number(courseId),
@@ -228,7 +228,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               token?.name as string,
               course?.user.name as string,
 
-              String(certificateId),
+              String(course?.certificateTemplate),
               onComplete
             );
 

@@ -122,9 +122,8 @@ const LearnCourse: FC<{}> = () => {
 
   const [chapterId, setChapterId] = useState<number>();
   const [currentLessonId, serCurrentLessonId] = useState<number>();
-  const [certificatePdfPath, setCertificatePdfPath] = useState<string>();
+
   const [loading, setLoading] = useState<boolean>(false);
-  const [certificateId, setCertificateId] = useState<string>();
 
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
   const [certificateLoading, setcertificateLoading] = useState<boolean>(false);
@@ -149,10 +148,9 @@ const LearnCourse: FC<{}> = () => {
     }
     ProgramService.getProgress(
       Number(router.query.courseId),
-      courseData.certificateId,
+
       (result) => {
         serCurrentLessonId(result.latestProgress.nextLesson?.resourceId);
-        setCertificateId(result.latestProgress.certificateIssueId);
       },
       (error) => {}
     );
@@ -187,7 +185,6 @@ const LearnCourse: FC<{}> = () => {
         getProgressDetail();
         ProgramService.getProgress(
           Number(router.query.courseId),
-          courseData.certificateId,
           async (result) => {
             setCourseCompleted(result.latestProgress.completed);
 
@@ -306,13 +303,22 @@ const LearnCourse: FC<{}> = () => {
   const getProgressDetail = () => {
     ProgramService.getProgress(
       Number(router.query.courseId),
-      courseData.certificateId,
-
       (result) => {
         setSelectedLesson(result.latestProgress.nextLesson);
         setChapterId(result.latestProgress.nextLesson?.chapterId);
         serCurrentLessonId(result.latestProgress.nextLesson?.resourceId);
         setRefresh(!refresh);
+      },
+      (error) => {}
+    );
+  };
+
+  const onViewCertificate = () => {
+    ProgramService.getCertificate(
+      Number(router.query.courseId),
+      (result) => {
+        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        router.push(`/courses/${router.query.courseId}/certificate/${id}`);
       },
       (error) => {}
     );
@@ -337,13 +343,6 @@ const LearnCourse: FC<{}> = () => {
             certificateId: result.courseDetails.certificateTemplate,
           });
           getProgressDetail();
-          ProgramService.getCertificate(
-            Number(router.query.courseId),
-            (result) => {
-              setCertificateId(String(result?.certificateDetail?.getIssuedCertificate?.id));
-            },
-            (error) => {}
-          );
 
           setLoading(false);
         },
@@ -383,12 +382,7 @@ const LearnCourse: FC<{}> = () => {
                       >
                         <div>Congratulations! You have successfully completed the course</div>
                         <Space>
-                          <Button
-                            loading={certificateLoading}
-                            onClick={() =>
-                              router.push(`/courses/${router.query.courseId}/certificate/${certificateId}`)
-                            }
-                          >
+                          <Button loading={certificateLoading} onClick={() => onViewCertificate()}>
                             View Certificate
                           </Button>
                         </Space>
