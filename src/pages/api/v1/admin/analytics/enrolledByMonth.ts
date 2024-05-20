@@ -24,7 +24,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       userData,
     });
   } catch (error) {
-    console.log(error);
     return errorHandler(error, res);
   }
 };
