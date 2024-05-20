@@ -8,7 +8,7 @@ const PDFDocument = require("pdfkit");
 import path, { join } from "path";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 
-export const onCreateIMg = async (
+export const onCreateImg = async (
   descripiton: string,
   studentName: string,
   authorName: string,
@@ -102,7 +102,7 @@ export const generatingCertificate = async (
   onComplete: (pdfTempPath: string, imgPath: string, certificateIssueId: string, cms: ContentManagementService) => void,
   cms: ContentManagementService
 ) => {
-  const imgUploadPath = await onCreateIMg(descripiton, studentName, authorName, certificateIssueId, certificateId);
+  const imgUploadPath = await onCreateImg(descripiton, studentName, authorName, certificateIssueId, certificateId);
 
   // Create a document
   const doc = new PDFDocument({ size: "A4", margin: 0, layout: "landscape" });
