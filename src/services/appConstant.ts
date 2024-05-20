@@ -8,6 +8,14 @@ export default {
   assignmentFileFolder: "assignment-files",
   assignmentMaxScore: 10,
   certificateDirectory: "/courses/certificates/",
+  fontDirectory: {
+    dmSerif: {
+      italic: "/public/fonts/DM_Serif_Display/DMSerifDisplay-Italic.ttf",
+      regular: "/public/fonts/DM_Serif_Display/DMSerifDisplay-Regular.ttf",
+    },
+    kaushan: "/public/fonts/KaushanScript-Regular.ttf",
+    kalam: "/public/fonts/Kalam-Regular.ttf",
+  },
   userRole: {
     STUDENT: "STUDENT",
     AUTHOR: "AUTHOR",

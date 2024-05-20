@@ -5,15 +5,11 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
-
 import fs from "fs";
-
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
-
 import appConstant from "@/services/appConstant";
 import path from "path";
-import { FileUploadResponse } from "@/types/courses/Course";
-import { generatingCertificate } from "@/lib/addCertificate";
+import { generateCertificate } from "@/lib/addCertificate";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -139,12 +135,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 studentId: String(token?.id),
               },
             });
-            const onComplete = async (
-              pdfTempPath: string,
-              imgPath: string,
-              certificateIssueId: string,
-              cms: ContentManagementService
-            ) => {
+            const onComplete = async (pdfTempPath: string, imgPath: string) => {
               const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
                 where: {
                   service_type: "media",
@@ -158,8 +149,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 const pdfBuffer = fs.readFileSync(pdfTempPath);
 
                 const imgBuffer = fs.readFileSync(imgPath as string);
-                let imgName = `${certificateIssueId}.png`;
-                let pdfName = `${certificateIssueId}.pdf`;
+                let imgName = `${createCertificate.id}.png`;
+                let pdfName = `${createCertificate.id}.pdf`;
 
                 const fileImgPath = path.join(appConstant.certificateDirectory, imgName);
                 const pdfPath = path.join(appConstant.certificateDirectory, pdfName);
@@ -218,15 +209,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             certificateIssueId = createCertificate.id;
             let description = `who has successfully completed the course ${course?.name}, an online course   authored by ${course?.user.name} and offered by Torqbit`;
 
-            generatingCertificate(
+            generateCertificate(
               certificateIssueId,
               description,
               token?.name as string,
               course?.user.name as string,
 
               String(certificateId),
-              onComplete,
-              cms
+              onComplete
             );
 
             nextChap = course?.chapters[0];

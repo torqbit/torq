@@ -1,12 +1,11 @@
-import { date } from "zod";
-import moment from "moment";
 import { certificateConfig } from "@/lib/certificatesConfig";
 import { createCanvas, loadImage, registerFont } from "canvas";
 import fs from "fs";
 const PDFDocument = require("pdfkit");
 
-import path, { join } from "path";
-import { ContentManagementService } from "@/services/cms/ContentManagementService";
+import path from "path";
+
+import appConstant from "@/services/appConstant";
 
 export const getDateAndYear = () => {
   const currentDate = new Date();
@@ -28,10 +27,10 @@ export const onCreateImg = async (
   const certificateData = certificateConfig.find((c) => c.id === certificateId);
 
   const filePath = path.join(process.cwd(), `/public/${certificateData?.path}`);
-  const italicPath = path.join(process.cwd(), "/public/fonts/DM_Serif_Display/DMSerifDisplay-Italic.ttf");
-  const regularPath = path.join(process.cwd(), "/public/fonts/DM_Serif_Display/DMSerifDisplay-Regular.ttf");
-  const kalamPath = path.join(process.cwd(), "/public/fonts/Kalam-Regular.ttf");
-  const kaushanPath = path.join(process.cwd(), "/public/fonts/KaushanScript-Regular.ttf");
+  const italicPath = path.join(process.cwd(), appConstant.fontDirectory.dmSerif.italic);
+  const regularPath = path.join(process.cwd(), appConstant.fontDirectory.dmSerif.regular);
+  const kalamPath = path.join(process.cwd(), appConstant.fontDirectory.kalam);
+  const kaushanPath = path.join(process.cwd(), appConstant.fontDirectory.kaushan);
   const outputPath = path.join(`${process.env.MEDIA_UPLOAD_PATH}`, `${certificateIssueId}.png`);
 
   registerFont(kalamPath, { family: "Kalam" });
@@ -86,8 +85,6 @@ export const onCreateImg = async (
 
       fs.writeFileSync(outputPath, buffer);
 
-      //   let dataURL = canvas.toDataURL("image/png");
-
       image.onerror = function (err) {
         console.log("add label err", err);
       };
@@ -95,18 +92,15 @@ export const onCreateImg = async (
     }));
 
   return uploadedPath;
-
-  // save to local
 };
 
-export const generatingCertificate = async (
+export const generateCertificate = async (
   certificateIssueId: string,
   descripiton: string,
   studentName: string,
   authorName: string,
   certificateId: string,
-  onComplete: (pdfTempPath: string, imgPath: string, certificateIssueId: string, cms: ContentManagementService) => void,
-  cms: ContentManagementService
+  onComplete: (pdfTempPath: string, imgPath: string) => void
 ) => {
   const imgUploadPath = await onCreateImg(descripiton, studentName, authorName, certificateIssueId, certificateId);
 
@@ -138,6 +132,6 @@ export const generatingCertificate = async (
 
   doc.end();
   outputStream.on("finish", () => {
-    onComplete(uploadPdfPath, imgUploadPath as string, certificateIssueId, cms);
+    imgUploadPath && onComplete(uploadPdfPath, imgUploadPath);
   });
 };
