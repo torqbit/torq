@@ -210,20 +210,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   fs.unlinkSync(imgPath);
                   fs.unlinkSync(pdfTempPath);
                 }
-
-                nextChap = course?.chapters[0];
-                nextLesson = nextChap?.resource[0];
-                completed = true;
-
-                return res.status(200).json({
-                  courseDetails: course,
-                  latestProgress: {
-                    nextChap: nextChap,
-                    nextLesson: nextLesson,
-                    completed: true,
-                    certificateIssueId: certificateIssueId,
-                  },
-                });
               } else {
                 throw new Error("No Media Provder has been configured");
               }
@@ -242,6 +228,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               onComplete,
               cms
             );
+
+            nextChap = course?.chapters[0];
+            nextLesson = nextChap?.resource[0];
+            completed = true;
+
+            return res.status(200).json({
+              courseDetails: course,
+              latestProgress: {
+                nextChap: nextChap,
+                nextLesson: nextLesson,
+                completed: true,
+                certificateIssueId: certificateIssueId,
+              },
+            });
           } else {
             let progressData = {
               nextChap: nextChap,
