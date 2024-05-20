@@ -71,7 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (findProgress.length > 0) {
-      if (findExistingCertificate && findExistingCertificate.imagePath) {
+      if (findExistingCertificate && findExistingCertificate.imagePath && findExistingCertificate.pdfPath) {
         return res.status(200).json({
           info: false,
           success: true,
@@ -169,7 +169,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                   },
                 ];
 
-                const arrayResponse = fileArray.forEach(async (file) => {
+                fileArray.forEach(async (file) => {
                   const response = await cms.uploadFile(
                     file.fullName,
                     file.fileBuffer,
@@ -177,7 +177,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
                     serviceProvider
                   );
-                  console.log(response, "inside data");
 
                   let data =
                     file.name === "img"
@@ -187,12 +186,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                       : {
                           pdfPath: response.fileCDNPath,
                         };
-                  console.log(data, "data");
-                  const updateCourseCertificate = await prisma.courseCertificates.updateMany({
+
+                  await prisma.courseCertificates.update({
                     where: {
-                      studentId: token?.id,
-                      courseId: Number(courseId),
+                      id: createCertificate.id,
                     },
+
                     data,
                   });
                 });
