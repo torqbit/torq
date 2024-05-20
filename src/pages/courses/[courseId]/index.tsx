@@ -73,7 +73,6 @@ const LearnCoursesPage: NextPage = () => {
     if (router.query.courseId) {
       ProgramService.getProgress(
         Number(router.query.courseId),
-        courseDetail?.certificateTemplate,
 
         (result) => {
           setCourseCompleted(result.latestProgress.completed);

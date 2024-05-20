@@ -7,6 +7,7 @@ import styles from "@/styles/Preview.module.scss";
 import { ChapterDetail, CourseData, CourseInfo, VideoInfo } from "@/types/courses/Course";
 import { Button, Collapse, Flex, Space, Tag } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { FC, ReactNode, useEffect, useState } from "react";
 
@@ -77,6 +78,7 @@ const Preview: FC<{
   isCourseCompleted,
   courseDetail,
 }) => {
+  const router = useRouter();
   const renderKey = chapter.map((c, i) => {
     return `${i + 1}`;
   });
@@ -121,6 +123,17 @@ const Preview: FC<{
       showArrow: false,
     };
   });
+
+  const onViewCertificate = () => {
+    ProgramService.getCertificate(
+      Number(router.query.courseId),
+      (result) => {
+        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        router.push(`/courses/${router.query.courseId}/certificate/${id}`);
+      },
+      (error) => {}
+    );
+  };
   return (
     <section className={styles.preview_container}>
       <Space direction="vertical">
@@ -152,9 +165,13 @@ const Preview: FC<{
             </Space>
 
             {enrolled && isCourseCompleted ? (
-              <Link href={`/courses/${chapter[0]?.courseId}/play`}>
-                <Button type="primary">Rewatch</Button>
-              </Link>
+              <Flex align="center" gap={10}>
+                <Button onClick={onViewCertificate}>View Certificate</Button>
+
+                <Link href={`/courses/${chapter[0]?.courseId}/play`}>
+                  <Button type="primary">Rewatch</Button>
+                </Link>
+              </Flex>
             ) : (
               <Button
                 className={styles.save_btn}
