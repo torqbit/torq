@@ -7,8 +7,6 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { courseId } = req.query;
-    // const { authorId, state } = req.query;
-
     const totalMembers = await prisma.user.findMany({
       where: {
         role: "STUDENT",
