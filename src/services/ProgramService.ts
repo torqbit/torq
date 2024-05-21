@@ -1,8 +1,8 @@
 import { IRegisteredCourses, IResourceDetail, VideoDetails } from "@/lib/types/learn";
 import { ICourseDetial, ResourceDetails } from "@/lib/types/program";
-
 import { ChapterDetail, CourseAPIResponse, CourseInfo, CourseLessonAPIResponse } from "@/types/courses/Course";
-import { Chapter, Course, Resource } from "@prisma/client";
+import { Chapter, Course, CourseCertificates, Resource } from "@prisma/client";
+
 
 export interface ICourseList extends Course {
   courseId: number;
@@ -17,10 +17,17 @@ export type ApiResponse = {
   message: string;
   registerCourses: IRegisteredCourses[];
   courseDetails: CourseInfo;
+  certificateDetail: {
+    getIssuedCertificate: CourseCertificates;
+    course: {
+      name: string;
+    };
+  };
   latestProgress: {
     nextChap: ChapterDetail;
     nextLesson: IResourceDetail;
     completed: boolean;
+    certificateIssueId: string;
   };
   progress: {
     courseName: string;
@@ -842,6 +849,34 @@ class ProgramService {
       }
     });
   };
+
+  getCertificate = (
+    courseId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/course/certificate/${courseId}?`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
   checkProgress = (
     resourceId: number,
 

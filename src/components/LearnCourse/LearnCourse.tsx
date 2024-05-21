@@ -101,12 +101,16 @@ const LearnCourse: FC<{}> = () => {
     name: string;
     description: string;
     expiryInDays: number;
+    authorName: string;
     chapters: ChapterDetail[];
+    certificateId: string;
   }>({
     name: "",
     description: "",
     expiryInDays: 365,
+    authorName: "",
     chapters: [],
+    certificateId: "",
   });
 
   const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
@@ -115,7 +119,10 @@ const LearnCourse: FC<{}> = () => {
   const [currentLessonId, serCurrentLessonId] = useState<number>();
 
   const [loading, setLoading] = useState<boolean>(false);
+
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
+  const [certificateLoading, setcertificateLoading] = useState<boolean>(false);
+
   const { data: session } = useSession();
 
   const router = useRouter();
@@ -136,8 +143,9 @@ const LearnCourse: FC<{}> = () => {
     }
     ProgramService.getProgress(
       Number(router.query.courseId),
+
       (result) => {
-        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
+        serCurrentLessonId(result.latestProgress.nextLesson?.resourceId);
       },
       (error) => {}
     );
@@ -172,8 +180,14 @@ const LearnCourse: FC<{}> = () => {
         getProgressDetail();
         ProgramService.getProgress(
           Number(router.query.courseId),
-          (result) => {
+          async (result) => {
             setCourseCompleted(result.latestProgress.completed);
+
+            if (result.latestProgress.completed) {
+              setcertificateLoading(true);
+
+              setcertificateLoading(false);
+            }
           },
           (error) => {}
         );
@@ -287,9 +301,19 @@ const LearnCourse: FC<{}> = () => {
       (result) => {
         setSelectedLesson(result.latestProgress.nextLesson);
         setChapterId(result.latestProgress.nextLesson?.chapterId);
-
-        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
+        serCurrentLessonId(result.latestProgress.nextLesson?.resourceId);
         setRefresh(!refresh);
+      },
+      (error) => {}
+    );
+  };
+
+  const onViewCertificate = () => {
+    ProgramService.getCertificate(
+      Number(router.query.courseId),
+      (result) => {
+        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        router.push(`/courses/${router.query.courseId}/certificate/${id}`);
       },
       (error) => {}
     );
@@ -304,11 +328,14 @@ const LearnCourse: FC<{}> = () => {
           if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {
             router.push("/courses");
           }
+
           setCourseData({
             ...courseData,
             name: result.courseDetails?.name,
             expiryInDays: result.courseDetails?.expiryInDays,
             chapters: result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE"),
+            authorName: result.courseDetails.user.name,
+            certificateId: result.courseDetails.certificateTemplate,
           });
           getProgressDetail();
 
@@ -350,17 +377,8 @@ const LearnCourse: FC<{}> = () => {
                       >
                         <div>Congratulations! You have successfully completed the course</div>
                         <Space>
-                          <Link href={"/dashboard"}>
-                            <Button>Go Home</Button>
-                          </Link>
-                          <Button
-                            type="primary"
-                            onClick={() => {
-                              getProgressDetail();
-                              setCourseCompleted(false);
-                            }}
-                          >
-                            Rewatch
+                          <Button loading={certificateLoading} onClick={() => onViewCertificate()}>
+                            View Certificate
                           </Button>
                         </Space>
                       </div>

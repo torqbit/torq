@@ -7,6 +7,15 @@ export default {
   attachmentFileFolder: "discussion-attachment",
   assignmentFileFolder: "assignment-files",
   assignmentMaxScore: 10,
+  certificateDirectory: "/courses/certificates/",
+  fontDirectory: {
+    dmSerif: {
+      italic: "/public/fonts/DM_Serif_Display/DMSerifDisplay-Italic.ttf",
+      regular: "/public/fonts/DM_Serif_Display/DMSerifDisplay-Regular.ttf",
+    },
+    kaushan: "/public/fonts/KaushanScript-Regular.ttf",
+    kalam: "/public/fonts/Kalam-Regular.ttf",
+  },
   userRole: {
     STUDENT: "STUDENT",
     AUTHOR: "AUTHOR",
@@ -17,5 +26,11 @@ export default {
   },
   production: {
     cookieName: "__Secure-next-auth.session-token",
+  },
+  lineChart: {
+    graphColor: "#5b63d3",
+    black: "#000",
+    white: "#fff",
+    grey: "#eee",
   },
 };
