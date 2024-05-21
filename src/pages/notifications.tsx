@@ -11,8 +11,9 @@ import moment from "moment";
 import NotificationService from "@/services/NotificationService";
 import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/ReplyDrawer";
 import { IComments, IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
-import { INotification } from "@/components/Header/Header";
+
 import { useRouter } from "next/router";
+import { INotification } from "@/lib/types/discussions";
 
 const NotificationList: FC = () => {
   const { data: user } = useSession();
@@ -45,7 +46,7 @@ const NotificationList: FC = () => {
 
       NotificationService.getNotification(
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications as any });
           setLoading(false);
         },
         (error) => {
@@ -65,7 +66,7 @@ const NotificationList: FC = () => {
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
           (result) => {
-            dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+            dispatch({ type: "SET_NOTIFICATION", payload: result.notifications as any });
           },
           (error) => {}
         );

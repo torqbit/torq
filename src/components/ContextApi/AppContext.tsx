@@ -1,6 +1,6 @@
 import { createContext, Dispatch, useContext, useReducer } from "react";
 import { Session } from "next-auth";
-import { INotification } from "@/services/NotificationService";
+import { INotification } from "@/lib/types/discussions";
 import { UserSession } from "@/lib/types/user";
 import { Theme } from "@prisma/client";
 
