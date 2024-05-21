@@ -29,7 +29,8 @@ export default {
   },
   lineChart: {
     graphColor: "#5b63d3",
-    lightColor: "#000",
-    darkColor: "#fff",
+    black: "#000",
+    white: "#fff",
+    grey: "#eee",
   },
 };

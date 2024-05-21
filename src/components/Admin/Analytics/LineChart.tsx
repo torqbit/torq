@@ -5,7 +5,7 @@ import { useAppContext } from "@/components/ContextApi/AppContext";
 import appConstant from "@/services/appConstant";
 
 const LineChart: FC<{ data: Serie[] }> = ({ data }) => {
-  const { globalState, dispatch } = useAppContext();
+  const { globalState } = useAppContext();
 
   return (
     <>
@@ -15,37 +15,35 @@ const LineChart: FC<{ data: Serie[] }> = ({ data }) => {
           axis: {
             domain: {
               line: {
-                stroke:
-                  globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
+                stroke: globalState.theme === "dark" ? appConstant.lineChart.white : appConstant.lineChart.black,
                 fontSize: 10,
               },
             },
             legend: {
               text: {
-                fill: globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
+                fill: globalState.theme === "dark" ? appConstant.lineChart.white : appConstant.lineChart.black,
                 fontSize: 15,
               },
             },
             ticks: {
               line: {
-                stroke:
-                  globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
+                stroke: globalState.theme === "dark" ? appConstant.lineChart.white : appConstant.lineChart.black,
                 strokeWidth: 1,
               },
               text: {
-                fill: globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
+                fill: globalState.theme === "dark" ? appConstant.lineChart.white : appConstant.lineChart.black,
                 fontSize: 13,
               },
             },
           },
           legends: {
             text: {
-              fill: "#eee",
+              fill: appConstant.lineChart.grey,
             },
           },
           tooltip: {
             container: {
-              color: "#000",
+              color: appConstant.lineChart.black,
             },
           },
         }}
