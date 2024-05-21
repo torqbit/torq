@@ -10,7 +10,7 @@
 # PWA app
 public/sw.js
 public/workbox-*
-
+/tmp
 # testing
 /coverage
 

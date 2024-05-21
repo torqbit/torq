@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import styleLayout from "../styles/Dashboard.module.scss";
 import styles from "@/styles/Profile.module.scss";
 import { getSession, useSession } from "next-auth/react";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import { Button, Form, Input, Tabs, TabsProps, message } from "antd";
 
 import { postFetch, IResponse } from "@/services/request";

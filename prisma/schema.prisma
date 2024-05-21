@@ -261,9 +261,6 @@ model CourseRegistration {
 model CourseProgress {
   courseProgressId Int      @id @default(autoincrement())
   courseId         Int
-  chapterId        Int
-  sequenceId       Int
-  lessonsCompleted Int      @default(0)
   resourceId       Int
   studentId        String   @map("user_id")
   createdAt        DateTime @default(now())
@@ -271,7 +268,7 @@ model CourseProgress {
   resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
   course           Course   @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
-  @@unique([courseProgressId, resourceId])
+  @@unique([studentId, resourceId])
   @@index([resourceId])
   @@index([courseId])
 }

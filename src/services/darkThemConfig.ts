@@ -1,9 +1,9 @@
 export default {
   token: {
     borderRadius: 4,
-    colorText: "#fff",
+    colorText: "#939db8",
     colorBgContainer: "#283040",
-    colorBorder: "#5d6a8b",
+    colorBorder: "#374362",
     colorTextPlaceholder: "#2f3647",
     colorPrimary: "#5b63d3",
     colorTextDisabled: "#68696d",

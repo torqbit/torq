@@ -3,7 +3,7 @@ import styles from "../../../styles/Dashboard.module.scss";
 import { Button, Dropdown, Modal, Space, Table, Tabs, TabsProps, Tag, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { useAppContext } from "../../../components/ContextApi/AppContext";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import Link from "next/link";
 
 import Setting from "./Setting";

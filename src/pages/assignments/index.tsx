@@ -8,7 +8,7 @@ import moment from "moment";
 import { NextPage } from "next";
 import Link from "next/link";
 import appConstant from "@/services/appConstant";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 
 interface ISubmissionTask extends SubmissionTask {
   user: {

@@ -13,7 +13,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const resourceCount = await prisma.resource.count({
       where: {
         chapterId: chapterId,
-        state: "ACTIVE",
       },
     });
 

@@ -1,5 +1,5 @@
 import { Button, Collapse, Flex, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
-import Layout2 from "../Layout2/Layout2";
+import Layout2 from "../Layouts/Layout2";
 import styles from "@/styles/LearnCourses.module.scss";
 import { FC, ReactNode, useEffect, useState } from "react";
 import SvgIcons from "../SvgIcons";
@@ -9,11 +9,12 @@ import { ChapterDetail } from "@/types/courses/Course";
 import { IResourceDetail } from "@/lib/types/learn";
 
 import Link from "next/link";
-import CourseDiscussion from "./AboutCourse/CourseDiscussion/CourseDiscussion";
+
 import { useSession } from "next-auth/react";
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
 import { convertSecToHourandMin } from "@/pages/admin/content";
+import QADiscssionTab from "./AboutCourse/CourseDiscussion/CourseDiscussion";
 
 const Label: FC<{
   title: string;
@@ -83,12 +84,6 @@ const Label: FC<{
               </Flex>
             </div>
             <div className={styles.timeContainer}>
-              {!checkLockLoading &&
-                currentLessonId &&
-                resourceId > 0 &&
-                selectedLesson?.resourceId !== resourceId &&
-                currentLessonId !== resourceId &&
-                !completed && <div className={styles.lockICon}>{SvgIcons.outlinedLock}</div>}
               <Tag className={styles.time_tag}>{time}</Tag>
             </div>
           </Flex>
@@ -214,7 +209,7 @@ const LearnCourse: FC<{}> = () => {
       label: "Q & A",
 
       children: session && selectedLesson && (
-        <CourseDiscussion loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />
+        <QADiscssionTab loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />
       ),
     },
   ];

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
 import { Avatar, Badge, List, Space, Tabs, TabsProps, message } from "antd";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import { IResponse, getFetch } from "@/services/request";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import Link from "next/link";

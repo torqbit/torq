@@ -20,7 +20,27 @@ export interface ChapterDetail {
   name: string;
   resource: IResourceDetail[];
 }
+export interface VideoLesson {
+  videoId: number;
+  lessonId: number;
+  videoUrl: string;
+  videoDuration: number;
+  isWatched: boolean;
+  title: string;
+}
+export interface CourseLessons {
+  chapterSeq: number;
+  chapterName: string;
+  lessons: Array<VideoLesson>;
+}
 
+export interface CourseLessonAPIResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  course: { name: string; description: string };
+  lessons: CourseLessons[];
+}
 export interface CourseAPIResponse {
   success: boolean;
   statusCode: number;

@@ -1,4 +1,4 @@
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import SvgIcons from "@/components/SvgIcons";
 import { Button, Flex, Space } from "antd";
 import { NextPage } from "next";

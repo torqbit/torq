@@ -2,14 +2,19 @@
   padding: 20px 40px;
   overflow-y: hidden;
   .lessons_video_player_wrapper {
-    background-color: var(--bg-primary);
+    width: 100%;
+    padding-right: 20px;
   }
   .video_container,
   .video_completed_screen {
-    width: 800px;
-    height: 450px;
-
+    width: 100%;
+    height: 75vh;
+    min-height: 400px;
     position: relative;
+    background-color: black;
+  }
+  .segmented__test {
+    background-color: #888;
   }
   .video_completed_screen {
     background-color: var(--bg-primary);
@@ -39,10 +44,39 @@
   }
 
   .lessons_container {
-    overflow: hidden;
+    min-height: 100vh;
     height: 100%;
+    width: 425px;
+    padding: 0 10px;
+    margin: -20px -40px -20px 0;
+    background: var(--bg-primary);
+    h2 {
+      padding: 20px;
+      color: var(--font-primary);
+      margin-bottom: 0;
+    }
     .lessons_list_wrapper {
       margin-bottom: 20px;
+    }
+
+    .lesson__default {
+      border: none;
+    }
+    .lesson__selected {
+      background-color: var(--bg-secondary);
+      border-left: 3px solid var(--btn-primary);
+    }
+
+    .lesson__item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+
+      &:hover {
+        color: var(--font-primary);
+      }
     }
   }
 }

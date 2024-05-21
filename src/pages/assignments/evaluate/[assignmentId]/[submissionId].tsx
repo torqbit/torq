@@ -9,7 +9,7 @@ import Link from "next/link";
 import appConstant from "@/services/appConstant";
 import PreviewCode from "@/components/PreviewCode/PreviewCode";
 import { useSession } from "next-auth/react";
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 
 interface IState {
   comment: string;

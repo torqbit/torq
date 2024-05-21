@@ -37,22 +37,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     if (isEnrolled?.courseId) {
-      const findTotalResourceCompleted = await prisma.courseProgress.count({
-        where: {
-          studentId: userId,
-          courseId: Number(courseId),
-        },
-      });
       const newProgress =
         userId &&
         (await prisma.courseProgress.create({
           data: {
             courseId: Number(courseId),
             resourceId: resourceId,
-            sequenceId: sequenceId,
             studentId: userId,
-            chapterId: chapterId,
-            lessonsCompleted: findTotalResourceCompleted > 0 ? findTotalResourceCompleted + 1 : 1,
           },
         }));
 
