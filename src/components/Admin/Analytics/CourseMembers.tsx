@@ -13,7 +13,7 @@ const CourseMembers: FC<{ onChange: (value: SegmentedValue) => void; userData: U
   const data = [
     {
       id: "line",
-      color: "#5b63d3",
+
       data: userData?.map((d) => {
         return {
           x: d.month,
