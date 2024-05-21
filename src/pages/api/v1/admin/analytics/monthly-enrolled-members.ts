@@ -16,7 +16,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userData = result.map((r) => {
       return { year: r.year, month: r.month, users: Number(r.users) };
     });
-
     return res.status(200).json({
       info: false,
       success: true,

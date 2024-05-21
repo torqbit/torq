@@ -92,6 +92,13 @@ const EnrolledCourseList: FC<{
                 },
                 {
                   key: "3",
+                  label: "View Analytics",
+                  onClick: () => {
+                    router.push(`/admin/content/courses/${courseInfo.key}/analytics`);
+                  },
+                },
+                {
+                  key: "4",
                   label: "Delete",
                   onClick: () => {
                     modal.confirm({

@@ -55,5 +55,11 @@ export default {
       headerBg: "#fff",
       paddingSM: 0,
     },
+    Segmented: {
+      itemSelectedBg: "#fff",
+      controlPaddingHorizontal: 30,
+      marginSM: 10,
+      trackBg: "#fff",
+    },
   },
 };

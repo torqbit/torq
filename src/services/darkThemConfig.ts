@@ -115,5 +115,12 @@ export default {
     Message: {
       contentBg: "#283040",
     },
+    Segmented: {
+      itemSelectedBg: "#283040",
+      itemHoverColor: "#fff",
+      controlPaddingHorizontal: 30,
+
+      itemColor: "#000",
+    },
   },
 };

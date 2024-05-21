@@ -17,6 +17,7 @@ body {
   --font-primary: #000;
   --font-label: #888;
   --primary-button: #000;
+  --segment-bg: #e0dfdf;
   --delete-button: #ea0303;
   --card-bg-color: #dadada;
   --card-font-color: #959595;
@@ -49,6 +50,7 @@ body {
 :root[data-theme="dark"] {
   --bg-secondary: #202433;
   --bg-primary: #283040;
+  --segment-bg: #000;
   --font-primary: #fff;
   --btn-primary: #5b63d3;
   --font-secondary: #939db8;
