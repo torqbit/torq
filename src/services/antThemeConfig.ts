@@ -2,6 +2,8 @@ export default {
   token: {
     borderRadius: 4,
     colorText: "#666",
+    colorPrimary: "#5b63d3",
+    colorPrimaryHover: "#000",
   },
   components: {
     Layout: {
@@ -54,6 +56,11 @@ export default {
       contentPadding: "0px",
       headerBg: "#fff",
       paddingSM: 0,
+    },
+    Segmented: {
+      bodyBg: "#666",
+      itemSelectedBg: "blue",
+      itemSelectedColor: "white",
     },
   },
 };

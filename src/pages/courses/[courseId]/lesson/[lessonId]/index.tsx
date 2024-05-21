@@ -2,7 +2,22 @@ import SvgIcons from "@/components/SvgIcons";
 import ProgramService from "@/services/ProgramService";
 import { ChapterDetail, CourseLessons, VideoLesson } from "@/types/courses/Course";
 import styles from "@/styles/LearnCourses.module.scss";
-import { Avatar, Button, Collapse, Flex, List, Skeleton, Space, Spin, Tabs, TabsProps, Tag, message } from "antd";
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Collapse,
+  Flex,
+  List,
+  Segmented,
+  Skeleton,
+  Space,
+  Spin,
+  Tabs,
+  TabsProps,
+  Tag,
+  message,
+} from "antd";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -14,6 +29,7 @@ import QADiscssionTab from "@/components/LearnCourse/AboutCourse/CourseDiscussio
 import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
 import Layout2 from "@/components/Layouts/Layout2";
+import { ICourseProgressUpdateResponse } from "@/lib/types/program";
 
 const LessonItem: FC<{
   title: string;
@@ -24,20 +40,8 @@ const LessonItem: FC<{
   resourceId: number;
   loading: boolean;
   refresh: boolean;
-  currentLessonId?: number;
   icon: ReactNode;
-}> = ({
-  title,
-  time,
-  onSelectResource,
-  loading,
-  refresh,
-  selectedLesson,
-  currentLessonId,
-  keyValue,
-  icon,
-  resourceId,
-}) => {
+}> = ({ title, time, onSelectResource, loading, refresh, selectedLesson, keyValue, icon, resourceId }) => {
   const [completed, setCompleted] = useState<boolean>();
 
   return (
@@ -78,7 +82,13 @@ const LessonItem: FC<{
 const LessonPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [courseDetail, setCourseDetails] = useState<{ name: string; description: string }>();
   const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([]);
+  const [currentLesson, setCurrentLesson] = useState<{
+    chapterName?: string;
+    chapterSeq?: number;
+    lesson?: VideoLesson;
+  }>();
   const [courseData, setCourseData] = useState<{
     name: string;
     description: string;
@@ -98,11 +108,82 @@ const LessonPage: NextPage = () => {
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
   const { data: session } = useSession();
 
-  const [isCompleted, setCompleted] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+
+  const findAndSetCurrentLesson = (chapterLessons: CourseLessons[], markAsCompleted: boolean) => {
+    chapterLessons.forEach((ch) => {
+      let foundLesson = ch.lessons.find((l) => l.lessonId == Number(router.query.lessonId));
+      if (foundLesson) {
+        if (markAsCompleted) {
+          foundLesson = {
+            ...foundLesson,
+            isWatched: true,
+          };
+        }
+        setCurrentLesson({ chapterName: ch.chapterName, chapterSeq: ch.chapterSeq, lesson: foundLesson });
+      }
+    });
+  };
+
+  const updateChapterLesson = (chapterSeq: number, lessonId: number) => {
+    let copyChapterLessons = [...courseLessons];
+    const updatedChapters = copyChapterLessons.map((stateCh) => {
+      if (stateCh.chapterSeq == chapterSeq) {
+        const updatedLessons = stateCh.lessons.map((l) => {
+          if (l.lessonId == lessonId) {
+            return {
+              ...l,
+              isWatched: true,
+            };
+          } else return l;
+        });
+        return {
+          ...stateCh,
+          lessons: updatedLessons,
+        };
+      } else return stateCh;
+    });
+
+    setCourseLessons(updatedChapters);
+  };
+
+  const moveToNextLesson = (currentLessonId: number, lessonsCompleted: number, totalLessons: number) => {
+    currentLesson?.chapterSeq &&
+      currentLesson?.lesson &&
+      updateChapterLesson(currentLesson.chapterSeq, currentLesson.lesson.lessonId);
+    if (lessonsCompleted == totalLessons) {
+      //go to certificate page
+      console.log("go to certificate page");
+    } else {
+      let nextLessonId = 0;
+      courseLessons.forEach((ch, chapterIndex) => {
+        const currentLessonIndex = ch.lessons.findIndex((l) => l.lessonId == currentLessonId);
+        if (currentLessonIndex >= 0 && currentLessonIndex != ch.lessons.length - 1) {
+          nextLessonId = ch.lessons[currentLessonIndex + 1].lessonId;
+        } else if (currentLessonIndex >= 0 && currentLessonIndex == ch.lessons.length - 1) {
+          if (chapterIndex == courseLessons.length - 1 && lessonsCompleted == totalLessons) {
+            //move to complete course
+            console.log(`Don't go any where but update the current lesson state`);
+            findAndSetCurrentLesson(courseLessons, true);
+          } else if (chapterIndex == courseLessons.length - 1 && lessonsCompleted < totalLessons) {
+            console.log(`Other lessons are still pending, but update the current lesson state`);
+            findAndSetCurrentLesson(courseLessons, true);
+          } else if (chapterIndex < courseLessons.length - 1) {
+            console.log(`Move to the next lesson`);
+            const nextChapter = courseLessons[chapterIndex + 1];
+            nextLessonId = nextChapter.lessons[0].lessonId;
+          }
+        }
+      });
+
+      if (nextLessonId > 0) {
+        router.push(`/courses/${router.query.courseId}/lesson/${nextLessonId}`);
+      }
+    }
+  };
 
   useEffect(() => {
     router.query.courseId &&
@@ -110,6 +191,9 @@ const LessonPage: NextPage = () => {
         Number(router.query.courseId),
         (result) => {
           setCourseLessons(result.lessons);
+          setLessonLoading(false);
+          setCourseDetails({ name: result.course.name, description: result.course.description });
+          findAndSetCurrentLesson(result.lessons, false);
         },
         (error) => {
           setLoading(false);
@@ -117,57 +201,11 @@ const LessonPage: NextPage = () => {
       );
   }, [router.query.courseId]);
 
-  const checkIsCompleted = async (resourceId: number) => {
-    setLoadingBtn(true);
-    const res = await getFetch(`/api/progress/get/${resourceId}/checkStatus`);
-    const result = (await res.json()) as IResponse;
-
-    if (res.ok && result.success) {
-      setCompleted(result.isCompleted);
+  useEffect(() => {
+    if (router.query.lessonId && courseLessons.length > 0) {
+      findAndSetCurrentLesson(courseLessons, false);
     }
-    ProgramService.getProgress(
-      Number(router.query.courseId),
-      (result) => {
-        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
-      },
-      (error) => {}
-    );
-    setLoadingBtn(false);
-
-    return result.isCompleted;
-  };
-
-  const selectResource = (resourceId: number) => {
-    setSelectedLesson(
-      courseData.chapters
-        .find((chapter) => chapter.chapterId === chapterId)
-        ?.resource.find((data) => data.resourceId === resourceId)
-    );
-  };
-
-  const onSelectResource = async (resourceId: number) => {
-    const isCompleted = await checkIsCompleted(resourceId);
-
-    if (selectedLesson?.resourceId === resourceId) {
-      setLessonLoading(true);
-
-      selectResource(resourceId);
-      setLessonLoading(false);
-    } else {
-      if (isCompleted) {
-        setLessonLoading(true);
-
-        selectResource(resourceId);
-        setLessonLoading(false);
-      } else if (!isCompleted) {
-        getProgressDetail();
-
-        currentLessonId !== resourceId && messageApi.error("First complete the previous lessons");
-        // getProgressDetail();
-      }
-    }
-    setLessonLoading(false);
-  };
+  }, [router.query.lessonId]);
 
   const lessonItems = courseLessons.map((content, index) => {
     let totalTime = 0;
@@ -181,21 +219,35 @@ const LessonPage: NextPage = () => {
         itemLayout="horizontal"
         dataSource={content.lessons}
         renderItem={(item, index) => (
-          <List.Item style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-            <div style={{ display: "flex" }}>
-              <i style={{ height: 20 }}>{item.isWatched ? SvgIcons.check : SvgIcons.playBtn}</i>
-              <p style={{ marginBottom: 0, marginLeft: 5 }}>{item.title}</p>
-            </div>
+          <List.Item
+            style={{
+              // border: "none",
+              padding: "8px 8px 8px 16px",
+            }}
+            className={
+              Number(router.query.lessonId) == item.lessonId
+                ? `${styles.lesson__selected}`
+                : `${styles.lesson__default}`
+            }
+          >
+            <Link href={`/courses/${router.query.courseId}/lesson/${item.lessonId}`} className={styles.lesson__item}>
+              <div style={{ display: "flex" }}>
+                <i style={{ height: 20 }}>{item.isWatched ? SvgIcons.check : SvgIcons.playBtn}</i>
+                <p style={{ marginBottom: 0, marginLeft: 5 }}>{item.title}</p>
+              </div>
 
-            <div>
-              <Tag className={styles.time_tag}>{convertSecToHourandMin(item.videoDuration)}</Tag>
-            </div>
+              <div>
+                <Tag style={{ marginRight: 0 }} className={styles.time_tag}>
+                  {convertSecToHourandMin(item.videoDuration)}
+                </Tag>
+              </div>
+            </Link>
           </List.Item>
         )}
       />
     );
     return {
-      key: `${index}`,
+      key: `${content.chapterSeq}`,
       label: (
         <LessonItem
           title={content.chapterName}
@@ -218,57 +270,31 @@ const LessonPage: NextPage = () => {
     {
       key: "1",
       label: "About",
-      children: selectedLesson?.description,
+      children: courseDetail?.description,
     },
     {
       key: "2",
       label: "Q & A",
 
-      children: session && selectedLesson && (
-        <QADiscssionTab loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />
+      children: session && currentLesson?.lesson && (
+        <QADiscssionTab loading={loading} resourceId={currentLesson?.lesson?.lessonId} userId={session?.id} />
       ),
     },
   ];
 
-  const getProgressDetail = () => {
-    ProgramService.getProgress(
-      Number(router.query.courseId),
-      (result) => {
-        setSelectedLesson(result.latestProgress.nextLesson);
-        setChapterId(result.latestProgress.nextLesson?.chapterId);
-
-        serCurrentLessonId(result.latestProgress.nextLesson.resourceId);
-        setRefresh(!refresh);
-      },
-      (error) => {}
-    );
-  };
-
   const onMarkAsCompleted = async () => {
     try {
-      if (isCompleted) return;
-
       const res = await postFetch(
         {
-          chapterId: selectedLesson?.chapterId,
           courseId: Number(router.query.courseId),
-          sequenceId: selectedLesson?.sequenceId,
-          resourceId: selectedLesson?.resourceId,
+          resourceId: Number(router.query.lessonId),
         },
-        `/api/progress/create`
+        `/api/v1/course/${router.query.courseId}/update-progress`
       );
-      const result = (await res.json()) as IResponse;
+      const result = (await res.json()) as ICourseProgressUpdateResponse;
       if (res.ok && result.success) {
         messageApi.success(result.message);
-        setRefresh(!refresh);
-        getProgressDetail();
-        ProgramService.getProgress(
-          Number(router.query.courseId),
-          (result) => {
-            setCourseCompleted(result.latestProgress.completed);
-          },
-          (error) => {}
-        );
+        moveToNextLesson(Number(router.query.lessonId), result.progress.lessonsCompleted, result.progress.totalLessons);
       } else {
         messageApi.error(result.error);
       }
@@ -285,33 +311,46 @@ const LessonPage: NextPage = () => {
             <div className={styles.lessons_video_player_wrapper}>
               <div className={styles.learn_breadcrumb}>
                 <Flex style={{ fontSize: 20 }}>
-                  <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
-                  <Link href={`/courses/${router.query.courseId}`}> {courseData.name}</Link>
-                  <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Play
+                  <Breadcrumb
+                    items={[
+                      {
+                        title: <Link href={`/courses`}>Courses</Link>,
+                      },
+                      {
+                        title: courseDetail?.name,
+                      },
+                      {
+                        title: currentLesson?.chapterName,
+                      },
+                      {
+                        title: currentLesson?.lesson?.title,
+                      },
+                    ]}
+                  />
                 </Flex>
               </div>
               <div className={styles.video_container}>
-                {selectedLesson?.video?.videoUrl && !loadingLesson ? (
+                {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
                   <>
                     <iframe
                       allowFullScreen
                       style={{
                         position: "absolute",
 
-                        width: 800,
-                        height: 450,
+                        width: "100%",
+                        height: "100%",
                         outline: "none",
                         border: "none",
                       }}
-                      src={selectedLesson.video.videoUrl}
+                      src={currentLesson?.lesson?.videoUrl}
                     ></iframe>
                   </>
                 ) : (
                   <Skeleton.Image
                     style={{
                       position: "absolute",
-                      width: 800,
-                      height: 450,
+                      width: "100%",
+                      height: "100%",
                       top: 0,
                     }}
                   />
@@ -320,19 +359,18 @@ const LessonPage: NextPage = () => {
 
               <Tabs
                 style={{
-                  padding: "0px 20px 10px",
-                  maxWidth: "800px",
+                  padding: "0 0 10px",
                 }}
                 tabBarExtraContent={
                   <>
-                    {!loadingBtn && isCompleted !== undefined ? (
+                    {currentLesson?.lesson ? (
                       <>
-                        {isCompleted && (
+                        {currentLesson?.lesson?.isWatched && (
                           <Button>
                             <Flex gap={5}>{SvgIcons.check} Completed </Flex>
                           </Button>
                         )}
-                        {!isCompleted && (
+                        {!currentLesson?.lesson?.isWatched && (
                           <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
                             Mark as Completed
                           </Button>
@@ -349,14 +387,15 @@ const LessonPage: NextPage = () => {
               />
             </div>
             <div className={styles.lessons_container}>
+              <h2>Course Content</h2>
               {lessonItems?.map((item, i) => {
                 return (
                   <div key={i} className={styles.lessons_list_wrapper}>
                     <Collapse
-                      defaultActiveKey={"1"}
+                      defaultActiveKey={`${currentLesson?.chapterSeq}`}
                       size="small"
                       accordion={false}
-                      activeKey={chapterId}
+                      activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
                       items={[
                         {
                           key: item.key,

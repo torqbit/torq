@@ -23,7 +23,7 @@ export interface ChapterDetail {
 export interface VideoLesson {
   videoId: number;
   lessonId: number;
-  videoUrl: number;
+  videoUrl: string;
   videoDuration: number;
   isWatched: boolean;
   title: string;
@@ -38,6 +38,7 @@ export interface CourseLessonAPIResponse {
   success: boolean;
   statusCode: number;
   message: string;
+  course: { name: string; description: string };
   lessons: CourseLessons[];
 }
 export interface CourseAPIResponse {

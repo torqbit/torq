@@ -20,7 +20,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const resultRows = await prisma.$queryRaw<
       any[]
-    >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.name as lessonName, vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
+    >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,
+    vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
     ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
    INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
    INNER JOIN Chapter as ch ON co.courseId = ch.courseId
@@ -32,6 +33,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
    ORDER BY chapterSeq, resourceSeq`;
 
     let chapterLessons: any[] = [];
+    let courseName = "";
+    let description = "";
+    if (resultRows.length > 0) {
+      courseName = resultRows[0].courseName;
+      description = resultRows[0].description;
+    }
     resultRows.forEach((r) => {
       if (chapterLessons.find((l) => l.chapterSeq == r.chapterSeq)) {
         const chapter = chapterLessons.find((l) => l.chapterSeq == r.chapterSeq);
@@ -64,6 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       success: true,
       statusCode: 200,
       message: "Fetched course lessons",
+      course: { name: courseName, description: description },
       lessons: chapterLessons,
     });
   } catch (error) {

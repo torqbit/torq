@@ -24,6 +24,16 @@ export interface ICourseDetial {
   chapter: IChapter[];
 }
 
+export interface ICourseProgressUpdateResponse {
+  success: boolean;
+  message: string;
+  error: string;
+  progress: {
+    lessonsCompleted: number;
+    totalLessons: number;
+  };
+}
+
 export interface IAddResource {
   content: ResourceContentType;
   name: string;
