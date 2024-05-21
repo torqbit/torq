@@ -27,4 +27,9 @@ export default {
   production: {
     cookieName: "__Secure-next-auth.session-token",
   },
+  lineChart: {
+    graphColor: "#5b63d3",
+    lightColor: "#000",
+    darkColor: "#fff",
+  },
 };

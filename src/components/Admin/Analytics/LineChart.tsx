@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import { ResponsiveLine, Serie } from "@nivo/line";
 import { useAppContext } from "@/components/ContextApi/AppContext";
+import appConstant from "@/services/appConstant";
 
 const LineChart: FC<{ data: Serie[] }> = ({ data }) => {
   const { globalState, dispatch } = useAppContext();
@@ -14,23 +15,25 @@ const LineChart: FC<{ data: Serie[] }> = ({ data }) => {
           axis: {
             domain: {
               line: {
-                stroke: globalState.theme === "dark" ? "#fff" : "#000",
+                stroke:
+                  globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
                 fontSize: 10,
               },
             },
             legend: {
               text: {
-                fill: globalState.theme === "dark" ? "#fff" : "#000",
+                fill: globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
                 fontSize: 15,
               },
             },
             ticks: {
               line: {
-                stroke: globalState.theme === "dark" ? "#fff" : "#000",
+                stroke:
+                  globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
                 strokeWidth: 1,
               },
               text: {
-                fill: globalState.theme === "dark" ? "#fff" : "#000",
+                fill: globalState.theme === "dark" ? appConstant.lineChart.darkColor : appConstant.lineChart.lightColor,
                 fontSize: 13,
               },
             },
@@ -52,7 +55,7 @@ const LineChart: FC<{ data: Serie[] }> = ({ data }) => {
             {Math.floor(Number(point.data.yFormatted)) === 1 ? "student" : "students"}
           </div>
         )}
-        colors={["#5b63d3"]} // added
+        colors={[appConstant.lineChart.graphColor]} // added
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
         xScale={{ type: "point" }}
         yScale={{
