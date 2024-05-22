@@ -24,7 +24,12 @@ const LearnCoursesPage: NextPage = () => {
     ProgramService.getEnrollmentStatus(
       Number(router.query.courseId),
       (result) => {
-        setCourseStatus(result.enrollStatus);
+        setCourseStatus({
+          ...courseStatus,
+          isEnrolled: result.enrollStatus.isEnrolled,
+          courseStarted: result.enrollStatus.courseStarted,
+          nextLessonId: result.enrollStatus.nextLessonId,
+        });
       },
       (error) => {}
     );
