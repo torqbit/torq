@@ -1,3 +1,5 @@
+import { Breadcrumb } from "antd";
+
 export default {
   token: {
     borderRadius: 4,
@@ -115,11 +117,14 @@ export default {
     Message: {
       contentBg: "#283040",
     },
+    Breadcrumb: {
+      itemColor: "#939db8",
+      linkColor: "#fff",
+    },
     Segmented: {
       itemSelectedBg: "#283040",
       itemHoverColor: "#fff",
       controlPaddingHorizontal: 30,
-
       itemColor: "#000",
     },
   },
