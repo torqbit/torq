@@ -19,24 +19,37 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const userId = token?.id;
   const { courseId } = req.query;
   try {
-    const course = await prisma.courseRegistration.findFirst({
+    const alreadyRegisterd = await prisma.courseRegistration.findFirst({
       where: {
         studentId: userId,
         courseId: Number(courseId),
       },
+
       select: {
-        courseState: true,
         courseId: true,
+        courseType: true,
       },
     });
     let isEnrolled = false;
-    if (course) {
+    const chapterDetail = await prisma.chapter.findMany({
+      where: {
+        courseId: Number(courseId),
+      },
+      select: {
+        resource: {
+          select: {
+            resourceId: true,
+          },
+        },
+      },
+    });
+    if (alreadyRegisterd) {
       const latestLesson = await prisma.courseProgress.findFirst({
         orderBy: {
           createdAt: "desc",
         },
         where: {
-          courseId: course.courseId,
+          courseId: alreadyRegisterd.courseId,
         },
       });
       if (latestLesson) {
@@ -46,18 +59,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         };
         return res.status(200).json({ success: true, enrollStatus });
       } else if (!latestLesson) {
-        const chapterDetail = await prisma.chapter.findMany({
-          where: {
-            courseId: course.courseId,
-          },
-          select: {
-            resource: {
-              select: {
-                resourceId: true,
-              },
-            },
-          },
-        });
         const enrollStatus = {
           isEnrolled: true,
           lessonId: chapterDetail[0].resource[0].resourceId,
@@ -65,7 +66,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(200).json({ success: true, enrollStatus });
       }
     }
-    return res.status(200).json({ success: true, enrollStatus: { isEnrolled: false, lessonId: 0 } });
+    return res.status(200).json({
+      success: true,
+      enrollStatus: { isEnrolled: false, lessonId: chapterDetail[0].resource[0].resourceId },
+    });
   } catch (err) {
     return errorHandler(err, res);
   }
