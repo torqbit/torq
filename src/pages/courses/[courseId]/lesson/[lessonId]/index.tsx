@@ -36,15 +36,13 @@ import { getToken } from "next-auth/jwt";
 
 const LessonItem: FC<{
   title: string;
-  time: string;
   keyValue: string;
   selectedLesson: IResourceDetail | undefined;
-  onSelectResource: (resourceId: number) => void;
   resourceId: number;
   loading: boolean;
   refresh: boolean;
   icon: ReactNode;
-}> = ({ title, time, onSelectResource, loading, refresh, selectedLesson, keyValue, icon, resourceId }) => {
+}> = ({ title, loading, refresh, selectedLesson, keyValue, icon, resourceId }) => {
   const [completed, setCompleted] = useState<boolean>();
 
   return (
@@ -60,19 +58,13 @@ const LessonItem: FC<{
           className={`${selectedLesson && resourceId === selectedLesson.resourceId && styles.selectedLable} ${
             resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
           }`}
-          onClick={() => {
-            onSelectResource(resourceId);
-          }}
         >
           <Flex justify="space-between" align="center">
             <div className={styles.title_container}>
               <Flex gap={10} align="center">
                 {completed ? SvgIcons.check : icon}
-                <div style={{ cursor: "pointer" }}>{title}</div>
+                <div style={{ cursor: "auto" }}>{title}</div>
               </Flex>
-            </div>
-            <div className={styles.timeContainer}>
-              <Tag className={styles.time_tag}>{time}</Tag>
             </div>
           </Flex>
           <div className={styles.selected_bar}></div>
@@ -239,8 +231,6 @@ const LessonPage: NextPage = () => {
         <LessonItem
           title={content.chapterName}
           icon={SvgIcons.folder}
-          time={duration}
-          onSelectResource={() => {}}
           loading={loading}
           resourceId={0}
           selectedLesson={undefined}
@@ -381,6 +371,7 @@ const LessonPage: NextPage = () => {
                     <Collapse
                       defaultActiveKey={`${currentLesson?.chapterSeq}`}
                       size="small"
+                      bordered={false}
                       accordion={false}
                       activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
                       items={[

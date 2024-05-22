@@ -47,7 +47,7 @@
     min-height: 100vh;
     height: 100%;
     width: 425px;
-    padding: 0 10px;
+
     margin: -20px -40px -20px 0;
     background: var(--bg-primary);
     h2 {
@@ -56,7 +56,7 @@
       margin-bottom: 0;
     }
     .lessons_list_wrapper {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .lesson__default {
@@ -65,6 +65,7 @@
     .lesson__selected {
       background-color: var(--bg-secondary);
       border-left: 3px solid var(--btn-primary);
+      border-bottom: none;
     }
 
     .lesson__item {
