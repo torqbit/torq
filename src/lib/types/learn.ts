@@ -145,7 +145,7 @@ export interface IProgram {
   ];
 }
 
-export interface ICourseStatus {
+export interface ICourseEnrollementStatus {
   isEnrolled: boolean;
   nextLessonId: number;
   courseStarted: boolean;

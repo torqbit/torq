@@ -1,6 +1,6 @@
 import Preview from "@/components/Admin/Content/Preview";
 import Layout2 from "@/components/Layouts/Layout2";
-import { ICourseStatus } from "@/lib/types/learn";
+import { ICourseEnrollementStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
 import { IResponse, postFetch } from "@/services/request";
 import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
@@ -17,7 +17,7 @@ const LearnCoursesPage: NextPage = () => {
   const [courseDetail, setCourseDetail] = useState<CourseInfo>();
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>();
-  const [courseStatus, setCourseStatus] = useState<ICourseStatus>();
+  const [courseStatus, setCourseStatus] = useState<ICourseEnrollementStatus>();
 
   const onCheckEnrollment = async () => {
     ProgramService.getEnrollmentStatus(
@@ -77,7 +77,10 @@ const LearnCoursesPage: NextPage = () => {
       ProgramService.getProgress(
         Number(router.query.courseId),
         (result) => {
-          setCourseStatus({ ...courseStatus, isCourseCompleted: result.latestProgress.completed } as ICourseStatus);
+          setCourseStatus({
+            ...courseStatus,
+            isCourseCompleted: result.latestProgress.completed,
+          } as ICourseEnrollementStatus);
         },
         (error) => {}
       );

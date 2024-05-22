@@ -40,6 +40,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           courseId: alreadyRegisterd.courseId,
           studentId: token?.id,
         },
+        select: {
+          resourceId: true,
+        },
       });
       if (latestLesson) {
         const enrollStatus = {
