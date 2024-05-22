@@ -1,42 +1,44 @@
 import Preview from "@/components/Admin/Content/Preview";
 import Layout2 from "@/components/Layouts/Layout2";
-import LearnCourse from "@/components/LearnCourse/LearnCourse";
+import { ICourseEnrollementStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { IResponse, postFetch } from "@/services/request";
 import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
 import { Modal, Spin, message } from "antd";
 import { NextPage } from "next";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const LearnCoursesPage: NextPage = () => {
+  const router = useRouter();
   const [videoUrl, setVideoUrl] = useState<string>();
   const [chapterList, setChapterList] = useState<ChapterDetail[]>();
-  const router = useRouter();
-  const { data: session } = useSession();
-  const [enrolled, setEnroll] = useState<boolean>();
   const [courseType, setCourseType] = useState<string>();
   const [courseDetail, setCourseDetail] = useState<CourseInfo>();
   const [messageApi, contextMessageHolder] = message.useMessage();
-
   const [loading, setLoading] = useState<boolean>();
-  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
+  const [courseStatus, setCourseStatus] = useState<ICourseEnrollementStatus>();
 
-  const onCheckErollment = async () => {
-    const res = await getFetch(`/api/v1/course/getEnrolled/${router.query.courseId}/checkStatus`);
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      setEnroll(result.isEnrolled);
-    }
+  const onCheckEnrollment = async () => {
+    ProgramService.getEnrollmentStatus(
+      Number(router.query.courseId),
+      (result) => {
+        setCourseStatus({
+          ...courseStatus,
+          isEnrolled: result.enrollStatus.isEnrolled,
+          courseStarted: result.enrollStatus.courseStarted,
+          nextLessonId: result.enrollStatus.nextLessonId,
+        });
+      },
+      (error) => {}
+    );
   };
 
-  //Navigate to the url - /courses/<courseId>/lesson/<lessonId>
   const onEnrollCourse = async () => {
     setLoading(true);
     try {
-      if (enrolled) {
-        router.replace(`/courses/${router.query.courseId}/play`);
+      if (courseStatus?.isEnrolled) {
+        router.replace(`/courses/${router.query.courseId}/lesson/${courseStatus?.nextLessonId}`);
         return;
       }
       const res = await postFetch(
@@ -49,13 +51,13 @@ const LearnCoursesPage: NextPage = () => {
       const result = (await res.json()) as IResponse;
       if (res.ok && result.success) {
         if (result.already) {
-          router.replace(`/courses/${router.query.courseId}/play`);
+          router.replace(`/courses/${router.query.courseId}/lesson/${courseStatus?.nextLessonId}`);
           setLoading(false);
         } else {
           Modal.info({
             title: result.message,
             onOk: () => {
-              router.replace(`/courses/${router.query.courseId}/play`);
+              onCheckEnrollment();
               setLoading(false);
             },
           });
@@ -74,9 +76,11 @@ const LearnCoursesPage: NextPage = () => {
     if (router.query.courseId) {
       ProgramService.getProgress(
         Number(router.query.courseId),
-
         (result) => {
-          setCourseCompleted(result.latestProgress.completed);
+          setCourseStatus({
+            ...courseStatus,
+            isCourseCompleted: result.latestProgress.completed,
+          } as ICourseEnrollementStatus);
         },
         (error) => {}
       );
@@ -85,7 +89,7 @@ const LearnCoursesPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.courseId) {
-      onCheckErollment();
+      onCheckEnrollment();
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
@@ -105,11 +109,12 @@ const LearnCoursesPage: NextPage = () => {
       {chapterList?.length ? (
         <Preview
           videoUrl={videoUrl}
-          enrolled={enrolled}
+          enrolled={courseStatus?.isEnrolled}
           chapter={chapterList}
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
-          isCourseCompleted={isCourseCompleted}
+          isCourseCompleted={courseStatus?.isCourseCompleted}
+          isCourseStarted={courseStatus?.courseStarted}
         />
       ) : (
         <Spin tip="Loading..." fullscreen />

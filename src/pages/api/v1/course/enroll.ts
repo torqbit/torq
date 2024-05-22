@@ -35,7 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!token || !token.isActive) {
       return res.status(400).json({
         success: false,
-        message: "Sorry, You don't have an active user",
+        message: " You don't have an active user",
       });
     }
 
@@ -57,6 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (alreadyEnrolled) {
         return res.status(201).json({
           success: true,
+          already: true,
           message: "You have already enrolled in this course",
         });
       }

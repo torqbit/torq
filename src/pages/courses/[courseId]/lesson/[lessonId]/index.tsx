@@ -18,7 +18,7 @@ import {
   Tag,
   message,
 } from "antd";
-import { NextPage } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -30,6 +30,9 @@ import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
 import Layout2 from "@/components/Layouts/Layout2";
 import { ICourseProgressUpdateResponse } from "@/lib/types/program";
+import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
+import { getCookieName } from "@/lib/utils";
+import { getToken } from "next-auth/jwt";
 
 const LessonItem: FC<{
   title: string;
@@ -403,3 +406,24 @@ const LessonPage: NextPage = () => {
 };
 
 export default LessonPage;
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { req } = ctx;
+  const params = ctx?.params;
+  let cookieName = getCookieName();
+  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+
+  if (user && params) {
+    const isEnrolled = await getUserEnrolledCoursesId(Number(params.courseId), user?.id);
+    if (!isEnrolled) {
+      return {
+        redirect: {
+          permanent: false,
+          message: "you are not enrolled in this course",
+          destination: "/unauthorized?from=lesson",
+        },
+      };
+    }
+  }
+  return { props: {} };
+};

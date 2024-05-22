@@ -68,6 +68,7 @@ const Preview: FC<{
   enrolled?: boolean;
   isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
+  isCourseStarted?: boolean;
 }> = ({
   uploadVideo,
   chapter,
@@ -77,6 +78,7 @@ const Preview: FC<{
   enrolled,
   isCourseCompleted,
   courseDetail,
+  isCourseStarted,
 }) => {
   const router = useRouter();
   const renderKey = chapter.map((c, i) => {
@@ -173,16 +175,31 @@ const Preview: FC<{
                 </Link>
               </Flex>
             ) : (
-              <Button
-                className={styles.save_btn}
-                type="primary"
-                onClick={() => {
-                  !addContentPreview && onEnrollCourse && onEnrollCourse();
-                }}
-              >
-                {enrolled ? "Resume" : "Enroll Course"}
-                {SvgIcons.arrowRight}
-              </Button>
+              <>
+                {!enrolled ? (
+                  <Button
+                    className={styles.save_btn}
+                    type="primary"
+                    onClick={() => {
+                      !addContentPreview && onEnrollCourse && onEnrollCourse();
+                    }}
+                  >
+                    Enroll Course
+                    {SvgIcons.arrowRight}
+                  </Button>
+                ) : (
+                  <Button
+                    className={styles.save_btn}
+                    type="primary"
+                    onClick={() => {
+                      !addContentPreview && onEnrollCourse && onEnrollCourse();
+                    }}
+                  >
+                    {!isCourseStarted ? "Start Course" : "Resume"}
+                    {SvgIcons.arrowRight}
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>
