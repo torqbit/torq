@@ -144,3 +144,10 @@ export interface IProgram {
     }
   ];
 }
+
+export interface ICourseStatus {
+  isEnrolled: boolean;
+  nextLessonId: number;
+  courseStarted: boolean;
+  isCourseCompleted?: boolean;
+}

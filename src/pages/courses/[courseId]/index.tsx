@@ -1,5 +1,6 @@
 import Preview from "@/components/Admin/Content/Preview";
 import Layout2 from "@/components/Layouts/Layout2";
+import { ICourseStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
 import { IResponse, postFetch } from "@/services/request";
 import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
@@ -10,26 +11,20 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const LearnCoursesPage: NextPage = () => {
+  const router = useRouter();
   const [videoUrl, setVideoUrl] = useState<string>();
   const [chapterList, setChapterList] = useState<ChapterDetail[]>();
-  const router = useRouter();
-  const [enrolled, setEnroll] = useState<boolean>();
-  const [enrollmentCompleted, setEnrollmentCompleted] = useState<boolean>();
-  const [currentLessonId, setCurrentLessonId] = useState<number>();
   const [courseType, setCourseType] = useState<string>();
   const [courseDetail, setCourseDetail] = useState<CourseInfo>();
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>();
-  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
+  const [courseStatus, setCourseStatus] = useState<ICourseStatus>();
 
   const onCheckErollment = async () => {
     ProgramService.getEnrollmentStatus(
       Number(router.query.courseId),
       (result) => {
-        console.log(result, "result of check enrollment");
-        setEnroll(result.enrollStatus.isEnrolled);
-        setCurrentLessonId(result.enrollStatus.nextLessonId);
-        setEnrollmentCompleted(result.enrollStatus.courseStarted);
+        setCourseStatus(result.enrollStatus);
       },
       (error) => {}
     );
@@ -38,8 +33,8 @@ const LearnCoursesPage: NextPage = () => {
   const onEnrollCourse = async () => {
     setLoading(true);
     try {
-      if (enrolled) {
-        router.replace(`/courses/${router.query.courseId}/lesson/${currentLessonId}`);
+      if (courseStatus?.isEnrolled) {
+        router.replace(`/courses/${router.query.courseId}/lesson/${courseStatus?.nextLessonId}`);
         return;
       }
       const res = await postFetch(
@@ -52,14 +47,13 @@ const LearnCoursesPage: NextPage = () => {
       const result = (await res.json()) as IResponse;
       if (res.ok && result.success) {
         if (result.already) {
-          router.replace(`/courses/${router.query.courseId}/lesson/${currentLessonId}`);
+          router.replace(`/courses/${router.query.courseId}/lesson/${courseStatus?.nextLessonId}`);
           setLoading(false);
         } else {
           Modal.info({
             title: result.message,
             onOk: () => {
               onCheckErollment();
-
               setLoading(false);
             },
           });
@@ -79,14 +73,12 @@ const LearnCoursesPage: NextPage = () => {
       ProgramService.getProgress(
         Number(router.query.courseId),
         (result) => {
-          setCourseCompleted(result.latestProgress.completed);
+          setCourseStatus({ ...courseStatus, isCourseCompleted: result.latestProgress.completed } as ICourseStatus);
         },
         (error) => {}
       );
     }
   }, []);
-
-  const checkCourseStarted = () => {};
 
   useEffect(() => {
     if (router.query.courseId) {
@@ -110,12 +102,12 @@ const LearnCoursesPage: NextPage = () => {
       {chapterList?.length ? (
         <Preview
           videoUrl={videoUrl}
-          enrolled={enrolled}
+          enrolled={courseStatus?.isEnrolled}
           chapter={chapterList}
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
-          isCourseCompleted={isCourseCompleted}
-          enrollmentCompleted={enrollmentCompleted}
+          isCourseCompleted={courseStatus?.isCourseCompleted}
+          isCourseStarted={courseStatus?.courseStarted}
         />
       ) : (
         <Spin tip="Loading..." fullscreen />
