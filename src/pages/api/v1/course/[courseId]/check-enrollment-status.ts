@@ -30,19 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         courseType: true,
       },
     });
-    let isEnrolled = false;
-    const chapterDetail = await prisma.chapter.findMany({
-      where: {
-        courseId: Number(courseId),
-      },
-      select: {
-        resource: {
-          select: {
-            resourceId: true,
-          },
-        },
-      },
-    });
+
     if (alreadyRegisterd) {
       const latestLesson = await prisma.courseProgress.findFirst({
         orderBy: {
@@ -50,25 +38,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         where: {
           courseId: alreadyRegisterd.courseId,
+          studentId: token?.id,
         },
       });
       if (latestLesson) {
         const enrollStatus = {
           isEnrolled: true,
-          lessonId: latestLesson?.resourceId,
+          nextLessonId: latestLesson?.resourceId,
+          courseStarted: true,
         };
         return res.status(200).json({ success: true, enrollStatus });
       } else if (!latestLesson) {
+        const firstResource = await prisma.chapter.findFirst({
+          where: {
+            courseId: Number(courseId),
+            sequenceId: 1,
+          },
+          select: {
+            resource: {
+              where: {
+                sequenceId: 1,
+              },
+              select: {
+                resourceId: true,
+              },
+            },
+          },
+        });
         const enrollStatus = {
           isEnrolled: true,
-          lessonId: chapterDetail[0].resource[0].resourceId,
+          nextLessonId: firstResource?.resource[0].resourceId,
+          courseStarted: false,
         };
         return res.status(200).json({ success: true, enrollStatus });
       }
     }
     return res.status(200).json({
       success: true,
-      enrollStatus: { isEnrolled: false, lessonId: chapterDetail[0].resource[0].resourceId },
+      enrollStatus: { isEnrolled: false, nextLessonId: 0, courseStarted: false },
     });
   } catch (err) {
     return errorHandler(err, res);

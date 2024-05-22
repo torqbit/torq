@@ -182,7 +182,7 @@ const Preview: FC<{
                   !addContentPreview && onEnrollCourse && onEnrollCourse();
                 }}
               >
-                {enrollmentCompleted ? "Start Course" : <> {enrolled ? "Resume" : "Enroll Course"}</>}
+                {!enrollmentCompleted ? "Start Course" : <> {enrolled ? "Resume" : "Enroll Course"}</>}
                 {SvgIcons.arrowRight}
               </Button>
             )}

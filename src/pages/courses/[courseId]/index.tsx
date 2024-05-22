@@ -26,8 +26,10 @@ const LearnCoursesPage: NextPage = () => {
     ProgramService.getEnrollmentStatus(
       Number(router.query.courseId),
       (result) => {
+        console.log(result, "result of check enrollment");
         setEnroll(result.enrollStatus.isEnrolled);
-        setCurrentLessonId(result.enrollStatus.lessonId);
+        setCurrentLessonId(result.enrollStatus.nextLessonId);
+        setEnrollmentCompleted(result.enrollStatus.courseStarted);
       },
       (error) => {}
     );
@@ -56,7 +58,8 @@ const LearnCoursesPage: NextPage = () => {
           Modal.info({
             title: result.message,
             onOk: () => {
-              setEnrollmentCompleted(true);
+              onCheckErollment();
+
               setLoading(false);
             },
           });
@@ -82,6 +85,8 @@ const LearnCoursesPage: NextPage = () => {
       );
     }
   }, []);
+
+  const checkCourseStarted = () => {};
 
   useEffect(() => {
     if (router.query.courseId) {
