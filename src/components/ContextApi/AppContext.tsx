@@ -28,7 +28,7 @@ type AppState = {
 // Define your action type
 type AppAction =
   | { type: "SET_NOTIFICATION"; payload: INotification[] }
-  | { type: "GET_NOTIFICATION"; payload: number }
+  | { type: "GET_NOTIFICATION"; payload: INotification[] }
   | { type: "SET_USER"; payload: UserSession }
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
   | { type: "SWITCH_THEME"; payload: Theme };

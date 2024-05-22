@@ -46,7 +46,7 @@ const NotificationList: FC = () => {
 
       NotificationService.getNotification(
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications as any });
+          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
           setLoading(false);
         },
         (error) => {
@@ -66,7 +66,7 @@ const NotificationList: FC = () => {
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
           (result) => {
-            dispatch({ type: "SET_NOTIFICATION", payload: result.notifications as any });
+            dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
           },
           (error) => {}
         );
