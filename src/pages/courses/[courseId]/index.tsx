@@ -6,7 +6,6 @@ import { IResponse, postFetch } from "@/services/request";
 import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
 import { Modal, Spin, message } from "antd";
 import { NextPage } from "next";
-
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -20,7 +19,7 @@ const LearnCoursesPage: NextPage = () => {
   const [loading, setLoading] = useState<boolean>();
   const [courseStatus, setCourseStatus] = useState<ICourseStatus>();
 
-  const onCheckErollment = async () => {
+  const onCheckEnrollment = async () => {
     ProgramService.getEnrollmentStatus(
       Number(router.query.courseId),
       (result) => {
@@ -58,7 +57,7 @@ const LearnCoursesPage: NextPage = () => {
           Modal.info({
             title: result.message,
             onOk: () => {
-              onCheckErollment();
+              onCheckEnrollment();
               setLoading(false);
             },
           });
@@ -87,7 +86,7 @@ const LearnCoursesPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.courseId) {
-      onCheckErollment();
+      onCheckEnrollment();
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
