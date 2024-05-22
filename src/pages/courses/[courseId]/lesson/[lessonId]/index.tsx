@@ -89,26 +89,10 @@ const LessonPage: NextPage = () => {
     chapterSeq?: number;
     lesson?: VideoLesson;
   }>();
-  const [courseData, setCourseData] = useState<{
-    name: string;
-    description: string;
-    expiryInDays: number;
-    chapters: ChapterDetail[];
-  }>({
-    name: "",
-    description: "",
-    expiryInDays: 365,
-    chapters: [],
-  });
-  const [selectedLesson, setSelectedLesson] = useState<IResourceDetail>();
-  const [messageApi, contextMessageHolder] = message.useMessage();
-  const [chapterId, setChapterId] = useState<number>();
-  const [currentLessonId, serCurrentLessonId] = useState<number>();
 
+  const [messageApi, contextMessageHolder] = message.useMessage();
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
   const { data: session } = useSession();
-
-  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);

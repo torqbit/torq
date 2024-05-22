@@ -31,6 +31,7 @@ const LearnCoursesPage: NextPage = () => {
     }
   };
 
+  //Navigate to the url - /courses/<courseId>/lesson/<lessonId>
   const onEnrollCourse = async () => {
     setLoading(true);
     try {
