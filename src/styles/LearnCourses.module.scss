@@ -6,12 +6,40 @@
     padding-right: 20px;
   }
   .video_container,
-  .video_completed_screen {
+  .certificatePage {
     width: 100%;
     height: 75vh;
     min-height: 400px;
     position: relative;
     background-color: black;
+  }
+
+  .certificatePage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--bg-primary);
+    p {
+      color: var(--font-secondary);
+      font-size: 15px;
+      margin-top: 10px;
+    }
+    .certificateBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      h1 {
+        color: var(--font-primary);
+      }
+      button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+    }
   }
   .segmented__test {
     background-color: #888;

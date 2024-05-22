@@ -1,28 +1,89 @@
+import Layout2 from "@/components/Layouts/Layout2";
+import SvgIcons from "@/components/SvgIcons";
 import { getCookieName } from "@/lib/utils";
 import ProgramService from "@/services/ProgramService";
+import { Button, Flex, Space, Spin } from "antd";
 import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import styles from "@/styles/Certificate.module.scss";
+import { CourseCertificates } from "@prisma/client";
 
 const ShowCertificate = () => {
-  const [certificatePdfPath, setCertificatePdfPath] = useState<string>();
-
+  const [certificateData, setCertificateData] = useState<CourseCertificates>();
+  const { data: session } = useSession();
+  const [loading, setLoading] = useState<boolean>();
+  const [courseName, setCourseName] = useState<string>();
   const router = useRouter();
-  useEffect(() => {
+  const getCertificateImgUrl = () => {
+    setLoading(true);
     ProgramService.getCertificate(
       Number(router.query.courseId),
       (result) => {
-        setCertificatePdfPath(String(result.certificateDetail.getIssuedCertificate.pdfPath));
+        setCertificateData(result.certificateDetail.getIssuedCertificate);
+        setLoading(false);
+      },
+      (error) => {
+        setLoading(false);
+      }
+    );
+  };
+  useEffect(() => {
+    ProgramService.getCourses(
+      Number(router.query.courseId),
+      (result) => {
+        setCourseName(result.courseDetails.name);
+        getCertificateImgUrl();
       },
       (error) => {}
     );
   }, [router.query.courseId]);
 
   return (
-    <section style={{ height: "100vh" }}>
-      <object data={certificatePdfPath} type="application/pdf" width="100%" height="100%"></object>
-    </section>
+    <Layout2>
+      {loading ? (
+        <Spin fullscreen />
+      ) : (
+        <Space direction="vertical" size={"middle"} className={styles.certificate_page}>
+          <div>
+            <h2>Hello {session?.user?.name}</h2>
+
+            <Flex style={{ fontSize: 20 }} className={styles.certificate_header}>
+              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
+              <Link href={`/courses/${router.query.courseId}`}> {courseName}</Link>
+              <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Certificate
+            </Flex>
+          </div>
+          <p className={styles.about_description}>
+            Torqbit certifies the successful completion of <span>{courseName}</span> by{" "}
+            <span>{session?.user?.name} </span>
+          </p>
+          <div className={styles.certificate_image}>
+            <img
+              src={String(certificateData?.imagePath)}
+              height={500}
+              width={800}
+              alt={session?.user?.name ?? "Certificate"}
+            />
+
+            <Button
+              type="primary"
+              onClick={() => {
+                router.push(`/courses/${router.query.courseId}/certificate/download/${certificateData?.id}`);
+              }}
+            >
+              <Flex align="center" gap={10}>
+                {" "}
+                Download Certificate {SvgIcons.arrowRight}
+              </Flex>
+            </Button>
+          </div>
+        </Space>
+      )}
+    </Layout2>
   );
 };
 
