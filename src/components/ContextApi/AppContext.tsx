@@ -1,6 +1,6 @@
 import { createContext, Dispatch, useContext, useReducer } from "react";
 import { Session } from "next-auth";
-import { INotification } from "@/services/NotificationService";
+import { INotification } from "@/lib/types/discussions";
 import { UserSession } from "@/lib/types/user";
 import { Theme } from "@prisma/client";
 
@@ -28,7 +28,7 @@ type AppState = {
 // Define your action type
 type AppAction =
   | { type: "SET_NOTIFICATION"; payload: INotification[] }
-  | { type: "GET_NOTIFICATION"; payload: number }
+  | { type: "GET_NOTIFICATION"; payload: INotification[] }
   | { type: "SET_USER"; payload: UserSession }
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
   | { type: "SWITCH_THEME"; payload: Theme };
