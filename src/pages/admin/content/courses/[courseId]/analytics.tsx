@@ -1,4 +1,4 @@
-import Layout2 from "@/components/Layout2/Layout2";
+import Layout2 from "@/components/Layouts/Layout2";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import styles from "@/styles/Analytics.module.scss";

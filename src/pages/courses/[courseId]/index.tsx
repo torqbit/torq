@@ -1,12 +1,11 @@
 import Preview from "@/components/Admin/Content/Preview";
 import Layout2 from "@/components/Layouts/Layout2";
-import LearnCourse from "@/components/LearnCourse/LearnCourse";
 import ProgramService from "@/services/ProgramService";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { IResponse, postFetch } from "@/services/request";
 import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
 import { Modal, Spin, message } from "antd";
 import { NextPage } from "next";
-import { useSession } from "next-auth/react";
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -14,29 +13,31 @@ const LearnCoursesPage: NextPage = () => {
   const [videoUrl, setVideoUrl] = useState<string>();
   const [chapterList, setChapterList] = useState<ChapterDetail[]>();
   const router = useRouter();
-  const { data: session } = useSession();
   const [enrolled, setEnroll] = useState<boolean>();
+  const [enrollmentCompleted, setEnrollmentCompleted] = useState<boolean>();
+  const [currentLessonId, setCurrentLessonId] = useState<number>();
   const [courseType, setCourseType] = useState<string>();
   const [courseDetail, setCourseDetail] = useState<CourseInfo>();
   const [messageApi, contextMessageHolder] = message.useMessage();
-
   const [loading, setLoading] = useState<boolean>();
   const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
 
   const onCheckErollment = async () => {
-    const res = await getFetch(`/api/v1/course/getEnrolled/${router.query.courseId}/checkStatus`);
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      setEnroll(result.isEnrolled);
-    }
+    ProgramService.getEnrollmentStatus(
+      Number(router.query.courseId),
+      (result) => {
+        setEnroll(result.enrollStatus.isEnrolled);
+        setCurrentLessonId(result.enrollStatus.lessonId);
+      },
+      (error) => {}
+    );
   };
 
-  //Navigate to the url - /courses/<courseId>/lesson/<lessonId>
   const onEnrollCourse = async () => {
     setLoading(true);
     try {
       if (enrolled) {
-        router.replace(`/courses/${router.query.courseId}/play`);
+        router.replace(`/courses/${router.query.courseId}/lesson/${currentLessonId}`);
         return;
       }
       const res = await postFetch(
@@ -49,13 +50,13 @@ const LearnCoursesPage: NextPage = () => {
       const result = (await res.json()) as IResponse;
       if (res.ok && result.success) {
         if (result.already) {
-          router.replace(`/courses/${router.query.courseId}/play`);
+          router.replace(`/courses/${router.query.courseId}/lesson/${currentLessonId}`);
           setLoading(false);
         } else {
           Modal.info({
             title: result.message,
             onOk: () => {
-              router.replace(`/courses/${router.query.courseId}/play`);
+              setEnrollmentCompleted(true);
               setLoading(false);
             },
           });
@@ -74,7 +75,6 @@ const LearnCoursesPage: NextPage = () => {
     if (router.query.courseId) {
       ProgramService.getProgress(
         Number(router.query.courseId),
-
         (result) => {
           setCourseCompleted(result.latestProgress.completed);
         },
@@ -110,6 +110,7 @@ const LearnCoursesPage: NextPage = () => {
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
           isCourseCompleted={isCourseCompleted}
+          enrollmentCompleted={enrollmentCompleted}
         />
       ) : (
         <Spin tip="Loading..." fullscreen />

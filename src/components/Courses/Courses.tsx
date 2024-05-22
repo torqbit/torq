@@ -1,10 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import styles from "../../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
-import { Modal, Tag, message } from "antd";
-import { useRouter } from "next/router";
-import { IResponse, getFetch, postFetch } from "@/services/request";
-import ProgramService from "@/services/ProgramService";
+import { Tag } from "antd";
+
 import Link from "next/link";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 
@@ -27,70 +25,6 @@ const CourseCard: FC<ICourseCard> = ({
   courseType,
   difficulty,
 }) => {
-  const router = useRouter();
-  const { data: session } = useSession();
-  const [enrolled, setEnroll] = useState<string>();
-  const [loading, setLoading] = useState<boolean>();
-  const [isCourseCompleted, setCourseCompleted] = useState<boolean>();
-  const onCheckErollment = async () => {
-    const res = await getFetch(`/api/v1/course/getEnrolled/${courseId}/checkStatus`);
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      result.isEnrolled ? setEnroll("enrolled") : setEnroll("notEnrolled");
-    }
-  };
-
-  const onEnrollCourse = async () => {
-    setLoading(true);
-    try {
-      if (enrolled === "enrolled") {
-        router.replace(`/courses/${courseId}`);
-        return;
-      }
-      const res = await postFetch(
-        {
-          userId: session?.id,
-          courseId: Number(courseId),
-          courseType: courseType,
-        },
-        "/api/v1/course/enroll"
-      );
-      const result = (await res.json()) as IResponse;
-      if (res.ok && result.success) {
-        if (result.already) {
-          router.replace(`/courses/${courseId}`);
-          setLoading(false);
-        } else {
-          Modal.info({
-            title: result.message,
-            onOk: () => {
-              router.replace(`/courses/${courseId}`);
-              setLoading(false);
-            },
-          });
-        }
-      } else {
-        message.error(result.error);
-        setLoading(false);
-      }
-    } catch (err: any) {
-      message.error("Error while enrolling course ", err?.message);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    onCheckErollment();
-
-    ProgramService.getProgress(
-      Number(courseId),
-      (result) => {
-        setCourseCompleted(result.latestProgress.completed);
-      },
-      (error) => {}
-    );
-  }, []);
-
   return (
     <Link href={`/courses/${courseId}`}>
       <div className={styles.course_card}>

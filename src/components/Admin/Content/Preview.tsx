@@ -68,6 +68,7 @@ const Preview: FC<{
   enrolled?: boolean;
   isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
+  enrollmentCompleted?: boolean;
 }> = ({
   uploadVideo,
   chapter,
@@ -77,6 +78,7 @@ const Preview: FC<{
   enrolled,
   isCourseCompleted,
   courseDetail,
+  enrollmentCompleted,
 }) => {
   const router = useRouter();
   const renderKey = chapter.map((c, i) => {
@@ -180,7 +182,7 @@ const Preview: FC<{
                   !addContentPreview && onEnrollCourse && onEnrollCourse();
                 }}
               >
-                {enrolled ? "Resume" : "Enroll Course"}
+                {enrollmentCompleted ? "Start Course" : <> {enrolled ? "Resume" : "Enroll Course"}</>}
                 {SvgIcons.arrowRight}
               </Button>
             )}
