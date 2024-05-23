@@ -10,7 +10,7 @@
   .draft_btn {
     Button {
       background-color: var(--draft-bg);
-      color: var(--font-primary);
+      color: var(--font-warning);
     }
   }
   .publish_btn {
@@ -18,7 +18,7 @@
 
     Button {
       background-color: var(--publish-bg);
-      color: var(--font-primary);
+      color: var(-label-color);
     }
   }
   .labelContainer {
@@ -40,9 +40,6 @@
 
     .resContainer {
       height: 50px;
-
-      border-bottom: 1px solid #a7a4a4b9;
-
       padding: 5px 0px;
       padding-left: 20px;
     }

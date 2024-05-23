@@ -3,7 +3,6 @@ export default {
     borderRadius: 4,
     colorText: "#666",
     colorPrimary: "#5b63d3",
-    colorPrimaryHover: "#000",
   },
   components: {
     Layout: {
@@ -29,8 +28,7 @@ export default {
     Button: {
       groupBorderColor: "#000",
       colorPrimary: "#5b63d3",
-      colorPrimaryHover: "#666",
-      colorPrimaryActive: "#000",
+      defaultHoverBg: "#3e45a5",
     },
     Input: {
       borderRadius: 4,
@@ -51,6 +49,9 @@ export default {
     Drawer: {
       zIndexPopup: 1001,
       padding: 10,
+      footerPaddingInline: 20,
+      footerPaddingBlock: 10,
+      paddingLG: 20,
     },
     Collapse: {
       contentPadding: "0px",

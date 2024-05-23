@@ -209,7 +209,6 @@ const LessonPage: NextPage = () => {
       findAndSetCurrentLesson(courseLessons, false);
     }
   }, [router.query.lessonId]);
-  console.log(certificateData, "certificate data  at last");
 
   const lessonItems = courseLessons.map((content, index) => {
     let totalTime = 0;
@@ -416,29 +415,31 @@ const LessonPage: NextPage = () => {
                 items={items}
               />
             </div>
-            <div className={styles.lessons_container}>
-              <h2>Course Content</h2>
-              {lessonItems?.map((item, i) => {
-                return (
-                  <div key={i} className={styles.lessons_list_wrapper}>
-                    <Collapse
-                      defaultActiveKey={`${currentLesson?.chapterSeq}`}
-                      size="small"
-                      bordered={false}
-                      accordion={false}
-                      activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
-                      items={[
-                        {
-                          key: item.key,
-                          label: item.label,
-                          children: item.children,
-                          showArrow: false,
-                        },
-                      ]}
-                    />
-                  </div>
-                );
-              })}
+            <div className={styles.lesson_wrapper}>
+              <div className={styles.lessons_container}>
+                <h2>Course Content</h2>
+                {lessonItems?.map((item, i) => {
+                  return (
+                    <div key={i} className={styles.lessons_list_wrapper}>
+                      <Collapse
+                        defaultActiveKey={`${currentLesson?.chapterSeq}`}
+                        size="small"
+                        bordered={false}
+                        accordion={false}
+                        activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
+                        items={[
+                          {
+                            key: item.key,
+                            label: item.label,
+                            children: item.children,
+                            showArrow: false,
+                          },
+                        ]}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </Flex>
         </section>

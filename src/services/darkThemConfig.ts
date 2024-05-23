@@ -1,5 +1,3 @@
-import { Breadcrumb } from "antd";
-
 export default {
   token: {
     borderRadius: 4,
@@ -8,6 +6,7 @@ export default {
     colorBorder: "#374362",
     colorTextPlaceholder: "#2f3647",
     colorPrimary: "#5b63d3",
+
     colorTextDisabled: "#68696d",
   },
   components: {
@@ -35,16 +34,18 @@ export default {
       labelColor: "#888",
     },
     Button: {
+      colorBgContainer: "#374362",
       groupBorderColor: "#000",
-      colorPrimary: "#5b63d3",
-      colorPrimaryHover: "#666",
-      colorPrimaryActive: "#000",
+      defaultHoverBorderColor: "#000",
+      defaultHoverColor: "#fff",
+      colorPrimaryActive: "#fff",
+      defaultHoverBg: "#3e45a5",
     },
     Input: {
       borderRadius: 4,
       activeShadow: "none",
       activeBg: "#222938",
-      colorPrimaryHover: "#939db8",
+
       hoverBg: "#222938",
       colorTextPlaceholder: "#939db8",
 
@@ -52,7 +53,6 @@ export default {
     },
 
     Select: {
-      colorPrimaryHover: "#939db8",
       activeBorderColor: "#939db8",
       optionSelectedColor: "#939db8",
       optionActiveBg: "#202433",
@@ -82,6 +82,10 @@ export default {
       zIndexPopup: 1001,
       padding: 10,
       colorIcon: "#939db8",
+      footerPaddingInline: 20,
+      footerPaddingBlock: 10,
+      paddingLG: 20,
+      colorBgElevated: "#283040",
     },
     Collapse: {
       contentPadding: "0px",
