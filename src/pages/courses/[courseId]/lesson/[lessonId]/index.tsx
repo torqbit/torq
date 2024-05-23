@@ -33,6 +33,11 @@ import { ICourseProgressUpdateResponse } from "@/lib/types/program";
 import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+export interface ICertficateData {
+  loading: boolean;
+  certificateId: string;
+  completed: boolean;
+}
 
 const LessonItem: FC<{
   title: string;
@@ -91,6 +96,24 @@ const LessonPage: NextPage = () => {
 
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [certificateData, setCertificateData] = useState<ICertficateData>();
+
+  const onCreateCertificate = () => {
+    setCertificateData({ ...certificateData, loading: true, completed: true } as ICertficateData);
+    ProgramService.createCertificate(
+      Number(router.query.courseId),
+      (result) => {
+        setCertificateData({
+          certificateId: result.certificateIssueId,
+          loading: false,
+          completed: true,
+        } as ICertficateData);
+      },
+      (error) => {
+        setCertificateData({ ...certificateData, loading: false, completed: true } as ICertficateData);
+      }
+    );
+  };
 
   const findAndSetCurrentLesson = (chapterLessons: CourseLessons[], markAsCompleted: boolean) => {
     chapterLessons.forEach((ch) => {
@@ -135,6 +158,7 @@ const LessonPage: NextPage = () => {
       updateChapterLesson(currentLesson.chapterSeq, currentLesson.lesson.lessonId);
     if (lessonsCompleted == totalLessons) {
       //go to certificate page
+      onCreateCertificate();
       console.log("go to certificate page");
     } else {
       let nextLessonId = 0;
@@ -185,6 +209,7 @@ const LessonPage: NextPage = () => {
       findAndSetCurrentLesson(courseLessons, false);
     }
   }, [router.query.lessonId]);
+  console.log(certificateData, "certificate data  at last");
 
   const lessonItems = courseLessons.map((content, index) => {
     let totalTime = 0;
@@ -306,33 +331,61 @@ const LessonPage: NextPage = () => {
                   />
                 </Flex>
               </div>
-              <div className={styles.video_container}>
-                {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
-                  <>
-                    <iframe
-                      allowFullScreen
+              {!certificateData?.completed ? (
+                <div className={styles.video_container}>
+                  {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
+                    <>
+                      <iframe
+                        allowFullScreen
+                        style={{
+                          position: "absolute",
+
+                          width: "100%",
+                          height: "100%",
+                          outline: "none",
+                          border: "none",
+                        }}
+                        src={currentLesson?.lesson?.videoUrl}
+                      ></iframe>
+                    </>
+                  ) : (
+                    <Skeleton.Image
                       style={{
                         position: "absolute",
-
                         width: "100%",
                         height: "100%",
-                        outline: "none",
-                        border: "none",
+                        top: 0,
                       }}
-                      src={currentLesson?.lesson?.videoUrl}
-                    ></iframe>
-                  </>
-                ) : (
-                  <Skeleton.Image
-                    style={{
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      top: 0,
-                    }}
-                  />
-                )}
-              </div>
+                    />
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className={styles.certificatePage}>
+                    {certificateData?.loading ? (
+                      <>
+                        <Spin />
+                        <p> Generating Certificate</p>
+                      </>
+                    ) : (
+                      <div className={styles.certificateBtn}>
+                        <h1>You have successfully completed this course</h1>
+                        <Button
+                          type="primary"
+                          onClick={() => {
+                            router.push(
+                              `/courses/${router.query.courseId}/certificate/${certificateData?.certificateId}`
+                            );
+                          }}
+                        >
+                          View Certificate
+                          {SvgIcons.arrowRight}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
               <Tabs
                 style={{
