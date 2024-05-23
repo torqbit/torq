@@ -50,11 +50,16 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
       {contextWrapper}
       <div>
         <div className={styles.logo}>
-          <Link href="/programs">
+          <Link href="/">
             {collapsed ? (
               <Image src="/icon/torq.svg" alt="torq" width={40} height={40} />
             ) : (
-              <Image src="/icon/torq-long.svg" alt="torq" width={100} height={40} />
+              <Image
+                src={`/icon/torq-${globalState.session?.theme == "dark" ? "light" : "dark"}.svg`}
+                alt="torq"
+                width={100}
+                height={40}
+              />
             )}
           </Link>
           {!collapsed && (
