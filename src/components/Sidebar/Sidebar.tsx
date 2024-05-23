@@ -26,6 +26,10 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
       payload: { ...user?.user, theme: theme },
     });
 
+    dispatch({
+      type: "SWITCH_THEME",
+      payload: theme,
+    });
     const response = await postFetch({ theme: theme }, "/api/v1/user/theme");
     if (response.ok) {
       update({ theme: theme });
