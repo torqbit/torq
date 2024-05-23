@@ -27,7 +27,7 @@ body {
   --main-bg: #f0f0f0;
   --draft-bg: #f6eee3;
   --publish-bg: #eee;
-
+  --font-warning: #faad14;
   --ft-color: black;
   --section-dark: #05091d;
   --section-light: #394165;
@@ -54,6 +54,7 @@ body {
   --segment-bg: #000;
   --font-primary: #fff;
   --bg-elevated: #374362;
+  --font-warning: #faad14;
 
   --btn-primary: #5b63d3;
   --font-secondary: #939db8;

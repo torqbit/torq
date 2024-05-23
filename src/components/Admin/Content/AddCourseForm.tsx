@@ -90,16 +90,16 @@ const AddCourseForm: FC = () => {
         ProgramService.deleteCourse(
           Number(router.query.id),
           (result) => {
-            message.success(result.message);
+            messageApi.success(result.message);
             router.push(`/admin/content`);
           },
           (error) => {
-            message.error(error);
+            messageApi.error(error);
           }
         );
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -128,10 +128,10 @@ const AddCourseForm: FC = () => {
             form.resetFields();
             setRefresh(!refresh);
             setTabActive(true);
-            message.success("Course has been updated");
+            messageApi.success("Course has been updated");
           },
           (error) => {
-            message.error(error);
+            messageApi.error(error);
           }
         );
       },
@@ -155,11 +155,11 @@ const AddCourseForm: FC = () => {
     ProgramService.deleteChapter(
       id,
       (result) => {
-        message.success(result.message);
+        messageApi.success(result.message);
         onRefresh();
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -168,11 +168,11 @@ const AddCourseForm: FC = () => {
       id,
       Number(router.query.id),
       (result) => {
-        message.success(result.message);
+        messageApi.success(result.message);
         onRefresh();
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -182,7 +182,7 @@ const AddCourseForm: FC = () => {
       id,
       state,
       (result) => {
-        message.success(result.message);
+        messageApi.success(result.message);
 
         onRefresh();
       },
@@ -194,7 +194,7 @@ const AddCourseForm: FC = () => {
       id,
       state,
       (result) => {
-        message.success(result.message);
+        messageApi.success(result.message);
         onRefresh();
       },
       (error) => {}
@@ -217,7 +217,7 @@ const AddCourseForm: FC = () => {
         setChapterEdit(true);
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -236,14 +236,14 @@ const AddCourseForm: FC = () => {
       chaptereData,
       (result) => {
         setLoading(false);
-        message.info(result.message);
+        messageApi.info(result.message);
         onRefresh();
         showChapterDrawer(false);
         chapterForm.resetFields();
       },
       (error) => {
         setLoading(false);
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -258,7 +258,7 @@ const AddCourseForm: FC = () => {
       Number(chapterForm.getFieldsValue().index),
       (result) => {
         setLoading(false);
-        message.info(result.message);
+        messageApi.info(result.message);
         onRefresh();
         showChapterDrawer(false);
         chapterForm.resetFields();
@@ -267,7 +267,7 @@ const AddCourseForm: FC = () => {
       (error) => {
         setLoading(false);
         setEdit(false);
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -284,7 +284,7 @@ const AddCourseForm: FC = () => {
         setVideoLesson({ ...videoLesson, chapterId: chapterId });
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -307,7 +307,7 @@ const AddCourseForm: FC = () => {
         setVideoLesson({ ...videoLesson, chapterId: chapterId, video: undefined });
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -324,7 +324,7 @@ const AddCourseForm: FC = () => {
     ProgramService.updateResource(
       resData,
       (result) => {
-        message.success(result.message);
+        messageApi.success(result.message);
         videoLesson.chapterId && onFindResource(videoLesson.chapterId, "Video");
         videoForm.resetFields();
         setLoading(false);
@@ -335,7 +335,7 @@ const AddCourseForm: FC = () => {
       },
       (error) => {
         onRefresh();
-        message.error(error);
+        messageApi.error(error);
         setLoading(false);
       }
     );
@@ -405,7 +405,7 @@ const AddCourseForm: FC = () => {
       setLoading(false);
       const response = (await postRes.json()) as VideoAPIResponse;
 
-      message.error(response.message);
+      messageApi.error(response.message);
 
       setCourseTrailerUploading(false);
     } else {
@@ -421,7 +421,7 @@ const AddCourseForm: FC = () => {
         state: res.video.state,
         mediaProviderName: res.video.mediaProviderName,
       });
-      message.success("Course trailer video has been uploaded");
+      messageApi.success("Course trailer video has been uploaded");
       setCourseTrailerUploading(false);
       setCheckVideoState(true);
     }
@@ -454,12 +454,12 @@ const AddCourseForm: FC = () => {
           course,
           (result) => {
             setCourseThumbnail(res.fileCDNPath);
-            message.success("file uploaded");
+            messageApi.success("file uploaded");
             setCourseBannerUploading(false);
           },
           (error) => {
             setCourseBannerUploading(false);
-            message.error(error);
+            messageApi.error(error);
           }
         );
       }
@@ -479,7 +479,7 @@ const AddCourseForm: FC = () => {
         setResourceDrawer(true);
       },
       (error) => {
-        message.error(error);
+        messageApi.error(error);
       }
     );
   };
@@ -589,7 +589,7 @@ const AddCourseForm: FC = () => {
             setCheckVideoState(result.courseDetails.tvState == "PROCESSING");
           },
           (error) => {
-            message.error(error);
+            messageApi.error(error);
           }
         );
       }, 1000 * 5); // in milliseconds
@@ -637,7 +637,7 @@ const AddCourseForm: FC = () => {
           setCourseThumbnail(result.courseDetails.thumbnail);
         },
         (error) => {
-          message.error(error);
+          messageApi.error(error);
         }
       );
   }, [router.query.id, refresh]);

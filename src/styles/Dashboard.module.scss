@@ -160,10 +160,13 @@
       }
 
       .cancel_add_course {
+        a {
+          stroke: var(--font-secondary);
+        }
         cursor: pointer;
         width: 50px;
         height: 100%;
-        border-right: 1px solid #666;
+        border-right: 1px solid var(--font-secondary);
         display: flex;
         justify-content: center;
         align-items: center;
