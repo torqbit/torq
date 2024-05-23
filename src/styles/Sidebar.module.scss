@@ -36,12 +36,12 @@
     width: 30px;
     height: 34px;
 
-    background-color: var(--btn-primary);
+    background-color: var(--bg-elevated);
     display: flex;
     justify-content: center;
     align-items: center;
     border: 1px solid var(--border-color);
-    color: #fff;
+    color: var(--font-primary);
     border-right: 0;
     cursor: pointer;
     &:hover {

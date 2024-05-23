@@ -1,5 +1,3 @@
-import { Breadcrumb } from "antd";
-
 export default {
   token: {
     borderRadius: 4,
@@ -8,7 +6,6 @@ export default {
     colorBorder: "#374362",
     colorTextPlaceholder: "#2f3647",
     colorPrimary: "#5b63d3",
-    colorPrimaryHover: "#5b63d3",
 
     colorTextDisabled: "#68696d",
   },
@@ -39,9 +36,10 @@ export default {
     Button: {
       colorBgContainer: "#374362",
       groupBorderColor: "#000",
-      colorPrimary: "#5b63d3",
-      colorPrimaryHover: "#666",
-      colorPrimaryActive: "#000",
+      defaultHoverBorderColor: "#000",
+      defaultHoverColor: "#fff",
+      colorPrimaryActive: "#fff",
+      defaultHoverBg: "#3e45a5",
     },
     Input: {
       borderRadius: 4,

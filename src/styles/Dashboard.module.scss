@@ -142,7 +142,7 @@
   .add_course_header {
     height: 50px;
     width: 100%;
-    background-color: #000;
+    background-color: var(--bg-primary);
     padding-right: 15px;
     display: flex;
     justify-content: space-between;
@@ -155,7 +155,7 @@
 
       h3 {
         padding-left: 15px;
-        color: #fff;
+        color: var(--font-secondary);
         margin: 0;
       }
 

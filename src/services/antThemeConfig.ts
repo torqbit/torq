@@ -3,7 +3,6 @@ export default {
     borderRadius: 4,
     colorText: "#666",
     colorPrimary: "#5b63d3",
-    colorPrimaryHover: "#3e45a5",
   },
   components: {
     Layout: {
@@ -29,8 +28,7 @@ export default {
     Button: {
       groupBorderColor: "#000",
       colorPrimary: "#5b63d3",
-      colorPrimaryHover: "#3e45a5",
-      colorPrimaryActive: "#000",
+      defaultHoverBg: "#3e45a5",
     },
     Input: {
       borderRadius: 4,
