@@ -29,6 +29,7 @@ export type ApiResponse = {
     isEnrolled: boolean;
     nextLessonId: number;
     courseStarted: boolean;
+    courseCompleted: boolean;
   };
   latestProgress: {
     nextChap: ChapterDetail;

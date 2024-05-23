@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       select: {
         courseId: true,
-        courseType: true,
+        courseState: true,
       },
     });
 
@@ -49,6 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           isEnrolled: true,
           nextLessonId: latestLesson?.resourceId,
           courseStarted: true,
+          courseCompleted: alreadyRegisterd.courseState === "COMPLETED" ? true : false,
         };
         return res.status(200).json({ success: true, enrollStatus });
       } else if (!latestLesson) {
@@ -72,13 +73,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           isEnrolled: true,
           nextLessonId: firstResource?.resource[0].resourceId,
           courseStarted: false,
+          courseCompleted: false,
         };
         return res.status(200).json({ success: true, enrollStatus });
       }
     }
+
     return res.status(200).json({
       success: true,
-      enrollStatus: { isEnrolled: false, nextLessonId: 0, courseStarted: false },
+      enrollStatus: { isEnrolled: false, nextLessonId: 0, courseStarted: false, courseCompleted: false },
     });
   } catch (err) {
     return errorHandler(err, res);
