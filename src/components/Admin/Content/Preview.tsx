@@ -172,7 +172,7 @@ const Preview: FC<{
                   <Flex align="center" gap={10}>
                     <Button onClick={onViewCertificate}>View Certificate</Button>
 
-                    <Link href={`/courses/${chapter[0]?.courseId}/play`}>
+                    <Link href={`/courses/${chapter[0]?.courseId}/lesson/${chapter[0].resource[0].resourceId}`}>
                       <Button type="primary">Rewatch</Button>
                     </Link>
                   </Flex>

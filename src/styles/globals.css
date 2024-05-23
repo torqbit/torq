@@ -192,7 +192,6 @@ a {
 
 #reply_cmt_list {
   height: calc(100vh - 180px);
-  overflow-y: scroll;
 }
 
 .assignment_code_tabs .ant-tabs-nav .ant-tabs-tab {

@@ -70,41 +70,47 @@
     }
     // color: #939db8;
   }
-
-  .lessons_container {
-    min-height: 100vh;
-    height: 100%;
+  .lesson_wrapper {
+    position: relative;
     width: 425px;
 
-    margin: -20px -40px -20px 0;
-    background: var(--bg-primary);
-    h2 {
-      padding: 20px;
-      color: var(--font-primary);
-      margin-bottom: 0;
-    }
-    .lessons_list_wrapper {
-      margin-bottom: 15px;
-    }
+    .lessons_container {
+      min-height: 100vh;
+      position: fixed;
+      right: 42px;
+      overflow: auto;
+      height: 100%;
 
-    .lesson__default {
-      border: none;
-    }
-    .lesson__selected {
-      background-color: var(--bg-secondary);
-      border-left: 3px solid var(--btn-primary);
-      border-bottom: none;
-    }
-
-    .lesson__item {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-
-      &:hover {
+      margin: -20px -40px -20px 0;
+      background: var(--bg-primary);
+      h2 {
+        padding: 20px;
         color: var(--font-primary);
+        margin-bottom: 0;
+      }
+      .lessons_list_wrapper {
+        margin-bottom: 15px;
+      }
+
+      .lesson__default {
+        border: none;
+      }
+      .lesson__selected {
+        background-color: var(--bg-secondary);
+        border-left: 3px solid var(--btn-primary);
+        border-bottom: none;
+      }
+
+      .lesson__item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+
+        &:hover {
+          color: var(--font-primary);
+        }
       }
     }
   }

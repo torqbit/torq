@@ -107,7 +107,6 @@
           height: 440px;
           padding: 20px;
           background-color: #fff;
-          overflow: auto;
 
           .assignment_score {
             font-size: 18px;
@@ -382,11 +381,17 @@
   .headerWrapper {
     background-color: var(--bg-secondary);
   }
-
+  .bodyWrapper {
+    overflow: hidden;
+  }
+  .footerWrapper {
+    border: none;
+    background-color: var(--bg-secondary);
+  }
   .list_reply_cmt {
-    min-height: 75vh;
+    overflow-y: hidden;
+    height: 75vh;
     background-color: var(--bg-primary);
-    padding: 10px 20px 20px 20px;
     color: var(--font-primary);
     .comment_time {
       color: var(--label-color);
@@ -399,28 +404,22 @@
 
   .qa_form {
     width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    box-shadow: var(--box-shadow);
-    border: 1px solid;
-    box-shadow: 0px 5px 7px 7px var(--label-color);
+    border-radius: 8px;
+
     background-color: var(--bg-primary);
 
     .qa_form_input {
       width: 100%;
-      border: 0;
-      // height: 50px;
-      border-radius: 0;
-      // background-color: var(--bg-secondary);
+
+      border-radius: 8px;
     }
 
     .qa_form_footer {
       display: flex;
-      justify-content: space-between;
-      padding: 5px;
-      border-top: 1px solid;
+      justify-content: right;
+
       background-color: var(--bg-secondary);
+
       img {
         cursor: pointer;
       }

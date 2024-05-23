@@ -86,12 +86,25 @@ const ReplyDrawer: FC<{
           </Space>
         }
         width={isMax415Width ? "100%" : 500}
-        bodyStyle={{ background: "#eee", padding: 0 }}
         className={styles.reply_drawer}
-        classNames={{ header: styles.headerWrapper }}
+        classNames={{ header: styles.headerWrapper, body: styles.bodyWrapper, footer: styles.footerWrapper }}
         placement="right"
         onClose={onCloseDrawer}
         open={replyDrawer.isOpen}
+        footer={
+          <QAForm
+            resourceId={resourceId}
+            toUserId={sltComment?.user?.id}
+            parentCommentId={replyDrawer.sltCommentId}
+            placeholder="Reply"
+            updateNotification={updateNotification}
+            onRefresh={() => {
+              setRefresh(!refresh);
+              onReplyRefresh();
+            }}
+            loadingPage={false}
+          />
+        }
       >
         <div id="reply_cmt_list" ref={scrollRef}>
           <section className={styles.list_reply_cmt} id="list_reply_cmt">
@@ -121,19 +134,6 @@ const ReplyDrawer: FC<{
               })
             )}
           </section>
-
-          <QAForm
-            resourceId={resourceId}
-            toUserId={sltComment?.user?.id}
-            parentCommentId={replyDrawer.sltCommentId}
-            placeholder="Reply"
-            updateNotification={updateNotification}
-            onRefresh={() => {
-              setRefresh(!refresh);
-              onReplyRefresh();
-            }}
-            loadingPage={false}
-          />
         </div>
       </Drawer>
     </Element>
