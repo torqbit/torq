@@ -28,6 +28,7 @@ const LearnCoursesPage: NextPage = () => {
           isEnrolled: result.enrollStatus.isEnrolled,
           courseStarted: result.enrollStatus.courseStarted,
           nextLessonId: result.enrollStatus.nextLessonId,
+          courseCompleted: result.enrollStatus.courseCompleted,
         });
       },
       (error) => {}
@@ -74,21 +75,6 @@ const LearnCoursesPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.courseId) {
-      ProgramService.getProgress(
-        Number(router.query.courseId),
-        (result) => {
-          setCourseStatus({
-            ...courseStatus,
-            isCourseCompleted: result.latestProgress.completed,
-          } as ICourseEnrollementStatus);
-        },
-        (error) => {}
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    if (router.query.courseId) {
       onCheckEnrollment();
       ProgramService.getCourses(
         Number(router.query.courseId),
@@ -113,7 +99,7 @@ const LearnCoursesPage: NextPage = () => {
           chapter={chapterList}
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
-          isCourseCompleted={courseStatus?.isCourseCompleted}
+          isCourseCompleted={courseStatus?.courseCompleted}
           isCourseStarted={courseStatus?.courseStarted}
         />
       ) : (

@@ -166,27 +166,16 @@ const Preview: FC<{
               <p>{courseDetail?.description}</p>
             </Space>
 
-            {enrolled && isCourseCompleted ? (
-              <Flex align="center" gap={10}>
-                <Button onClick={onViewCertificate}>View Certificate</Button>
-
-                <Link href={`/courses/${chapter[0]?.courseId}/play`}>
-                  <Button type="primary">Rewatch</Button>
-                </Link>
-              </Flex>
-            ) : (
+            {enrolled ? (
               <>
-                {!enrolled ? (
-                  <Button
-                    className={styles.save_btn}
-                    type="primary"
-                    onClick={() => {
-                      !addContentPreview && onEnrollCourse && onEnrollCourse();
-                    }}
-                  >
-                    Enroll Course
-                    {SvgIcons.arrowRight}
-                  </Button>
+                {isCourseCompleted ? (
+                  <Flex align="center" gap={10}>
+                    <Button onClick={onViewCertificate}>View Certificate</Button>
+
+                    <Link href={`/courses/${chapter[0]?.courseId}/play`}>
+                      <Button type="primary">Rewatch</Button>
+                    </Link>
+                  </Flex>
                 ) : (
                   <Button
                     className={styles.save_btn}
@@ -199,6 +188,19 @@ const Preview: FC<{
                     {SvgIcons.arrowRight}
                   </Button>
                 )}
+              </>
+            ) : (
+              <>
+                <Button
+                  className={styles.save_btn}
+                  type="primary"
+                  onClick={() => {
+                    !addContentPreview && onEnrollCourse && onEnrollCourse();
+                  }}
+                >
+                  Enroll Course
+                  {SvgIcons.arrowRight}
+                </Button>
               </>
             )}
           </div>
