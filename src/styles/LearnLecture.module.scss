@@ -1,5 +1,5 @@
 .learn_resource_page {
-  background-color: #f0f0f0;
+  background-color: var(--bg-primary);
   min-height: 100vh;
   .resource_wrapper {
     max-width: 1200px;
@@ -11,7 +11,7 @@
     .course_breadcrumb {
       font-size: 23px;
       font-weight: 600;
-      color: #393939;
+      color: var(--font-secondary);
       .chapter_name {
         font-size: 1;
         font-size: 23px;
@@ -71,15 +71,15 @@
             position: relative;
             z-index: -1;
             padding: 30px 60px 20px 60px;
-            background-color: #fff;
+            background-color: var(--bg-primary);
 
             h3 {
-              color: #000;
+              color: var(--font-primary);
 
               margin-bottom: 20px;
             }
             h4 {
-              color: #000;
+              color: var(--font-primary);
 
               font-size: 15px;
               font-weight: 500;
@@ -88,7 +88,8 @@
             }
 
             ol li {
-              color: #000;
+              color: var(--font-primary);
+
               margin-bottom: 15px;
               line-height: 1.4;
             }
@@ -106,7 +107,7 @@
         .assignment_submission_form {
           height: 440px;
           padding: 20px;
-          background-color: #fff;
+          background-color: var(--bg-primary);
 
           .assignment_score {
             font-size: 18px;
@@ -189,12 +190,12 @@
     }
     .list_resource_items {
       flex-basis: 30%;
-      background-color: #fff;
+      background-color: var(--bg-primary);
 
       .lecture_item {
         width: 100%;
         padding: 10px 6px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--border-color);
         position: relative;
         cursor: pointer;
         border-left: 3px solid transparent;
@@ -216,8 +217,8 @@
       }
 
       .slt_lecture {
-        border-left-color: #666;
-        background-color: #dcdcdca1;
+        border-left-color: var(--font-secondary);
+        background-color: var(--bg-secondary);
 
         img {
           height: 30px;
@@ -244,7 +245,7 @@
           // border: 1px solid var(--border-color);
           border-top: 0;
           box-shadow: var(--box-shadow);
-          background-color: #f7f7f7;
+          background-color: var(--bg-primary);
           img {
             cursor: pointer;
           }
@@ -459,7 +460,7 @@
             font-size: 15px;
           }
           .lecture_time {
-            color: #000;
+            color: var(--font-primary);
           }
           .lecture_completed,
           .lecture_status_btn {

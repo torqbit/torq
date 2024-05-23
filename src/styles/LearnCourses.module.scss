@@ -11,7 +11,7 @@
     height: 75vh;
     min-height: 400px;
     position: relative;
-    background-color: black;
+    background-color: var(--bg-primary);
   }
 
   .certificatePage {
@@ -41,9 +41,7 @@
       }
     }
   }
-  .segmented__test {
-    background-color: #888;
-  }
+
   .video_completed_screen {
     background-color: var(--bg-primary);
     display: flex;
