@@ -57,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       INNER JOIN Resource as re ON ch.chapterId = re.chapterId
       LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId
       WHERE co.courseId = ${Number(courseId)} AND re.state = 'ACTIVE' AND cr.studentId = ${userId}`;
-      console.log(courseProgress);
+
       if (courseProgress.length > 0) {
         return res.status(200).json({
           success: true,

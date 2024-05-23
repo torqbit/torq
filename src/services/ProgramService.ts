@@ -287,7 +287,7 @@ class ProgramService {
   };
 
   getRegisterCourses = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    fetch(`/api/v1/course/list/registerCourses`, {
+    fetch(`/api/v1/course/list/enrolled-courses`, {
       method: "GET",
       headers: {
         Accept: "application/json",
