@@ -16,9 +16,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       if (credentials) {
-        // const decrypted_api_key = decrypt(credentials.api_key);
-
         return res.status(200).json({ success: true, messsage: "Found credentials", credentials });
+      } else {
+        return res.status(400).json({ success: false, messsage: "credentials not found" });
       }
     }
   } catch (err) {
