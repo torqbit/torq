@@ -33,7 +33,8 @@ const EnrolledCourseList: FC<{
   allCourses: any[] | undefined;
   handleCourseStatusUpdate: (courseId: number, newState: string) => void;
   handleCourseDelete: (courseId: number) => void;
-}> = ({ allCourses, handleCourseStatusUpdate, handleCourseDelete }) => {
+  loading?: boolean;
+}> = ({ allCourses, handleCourseStatusUpdate, handleCourseDelete, loading }) => {
   const router = useRouter();
   const [modal, contextHolder] = Modal.useModal();
 
@@ -146,7 +147,7 @@ const EnrolledCourseList: FC<{
 
   return (
     <div>
-      <Table size="small" className="users_table" columns={columns} dataSource={data} />
+      <Table size="small" className="users_table" columns={columns} dataSource={data} loading={loading} />
       {contextHolder}
     </div>
   );
@@ -157,6 +158,7 @@ const Content: NextPage = () => {
   const [modal, contextWrapper] = Modal.useModal();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextMessageHolder] = message.useMessage();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [coursesAuthored, setCoursesAuthored] = useState<{
     fetchCourses: boolean;
@@ -191,6 +193,7 @@ const Content: NextPage = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     ProgramService.getCoursesByAuthor(
       (res) => {
         console.log(res, "result");
@@ -199,10 +202,12 @@ const Content: NextPage = () => {
           fetchCourses: false,
           courses: res.courses,
         });
+        setLoading(false);
       },
       (err) => {
         setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, refresh: !coursesAuthored.refresh });
         messageApi.error(`Unable to get the courses due to ${err}`);
+        setLoading(false);
       }
     );
   }, [coursesAuthored.refresh]);
@@ -255,6 +260,7 @@ const Content: NextPage = () => {
           allCourses={coursesAuthored.courses}
           handleCourseDelete={onCourseDelete}
           handleCourseStatusUpdate={onCourseUpdate}
+          loading={loading}
         />
       ),
     },

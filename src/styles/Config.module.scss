@@ -69,3 +69,14 @@
     }
   }
 }
+
+.spin_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+
+  .spin_icon {
+    font-size: 60px;
+  }
+}

@@ -133,6 +133,19 @@ a {
   cursor: pointer;
 }
 
+.spin_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+
+  .spin_icon {
+    font-size: 60px;
+  }
+}
+.courses_spin_wrapper {
+  height: 100vh;
+}
 .edit-editor {
   background-color: #fff;
   border: 1px solid #d9d9d9;

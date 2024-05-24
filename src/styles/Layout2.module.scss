@@ -13,3 +13,15 @@
     }
   }
 }
+
+.spin_wrapper {
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  .spin_icon {
+    font-size: 60px;
+  }
+}

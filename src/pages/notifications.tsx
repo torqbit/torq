@@ -1,24 +1,19 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
-import { Avatar, Badge, List, Space, Tabs, TabsProps, message } from "antd";
+import { Avatar, Badge, List } from "antd";
 import Layout2 from "@/components/Layouts/Layout2";
-import { IResponse, getFetch } from "@/services/request";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import Link from "next/link";
 import { truncateString } from "@/services/helper";
 import moment from "moment";
 import NotificationService from "@/services/NotificationService";
 import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/ReplyDrawer";
-import { IComments, IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
-
-import { useRouter } from "next/router";
+import { IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { INotification } from "@/lib/types/discussions";
 
 const NotificationList: FC = () => {
   const { data: user } = useSession();
-  const router = useRouter();
-
   const [loading, setLoading] = useState(false);
   const { globalState, dispatch } = useAppContext();
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
