@@ -434,6 +434,8 @@ class ProgramService {
       authorId?: string | undefined;
       sequenceId?: number | undefined;
       courseId: number;
+      difficultyLevel?: string;
+      certificateTemplate?: string;
     },
 
     onSuccess: (response: ApiResponse) => void,

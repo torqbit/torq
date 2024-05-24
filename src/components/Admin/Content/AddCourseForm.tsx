@@ -120,8 +120,8 @@ const AddCourseForm: FC = () => {
           tvUrl: result.courseDetails.tvUrl || "",
           tvProviderId: result.courseDetails.tvProviderId || "",
           courseId: Number(router.query.id),
-          difficultyLevel: form.getFieldsValue().course_difficulty,
-          certificateTemplate: form.getFieldsValue().certificate_template,
+          difficultyLevel: courseData.difficultyLevel,
+          certificateTemplate: courseData.certificateTemplate,
         };
 
         ProgramService.updateCourse(

@@ -147,7 +147,7 @@ const CourseSetting: FC<{
                 <Select
                   placeholder="Choose Difficulty level"
                   onChange={(e) => {
-                    form.setFieldValue("course_difficulty", e);
+                    onSetCourseData("difficultyLevel", e);
                   }}
                 >
                   {courseDifficulty.map((difficulty, i) => {
@@ -173,7 +173,7 @@ const CourseSetting: FC<{
                 <Select
                   placeholder="Choose Certificate Template"
                   onChange={(e) => {
-                    form.setFieldValue("certificate_template", e);
+                    onSetCourseData("certificateTemplate", e);
                   }}
                 >
                   {certificateConfig.map((certificate, i) => {
