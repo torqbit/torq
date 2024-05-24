@@ -67,7 +67,7 @@ const Config: FC = () => {
         setLoading(false);
       },
 
-      (eroor) => {
+      (error) => {
         setLoading(false);
       }
     );
