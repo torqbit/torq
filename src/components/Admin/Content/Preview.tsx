@@ -5,7 +5,8 @@ import { convertSecToHourandMin } from "@/pages/admin/content";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
 import { ChapterDetail, CourseData, CourseInfo, VideoInfo } from "@/types/courses/Course";
-import { Button, Collapse, Flex, Space, Tag } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Button, Collapse, Flex, Space, Spin, Tag } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -148,6 +149,9 @@ const Preview: FC<{
           )}
         </div>
         <div className={styles.video_container}>
+          <Flex className={styles.spin_wrapper} align="center" justify="center">
+            <Spin indicator={<LoadingOutlined className={styles.loading_icon} spin />} />
+          </Flex>
           {
             <iframe
               style={{
