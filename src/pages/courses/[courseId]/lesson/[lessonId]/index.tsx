@@ -158,6 +158,8 @@ const LessonPage: NextPage = () => {
       updateChapterLesson(currentLesson.chapterSeq, currentLesson.lesson.lessonId);
     if (lessonsCompleted == totalLessons) {
       //go to certificate page
+      findAndSetCurrentLesson(courseLessons, true);
+
       onCreateCertificate();
       console.log("go to certificate page");
     } else {
