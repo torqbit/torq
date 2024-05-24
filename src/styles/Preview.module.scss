@@ -8,10 +8,19 @@
     }
   }
   .video_container {
+    .spin_wrapper {
+      position: absolute;
+      top: 160px;
+      left: 385px;
+
+      .loading_icon {
+        font-size: 30px;
+      }
+    }
     width: 800px;
     height: 450px;
     margin-bottom: 20px;
-
+    background-color: var(--bg-primary);
     position: relative;
   }
 
