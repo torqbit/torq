@@ -171,23 +171,6 @@ const AddVideoLesson: FC<{
                           <span>Upload Video</span>
                         </div>
                       )}
-                      {/* {videoLesson?.video?.videoUrl ? (
-                        <>
-                          <img
-                            src={videoLesson?.video?.thumbnail}
-                            alt=""
-                            height={"100%"}
-                            className={styles.video_container}
-                            width={355}
-                            onClick={() => {}}
-                          />
-                        </>
-                      ) : (
-                        <button style={{ border: 0, background: "none", width: 350 }} type="button">
-                          {videoUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
-                          <div style={{ marginTop: 8 }}>Upload Video</div>
-                        </button>
-                      )} */}
                     </Upload>
                   </Form.Item>
                 </div>
