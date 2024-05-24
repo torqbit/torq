@@ -62,8 +62,8 @@ export const AppProvider: React.FC<{ children: any; themeSwitcher: () => void }>
       case "SET_SELECTED_SIDER_MENU":
         return { ...currentState, selectedSiderMenu: action.payload };
       case "SET_LOADER":
-        console.log("hit the laoder");
         return { ...currentState, pageLoading: action.payload };
+
       case "SWITCH_THEME":
         let mainHTML = document.getElementsByTagName("html").item(0);
 

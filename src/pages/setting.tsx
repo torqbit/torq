@@ -9,10 +9,12 @@ import { postFetch, IResponse } from "@/services/request";
 import { GetServerSidePropsContext, NextPage } from "next";
 import { Session } from "next-auth";
 import { LoadingOutlined } from "@ant-design/icons";
+import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
 
 const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const { dispatch } = useAppContext();
 
   const onUpdateProfile = async (info: { name: string; phone: string }) => {
     const res = await postFetch({ name: info.name, userId: user?.id, phone: info.phone }, "/api/user/update");
@@ -26,6 +28,8 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
   };
   useEffect(() => {
     setPageLoading(true);
+    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "setting" as ISiderMenu });
+
     if (user) {
       setPageLoading(false);
     }
