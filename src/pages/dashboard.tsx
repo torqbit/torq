@@ -8,6 +8,7 @@ import ProgramService from "@/services/ProgramService";
 import Link from "next/link";
 import { NextPage } from "next";
 import { LoadingOutlined } from "@ant-design/icons";
+import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
 
 const EnrolledCourseList: FC<{
   courseData: { courseName: string; progress: string; courseId: number }[];
@@ -48,6 +49,8 @@ const EnrolledCourseList: FC<{
 const Dashboard: NextPage = () => {
   const { data: user } = useSession();
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const { dispatch } = useAppContext();
+
   const [allRegisterCourse, setAllRegisterCourse] = useState<
     { courseName: string; progress: string; courseId: number }[]
   >([]);
@@ -64,6 +67,8 @@ const Dashboard: NextPage = () => {
     },
   ];
   useEffect(() => {
+    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "dashboard" as ISiderMenu });
+
     setPageLoading(true);
     ProgramService.getRegisterCourses(
       (result) => {

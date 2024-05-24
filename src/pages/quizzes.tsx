@@ -7,7 +7,7 @@ import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
 
 const QuizzesPage = () => {
   const { data: user } = useSession();
-  const { globalState, dispatch } = useAppContext();
+  const { dispatch } = useAppContext();
 
   useEffect(() => {
     dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "quiz" as ISiderMenu });
