@@ -49,6 +49,7 @@ const AddCourseForm: FC = () => {
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [videoForm] = Form.useForm();
+  const [settingloading, setSettingloading] = useState<boolean>(false);
 
   const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
   const onRefresh = () => {
@@ -105,6 +106,8 @@ const AddCourseForm: FC = () => {
   };
 
   const onSubmit = () => {
+    setSettingloading(true);
+
     ProgramService.getCourses(
       Number(router.query.id),
       (result: CourseAPIResponse) => {
@@ -129,9 +132,11 @@ const AddCourseForm: FC = () => {
             setRefresh(!refresh);
             setTabActive(true);
             messageApi.success("Course has been updated");
+            setSettingloading(false);
           },
           (error) => {
             messageApi.error(error);
+            setSettingloading(false);
           }
         );
       },
@@ -522,6 +527,7 @@ const AddCourseForm: FC = () => {
           courseTrailerUploading={courseTrailerUploading}
           courseBanner={courseThumbnail}
           refresh={refresh}
+          settingLoading={settingloading}
         />
       ),
     },
@@ -601,6 +607,8 @@ const AddCourseForm: FC = () => {
   }, [checkVideoState]);
 
   useEffect(() => {
+    setSettingloading(true);
+
     router.query.id &&
       ProgramService.getCourses(
         Number(router.query.id),
@@ -635,9 +643,11 @@ const AddCourseForm: FC = () => {
             state: result?.courseDetails.state,
           });
           setCourseThumbnail(result.courseDetails.thumbnail);
+          setSettingloading(false);
         },
         (error) => {
           messageApi.error(error);
+          setSettingloading(false);
         }
       );
   }, [router.query.id, refresh]);

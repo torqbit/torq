@@ -14,6 +14,8 @@ import CertificateTemplates from "./Certificate";
 const Config: FC = () => {
   const { data: user } = useSession();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
+
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
 
@@ -22,7 +24,7 @@ const Config: FC = () => {
   };
   const [form] = Form.useForm();
   const onFinish = () => {
-    setLoading(true);
+    setLoadingBtn(true);
     ProgramService.addServiceProvider(
       "bunny",
       "media",
@@ -30,11 +32,11 @@ const Config: FC = () => {
       (result) => {
         message.success(result.message);
 
-        setLoading(false);
+        setLoadingBtn(false);
       },
       (error) => {
         message.error(error);
-        setLoading(false);
+        setLoadingBtn(false);
       }
     );
   };
@@ -49,6 +51,7 @@ const Config: FC = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     ProgramService.getCredentials(
       "media",
       (result) => {
@@ -61,8 +64,12 @@ const Config: FC = () => {
           form.setFieldValue("connectedCDNHostname", result.credentials.providerDetail.connectedCDNHostname);
           form.setFieldValue("streamCDNHostname", result.credentials.providerDetail.streamCDNHostname);
         }
+        setLoading(false);
       },
-      (eroor) => {}
+
+      (eroor) => {
+        setLoading(false);
+      }
     );
   }, []);
 
@@ -70,7 +77,7 @@ const Config: FC = () => {
     {
       key: "1",
       label: "Media Storage",
-      children: <MediaStorage form={form} onFinish={onFinish} loading={loading} />,
+      children: <MediaStorage form={form} onFinish={onFinish} loading={loading} loadingBtn={loadingBtn} />,
     },
     {
       key: "2",

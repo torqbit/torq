@@ -1,21 +1,18 @@
-import type { GetServerSidePropsContext, NextPage } from "next";
+import type { NextPage } from "next";
 import styles from "@/styles/Dashboard.module.scss";
-
-import { getSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-
 import { Course } from "@prisma/client";
 import Courses from "@/components/Courses/Courses";
-import { getAllCourses } from "@/actions/getCourseById";
 import { Spin, message } from "antd";
 import Layout2 from "@/components/Layouts/Layout2";
 import ProgramService from "@/services/ProgramService";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const CoursesPage: NextPage = () => {
   const [allCourses, setAllCourses] = useState<Course[] | undefined>([]);
   const [messageApi, contextMessageHolder] = message.useMessage();
-
   const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
     setLoading(true);
     ProgramService.getCoursesByAuthor(
@@ -29,6 +26,7 @@ const CoursesPage: NextPage = () => {
       }
     );
   }, []);
+
   return (
     <Layout2 className={styles.container}>
       {contextMessageHolder}
@@ -47,7 +45,9 @@ const CoursesPage: NextPage = () => {
           )}
         </>
       ) : (
-        <Spin fullscreen tip="courses loading" />
+        <div className="spin_wrapper courses_spin_wrapper">
+          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+        </div>
       )}
     </Layout2>
   );
