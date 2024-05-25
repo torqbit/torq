@@ -3,15 +3,9 @@ import styles from "@/styles/Dashboard.module.scss";
 import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import { Space, Tag } from "antd";
-import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
 
 const QuizzesPage = () => {
   const { data: user } = useSession();
-  const { dispatch } = useAppContext();
-
-  useEffect(() => {
-    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "quiz" as ISiderMenu });
-  }, []);
 
   return (
     <Layout2>

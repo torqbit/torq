@@ -7,17 +7,13 @@ import { Spin, message } from "antd";
 import Layout2 from "@/components/Layouts/Layout2";
 import ProgramService from "@/services/ProgramService";
 import { LoadingOutlined } from "@ant-design/icons";
-import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
 
 const CoursesPage: NextPage = () => {
   const [allCourses, setAllCourses] = useState<Course[] | undefined>([]);
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>(false);
-  const { dispatch } = useAppContext();
 
   useEffect(() => {
-    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "courses" as ISiderMenu });
-
     setLoading(true);
     ProgramService.getCoursesByAuthor(
       (res) => {

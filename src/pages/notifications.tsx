@@ -3,7 +3,7 @@ import styles from "@/styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
 import { Avatar, Badge, List } from "antd";
 import Layout2 from "@/components/Layouts/Layout2";
-import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 import Link from "next/link";
 import { truncateString } from "@/services/helper";
 import moment from "moment";
@@ -126,11 +126,6 @@ const NotificationList: FC = () => {
 
 const Dashboard: FC = () => {
   const { data: user } = useSession();
-  const { dispatch } = useAppContext();
-
-  useEffect(() => {
-    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "notification" as ISiderMenu });
-  }, []);
 
   return (
     <Layout2>
