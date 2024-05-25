@@ -72,7 +72,6 @@ const CourseSetting: FC<{
     <>
       {settingLoading ? (
         <>
-          {" "}
           <div className="spin_wrapper">
             <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
           </div>

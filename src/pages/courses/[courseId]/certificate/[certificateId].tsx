@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import styles from "@/styles/Certificate.module.scss";
 import { CourseCertificates } from "@prisma/client";
 import prisma from "@/lib/prisma";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const ShowCertificate = () => {
   const [certificateData, setCertificateData] = useState<CourseCertificates>();
@@ -46,7 +47,9 @@ const ShowCertificate = () => {
   return (
     <Layout2>
       {loading ? (
-        <Spin fullscreen />
+        <div className="spin_wrapper">
+          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+        </div>
       ) : (
         <Space direction="vertical" size={"middle"} className={styles.certificate_page}>
           <div>

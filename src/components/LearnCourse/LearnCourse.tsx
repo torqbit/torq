@@ -15,6 +15,7 @@ import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import QADiscssionTab from "./AboutCourse/CourseDiscussion/CourseDiscussion";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const Label: FC<{
   title: string;
@@ -464,7 +465,9 @@ const LearnCourse: FC<{}> = () => {
           </Flex>
         </section>
       ) : (
-        <Spin fullscreen tip="Lessons loading..." />
+        <div className="spin_wrapper">
+          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+        </div>
       )}
     </Layout2>
   );

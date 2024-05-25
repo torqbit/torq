@@ -13,6 +13,7 @@ import { error } from "console";
 import { useEffect, useState } from "react";
 import { SegmentedValue } from "antd/es/segmented";
 import ProgramService from "@/services/ProgramService";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const AnalyticsPage: NextPage = () => {
   const { data: session } = useSession();
@@ -99,11 +100,13 @@ const AnalyticsPage: NextPage = () => {
   }, [router.query.courseId]);
 
   return (
-    <>
-      {loading ? (
-        <Spin fullscreen tip="page is laoding" />
-      ) : (
-        <Layout2>
+    <Layout2>
+      <>
+        {loading ? (
+          <div className="spin_wrapper">
+            <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+          </div>
+        ) : (
           <section className={styles.analyticsContainer}>
             <h2>Hello {session?.user?.name}</h2>
 
@@ -118,9 +121,9 @@ const AnalyticsPage: NextPage = () => {
             {overallMembers && <OverallMembersList overallMembers={overallMembers} />}
             {userData && <CourseMembers onChange={onChange} userData={userData} />}
           </section>
-        </Layout2>
-      )}
-    </>
+        )}
+      </>
+    </Layout2>
   );
 };
 

@@ -33,6 +33,7 @@ import { ICourseProgressUpdateResponse } from "@/lib/types/program";
 import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import { LoadingOutlined } from "@ant-design/icons";
 export interface ICertficateData {
   loading: boolean;
   certificateId: string;
@@ -365,7 +366,9 @@ const LessonPage: NextPage = () => {
                   <div className={styles.certificatePage}>
                     {certificateData?.loading ? (
                       <>
-                        <Spin />
+                        <div className="spin_wrapper">
+                          <Spin indicator={<LoadingOutlined spin />} />
+                        </div>
                         <p> Generating Certificate</p>
                       </>
                     ) : (
@@ -446,7 +449,9 @@ const LessonPage: NextPage = () => {
           </Flex>
         </section>
       ) : (
-        <Spin fullscreen tip="Lessons loading..." />
+        <div className="spin_wrapper">
+          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+        </div>
       )}
     </Layout2>
   );

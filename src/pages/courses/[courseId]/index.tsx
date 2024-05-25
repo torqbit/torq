@@ -4,6 +4,7 @@ import { ICourseEnrollementStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
 import { IResponse, postFetch } from "@/services/request";
 import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
+import { LoadingOutlined } from "@ant-design/icons";
 import { Modal, Spin, message } from "antd";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -103,7 +104,9 @@ const LearnCoursesPage: NextPage = () => {
           isCourseStarted={courseStatus?.courseStarted}
         />
       ) : (
-        <Spin tip="Loading..." fullscreen />
+        <div className="spin_wrapper">
+          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+        </div>
       )}
     </Layout2>
   );
