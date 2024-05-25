@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       INNER JOIN Chapter as ch ON co.courseId = ch.courseId 
       INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
       INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-      LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId
+      LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.user_id
       WHERE co.courseId = ${Number(courseId)} AND re.state = 'ACTIVE' AND cr.studentId = ${userId}`;
 
       if (courseProgress.length > 0) {
