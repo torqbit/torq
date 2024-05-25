@@ -1,17 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "@/styles/Dashboard.module.scss";
 import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import { Space, Tag } from "antd";
-import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
 
 const GuidesPage = () => {
   const { data: user } = useSession();
-  const { globalState, dispatch } = useAppContext();
-
-  useEffect(() => {
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "guides" as ISiderMenu });
-  }, []);
 
   return (
     <Layout2>

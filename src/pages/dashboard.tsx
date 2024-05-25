@@ -49,7 +49,6 @@ const EnrolledCourseList: FC<{
 const Dashboard: NextPage = () => {
   const { data: user } = useSession();
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const { dispatch } = useAppContext();
 
   const [allRegisterCourse, setAllRegisterCourse] = useState<
     { courseName: string; progress: string; courseId: number }[]
@@ -67,8 +66,6 @@ const Dashboard: NextPage = () => {
     },
   ];
   useEffect(() => {
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "dashboard" as ISiderMenu });
-
     setPageLoading(true);
     ProgramService.getRegisterCourses(
       (result) => {
