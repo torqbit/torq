@@ -28,7 +28,7 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
   };
   useEffect(() => {
     setPageLoading(true);
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "setting" as ISiderMenu });
+    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "setting" as ISiderMenu });
 
     if (user) {
       setPageLoading(false);

@@ -10,7 +10,7 @@ const QuizzesPage = () => {
   const { dispatch } = useAppContext();
 
   useEffect(() => {
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "quiz" as ISiderMenu });
+    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "quiz" as ISiderMenu });
   }, []);
 
   return (

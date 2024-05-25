@@ -2,7 +2,6 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "../../../styles/Dashboard.module.scss";
 import { Button, Dropdown, Modal, Space, Table, Tabs, TabsProps, Tag, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { ISiderMenu, useAppContext } from "../../../components/ContextApi/AppContext";
 import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import ProgramService from "@/services/ProgramService";
@@ -159,7 +158,6 @@ const Content: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>(false);
-  const { dispatch } = useAppContext();
 
   const [coursesAuthored, setCoursesAuthored] = useState<{
     fetchCourses: boolean;
@@ -195,7 +193,6 @@ const Content: NextPage = () => {
 
   useEffect(() => {
     setLoading(true);
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "content" as ISiderMenu });
 
     ProgramService.getCoursesByAuthor(
       (res) => {

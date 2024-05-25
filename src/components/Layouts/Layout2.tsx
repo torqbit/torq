@@ -4,7 +4,7 @@ import styles from "../../styles/Layout2.module.scss";
 import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
-import { useAppContext } from "../ContextApi/AppContext";
+import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { Badge, ConfigProvider, Layout, MenuProps, Spin } from "antd";
 
 import SvgIcons from "../SvgIcons";
@@ -13,12 +13,14 @@ import { UserSession } from "@/lib/types/user";
 import darkThemConfig from "@/services/darkThemConfig";
 import antThemeConfig from "@/services/antThemeConfig";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 const { Content } = Layout;
 
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
+  const router = useRouter();
 
   const authorSiderMenu: MenuProps["items"] = [
     {
@@ -40,7 +42,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         {
           label: <Link href="/admin/config">Configurations</Link>,
 
-          key: "configuration",
+          key: "config",
           icon: SvgIcons.configuration,
         },
       ],
@@ -69,7 +71,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     },
     {
       label: <Link href="/quizzes">Quizzes</Link>,
-      key: "quiz",
+      key: "quizzes",
       icon: SvgIcons.quiz,
     },
     {
@@ -85,7 +87,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     },
     {
       label: <Link href="/notifications">Notifications</Link>,
-      key: "notification",
+      key: "notifications",
       icon: (
         <Badge
           color="blue"
@@ -98,8 +100,16 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       ),
     },
   ];
+  const onChangeSelectedBar = () => {
+    let selectedMenu = router.pathname.split("/")[1];
+    if (selectedMenu == "admin") {
+      selectedMenu = router.pathname.split("/")[2];
+    }
+    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: selectedMenu as ISiderMenu });
+  };
   useEffect(() => {
     if (user) {
+      onChangeSelectedBar();
       const userSession = user.user as UserSession;
       dispatch({
         type: "SET_LOADER",

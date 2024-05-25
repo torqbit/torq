@@ -129,7 +129,7 @@ const Dashboard: FC = () => {
   const { dispatch } = useAppContext();
 
   useEffect(() => {
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "notification" as ISiderMenu });
+    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "notification" as ISiderMenu });
   }, []);
 
   return (

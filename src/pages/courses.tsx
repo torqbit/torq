@@ -16,7 +16,7 @@ const CoursesPage: NextPage = () => {
   const { dispatch } = useAppContext();
 
   useEffect(() => {
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "courses" as ISiderMenu });
+    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "courses" as ISiderMenu });
 
     setLoading(true);
     ProgramService.getCoursesByAuthor(

@@ -10,7 +10,7 @@ const GuidesPage = () => {
   const { globalState, dispatch } = useAppContext();
 
   useEffect(() => {
-    dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "guides" as ISiderMenu });
+    // dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: "guides" as ISiderMenu });
   }, []);
 
   return (
