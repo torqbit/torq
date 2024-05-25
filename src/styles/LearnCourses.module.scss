@@ -70,13 +70,14 @@
   }
   .lesson_wrapper {
     position: relative;
-    width: 425px;
+    width: 380px;
 
     .lessons_container {
       min-height: 100vh;
       position: fixed;
       right: 42px;
       overflow: auto;
+
       height: 100%;
 
       margin: -20px -40px -20px 0;

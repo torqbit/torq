@@ -1,4 +1,4 @@
-import { Alert, Button } from "antd";
+import { Alert, Button, Spin } from "antd";
 import React, { useState } from "react";
 import styles from "@/styles/Login.module.scss";
 import { signIn, useSession } from "next-auth/react";
@@ -8,6 +8,7 @@ import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { getToken } from "next-auth/jwt";
 import appConstant from "@/services/appConstant";
 import { getCookieName } from "@/lib/utils";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -36,7 +37,11 @@ const LoginPage: NextPage = () => {
   };
 
   if (sessionStatus === "loading") {
-    return <SpinLoader />;
+    return (
+      <div className="spin_wrapper">
+        <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
+      </div>
+    );
   }
 
   return (
