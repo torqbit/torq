@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const result = await prisma.$queryRaw<
       any[]
     >`  SELECT YEAR(createdAt) AS year, MONTHNAME(createdAt) AS month, COUNT(id) users 
-    FROM User GROUP BY MONTHNAME(createdAt),MONTH(createdAt), YEAR(createdAt) ORDER BY MONTH(createdAt) `;
+    FROM User WHERE role = 'student' GROUP BY MONTHNAME(createdAt),MONTH(createdAt), YEAR(createdAt) ORDER BY MONTH(createdAt) `;
     const userData = result.map((r) => {
       return { year: r.year, month: r.month, users: Number(r.users) };
     });
