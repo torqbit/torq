@@ -4,6 +4,7 @@ import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import prisma from "@/lib/prisma";
 
 const DownloadCertificate = () => {
   const [certificatePdfPath, setCertificatePdfPath] = useState<string>();
