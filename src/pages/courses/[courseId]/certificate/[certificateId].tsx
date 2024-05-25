@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Certificate.module.scss";
 import { CourseCertificates } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const ShowCertificate = () => {
   const [certificateData, setCertificateData] = useState<CourseCertificates>();
