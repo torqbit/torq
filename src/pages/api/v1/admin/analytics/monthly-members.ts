@@ -3,13 +3,14 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
+import { Role } from "@prisma/client";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const result = await prisma.$queryRaw<
       any[]
     >`  SELECT YEAR(createdAt) AS year, MONTHNAME(createdAt) AS month, COUNT(id) users 
-    FROM User GROUP BY MONTHNAME(createdAt),MONTH(createdAt), YEAR(createdAt) ORDER BY MONTH(createdAt) `;
+    FROM User WHERE role = ${Role.STUDENT} GROUP BY MONTHNAME(createdAt), MONTH(createdAt), YEAR(createdAt) ORDER BY MONTH(createdAt)`;
     const userData = result.map((r) => {
       return { year: r.year, month: r.month, users: Number(r.users) };
     });
