@@ -81,7 +81,7 @@ const NotificationList: FC = () => {
       footer={false}
       bordered={false}
       dataSource={notifications}
-      className={styles.enrolled_course_list}
+      className={styles.notifications_list}
       renderItem={(item, index) => (
         <List.Item
           onClick={() => {
@@ -97,20 +97,20 @@ const NotificationList: FC = () => {
             }
             title={
               <Link href="#">
-                {item.fromUser.name}{" "}
+                <span className={styles.title}> {item.fromUser.name}</span>
                 {item.notificationType === "COMMENT" ? (
-                  <span>
+                  <span className={styles.reply_text}>
                     replied on Question {" : "}
-                    <span style={{ color: "#666" }}>{truncateString(item?.tagComment?.comment as string, 20)}</span>
+                    <span>{truncateString(item?.tagComment?.comment as string, 20)}</span>
                   </span>
                 ) : (
                   ""
                 )}
               </Link>
             }
-            description={item.comment.comment}
+            description={<span className={styles.description_text}>{item.comment.comment} </span>}
           />
-          <span style={{ color: "#68696d" }}>{moment(new Date(item.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}</span>
+          <span>{moment(new Date(item.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}</span>
           <ReplyDrawer
             replyDrawer={replyDrawer}
             onCloseDrawer={onCloseDrawer}
