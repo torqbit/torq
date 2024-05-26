@@ -445,3 +445,19 @@
     }
   }
 }
+
+.notifications_list {
+  .title {
+    color: var(--font-primary);
+  }
+  .reply_text {
+    margin-left: 10px;
+    color: var(--font-secondary);
+    span {
+      color: var(--font-primary);
+    }
+  }
+  .description_text {
+    color: var(--font-secondary);
+  }
+}
