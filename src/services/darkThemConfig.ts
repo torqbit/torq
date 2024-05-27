@@ -70,6 +70,9 @@ export default {
       colorBgElevated: "#202433",
       controlItemBgActiveHover: "#dcdcdc",
     },
+    List: {
+      colorSplit: "#374362",
+    },
     Tabs: {
       inkBarColor: "#fff",
       itemColor: "#939db8",

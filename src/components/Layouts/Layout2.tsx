@@ -92,7 +92,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       icon: (
         <Badge
           color="blue"
-          count={globalState?.notifications?.length}
+          count={globalState?.notifications?.filter((n) => n.isView == false).length}
           style={{ fontSize: 10, paddingTop: 1.5 }}
           size="small"
         >
