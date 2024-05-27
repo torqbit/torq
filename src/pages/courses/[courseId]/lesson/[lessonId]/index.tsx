@@ -366,11 +366,11 @@ const LessonPage: NextPage = () => {
                 <>
                   <div className={styles.certificatePage}>
                     {certificateData?.loading ? (
-                      <>
-                        <SpinLoader />
+                      <Space direction="vertical" className={styles.generating_loader}>
+                        <SpinLoader className="lesson_loader" />
 
                         <p> Generating Certificate</p>
-                      </>
+                      </Space>
                     ) : (
                       <div className={styles.certificateBtn}>
                         <h1>You have successfully completed this course</h1>
