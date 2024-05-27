@@ -15,6 +15,16 @@
   }
 
   .certificatePage {
+    .generating_loader {
+      position: relative;
+
+      p {
+        position: absolute;
+        top: 50%;
+        left: -70px;
+        width: 150px;
+      }
+    }
     display: flex;
     align-items: center;
     justify-content: center;
