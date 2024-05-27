@@ -16,6 +16,7 @@ import appConstant from "@/services/appConstant";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import QADiscssionTab from "./AboutCourse/CourseDiscussion/CourseDiscussion";
 import { LoadingOutlined } from "@ant-design/icons";
+import SpinLoader from "../SpinLoader/SpinLoader";
 
 const Label: FC<{
   title: string;
@@ -465,9 +466,7 @@ const LearnCourse: FC<{}> = () => {
           </Flex>
         </section>
       ) : (
-        <div className="spin_wrapper">
-          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-        </div>
+        <SpinLoader />
       )}
     </Layout2>
   );

@@ -3,6 +3,7 @@ import styles from "@/styles/Config.module.scss";
 import { Button, Flex, Form, FormInstance, Input, Space, Spin } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import { LoadingOutlined } from "@ant-design/icons";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: boolean; loadingBtn: boolean }> = ({
   form,
@@ -14,10 +15,7 @@ const MediaStorage: FC<{ form: FormInstance; onFinish: () => void; loading: bool
     <>
       {loading ? (
         <>
-          {" "}
-          <div className={styles.spin_wrapper}>
-            <Spin indicator={<LoadingOutlined className={styles.spin_icon} spin />} />
-          </div>
+          <SpinLoader />
         </>
       ) : (
         <section className={styles.media_storage}>

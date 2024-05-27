@@ -9,6 +9,7 @@ import { postFetch, IResponse } from "@/services/request";
 import { NextPage } from "next";
 import { Session } from "next-auth";
 import { LoadingOutlined } from "@ant-design/icons";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
   const [messageApi, contextMessageHolder] = message.useMessage();
@@ -36,9 +37,7 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
     <>
       {pageLoading ? (
         <>
-          <div className="spin_wrapper">
-            <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-          </div>
+          <SpinLoader />
         </>
       ) : (
         <section className={styles.user_profile_page}>

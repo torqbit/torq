@@ -37,11 +37,7 @@ const LoginPage: NextPage = () => {
   };
 
   if (sessionStatus === "loading") {
-    return (
-      <div className="spin_wrapper">
-        <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-      </div>
-    );
+    return <SpinLoader />;
   }
 
   return (

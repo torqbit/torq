@@ -1,4 +1,5 @@
 import { useAppContext } from "@/components/ContextApi/AppContext";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import SvgIcons from "@/components/SvgIcons";
 import { IResourceDetail } from "@/lib/types/learn";
 import { convertSecToHourandMin } from "@/pages/admin/content";
@@ -150,7 +151,7 @@ const Preview: FC<{
         </div>
         <div className={styles.video_container}>
           <Flex className={styles.spin_wrapper} align="center" justify="center">
-            <Spin indicator={<LoadingOutlined className={styles.loading_icon} spin />} />
+            <SpinLoader />
           </Flex>
           {
             <iframe
