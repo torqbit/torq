@@ -10,20 +10,26 @@ import { NextPage } from "next";
 import { Course } from "@prisma/client";
 
 export const convertSecToHourandMin = (seconds: number) => {
-  // Calculate hours and minutes
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-
-  // Construct the result string
   let result = "";
-  if (hours > 0) {
-    result += hours + " hr";
-    if (hours !== 1) result += "s";
-    result += " ";
-  }
-  if (minutes > 0 || hours === 0) {
-    result += minutes + " min";
-    if (minutes > 1) result += "s";
+
+  // Calculate hours and minutes
+  if (seconds > 0 && seconds < 60) {
+    let secondInMin = seconds / 60;
+    result = secondInMin.toFixed(1) + " min";
+  } else {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    // Construct the result string
+    if (hours > 0) {
+      result += hours + " hr";
+      if (hours !== 1) result += "s";
+      result += " ";
+    }
+    if (minutes > 0 || hours === 0) {
+      result += minutes + " min";
+      if (minutes > 1) result += "s";
+    }
   }
   return result;
 };
