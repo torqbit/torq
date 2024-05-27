@@ -20,10 +20,10 @@ const QAForm: FC<{
   placeholder?: string;
   onRefresh: () => void;
   resourceId: number;
-  toUserId?: string;
+
   parentCommentId?: number;
   tagCommentId?: number;
-  setReplyDrawer?: (value: IReplyDrawer) => void;
+  onCloseDrawer?: () => void;
 }> = ({
   parentCommentId,
   loadingPage,
@@ -32,12 +32,10 @@ const QAForm: FC<{
   onRefresh,
   resourceId,
   tagCommentId,
-  toUserId,
-  setReplyDrawer,
+  onCloseDrawer,
 }) => {
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const { data: session } = useSession();
 
   const [attachModal, setAttachModal] = useState<{ isOpen: boolean; caption: string; fileList: UploadFile[] }>({
     isOpen: false,
@@ -66,7 +64,7 @@ const QAForm: FC<{
           onRefresh();
           setComment("");
           onCloseModal();
-          setReplyDrawer && setReplyDrawer({ isOpen: false, sltCommentId: parentCommentId } as IReplyDrawer);
+          onCloseDrawer && onCloseDrawer();
         },
         (error) => {
           message.error(error);

@@ -447,6 +447,9 @@
 }
 
 .notifications_list {
+  .notification_bar {
+    background-color: var(--bg-primary);
+  }
   .title {
     color: var(--font-primary);
   }

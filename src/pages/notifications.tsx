@@ -89,6 +89,7 @@ const NotificationList: FC = () => {
             showReplyDrawer(item);
             updateNotification();
           }}
+          className={styles.notification_bar}
         >
           <List.Item.Meta
             avatar={
@@ -117,7 +118,6 @@ const NotificationList: FC = () => {
             onCloseDrawer={onCloseDrawer}
             resourceId={Number(selectedNotification?.resourceId)}
             onReplyRefresh={() => {}}
-            setReplyDrawer={setReplyDrawer}
           />
         </List.Item>
       )}

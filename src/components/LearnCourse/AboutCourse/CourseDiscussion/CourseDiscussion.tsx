@@ -34,7 +34,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   const { dispatch } = useAppContext();
   const query = router.query;
   const [allComments, setAllComments] = useState<IComments[]>([]);
-  const [refresh, setRefresh] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(3);
   const [totalCmt, setTotalCmt] = useState<number>(0);
   const [listLoading, setListLoading] = useState<boolean>(false);
@@ -70,18 +69,18 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
     setListLoading(false);
   };
+  const onRefreshReply = () => {
+    if (resourceId) {
+      getAllDiscussioin(resourceId, pageSize);
+    }
+  };
 
   React.useEffect(() => {
     if (resourceId) {
       setPageSize(3);
+      onRefreshReply();
     }
   }, [resourceId]);
-
-  React.useEffect(() => {
-    if (resourceId) {
-      getAllDiscussioin(resourceId, pageSize);
-    }
-  }, [refresh, resourceId]);
 
   const updateNotification = async () => {
     try {
@@ -118,23 +117,17 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm
-        loadingPage={loading}
-        resourceId={resourceId}
-        placeholder="Ask a Question"
-        onRefresh={() => setRefresh(!refresh)}
-      />
+      <QAForm loadingPage={loading} resourceId={resourceId} placeholder="Ask a Question" onRefresh={onRefreshReply} />
 
       {allComments.map((comment, i) => {
         return (
           <CommentBox
             resourceId={resourceId}
             showReplyDrawer={showReplyDrawer}
-            replyRefresh={refresh}
             comment={comment}
             key={i}
             replyList={true}
-            onRefresh={() => setRefresh(!refresh)}
+            onRefresh={onRefreshReply}
           />
         );
       })}
@@ -143,7 +136,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         replyDrawer={replyDrawer}
         resourceId={resourceId}
         onCloseDrawer={onCloseDrawer}
-        onReplyRefresh={() => setRefresh(!refresh)}
+        onReplyRefresh={onRefreshReply}
       />
       {totalCmt !== allComments.length && (
         <Divider>
