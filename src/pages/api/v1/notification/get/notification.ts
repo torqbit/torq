@@ -11,7 +11,9 @@ export const getNotifi = async (userId: string) => {
   return await prisma.notification.findMany({
     where: {
       toUserId: userId,
-      isView: false,
+      NOT: {
+        fromUserId: userId,
+      },
     },
     include: {
       comment: {

@@ -26,19 +26,15 @@ const CommentBox: FC<{
   parentCommentId?: number;
   comment: IComments;
   replyList: boolean;
-  replyRefresh?: boolean;
-  onRefresh: () => void;
+  fetchAllDiscussion: () => void;
   showReplyDrawer: (cmt: IComments) => void;
-}> = ({ comment, onRefresh, replyList, resourceId, parentCommentId, showReplyDrawer, replyRefresh }) => {
+}> = ({ comment, fetchAllDiscussion, replyList, resourceId, parentCommentId, showReplyDrawer }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
-  const { globalState, dispatch } = useAppContext();
-
+  const { dispatch } = useAppContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [editActive, setEditActive] = useState<boolean>(false);
-
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
-  const [refresh, setRefresh] = useState<boolean>(false);
   const [allReplyCmtCount, setAllReplyCmtCount] = useState<number>(0);
   const [editComment, setEditComment] = useState<string>("");
   const attachedFiles = comment.attachedFiles as any;
@@ -59,15 +55,17 @@ const CommentBox: FC<{
     if (replyList) {
       getTotalReplyCmt(comment.id);
     }
-  }, [comment.id, refresh, replyRefresh]);
+  }, [comment.id]);
 
   const onDeleteComment = async (cmtId: number) => {
     DiscussionsService.deleteComment(
       cmtId,
       (result) => {
         message.success(result.message);
-        onRefresh();
-        setRefresh(!refresh);
+        fetchAllDiscussion();
+        if (replyList) {
+          getTotalReplyCmt(comment.id);
+        }
       },
       (error) => {
         message.error(error);
@@ -96,7 +94,7 @@ const CommentBox: FC<{
       comment.id,
       editComment,
       (result) => {
-        onRefresh();
+        fetchAllDiscussion();
         message.success(result.message);
         setEditComment(result.comment.comment);
         setEdited(false);
