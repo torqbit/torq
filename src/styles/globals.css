@@ -343,6 +343,15 @@ a {
   position: relative;
   min-height: 100vh;
 }
+.preview_loader {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 9px solid;
+  border-color: #dbdcef;
+  border-right-color: #5b63d3;
+  animation: spinner-d3wgkg 1s infinite linear;
+}
 .spinner_container > .spinner {
   position: absolute;
   top: 300px;

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { FC } from "react";
 
-const SpinLoader = () => {
+const SpinLoader: FC<{ className?: string }> = ({ className }) => {
   return (
     <div className="spinner_container">
-      <div className="spinner"></div>
+      <div className={`${className ? className : "spinner"} `}></div>
     </div>
   );
 };

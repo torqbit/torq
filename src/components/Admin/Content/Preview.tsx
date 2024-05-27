@@ -151,7 +151,7 @@ const Preview: FC<{
         </div>
         <div className={styles.video_container}>
           <Flex className={styles.spin_wrapper} align="center" justify="center">
-            <SpinLoader />
+            <SpinLoader className="preview_loader" />
           </Flex>
           {
             <iframe
