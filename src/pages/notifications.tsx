@@ -85,8 +85,8 @@ const NotificationList: FC = () => {
       renderItem={(item, index) => (
         <List.Item
           onClick={() => {
-            setSelectedNotification(item);
             showReplyDrawer(item);
+            setSelectedNotification(item);
             updateNotification();
           }}
           className={styles.notification_bar}
@@ -117,7 +117,7 @@ const NotificationList: FC = () => {
             replyDrawer={replyDrawer}
             onCloseDrawer={onCloseDrawer}
             resourceId={Number(selectedNotification?.resourceId)}
-            onReplyRefresh={() => {}}
+            fetchAllDiscussion={() => {}}
           />
         </List.Item>
       )}

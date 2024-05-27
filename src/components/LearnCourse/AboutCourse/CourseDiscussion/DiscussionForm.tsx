@@ -18,7 +18,7 @@ const QAForm: FC<{
   loadingPage: boolean;
   style?: React.CSSProperties;
   placeholder?: string;
-  onRefresh: () => void;
+  fetchAllDiscussion: () => void;
   resourceId: number;
 
   parentCommentId?: number;
@@ -29,7 +29,7 @@ const QAForm: FC<{
   loadingPage,
   placeholder = "Ask a Question",
   style,
-  onRefresh,
+  fetchAllDiscussion,
   resourceId,
   tagCommentId,
   onCloseDrawer,
@@ -61,7 +61,7 @@ const QAForm: FC<{
         formData,
         (result) => {
           message.success("Comment Added");
-          onRefresh();
+          fetchAllDiscussion();
           setComment("");
           onCloseModal();
           onCloseDrawer && onCloseDrawer();

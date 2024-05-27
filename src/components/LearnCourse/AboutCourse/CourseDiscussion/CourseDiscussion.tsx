@@ -69,7 +69,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
     setListLoading(false);
   };
-  const onRefreshReply = () => {
+  const fetchAllDiscussion = () => {
     if (resourceId) {
       getAllDiscussioin(resourceId, pageSize);
     }
@@ -78,7 +78,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   React.useEffect(() => {
     if (resourceId) {
       setPageSize(3);
-      onRefreshReply();
+      fetchAllDiscussion();
     }
   }, [resourceId]);
 
@@ -117,7 +117,12 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm loadingPage={loading} resourceId={resourceId} placeholder="Ask a Question" onRefresh={onRefreshReply} />
+      <QAForm
+        loadingPage={loading}
+        resourceId={resourceId}
+        placeholder="Ask a Question"
+        fetchAllDiscussion={fetchAllDiscussion}
+      />
 
       {allComments.map((comment, i) => {
         return (
@@ -127,7 +132,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             comment={comment}
             key={i}
             replyList={true}
-            onRefresh={onRefreshReply}
+            fetchAllDiscussion={fetchAllDiscussion}
           />
         );
       })}
@@ -136,7 +141,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         replyDrawer={replyDrawer}
         resourceId={resourceId}
         onCloseDrawer={onCloseDrawer}
-        onReplyRefresh={onRefreshReply}
+        fetchAllDiscussion={fetchAllDiscussion}
       />
       {totalCmt !== allComments.length && (
         <Divider>

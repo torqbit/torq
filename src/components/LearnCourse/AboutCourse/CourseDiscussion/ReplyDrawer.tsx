@@ -1,7 +1,6 @@
 import { Avatar, Drawer, Skeleton, Space, message } from "antd";
 import styles from "@/styles/LearnLecture.module.scss";
 import React, { FC, useState, useRef, useEffect } from "react";
-import { getFetch, IResponse } from "@/services/request";
 import { IComments, IReplyDrawer } from "./CourseDiscussion";
 import CommentBox from "./CommentBox";
 import QAForm from "./DiscussionForm";
@@ -14,8 +13,8 @@ const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
   onCloseDrawer: () => void;
   resourceId: number;
-  onReplyRefresh: () => void;
-}> = ({ replyDrawer, onCloseDrawer, resourceId, onReplyRefresh }) => {
+  fetchAllDiscussion: () => void;
+}> = ({ replyDrawer, onCloseDrawer, resourceId, fetchAllDiscussion }) => {
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
@@ -35,7 +34,7 @@ const ReplyDrawer: FC<{
     onScollReply();
   }, [listLoading]);
 
-  const getCommetById = async (id: number) => {
+  const getCommentById = async (id: number) => {
     try {
       DiscussionsService.getComment(
         id,
@@ -63,15 +62,15 @@ const ReplyDrawer: FC<{
 
     setListLoading(false);
   };
-  const onRefresh = () => {
+  const fetchAllReplyComment = () => {
     if (replyDrawer.sltCommentId) {
       getAllReplyComment(replyDrawer.sltCommentId);
-      getCommetById(replyDrawer.sltCommentId);
+      getCommentById(replyDrawer.sltCommentId);
     }
   };
 
   React.useEffect(() => {
-    onRefresh();
+    fetchAllReplyComment();
   }, [replyDrawer.sltCommentId]);
   return (
     <Element name="reply_cmt_drawer">
@@ -99,9 +98,9 @@ const ReplyDrawer: FC<{
             resourceId={resourceId}
             parentCommentId={replyDrawer.sltCommentId}
             placeholder="Reply"
-            onRefresh={() => {
-              onRefresh();
-              onReplyRefresh();
+            fetchAllDiscussion={() => {
+              fetchAllReplyComment();
+              fetchAllDiscussion();
             }}
             loadingPage={false}
             onCloseDrawer={onCloseDrawer}
@@ -127,9 +126,9 @@ const ReplyDrawer: FC<{
                     comment={comment}
                     parentCommentId={replyDrawer.sltCommentId}
                     key={i}
-                    onRefresh={() => {
+                    fetchAllDiscussion={() => {
                       onScollReply();
-                      onReplyRefresh();
+                      fetchAllDiscussion();
                     }}
                   />
                 );

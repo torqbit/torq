@@ -26,9 +26,9 @@ const CommentBox: FC<{
   parentCommentId?: number;
   comment: IComments;
   replyList: boolean;
-  onRefresh: () => void;
+  fetchAllDiscussion: () => void;
   showReplyDrawer: (cmt: IComments) => void;
-}> = ({ comment, onRefresh, replyList, resourceId, parentCommentId, showReplyDrawer }) => {
+}> = ({ comment, fetchAllDiscussion, replyList, resourceId, parentCommentId, showReplyDrawer }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
   const { dispatch } = useAppContext();
@@ -62,7 +62,7 @@ const CommentBox: FC<{
       cmtId,
       (result) => {
         message.success(result.message);
-        onRefresh();
+        fetchAllDiscussion();
         if (replyList) {
           getTotalReplyCmt(comment.id);
         }
@@ -94,7 +94,7 @@ const CommentBox: FC<{
       comment.id,
       editComment,
       (result) => {
-        onRefresh();
+        fetchAllDiscussion();
         message.success(result.message);
         setEditComment(result.comment.comment);
         setEdited(false);
