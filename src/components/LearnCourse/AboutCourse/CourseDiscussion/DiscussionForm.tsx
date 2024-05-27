@@ -11,6 +11,7 @@ import appConstant from "@/services/appConstant";
 import DiscussionsService from "@/services/DiscussionsService";
 import { error } from "console";
 import SvgIcons from "@/components/SvgIcons";
+import { IReplyDrawer } from "./CourseDiscussion";
 const { Dragger } = Upload;
 
 const QAForm: FC<{
@@ -22,7 +23,7 @@ const QAForm: FC<{
   toUserId?: string;
   parentCommentId?: number;
   tagCommentId?: number;
-  updateNotification?: () => void;
+  setReplyDrawer?: (value: IReplyDrawer) => void;
 }> = ({
   parentCommentId,
   loadingPage,
@@ -30,9 +31,9 @@ const QAForm: FC<{
   style,
   onRefresh,
   resourceId,
-  updateNotification,
   tagCommentId,
   toUserId,
+  setReplyDrawer,
 }) => {
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -65,9 +66,7 @@ const QAForm: FC<{
           onRefresh();
           setComment("");
           onCloseModal();
-          if (updateNotification && parentCommentId) {
-            updateNotification();
-          }
+          setReplyDrawer && setReplyDrawer({ isOpen: false, sltCommentId: parentCommentId } as IReplyDrawer);
         },
         (error) => {
           message.error(error);
@@ -75,6 +74,7 @@ const QAForm: FC<{
       );
       setLoading(false);
     } catch (err) {
+      console.log(err, "err on post");
       setLoading(false);
       message.error(appConstant.cmnErrorMsg);
     }

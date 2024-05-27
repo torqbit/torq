@@ -15,8 +15,8 @@ const ReplyDrawer: FC<{
   onCloseDrawer: () => void;
   resourceId: number;
   onReplyRefresh: () => void;
-  updateNotification?: () => void;
-}> = ({ replyDrawer, onCloseDrawer, resourceId, onReplyRefresh, updateNotification }) => {
+  setReplyDrawer: (value: IReplyDrawer) => void;
+}> = ({ replyDrawer, onCloseDrawer, resourceId, onReplyRefresh, setReplyDrawer }) => {
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
@@ -69,7 +69,7 @@ const ReplyDrawer: FC<{
       getCommetById(replyDrawer.sltCommentId);
     }
   }, [refresh, replyDrawer.sltCommentId]);
-
+  console.log(replyDrawer, "r");
   return (
     <Element name="reply_cmt_drawer">
       <Drawer
@@ -97,12 +97,12 @@ const ReplyDrawer: FC<{
             toUserId={sltComment?.user?.id}
             parentCommentId={replyDrawer.sltCommentId}
             placeholder="Reply"
-            updateNotification={updateNotification}
             onRefresh={() => {
               setRefresh(!refresh);
               onReplyRefresh();
             }}
             loadingPage={false}
+            setReplyDrawer={setReplyDrawer}
           />
         }
       >

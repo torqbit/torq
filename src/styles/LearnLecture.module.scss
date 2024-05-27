@@ -383,14 +383,13 @@
     background-color: var(--bg-secondary);
   }
   .bodyWrapper {
-    overflow: hidden;
+    overflow: auto;
   }
   .footerWrapper {
     border: none;
     background-color: var(--bg-secondary);
   }
   .list_reply_cmt {
-    overflow-y: hidden;
     height: 75vh;
     background-color: var(--bg-primary);
     color: var(--font-primary);

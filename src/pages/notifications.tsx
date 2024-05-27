@@ -23,11 +23,11 @@ const NotificationList: FC = () => {
   const { notifications } = globalState;
   const [selectedNotification, setSelectedNotification] = useState<INotification>();
 
-  const showReplyDrawer = () => {
+  const showReplyDrawer = (item?: INotification) => {
     !replyDrawer.isOpen &&
       setReplyDrawer({
         isOpen: true,
-        sltCommentId: Number(selectedNotification?.tagCommentId),
+        sltCommentId: Number(item?.tagCommentId),
       });
   };
 
@@ -86,7 +86,8 @@ const NotificationList: FC = () => {
         <List.Item
           onClick={() => {
             setSelectedNotification(item);
-            showReplyDrawer();
+            showReplyDrawer(item);
+            updateNotification();
           }}
         >
           <List.Item.Meta
@@ -116,7 +117,7 @@ const NotificationList: FC = () => {
             onCloseDrawer={onCloseDrawer}
             resourceId={Number(selectedNotification?.resourceId)}
             onReplyRefresh={() => {}}
-            updateNotification={updateNotification}
+            setReplyDrawer={setReplyDrawer}
           />
         </List.Item>
       )}
