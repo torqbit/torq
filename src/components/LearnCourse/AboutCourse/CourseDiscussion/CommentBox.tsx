@@ -119,7 +119,7 @@ const CommentBox: FC<{
         onMouseLeave={() => setEditActive(false)}
       >
         <Avatar size={40} src={comment.user.image} icon={<UserOutlined />} className={styles.user_icon} alt="Profile" />
-        <div className={styles.comment} style={{ marginLeft: 20 }}>
+        <div className={styles.comment}>
           <Space className={styles.user_info}>
             <h4>{comment.user.name}</h4>
             <p className="dot">•</p>
@@ -177,49 +177,51 @@ const CommentBox: FC<{
               )}
             </div>
           </div>
-          <div className={styles.comment_footer}>
-            <div className={styles.reply_btn}>
-              {isEdited ? (
-                <Space>
-                  <Button type="primary" loading={loading} size="small" onClick={onEditComment}>
-                    Save
-                  </Button>
-                  <Button size="small" onClick={() => setEdited(false)}>
-                    Cancel
-                  </Button>
-                </Space>
-              ) : (
-                <Space align="center">
-                  {replyList && (
-                    <span
-                      onClick={() => {
-                        onUpdateMultipleNotificaton();
-                        showReplyDrawer(comment);
-                      }}
-                    >
-                      {allReplyCmtCount === 0 && "Reply"}
-                      {isReply.open ? (
-                        "Cancel"
-                      ) : (
-                        <span>
-                          {allReplyCmtCount > 0 && replyList && (
-                            <span>
-                              {" "}
-                              {allReplyCmtCount === 1 ? `${allReplyCmtCount} Reply` : `${allReplyCmtCount} Replies`}
-                            </span>
-                          )}
-                        </span>
-                      )}
-                    </span>
-                  )}
+          {replyList && (
+            <div className={styles.comment_footer}>
+              <div className={styles.reply_btn}>
+                {isEdited ? (
+                  <Space>
+                    <Button type="primary" loading={loading} size="small" onClick={onEditComment}>
+                      Save
+                    </Button>
+                    <Button size="small" onClick={() => setEdited(false)}>
+                      Cancel
+                    </Button>
+                  </Space>
+                ) : (
+                  <Space align="center">
+                    {replyList && (
+                      <span
+                        onClick={() => {
+                          onUpdateMultipleNotificaton();
+                          showReplyDrawer(comment);
+                        }}
+                      >
+                        {allReplyCmtCount === 0 && "Reply"}
+                        {isReply.open ? (
+                          "Cancel"
+                        ) : (
+                          <span>
+                            {allReplyCmtCount > 0 && replyList && (
+                              <span>
+                                {" "}
+                                {allReplyCmtCount === 1 ? `${allReplyCmtCount} Reply` : `${allReplyCmtCount} Replies`}
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </span>
+                    )}
 
-                  {attachedFiles?.length > 0 && (
-                    <ImagePreview imgs={attachedFiles?.map((img: IAttachedFiles) => img.url)} />
-                  )}
-                </Space>
-              )}
+                    {attachedFiles?.length > 0 && (
+                      <ImagePreview imgs={attachedFiles?.map((img: IAttachedFiles) => img.url)} />
+                    )}
+                  </Space>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>
