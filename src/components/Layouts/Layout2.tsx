@@ -14,6 +14,7 @@ import darkThemConfig from "@/services/darkThemConfig";
 import antThemeConfig from "@/services/antThemeConfig";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
+import SpinLoader from "../SpinLoader/SpinLoader";
 
 const { Content } = Layout;
 
@@ -130,9 +131,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   return (
     <>
       {globalState.pageLoading ? (
-        <div className={styles.spin_wrapper}>
-          <Spin indicator={<LoadingOutlined className={styles.spin_icon} spin />} />
-        </div>
+        <SpinLoader />
       ) : (
         <ConfigProvider theme={globalState.session?.theme == "dark" ? darkThemConfig : antThemeConfig}>
           <Head>

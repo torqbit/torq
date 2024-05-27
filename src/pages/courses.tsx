@@ -7,6 +7,7 @@ import { Spin, message } from "antd";
 import Layout2 from "@/components/Layouts/Layout2";
 import ProgramService from "@/services/ProgramService";
 import { LoadingOutlined } from "@ant-design/icons";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const CoursesPage: NextPage = () => {
   const [allCourses, setAllCourses] = useState<Course[] | undefined>([]);
@@ -45,9 +46,7 @@ const CoursesPage: NextPage = () => {
           )}
         </>
       ) : (
-        <div className="spin_wrapper courses_spin_wrapper">
-          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-        </div>
+        <SpinLoader />
       )}
     </Layout2>
   );

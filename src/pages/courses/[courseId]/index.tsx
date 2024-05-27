@@ -1,5 +1,6 @@
 import Preview from "@/components/Admin/Content/Preview";
 import Layout2 from "@/components/Layouts/Layout2";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { ICourseEnrollementStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
 import { IResponse, postFetch } from "@/services/request";
@@ -104,9 +105,7 @@ const LearnCoursesPage: NextPage = () => {
           isCourseStarted={courseStatus?.courseStarted}
         />
       ) : (
-        <div className="spin_wrapper">
-          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-        </div>
+        <SpinLoader />
       )}
     </Layout2>
   );
