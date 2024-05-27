@@ -16,7 +16,7 @@ export type ApiResponse = {
   isNew: boolean;
   notifications: INotification[];
   length: number;
-  latestNotification: number;
+  countUnreadNotifications: number;
 };
 
 type FailedApiResponse = {

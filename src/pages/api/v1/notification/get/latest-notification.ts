@@ -7,15 +7,6 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
-export const getNotifi = async (userId: string) => {
-  return await prisma.notification.count({
-    where: {
-      toUserId: userId,
-      isView: false,
-    },
-  });
-};
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     let cookieName = getCookieName();
@@ -25,12 +16,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-    const latestNotification = token?.id && (await getNotifi(token?.id));
+    const countUnreadNotifications = await prisma.notification.count({
+      where: {
+        toUserId: token?.id,
+        isView: false,
+      },
+    });
 
-    if (latestNotification && latestNotification > 0) {
-      return res.status(200).json({ success: true, latestNotification });
+    if (countUnreadNotifications && countUnreadNotifications > 0) {
+      return res.status(200).json({ success: true, countUnreadNotifications });
     } else {
-      res.status(200).json({ success: true, latestNotification: 0 });
+      res.status(200).json({ success: true, countUnreadNotifications: 0 });
     }
   } catch (err) {
     return errorHandler(err, res);

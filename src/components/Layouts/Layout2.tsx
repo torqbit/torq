@@ -20,7 +20,7 @@ const { Content } = Layout;
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
-  const [latestNotification, setLatestNotification] = useState<number>();
+  const [unreadNotifications, setUnreadNotifications] = useState<number>();
   const router = useRouter();
 
   const authorSiderMenu: MenuProps["items"] = [
@@ -93,7 +93,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         <Badge
           color="blue"
           classNames={{ indicator: styles.badgeIndicator }}
-          count={latestNotification && latestNotification > 0 ? latestNotification : 0}
+          count={unreadNotifications && unreadNotifications > 0 ? unreadNotifications : 0}
           style={{ fontSize: 10, paddingTop: 1.5 }}
           size="small"
         >
@@ -115,7 +115,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     interval = setInterval(() => {
       NotificationService.countLatestNotification(
         (result) => {
-          setLatestNotification(result.latestNotification);
+          setUnreadNotifications(result.countUnreadNotifications);
           dispatch({
             type: "SET_LOADER",
             payload: false,
