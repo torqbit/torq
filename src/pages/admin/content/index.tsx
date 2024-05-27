@@ -16,7 +16,7 @@ export const convertSecToHourandMin = (seconds: number) => {
   if (seconds > 0 && seconds < 60) {
     let secondInMin = seconds / 60;
     result = secondInMin.toFixed(1) + " min";
-  } else {
+  } else if (seconds > 60) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
 
@@ -30,6 +30,8 @@ export const convertSecToHourandMin = (seconds: number) => {
       result += minutes + " min";
       if (minutes > 1) result += "s";
     }
+  } else {
+    result = "0 sec";
   }
   return result;
 };
