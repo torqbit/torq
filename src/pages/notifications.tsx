@@ -32,6 +32,8 @@ const NotificationList: FC = () => {
         isOpen: true,
         sltCommentId: Number(item?.tagCommentId),
       });
+    setSelectedNotification(item);
+    updateNotification();
   };
 
   const onCloseDrawer = () => {
@@ -45,12 +47,6 @@ const NotificationList: FC = () => {
       NotificationService.getNotification(
         (result) => {
           setNotifications(result.notifications);
-          NotificationService.countLatestNotification(
-            (result) => {
-              dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
-            },
-            (error) => {}
-          );
 
           setLoading(false);
         },
@@ -71,13 +67,7 @@ const NotificationList: FC = () => {
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
           (result) => {
-            NotificationService.countLatestNotification(
-              (result) => {
-                dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
-                getNotification();
-              },
-              (error) => {}
-            );
+            getNotification();
           },
           (error) => {}
         );
@@ -102,8 +92,6 @@ const NotificationList: FC = () => {
         <List.Item
           onClick={() => {
             showReplyDrawer(item);
-            setSelectedNotification(item);
-            updateNotification();
           }}
           className={styles.notification_bar}
         >

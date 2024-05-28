@@ -77,14 +77,7 @@ const CommentBox: FC<{
     session?.id &&
       NotificationService.updateMultipleNotification(
         comment.id,
-        (result) => {
-          NotificationService.countLatestNotification(
-            (result) => {
-              dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
-            },
-            (error) => {}
-          );
-        },
+        (result) => {},
         (error) => {}
       );
   };

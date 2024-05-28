@@ -108,7 +108,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     }
     dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: selectedMenu as ISiderMenu });
   };
-  let interval: any;
+  let interval: any = undefined;
 
   const onCheckLatestNotification = () => {
     interval = setInterval(() => {
