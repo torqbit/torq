@@ -11,16 +11,19 @@ import NotificationService from "@/services/NotificationService";
 import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/ReplyDrawer";
 import { IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { INotification } from "@/lib/types/discussions";
+import { error } from "console";
 
 const NotificationList: FC = () => {
   const { data: user } = useSession();
   const [loading, setLoading] = useState(false);
-  const { globalState, dispatch } = useAppContext();
+  const { dispatch } = useAppContext();
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
     isOpen: false,
     sltCommentId: 0,
   });
-  const { notifications } = globalState;
+
+  const [notifications, setNotifications] = useState<INotification[]>();
+
   const [selectedNotification, setSelectedNotification] = useState<INotification>();
 
   const showReplyDrawer = (item?: INotification) => {
@@ -41,7 +44,14 @@ const NotificationList: FC = () => {
 
       NotificationService.getNotification(
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          setNotifications(result.notifications);
+          NotificationService.countLatestNotification(
+            (result) => {
+              dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
+            },
+            (error) => {}
+          );
+
           setLoading(false);
         },
         (error) => {
@@ -61,7 +71,13 @@ const NotificationList: FC = () => {
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
           (result) => {
-            dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+            NotificationService.countLatestNotification(
+              (result) => {
+                dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
+                getNotification();
+              },
+              (error) => {}
+            );
           },
           (error) => {}
         );

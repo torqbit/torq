@@ -78,7 +78,12 @@ const CommentBox: FC<{
       NotificationService.updateMultipleNotification(
         comment.id,
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          NotificationService.countLatestNotification(
+            (result) => {
+              dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
+            },
+            (error) => {}
+          );
         },
         (error) => {}
       );

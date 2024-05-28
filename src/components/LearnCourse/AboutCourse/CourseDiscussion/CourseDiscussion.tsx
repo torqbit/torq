@@ -84,15 +84,11 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   const updateNotification = async () => {
     try {
-      NotificationService.updateNotification(
-        Number(query.notifi),
-
+      NotificationService.countLatestNotification(
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
         },
-        (error) => {
-          message.error(error);
-        }
+        (error) => {}
       );
     } catch (err) {}
   };
