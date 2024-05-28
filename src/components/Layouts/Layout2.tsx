@@ -1,20 +1,19 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import React from "react";
 import styles from "../../styles/Layout2.module.scss";
 import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import { Badge, ConfigProvider, Layout, MenuProps, Spin } from "antd";
-
+import { Badge, ConfigProvider, Layout, MenuProps } from "antd";
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
 import { UserSession } from "@/lib/types/user";
 import darkThemConfig from "@/services/darkThemConfig";
 import antThemeConfig from "@/services/antThemeConfig";
-import { LoadingOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import SpinLoader from "../SpinLoader/SpinLoader";
+import NotificationService from "@/services/NotificationService";
 
 const { Content } = Layout;
 
@@ -92,7 +91,8 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       icon: (
         <Badge
           color="blue"
-          count={globalState?.notifications?.filter((n) => n.isView == false).length}
+          classNames={{ indicator: styles.badgeIndicator }}
+          count={globalState.notifications && globalState.notifications > 0 ? globalState.notifications : 0}
           style={{ fontSize: 10, paddingTop: 1.5 }}
           size="small"
         >
@@ -108,14 +108,29 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     }
     dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: selectedMenu as ISiderMenu });
   };
+  let interval: any = undefined;
+
+  const onCheckLatestNotification = () => {
+    interval = setInterval(() => {
+      NotificationService.countLatestNotification(
+        (result) => {
+          if (result.countUnreadNotifications) {
+            dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
+          }
+          dispatch({
+            type: "SET_LOADER",
+            payload: false,
+          });
+        },
+        (error) => {}
+      );
+    }, 5000);
+  };
   useEffect(() => {
     if (user) {
+      onCheckLatestNotification();
       onChangeSelectedBar();
       const userSession = user.user as UserSession;
-      dispatch({
-        type: "SET_LOADER",
-        payload: false,
-      });
 
       dispatch({
         type: "SET_USER",
@@ -126,8 +141,11 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         type: "SWITCH_THEME",
         payload: userSession.theme || "light",
       });
+    } else {
+      interval && clearInterval(interval);
     }
   }, [user]);
+
   return (
     <>
       {globalState.pageLoading ? (

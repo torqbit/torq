@@ -73,6 +73,7 @@ export default {
     List: {
       colorSplit: "#374362",
     },
+
     Tabs: {
       inkBarColor: "#fff",
       itemColor: "#939db8",

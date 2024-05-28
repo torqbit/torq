@@ -88,7 +88,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         Number(query.notifi),
 
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          fetchAllDiscussion();
         },
         (error) => {
           message.error(error);

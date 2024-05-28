@@ -20,7 +20,7 @@ export type ISiderMenu =
 
 // Define your state type
 type AppState = {
-  notifications?: INotification[];
+  notifications?: number;
   selectedSiderMenu: ISiderMenu;
   session?: UserSession;
   theme?: Theme;
@@ -29,7 +29,7 @@ type AppState = {
 
 // Define your action type
 type AppAction =
-  | { type: "SET_NOTIFICATION"; payload: INotification[] }
+  | { type: "SET_UNREAD_NOTIFICATION"; payload: number }
   | { type: "GET_NOTIFICATION"; payload: INotification[] }
   | { type: "SET_USER"; payload: UserSession }
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
@@ -55,7 +55,7 @@ const AppContext = createContext<{
 export const AppProvider: React.FC<{ children: any; themeSwitcher: () => void }> = ({ children, themeSwitcher }) => {
   const [globalState, dispatch] = useReducer((currentState: AppState, action: AppAction) => {
     switch (action.type) {
-      case "SET_NOTIFICATION":
+      case "SET_UNREAD_NOTIFICATION":
         return { ...currentState, notifications: action.payload };
       case "SET_USER":
         return { ...currentState, session: action.payload };
