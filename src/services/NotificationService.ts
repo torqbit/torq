@@ -16,6 +16,7 @@ export type ApiResponse = {
   isNew: boolean;
   notifications: INotification[];
   length: number;
+  countUnreadNotifications: number;
 };
 
 type FailedApiResponse = {
@@ -37,8 +38,13 @@ class NotificationService {
       }
     });
   };
-  getNotification = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    getFetch(`/api/v1/notification/get/notification`).then((result) => {
+  getNotification = (
+    offSet: number | undefined,
+    limit: number | undefined,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    getFetch(`/api/v1/notification/get/notification?offSet=${offSet}&&limit=${limit}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -52,6 +58,23 @@ class NotificationService {
       }
     });
   };
+
+  countLatestNotification = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    getFetch(`/api/v1/notification/get/latest-notification`).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
   updateNotification = (
     id: number,
     onSuccess: (response: ApiResponse) => void,

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { NextPage } from "next";
 import { LoadingOutlined } from "@ant-design/icons";
 import { ISiderMenu, useAppContext } from "@/components/ContextApi/AppContext";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const EnrolledCourseList: FC<{
   courseData: { courseName: string; progress: string; courseId: number }[];
@@ -18,9 +19,7 @@ const EnrolledCourseList: FC<{
     <>
       {pageLoading ? (
         <>
-          <div className="spin_wrapper">
-            <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-          </div>
+          <SpinLoader />
         </>
       ) : (
         <List

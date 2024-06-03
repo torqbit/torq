@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { SegmentedValue } from "antd/es/segmented";
 import ProgramService from "@/services/ProgramService";
 import { LoadingOutlined } from "@ant-design/icons";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const AnalyticsPage: NextPage = () => {
   const { data: session } = useSession();
@@ -103,9 +104,7 @@ const AnalyticsPage: NextPage = () => {
     <Layout2>
       <>
         {loading ? (
-          <div className="spin_wrapper">
-            <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-          </div>
+          <SpinLoader />
         ) : (
           <section className={styles.analyticsContainer}>
             <h2>Hello {session?.user?.name}</h2>

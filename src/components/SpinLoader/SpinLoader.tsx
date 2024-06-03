@@ -1,13 +1,9 @@
 import React, { FC } from "react";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Result, Spin } from "antd";
 
-export const SpinIcon = <LoadingOutlined style={{ fontSize: 64 }} spin />;
-
-const SpinLoader: FC<{ title?: string }> = ({ title = "Please wait..." }) => {
+const SpinLoader: FC<{ className?: string }> = ({ className }) => {
   return (
-    <div className='spin_loader'>
-      <Result icon={<Spin indicator={SpinIcon} />} title={title} />
+    <div className="spinner_container">
+      <div className={`${className ? className : "spinner"} `}></div>
     </div>
   );
 };

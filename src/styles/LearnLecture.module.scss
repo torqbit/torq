@@ -288,6 +288,7 @@
 
   .comment {
     flex-basis: 94%;
+    margin-bottom: 10px;
     .comment_body {
       position: relative;
       border-top-right-radius: 8px;
@@ -383,14 +384,16 @@
     background-color: var(--bg-secondary);
   }
   .bodyWrapper {
-    overflow: hidden;
+    overflow: auto;
+    padding: 0px 15px;
   }
   .footerWrapper {
     border: none;
     background-color: var(--bg-secondary);
+    padding: 10px 15px;
+    padding-bottom: 0;
   }
   .list_reply_cmt {
-    overflow-y: hidden;
     height: 75vh;
     background-color: var(--bg-primary);
     color: var(--font-primary);

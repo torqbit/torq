@@ -34,7 +34,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   const { dispatch } = useAppContext();
   const query = router.query;
   const [allComments, setAllComments] = useState<IComments[]>([]);
-  const [refresh, setRefresh] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState<number>(3);
   const [totalCmt, setTotalCmt] = useState<number>(0);
   const [listLoading, setListLoading] = useState<boolean>(false);
@@ -70,18 +69,18 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
     setListLoading(false);
   };
+  const fetchAllDiscussion = () => {
+    if (resourceId) {
+      getAllDiscussioin(resourceId, pageSize);
+    }
+  };
 
   React.useEffect(() => {
     if (resourceId) {
       setPageSize(3);
+      fetchAllDiscussion();
     }
   }, [resourceId]);
-
-  React.useEffect(() => {
-    if (resourceId) {
-      getAllDiscussioin(resourceId, pageSize);
-    }
-  }, [refresh, resourceId]);
 
   const updateNotification = async () => {
     try {
@@ -89,7 +88,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         Number(query.notifi),
 
         (result) => {
-          dispatch({ type: "SET_NOTIFICATION", payload: result.notifications });
+          fetchAllDiscussion();
         },
         (error) => {
           message.error(error);
@@ -122,7 +121,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         loadingPage={loading}
         resourceId={resourceId}
         placeholder="Ask a Question"
-        onRefresh={() => setRefresh(!refresh)}
+        fetchAllDiscussion={fetchAllDiscussion}
       />
 
       {allComments.map((comment, i) => {
@@ -130,11 +129,10 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
           <CommentBox
             resourceId={resourceId}
             showReplyDrawer={showReplyDrawer}
-            replyRefresh={refresh}
             comment={comment}
             key={i}
             replyList={true}
-            onRefresh={() => setRefresh(!refresh)}
+            fetchAllDiscussion={fetchAllDiscussion}
           />
         );
       })}
@@ -143,7 +141,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         replyDrawer={replyDrawer}
         resourceId={resourceId}
         onCloseDrawer={onCloseDrawer}
-        onReplyRefresh={() => setRefresh(!refresh)}
+        fetchAllDiscussion={fetchAllDiscussion}
       />
       {totalCmt !== allComments.length && (
         <Divider>

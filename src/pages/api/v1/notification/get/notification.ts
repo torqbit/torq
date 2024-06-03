@@ -7,11 +7,13 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
-export const getNotifi = async (userId: string) => {
+export const getNotifi = async (userId: string, limit: number, offSet: number) => {
   return await prisma.notification.findMany({
     where: {
       toUserId: userId,
-      isView: false,
+      NOT: {
+        fromUserId: userId,
+      },
     },
     include: {
       comment: {
@@ -58,19 +60,26 @@ export const getNotifi = async (userId: string) => {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip: offSet,
+    take: limit,
   });
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     let cookieName = getCookieName();
+    const { offSet, limit } = req.query;
 
     const token = await getToken({
       req,
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-    const notifications = token?.id && (await getNotifi(token?.id));
+
+    const notifications = token?.id && (await getNotifi(token?.id, Number(limit), Number(offSet)));
 
     if (notifications && notifications.length > 0) {
       return res.status(200).json({ success: true, notifications });
@@ -78,6 +87,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).json({ success: false, error: "No notifications" });
     }
   } catch (err) {
+    console.log(err);
     return errorHandler(err, res);
   }
 };

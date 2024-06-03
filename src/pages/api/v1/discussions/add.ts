@@ -113,7 +113,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         .map((d) => d.userId)
         .concat([courseAuthorId])
         .filter((id) => id !== userId);
-      console.log(allUsers, "all users");
+
       if (commentData?.parentCommentId) {
         allUsers.forEach(async (id) => {
           await prisma.notification.create({

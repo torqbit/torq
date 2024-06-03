@@ -11,32 +11,31 @@ import appConstant from "@/services/appConstant";
 import DiscussionsService from "@/services/DiscussionsService";
 import { error } from "console";
 import SvgIcons from "@/components/SvgIcons";
+import { IReplyDrawer } from "./CourseDiscussion";
 const { Dragger } = Upload;
 
 const QAForm: FC<{
   loadingPage: boolean;
   style?: React.CSSProperties;
   placeholder?: string;
-  onRefresh: () => void;
+  fetchAllDiscussion: () => void;
   resourceId: number;
-  toUserId?: string;
+
   parentCommentId?: number;
   tagCommentId?: number;
-  updateNotification?: () => void;
+  onCloseDrawer?: () => void;
 }> = ({
   parentCommentId,
   loadingPage,
   placeholder = "Ask a Question",
   style,
-  onRefresh,
+  fetchAllDiscussion,
   resourceId,
-  updateNotification,
   tagCommentId,
-  toUserId,
+  onCloseDrawer,
 }) => {
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const { data: session } = useSession();
 
   const [attachModal, setAttachModal] = useState<{ isOpen: boolean; caption: string; fileList: UploadFile[] }>({
     isOpen: false,
@@ -62,12 +61,10 @@ const QAForm: FC<{
         formData,
         (result) => {
           message.success("Comment Added");
-          onRefresh();
+          fetchAllDiscussion();
           setComment("");
           onCloseModal();
-          if (updateNotification && parentCommentId) {
-            updateNotification();
-          }
+          onCloseDrawer && onCloseDrawer();
         },
         (error) => {
           message.error(error);
@@ -75,6 +72,7 @@ const QAForm: FC<{
       );
       setLoading(false);
     } catch (err) {
+      console.log(err, "err on post");
       setLoading(false);
       message.error(appConstant.cmnErrorMsg);
     }

@@ -20,4 +20,5 @@ export interface INotification extends Notification {
     name: string;
     image: string;
   };
+  loading?: boolean;
 }

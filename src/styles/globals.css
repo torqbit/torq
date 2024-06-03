@@ -339,6 +339,48 @@ a {
     display: none !important;
   }
 }
+.spinner_container {
+  position: relative;
+  min-height: 100vh;
+}
+
+.lesson_loader {
+  position: absolute;
+  top: 40%;
+  right: -30px;
+  width: 40px;
+  height: 40px;
+  border: 5px solid;
+}
+.lesson_loader,
+.preview_loader {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 9px solid;
+  border-color: #dbdcef;
+  border-right-color: #5b63d3;
+  animation: spinner-d3wgkg 1s infinite linear;
+}
+.spinner_container > .spinner {
+  position: absolute;
+  top: 300px;
+  left: 50%;
+  width: 56px;
+  height: 56px;
+
+  border-radius: 50%;
+  border: 9px solid;
+  border-color: #dbdcef;
+  border-right-color: #5b63d3;
+  animation: spinner-d3wgkg 1s infinite linear;
+}
+
+@keyframes spinner-d3wgkg {
+  to {
+    transform: rotate(1turn);
+  }
+}
 
 @keyframes lightUp {
   0% {

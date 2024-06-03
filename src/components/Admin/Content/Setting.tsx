@@ -21,6 +21,7 @@ import { RcFile } from "antd/es/upload";
 import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
 import ImgCrop from "antd-img-crop";
 import { certificateConfig } from "@/lib/certificatesConfig";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const { TextArea } = Input;
 
@@ -72,9 +73,7 @@ const CourseSetting: FC<{
     <>
       {settingLoading ? (
         <>
-          <div className="spin_wrapper">
-            <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-          </div>
+          <SpinLoader />
         </>
       ) : (
         <section className={styles.add_course_setting}>

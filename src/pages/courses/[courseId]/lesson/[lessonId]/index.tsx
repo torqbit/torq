@@ -34,6 +34,7 @@ import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
 import { LoadingOutlined } from "@ant-design/icons";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 export interface ICertficateData {
   loading: boolean;
   certificateId: string;
@@ -365,12 +366,11 @@ const LessonPage: NextPage = () => {
                 <>
                   <div className={styles.certificatePage}>
                     {certificateData?.loading ? (
-                      <>
-                        <div className="spin_wrapper">
-                          <Spin indicator={<LoadingOutlined spin />} />
-                        </div>
+                      <Space direction="vertical" className={styles.generating_loader}>
+                        <SpinLoader className="lesson_loader" />
+
                         <p> Generating Certificate</p>
-                      </>
+                      </Space>
                     ) : (
                       <div className={styles.certificateBtn}>
                         <h1>You have successfully completed this course</h1>
@@ -449,9 +449,7 @@ const LessonPage: NextPage = () => {
           </Flex>
         </section>
       ) : (
-        <div className="spin_wrapper">
-          <Spin indicator={<LoadingOutlined className="spin_icon" spin />} />
-        </div>
+        <SpinLoader />
       )}
     </Layout2>
   );

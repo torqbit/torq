@@ -1,6 +1,7 @@
 .layout2_wrapper {
   display: flex;
   height: 100vh;
+
   .layout_header {
     padding: 40px 40px 0 40px;
   }
@@ -13,7 +14,9 @@
     }
   }
 }
-
+.badgeIndicator {
+  color: #fff !important;
+}
 .spin_wrapper {
   background-color: var(--bg-primary);
   display: flex;
