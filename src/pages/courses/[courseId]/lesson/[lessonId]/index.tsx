@@ -312,141 +312,139 @@ const LessonPage: NextPage = () => {
     <Layout2>
       {!loading ? (
         <section className={styles.learn_course_page}>
-          <Flex align="start" justify="space-between">
-            <div className={styles.lessons_video_player_wrapper}>
-              <div className={styles.learn_breadcrumb}>
-                <Flex style={{ fontSize: 20 }}>
-                  <Breadcrumb
-                    items={[
-                      {
-                        title: <Link href={`/courses`}>Courses</Link>,
-                      },
-                      {
-                        title: courseDetail?.name,
-                      },
-                      {
-                        title: currentLesson?.chapterName,
-                      },
-                      {
-                        title: currentLesson?.lesson?.title,
-                      },
-                    ]}
-                  />
-                </Flex>
-              </div>
-              {!certificateData?.completed ? (
-                <div className={styles.video_container}>
-                  {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
-                    <>
-                      <iframe
-                        allowFullScreen
-                        style={{
-                          position: "absolute",
-
-                          width: "100%",
-                          height: "100%",
-                          outline: "none",
-                          border: "none",
-                        }}
-                        src={currentLesson?.lesson?.videoUrl}
-                      ></iframe>
-                    </>
-                  ) : (
-                    <Skeleton.Image
+          <div className={styles.lessons_video_player_wrapper}>
+            <div className={styles.learn_breadcrumb}>
+              <Flex style={{ fontSize: 20 }}>
+                <Breadcrumb
+                  items={[
+                    {
+                      title: <Link href={`/courses`}>Courses</Link>,
+                    },
+                    {
+                      title: courseDetail?.name,
+                    },
+                    {
+                      title: currentLesson?.chapterName,
+                    },
+                    {
+                      title: currentLesson?.lesson?.title,
+                    },
+                  ]}
+                />
+              </Flex>
+            </div>
+            {!certificateData?.completed ? (
+              <div className={styles.video_container}>
+                {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
+                  <>
+                    <iframe
+                      allowFullScreen
                       style={{
                         position: "absolute",
+
                         width: "100%",
                         height: "100%",
-                        top: 0,
+                        outline: "none",
+                        border: "none",
                       }}
-                    />
+                      src={currentLesson?.lesson?.videoUrl}
+                    ></iframe>
+                  </>
+                ) : (
+                  <Skeleton.Image
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      height: "100%",
+                      top: 0,
+                    }}
+                  />
+                )}
+              </div>
+            ) : (
+              <>
+                <div className={styles.certificatePage}>
+                  {certificateData?.loading ? (
+                    <Space direction="vertical" className={styles.generating_loader}>
+                      <SpinLoader className="lesson_loader" />
+
+                      <p> Generating Certificate</p>
+                    </Space>
+                  ) : (
+                    <div className={styles.certificateBtn}>
+                      <h1>You have successfully completed this course</h1>
+                      <Button
+                        type="primary"
+                        onClick={() => {
+                          router.push(
+                            `/courses/${router.query.courseId}/certificate/${certificateData?.certificateId}`
+                          );
+                        }}
+                      >
+                        View Certificate
+                        {SvgIcons.arrowRight}
+                      </Button>
+                    </div>
                   )}
                 </div>
-              ) : (
+              </>
+            )}
+
+            <Tabs
+              style={{
+                padding: "0 0 10px",
+              }}
+              tabBarExtraContent={
                 <>
-                  <div className={styles.certificatePage}>
-                    {certificateData?.loading ? (
-                      <Space direction="vertical" className={styles.generating_loader}>
-                        <SpinLoader className="lesson_loader" />
-
-                        <p> Generating Certificate</p>
-                      </Space>
-                    ) : (
-                      <div className={styles.certificateBtn}>
-                        <h1>You have successfully completed this course</h1>
-                        <Button
-                          type="primary"
-                          onClick={() => {
-                            router.push(
-                              `/courses/${router.query.courseId}/certificate/${certificateData?.certificateId}`
-                            );
-                          }}
-                        >
-                          View Certificate
-                          {SvgIcons.arrowRight}
+                  {currentLesson?.lesson ? (
+                    <>
+                      {currentLesson?.lesson?.isWatched && (
+                        <Button>
+                          <Flex gap={5}>{SvgIcons.check} Completed </Flex>
                         </Button>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                      {!currentLesson?.lesson?.isWatched && (
+                        <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
+                          Mark as Completed
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    <Skeleton.Button />
+                  )}
                 </>
-              )}
-
-              <Tabs
-                style={{
-                  padding: "0 0 10px",
-                }}
-                tabBarExtraContent={
-                  <>
-                    {currentLesson?.lesson ? (
-                      <>
-                        {currentLesson?.lesson?.isWatched && (
-                          <Button>
-                            <Flex gap={5}>{SvgIcons.check} Completed </Flex>
-                          </Button>
-                        )}
-                        {!currentLesson?.lesson?.isWatched && (
-                          <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
-                            Mark as Completed
-                          </Button>
-                        )}
-                      </>
-                    ) : (
-                      <Skeleton.Button />
-                    )}
-                  </>
-                }
-                tabBarGutter={40}
-                className={styles.add_course_tabs}
-                items={items}
-              />
+              }
+              tabBarGutter={40}
+              className={styles.add_course_tabs}
+              items={items}
+            />
+          </div>
+          <div className={styles.lesson_wrapper}>
+            <div className={styles.lessons_container}>
+              <h2>Course Content</h2>
+              {lessonItems?.map((item, i) => {
+                return (
+                  <div key={i} className={styles.lessons_list_wrapper}>
+                    <Collapse
+                      defaultActiveKey={`${currentLesson?.chapterSeq}`}
+                      size="small"
+                      bordered={false}
+                      accordion={false}
+                      activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
+                      items={[
+                        {
+                          key: item.key,
+                          label: item.label,
+                          children: item.children,
+                          showArrow: false,
+                        },
+                      ]}
+                    />
+                  </div>
+                );
+              })}
             </div>
-            <div className={styles.lesson_wrapper}>
-              <div className={styles.lessons_container}>
-                <h2>Course Content</h2>
-                {lessonItems?.map((item, i) => {
-                  return (
-                    <div key={i} className={styles.lessons_list_wrapper}>
-                      <Collapse
-                        defaultActiveKey={`${currentLesson?.chapterSeq}`}
-                        size="small"
-                        bordered={false}
-                        accordion={false}
-                        activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
-                        items={[
-                          {
-                            key: item.key,
-                            label: item.label,
-                            children: item.children,
-                            showArrow: false,
-                          },
-                        ]}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </Flex>
+          </div>
         </section>
       ) : (
         <SpinLoader />
