@@ -7,7 +7,7 @@ import getUserByEmail from "@/actions/getUserByEmail";
 import { JWT } from "next-auth/jwt/types";
 import { postFetch } from "@/services/request";
 import { IEmailEventType } from "@/lib/types/email";
-import { MailerService, getEventEmail } from "@/services/MailerService";
+import { MailerService, getEmailConfig } from "@/services/MailerService";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_PUBLIC_SECRET,
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           token.id = user?.id;
           token.role = "AUTHOR";
         }
-        const configData = getEventEmail("NEW_USER");
+        const configData = getEmailConfig("NEW_USER");
 
         new MailerService().sendMail("NEW_USER", configData, String(token?.email), String(token.name), token.id);
 

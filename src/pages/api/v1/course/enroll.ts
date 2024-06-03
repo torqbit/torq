@@ -9,7 +9,7 @@ import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
-import { MailerService, getEventEmail } from "@/services/MailerService";
+import { MailerService, getEmailConfig } from "@/services/MailerService";
 
 export const validateReqBody = z.object({
   courseId: z.number(),
@@ -76,7 +76,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         });
 
-        const configData = getEventEmail("COURSE_ENROLMENT");
+        const configData = getEmailConfig("COURSE_ENROLMENT");
 
         new MailerService().sendMail(
           "COURSE_ENROLMENT",

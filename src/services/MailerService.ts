@@ -1,19 +1,18 @@
-import { courseCompletionEmailConfig } from "@/lib/courseCompletionEmailConfig";
-import { courseRegistrionEmailConfig } from "@/lib/courseRegistrionEmailConfig";
-import { IEmailConfig, IEmailEventType, NodemailerConfig } from "@/lib/types/email";
-import { welcomeEmailConfig } from "@/lib/welcomeEmail";
+import { IEmailConfig, IEmailEventType } from "@/lib/types/email";
+
 import { render } from "@react-email/render";
 import WelcomeEmailPage, { IWelcomeEmail } from "@/components/Email/WelcomeEmail";
 import nodemailer from "nodemailer";
-import CourseRegistraionEmail, { CourseRegistraionProps } from "@/components/Email/CourseRegistraionEmail";
+import CourseRegistraionEmail, { CourseRegistrationProps } from "@/components/Email/CourseRegistrationEmail";
 import CourseCompletionEmail, { CourseCompletionProps } from "@/components/Email/CourseCompletionEmail";
+import { courseCompletionEmailConfig, courseRegistrationEmailConfig, welcomeEmailConfig } from "@/lib/emailConfig";
 
-export const getEventEmail = (eventType: IEmailEventType) => {
+export const getEmailConfig = (eventType: IEmailEventType) => {
   switch (eventType) {
     case "NEW_USER":
       return welcomeEmailConfig;
     case "COURSE_ENROLMENT":
-      return courseRegistrionEmailConfig;
+      return courseRegistrationEmailConfig;
     case "COURSE_COMPLETION":
       return courseCompletionEmailConfig;
   }
@@ -90,7 +89,12 @@ export class MailerService {
       },
     });
     const htmlString = render(
-      CourseRegistraionEmail({ name: userName, course: course, configData: config, courseId } as CourseRegistraionProps)
+      CourseRegistraionEmail({
+        name: userName,
+        course: course,
+        configData: config,
+        courseId,
+      } as CourseRegistrationProps)
     );
 
     const sendMail = transporter.sendMail({

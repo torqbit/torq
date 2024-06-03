@@ -13,10 +13,3 @@ export interface IEmailConfig {
 }
 
 export type IEmailEventType = "NEW_USER" | "COURSE_ENROLMENT" | "COURSE_COMPLETION";
-
-export interface NodemailerConfig {
-  host: string;
-  authUser: string;
-  authPassword: string;
-  from: string;
-}

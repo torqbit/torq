@@ -17,7 +17,7 @@ import {
 } from "@react-email/components";
 import { Flex } from "antd";
 import * as React from "react";
-export interface CourseRegistraionProps {
+export interface CourseRegistrationProps {
   name: string;
 
   course: { name: string; thumbnail: string };
@@ -25,7 +25,7 @@ export interface CourseRegistraionProps {
   courseId: number;
 }
 
-export const CourseRegistraionEmail = ({ name, course, configData, courseId }: CourseRegistraionProps) => {
+export const CourseRegistraionEmail = ({ name, course, configData, courseId }: CourseRegistrationProps) => {
   return (
     <Html>
       <Head />

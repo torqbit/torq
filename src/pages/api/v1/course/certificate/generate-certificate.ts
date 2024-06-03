@@ -10,7 +10,7 @@ import { ContentManagementService } from "@/services/cms/ContentManagementServic
 import appConstant from "@/services/appConstant";
 import path from "path";
 import { generateCertificate } from "@/lib/addCertificate";
-import { MailerService, getEventEmail } from "@/services/MailerService";
+import { MailerService, getEmailConfig } from "@/services/MailerService";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -165,7 +165,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               },
             });
 
-            const configData = getEventEmail("COURSE_COMPLETION");
+            const configData = getEmailConfig("COURSE_COMPLETION");
 
             new MailerService().sendMail(
               "COURSE_COMPLETION",
