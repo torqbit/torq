@@ -43,12 +43,16 @@ const LineChart: FC<{ data: Serie[] }> = ({ data }) => {
           },
           tooltip: {
             container: {
-              color: appConstant.lineChart.black,
+              color: globalState.theme === "dark" ? appConstant.lineChart.white : appConstant.lineChart.black,
             },
           },
         }}
         tooltip={({ point }) => (
-          <div>
+          <div
+            style={{
+              color: `${globalState.theme === "dark" ? appConstant.lineChart.white : appConstant.lineChart.black}`,
+            }}
+          >
             <strong>{Math.floor(Number(point.data.yFormatted))}</strong>{" "}
             {Math.floor(Number(point.data.yFormatted)) === 1 ? "student" : "students"}
           </div>

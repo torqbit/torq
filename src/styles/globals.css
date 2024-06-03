@@ -51,7 +51,7 @@ body {
 :root[data-theme="dark"] {
   --bg-secondary: #202433;
   --bg-primary: #283040;
-  --segment-bg: #000;
+  --segment-bg: #151823;
   --font-primary: #fff;
   --bg-elevated: #374362;
   --font-warning: #faad14;
