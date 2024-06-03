@@ -10,6 +10,7 @@ import { ContentManagementService } from "@/services/cms/ContentManagementServic
 import appConstant from "@/services/appConstant";
 import path from "path";
 import { generateCertificate } from "@/lib/addCertificate";
+import { MailerService, getEventEmail } from "@/services/ems/EmailManagementService";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -163,6 +164,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                 courseState: "COMPLETED",
               },
             });
+
+            const configData = getEventEmail("COURSE_COMPLETION");
+
+            new MailerService().sendMail(
+              "COURSE_COMPLETION",
+              configData,
+              String(token?.email),
+              String(token?.name),
+              String(token?.id),
+
+              Number(courseId)
+            );
 
             return res.status(200).json({
               success: true,

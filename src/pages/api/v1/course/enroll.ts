@@ -9,6 +9,7 @@ import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
+import { MailerService, getEventEmail } from "@/services/ems/EmailManagementService";
 
 export const validateReqBody = z.object({
   courseId: z.number(),
@@ -74,6 +75,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             courseState: "ENROLLED",
           },
         });
+
+        const configData = getEventEmail("COURSE_ENROLMENT");
+
+        new MailerService().sendMail(
+          "COURSE_ENROLMENT",
+          configData,
+          String(token?.email),
+          String(token.name),
+          String(token?.id),
+          courseId
+        );
 
         return res.status(200).json({
           success: true,

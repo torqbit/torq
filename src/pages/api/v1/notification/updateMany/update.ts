@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    const notifications = token?.id && (await getNotifi(token?.id));
+    const notifications = token?.id && (await getNotifi(token?.id, 10000, 0));
     return res.status(200).json({ notifications, success: true });
   } catch (error) {
     return errorHandler(error, res);

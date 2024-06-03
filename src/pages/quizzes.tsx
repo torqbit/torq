@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "@/styles/Dashboard.module.scss";
 import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
