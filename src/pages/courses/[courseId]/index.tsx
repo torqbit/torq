@@ -4,7 +4,7 @@ import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { ICourseEnrollementStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
 import { IResponse, postFetch } from "@/services/request";
-import { ChapterDetail, CourseInfo } from "@/types/courses/Course";
+import { ChapterDetail, CourseInfo, CourseLessonAPIResponse } from "@/types/courses/Course";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Modal, Spin, message } from "antd";
 import { NextPage } from "next";
@@ -16,7 +16,7 @@ const LearnCoursesPage: NextPage = () => {
   const [videoUrl, setVideoUrl] = useState<string>();
   const [chapterList, setChapterList] = useState<ChapterDetail[]>();
   const [courseType, setCourseType] = useState<string>();
-  const [courseDetail, setCourseDetail] = useState<CourseInfo>();
+  const [courseDetail, setCourseDetail] = useState<CourseLessonAPIResponse>();
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>();
   const [courseStatus, setCourseStatus] = useState<ICourseEnrollementStatus>();
@@ -81,12 +81,11 @@ const LearnCoursesPage: NextPage = () => {
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
-          setCourseDetail(result.courseDetails);
-          setVideoUrl(result.courseDetails.tvUrl);
-          setChapterList(result.courseDetails.chapters.filter((c) => c.state === "ACTIVE"));
-          setCourseType(result.courseDetails.courseType);
+          setCourseDetail(result);
         },
-        (error) => {}
+        (error) => {
+          message.error(error);
+        }
       );
     }
   }, [router.query.courseId]);
@@ -94,11 +93,10 @@ const LearnCoursesPage: NextPage = () => {
   return (
     <Layout2>
       {contextMessageHolder}
-      {chapterList?.length ? (
+      {courseDetail ? (
         <Preview
-          videoUrl={videoUrl}
+          videoUrl={courseDetail?.course.courseTrailer}
           enrolled={courseStatus?.isEnrolled}
-          chapter={chapterList}
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
           isCourseCompleted={courseStatus?.courseCompleted}

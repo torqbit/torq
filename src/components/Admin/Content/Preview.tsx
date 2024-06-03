@@ -5,8 +5,15 @@ import { IResourceDetail } from "@/lib/types/learn";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
-import { ChapterDetail, CourseData, CourseInfo, VideoInfo } from "@/types/courses/Course";
-import { LoadingOutlined } from "@ant-design/icons";
+import {
+  ChapterDetail,
+  CourseAPIResponse,
+  CourseData,
+  CourseInfo,
+  CourseLessonAPIResponse,
+  VideoInfo,
+  VideoLesson,
+} from "@/types/courses/Course";
 import { Button, Collapse, Flex, Space, Spin, Tag } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,39 +25,16 @@ const Label: FC<{
   time: string;
   keyValue: string;
   resourceId?: number;
-  onRender: (value: string[]) => void;
-  render: string[];
+  isCompleted?: boolean;
   icon: ReactNode;
-}> = ({ title, time, onRender, render, keyValue, icon, resourceId }) => {
-  const [completed, setCompleted] = useState<boolean>();
-  const onActive = (value: string[]) => {
-    if (render.includes(value[0])) {
-      let currentValue = render.filter((v) => v !== value[0]);
-      onRender(currentValue);
-    } else {
-      render.push(value[0]);
-    }
-  };
-
-  useEffect(() => {
-    resourceId &&
-      ProgramService.checkProgress(
-        resourceId,
-        (result) => {
-          setCompleted(result.completed);
-        },
-        (error) => {}
-      );
-  }, []);
+}> = ({ title, time, keyValue, icon, isCompleted, resourceId }) => {
   return (
     <div className={styles.labelContainer}>
       <Flex justify="space-between" align="center">
         <div>
           <Flex gap={10} align="center">
-            {completed ? SvgIcons.check : icon}
-            <div style={{ cursor: "pointer" }} onClick={() => onActive([keyValue])}>
-              {title}
-            </div>
+            {isCompleted ? SvgIcons.check : icon}
+            <div>{title}</div>
           </Flex>
         </div>
         <div>
@@ -62,68 +46,40 @@ const Label: FC<{
 };
 
 const Preview: FC<{
-  courseDetail?: CourseInfo | CourseData;
+  courseDetail?: CourseLessonAPIResponse;
   addContentPreview?: boolean;
   videoUrl?: string;
-  uploadVideo?: VideoInfo;
-  chapter: ChapterDetail[];
   enrolled?: boolean;
   isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
   isCourseStarted?: boolean;
-}> = ({
-  uploadVideo,
-  chapter,
-  addContentPreview,
-  videoUrl,
-  onEnrollCourse,
-  enrolled,
-  isCourseCompleted,
-  courseDetail,
-  isCourseStarted,
-}) => {
+}> = ({ addContentPreview, videoUrl, onEnrollCourse, enrolled, isCourseCompleted, courseDetail, isCourseStarted }) => {
   const router = useRouter();
-  const renderKey = chapter.map((c, i) => {
-    return `${i + 1}`;
-  });
-  const [render, setRender] = useState(renderKey);
 
-  const items = chapter.map((content, i) => {
+  const items = courseDetail?.lessons.map((content, i) => {
     let totalTime = 0;
-    content.resource.forEach((data) => {
-      totalTime = totalTime + data.video?.videoDuration;
+    content.lessons.forEach((data) => {
+      totalTime = totalTime + data.videoDuration;
     });
     const duration = convertSecToHourandMin(totalTime);
     return {
       key: `${i + 1}`,
-      label: (
-        <Label
-          title={content.name}
-          icon={SvgIcons.folder}
-          time={duration}
-          onRender={setRender}
-          render={render}
-          keyValue={`${i + 1}`}
-        />
-      ),
-      children: content.resource
-        .filter((r) => (addContentPreview ? r.state === "ACTIVE" || r.state === "DRAFT" : r.state === "ACTIVE"))
-        .map((res: IResourceDetail, i: any) => {
-          const duration = convertSecToHourandMin(res.video?.videoDuration);
-          return (
-            <div className={styles.resContainer}>
-              <Label
-                title={res.name}
-                icon={res.contentType === "Video" ? SvgIcons.playBtn : SvgIcons.file}
-                time={duration}
-                onRender={setRender}
-                resourceId={res.resourceId}
-                render={render}
-                keyValue={`${i + 1}`}
-              />
-            </div>
-          );
-        }),
+      label: <Label title={content.chapterName} icon={SvgIcons.folder} time={duration} keyValue={`${i + 1}`} />,
+      children: content.lessons.map((res: VideoLesson, i: any) => {
+        const duration = convertSecToHourandMin(res.videoDuration);
+        return (
+          <div className={styles.resContainer}>
+            <Label
+              title={res.title}
+              icon={SvgIcons.playBtn}
+              time={duration}
+              isCompleted={res.isWatched}
+              resourceId={res.videoId}
+              keyValue={`${i + 1}`}
+            />
+          </div>
+        );
+      }),
       showArrow: false,
     };
   });
@@ -145,7 +101,7 @@ const Preview: FC<{
           {courseDetail && !addContentPreview && (
             <Flex>
               <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
-              <div>{courseDetail.name}</div>
+              <div>{courseDetail.course.name}</div>
             </Flex>
           )}
         </div>
@@ -162,13 +118,13 @@ const Preview: FC<{
                 outline: "none",
                 border: "none",
               }}
-              src={videoUrl ? videoUrl : uploadVideo?.videoUrl}
+              src={videoUrl}
             ></iframe>
           }
           <div className={styles.video_player_info}>
             <Space direction="vertical">
-              <h2>{courseDetail?.name}</h2>
-              <p>{courseDetail?.description}</p>
+              <h2>{courseDetail?.course.name}</h2>
+              <p>{courseDetail?.course.description}</p>
             </Space>
 
             {enrolled ? (
@@ -177,7 +133,9 @@ const Preview: FC<{
                   <Flex align="center" gap={10}>
                     <Button onClick={onViewCertificate}>View Certificate</Button>
 
-                    <Link href={`/courses/${chapter[0]?.courseId}/lesson/${chapter[0].resource[0].resourceId}`}>
+                    <Link
+                      href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}
+                    >
                       <Button type="primary">Rewatch</Button>
                     </Link>
                   </Flex>
@@ -213,26 +171,26 @@ const Preview: FC<{
 
         <h2>Table of Contents</h2>
         <div>
-          {items.map((item, i) => {
-            return (
-              <div key={i} className={styles.chapter_list}>
-                <Collapse
-                  defaultActiveKey={"1"}
-                  size="small"
-                  accordion={false}
-                  activeKey={render}
-                  items={[
-                    {
-                      key: item.key,
-                      label: item.label,
-                      children: item.children,
-                      showArrow: false,
-                    },
-                  ]}
-                />
-              </div>
-            );
-          })}
+          {items &&
+            items.map((item, i) => {
+              return (
+                <div key={i} className={styles.chapter_list}>
+                  <Collapse
+                    defaultActiveKey={"1"}
+                    size="small"
+                    accordion={false}
+                    items={[
+                      {
+                        key: item.key,
+                        label: item.label,
+                        children: item.children,
+                        showArrow: false,
+                      },
+                    ]}
+                  />
+                </div>
+              );
+            })}
         </div>
       </Space>
     </section>

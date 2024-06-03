@@ -18,23 +18,52 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const resultRows = await prisma.$queryRaw<
-      any[]
-    >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,
-    vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
-    ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
-   INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
-   INNER JOIN Chapter as ch ON co.courseId = ch.courseId
-   INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-   INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-   LEFT OUTER JOIN CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId
-   WHERE cr.studentId = ${token?.id}
-   AND co.courseId = ${courseId}
-   ORDER BY chapterSeq, resourceSeq`;
+    const alreadyRegisterd = await prisma.courseRegistration.findFirst({
+      where: {
+        studentId: token?.id,
+        courseId: Number(courseId),
+      },
 
+      select: {
+        courseId: true,
+        courseState: true,
+      },
+    });
+
+    let resultRows: any[] = [];
     let chapterLessons: any[] = [];
     let courseName = "";
     let description = "";
+    if (alreadyRegisterd && alreadyRegisterd.courseState == "COMPLETED") {
+      resultRows = await prisma.$queryRaw<
+        any[]
+      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,
+        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
+        ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
+        INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
+        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
+        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
+        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
+        INNER JOIN CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId
+        WHERE cr.studentId = ${token?.id}
+        AND co.courseId = ${courseId}
+        ORDER BY chapterSeq, resourceSeq`;
+    } else {
+      resultRows = await prisma.$queryRaw<
+        any[]
+      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,
+        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
+        ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
+        INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
+        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
+        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
+        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
+        LEFT OUTER JOIN CourseProgress as cp ON cp.user_id = cr.studentId AND cp.resourceId = re.resourceId
+        WHERE cr.studentId = ${token?.id}
+        AND co.courseId = ${courseId}
+        ORDER BY chapterSeq, resourceSeq`;
+    }
+
     if (resultRows.length > 0) {
       courseName = resultRows[0].courseName;
       description = resultRows[0].description;

@@ -192,7 +192,7 @@ class ProgramService {
 
   getCourses = (
     courseId: number,
-    onSuccess: (response: CourseAPIResponse) => void,
+    onSuccess: (response: CourseLessonAPIResponse) => void,
     onFailure: (message: string) => void
   ) => {
     fetch(`/api/v1/course/${courseId}`, {
@@ -209,7 +209,7 @@ class ProgramService {
         });
       } else if (result.status == 200) {
         result.json().then((r) => {
-          const apiResponse = r as CourseAPIResponse;
+          const apiResponse = r as CourseLessonAPIResponse;
           onSuccess(apiResponse);
         });
       }
