@@ -9,7 +9,7 @@ import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
-import { MailerService, getEventEmail } from "@/services/ems/EmailManagementService";
+import { MailerService, getEventEmail } from "@/services/MailerService";
 
 export const validateReqBody = z.object({
   courseId: z.number(),

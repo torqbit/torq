@@ -7,7 +7,7 @@ import getUserByEmail from "@/actions/getUserByEmail";
 import { JWT } from "next-auth/jwt/types";
 import { postFetch } from "@/services/request";
 import { IEmailEventType } from "@/lib/types/email";
-import { MailerService, getEventEmail } from "@/services/ems/EmailManagementService";
+import { MailerService, getEventEmail } from "@/services/MailerService";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_PUBLIC_SECRET,

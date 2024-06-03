@@ -10,7 +10,7 @@ import { ContentManagementService } from "@/services/cms/ContentManagementServic
 import appConstant from "@/services/appConstant";
 import path from "path";
 import { generateCertificate } from "@/lib/addCertificate";
-import { MailerService, getEventEmail } from "@/services/ems/EmailManagementService";
+import { MailerService, getEventEmail } from "@/services/MailerService";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

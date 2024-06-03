@@ -46,9 +46,9 @@ export class MailerService {
         let c = config as IEmailConfig;
         return this.sendWelcomeMail(config, this.transporter, toEmail, userName);
       case "COURSE_ENROLMENT":
-        return this.sendreRegistrationMail(config, this.transporter, toEmail, userName, Number(courseId));
+        return this.sendRegistrationMail(config, this.transporter, toEmail, userName, Number(courseId));
       case "COURSE_COMPLETION":
-        return this.sendrCompletionMail(config, this.transporter, toEmail, userName, Number(courseId), studentId);
+        return this.sendCompletionMail(config, this.transporter, toEmail, userName, Number(courseId), studentId);
     }
   };
 
@@ -73,7 +73,7 @@ export class MailerService {
     });
   }
 
-  async sendreRegistrationMail(
+  async sendRegistrationMail(
     config: IEmailConfig,
     transporter: any,
     toEmail: string,
@@ -97,12 +97,11 @@ export class MailerService {
       to: toEmail,
       from: `Torqbit <${process.env.FROM_SMTP_USER_EMAIL}>`,
       subject: "Course Registration",
-
       html: htmlString,
     });
   }
 
-  async sendrCompletionMail(
+  async sendCompletionMail(
     config: IEmailConfig,
     transporter: any,
     toEmail: string,
@@ -139,7 +138,6 @@ export class MailerService {
       to: toEmail,
       from: `Torqbit <${process.env.FROM_SMTP_USER_EMAIL}>`,
       subject: "Course Completion",
-
       html: htmlString,
     });
   }
