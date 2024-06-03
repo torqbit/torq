@@ -38,7 +38,7 @@ export interface CourseLessonAPIResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  course: { name: string; description: string };
+  course: { name: string; description: string; courseTrailer: string };
   lessons: CourseLessons[];
 }
 export interface CourseAPIResponse {
