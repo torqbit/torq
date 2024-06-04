@@ -7,6 +7,18 @@ import { CourseEnrolmentEmail } from "@/components/Email/CourseRegistrationEmail
 import CourseCompletionEmail from "@/components/Email/CourseCompletionEmail";
 import { ICompletionEmailConfig, IEmailResponse, IEnrolmentEmailConfig, IWelcomeEmailConfig } from "@/lib/emailConfig";
 import appConstant from "./appConstant";
+export const getResponseMessage = (response: string) => {
+  let errResponse;
+  if (response === "CONN") {
+    errResponse = "Connection failed";
+  } else if (response === "AUTH PLAIN") {
+    errResponse = "authentication failed";
+  } else {
+    errResponse = response;
+  }
+  return errResponse;
+};
+
 class MailerService {
   transporter: any;
   constructor() {
@@ -45,15 +57,7 @@ class MailerService {
       });
       return { success: true, response: "Email sent successfully" };
     } catch (error: any) {
-      let errResponse;
-      if (error.command === "CONN") {
-        errResponse = "Connection failed";
-      } else if (error.command === "AUTH PLAIN") {
-        errResponse = "authentication failed";
-      } else {
-        errResponse = error.response;
-      }
-      return { success: false, response: `Error sending email:${errResponse}` };
+      return { success: false, response: `Error sending email:${getResponseMessage(error.command)}` };
     }
   }
 
@@ -69,15 +73,7 @@ class MailerService {
 
       return { success: true, response: "Email sent successfully" };
     } catch (error: any) {
-      let errResponse;
-      if (error.command === "CONN") {
-        errResponse = "Connection failed";
-      } else if (error.command === "AUTH PLAIN") {
-        errResponse = "authentication failed";
-      } else {
-        errResponse = error.response;
-      }
-      return { success: false, response: `Error sending email:${errResponse}` };
+      return { success: false, response: `Error sending email:${getResponseMessage(error.command)}` };
     }
   }
 
@@ -97,15 +93,7 @@ class MailerService {
       });
       return { success: true, response: "Email sent successfully" };
     } catch (error: any) {
-      let errResponse;
-      if (error.command === "CONN") {
-        errResponse = "Connection failed";
-      } else if (error.command === "AUTH PLAIN") {
-        errResponse = "authentication failed";
-      } else {
-        errResponse = error.response;
-      }
-      return { success: false, response: `Error sending email:${errResponse}` };
+      return { success: false, response: `Error sending email:${getResponseMessage(error.command)}` };
     }
   }
 }
