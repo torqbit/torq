@@ -1,13 +1,11 @@
 import { IEmailEventType } from "@/lib/types/email";
-
 import { render } from "@react-email/render";
 import WelcomeEmailPage from "@/components/Email/WelcomeEmail";
 import nodemailer from "nodemailer";
 import { CourseEnrolmentEmail } from "@/components/Email/CourseRegistrationEmail";
 import CourseCompletionEmail from "@/components/Email/CourseCompletionEmail";
 import { ICompletionEmailConfig, IEmailResponse, IEnrolmentEmailConfig, IWelcomeEmailConfig } from "@/lib/emailConfig";
-import appConstant from "./appConstant";
-export const getResponseMessage = (response: string) => {
+export const getEmailErrorMessage = (response: string) => {
   let errResponse;
   if (response === "CONN") {
     errResponse = "Connection failed";
@@ -52,12 +50,12 @@ class MailerService {
       const sendMail = await this.transporter.sendMail({
         to: config.email,
         from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
-        subject: `Welcome to ${appConstant.platformName}: Ignite Your Learning Journey!`,
+        subject: `Welcome to ${process.env.NEXT_PUBLIC_PLATFORM_NAME}: Ignite Your Learning Journey!`,
         html: htmlString,
       });
       return { success: true, response: "Email sent successfully" };
     } catch (error: any) {
-      return { success: false, response: `Error sending email:${getResponseMessage(error.command)}` };
+      return { success: false, response: `Error sending email:${getEmailErrorMessage(error.command)}` };
     }
   }
 
@@ -73,7 +71,7 @@ class MailerService {
 
       return { success: true, response: "Email sent successfully" };
     } catch (error: any) {
-      return { success: false, response: `Error sending email:${getResponseMessage(error.command)}` };
+      return { success: false, response: `Error sending email:${getEmailErrorMessage(error.command)}` };
     }
   }
 
@@ -93,7 +91,7 @@ class MailerService {
       });
       return { success: true, response: "Email sent successfully" };
     } catch (error: any) {
-      return { success: false, response: `Error sending email:${getResponseMessage(error.command)}` };
+      return { success: false, response: `Error sending email:${getEmailErrorMessage(error.command)}` };
     }
   }
 }
