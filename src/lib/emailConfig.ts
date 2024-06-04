@@ -1,14 +1,12 @@
 export interface IWelcomeEmailConfig {
   name: string;
-  productName: string;
   url: string;
   email: string;
-  courses: { name: string; thumbnail: string }[];
+  courses: { name: string; thumbnail: string; link: string }[];
 }
 
 export interface IEnrolmentEmailConfig {
   name: string;
-  productName: string;
   url: string;
   email: string;
   course: { name: string; thumbnail: string };
@@ -16,7 +14,6 @@ export interface IEnrolmentEmailConfig {
 
 export interface ICompletionEmailConfig {
   name: string;
-  productName: string;
   url: string;
   email: string;
 

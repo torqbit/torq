@@ -21,13 +21,12 @@ import * as React from "react";
 interface IProps {
   configData: IWelcomeEmailConfig;
 }
-
-export const WelcomeEmailPage = ({ configData }: IProps) => {
+const WelcomeEmailPage = ({ configData }: IProps) => {
   return (
     <Html>
       <Head />
 
-      <Preview>{configData.productName}</Preview>
+      <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
       <Tailwind
         config={
           {
@@ -70,9 +69,9 @@ export const WelcomeEmailPage = ({ configData }: IProps) => {
             <Section className="px-[20px]">
               <Text className="text-black text-[20px] leading-[20px]">Hey, {configData.name}!</Text>
               <Text className="text-[#888] text-[14px] leading-[20px]">
-                Welcome to the {configData.productName} Platform. we&apos;re excited to have you join our community. You
-                can nowexcel in the field of software development, connect with fellow learners and help each other to
-                move forward.
+                Welcome to the {`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`} Platform. we&apos;re excited to have you
+                join our community. You can nowexcel in the field of software development, connect with fellow learners
+                and help each other to move forward.
               </Text>
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 Choose from the courses below or click on the button at the bottom to view all the courses.
@@ -94,7 +93,7 @@ export const WelcomeEmailPage = ({ configData }: IProps) => {
                         </div>
                         <Section className="flex item-center justify-start">
                           <Button
-                            href={configData.url}
+                            href={c.link}
                             className="bg-[#5b63d3] px-5 py-2 text-white text-left text-[12px]  rounded"
                           >
                             Learn More
@@ -113,7 +112,7 @@ export const WelcomeEmailPage = ({ configData }: IProps) => {
               <Text className="text-[#000] text-[15px] m-0 ">
                 Thanks & Regards <br />
               </Text>
-              <Text className="text-black text-[15px] my-2">Torqbit team</Text>
+              <Text className="text-black text-[15px] my-2">{process.env.NEXT_PUBLIC_PLATFORM_NAME} team</Text>
 
               <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
               <Text className="text-[#888] text-[14px] leading-[20px]">

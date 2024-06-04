@@ -26,7 +26,7 @@ export const CourseEnrolmentEmail = ({ configData }: IProps) => {
     <Html>
       <Head />
 
-      <Preview>{configData.productName}</Preview>
+      <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
       <Tailwind
         config={
           {
@@ -106,7 +106,7 @@ export const CourseEnrolmentEmail = ({ configData }: IProps) => {
               <Text className="text-[#000] text-[15px] m-0 ">
                 Thanks & Regards <br />
               </Text>
-              <Text className="text-black text-[15px] my-2">{configData.productName} team</Text>
+              <Text className="text-black text-[15px] my-2">{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`} team</Text>
 
               <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
               <Text className="text-[#888] text-[14px] leading-[20px]">

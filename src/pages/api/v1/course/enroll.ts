@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         const configData = {
           name: token.name,
           email: token.email,
-          productName: process.env.PLATFORM_NAME,
+
           url: `${process.env.NEXTAUTH_URL}/courses/${courseId}`,
           course: {
             name: course.name,

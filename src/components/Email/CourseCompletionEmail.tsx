@@ -28,7 +28,7 @@ export const CourseCompletionEmail = ({ configData }: IProps) => {
     <Html>
       <Head />
 
-      <Preview>{configData.productName}</Preview>
+      <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
       <Tailwind
         config={
           {
@@ -71,7 +71,7 @@ export const CourseCompletionEmail = ({ configData }: IProps) => {
               </Flex>
             </Heading>
             <Section className="px-[20px]">
-              <Text className="text-black text-[20px] leading-[20px]">Hey, {configData.productName}!</Text>
+              <Text className="text-black text-[20px] leading-[20px]">Hey, {configData.name}!</Text>
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 {" "}
                 Congratulations! You&apos;ve successfully completed {configData.courseName}. We&apos;re thrilled to
@@ -97,7 +97,7 @@ export const CourseCompletionEmail = ({ configData }: IProps) => {
               <Text className="text-[#000] text-[15px] m-0 ">
                 Thanks & Regards <br />
               </Text>
-              <Text className="text-black text-[15px] my-2">{configData.productName} team</Text>
+              <Text className="text-black text-[15px] my-2">{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`} team</Text>
 
               <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
               <Text className="text-[#888] text-[14px] leading-[20px]">

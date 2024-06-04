@@ -54,17 +54,22 @@ export const authOptions: NextAuthOptions = {
         const courses = await prisma?.course.findMany({
           take: 3,
           select: {
+            courseId: true,
             name: true,
             thumbnail: true,
           },
         });
         const configData = {
           name: token.name,
-          productName: process.env.PLATFORM_NAME,
           url: `${process.env.NEXTAUTH_URL}/courses`,
           email: token?.email,
-          studentId: token?.id,
-          courses,
+          courses: courses.map((c) => {
+            return {
+              name: c.name,
+              thumbnail: c.thumbnail,
+              link: `${process.env.NEXTAUTH_URL}/courses/${c.courseId}`,
+            };
+          }),
         };
 
         MailerService.sendMail("NEW_USER", configData).then((result) => {
