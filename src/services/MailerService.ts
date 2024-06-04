@@ -39,7 +39,7 @@ class MailerService {
       const htmlString = render(WelcomeEmailPage({ configData: config }));
       const sendMail = await this.transporter.sendMail({
         to: config.email,
-        from: `${process.env.PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
         subject: `Welcome to ${appConstant.platformName}: Ignite Your Learning Journey!`,
         html: htmlString,
       });
@@ -62,7 +62,7 @@ class MailerService {
       const htmlString = render(CourseEnrolmentEmail({ configData: config }));
       const sendMail = await this.transporter.sendMail({
         to: config.email,
-        from: `${process.env.PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
         subject: "Course Enrolment",
         html: htmlString,
       });
@@ -91,7 +91,7 @@ class MailerService {
 
       const sendMail = await this.transporter.sendMail({
         to: config.email,
-        from: `${process.env.PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
         subject: "Course Completion",
         html: htmlString,
       });
