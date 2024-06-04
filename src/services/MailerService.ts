@@ -53,9 +53,9 @@ class MailerService {
         subject: `Welcome to ${process.env.NEXT_PUBLIC_PLATFORM_NAME}: Ignite Your Learning Journey!`,
         html: htmlString,
       });
-      return { success: true, response: "Email sent successfully" };
+      return { success: true, message: "Email sent successfully" };
     } catch (error: any) {
-      return { success: false, response: `Error sending email:${getEmailErrorMessage(error.command)}` };
+      return { success: false, error: `Error sending email:${getEmailErrorMessage(error.command)}` };
     }
   }
 
@@ -69,9 +69,9 @@ class MailerService {
         html: htmlString,
       });
 
-      return { success: true, response: "Email sent successfully" };
+      return { success: true, message: "Email sent successfully" };
     } catch (error: any) {
-      return { success: false, response: `Error sending email:${getEmailErrorMessage(error.command)}` };
+      return { success: false, error: `Error sending email:${getEmailErrorMessage(error.command)}` };
     }
   }
 
@@ -89,9 +89,9 @@ class MailerService {
         subject: "Course Completion",
         html: htmlString,
       });
-      return { success: true, response: "Email sent successfully" };
+      return { success: true, message: "Email sent successfully" };
     } catch (error: any) {
-      return { success: false, response: `Error sending email:${getEmailErrorMessage(error.command)}` };
+      return { success: false, error: `Error sending email:${getEmailErrorMessage(error.command)}` };
     }
   }
 }

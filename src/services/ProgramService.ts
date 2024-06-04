@@ -13,7 +13,6 @@ export type ApiResponse = {
   success: boolean;
   error: string;
   completed: boolean;
-  mailResponse: string;
   message: string;
   registerCourses: IRegisteredCourses[];
   courseDetails: CourseInfo;

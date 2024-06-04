@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
         };
 
         MailerService.sendMail("NEW_USER", configData).then((result) => {
-          console.log(result.response);
+          console.log(result.error);
         });
 
         return token;

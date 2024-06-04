@@ -174,7 +174,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             };
 
             MailerService.sendMail("COURSE_COMPLETION", configData).then((result) => {
-              console.log(result.response);
+              console.log(result.error);
             });
 
             return res.status(200).json({

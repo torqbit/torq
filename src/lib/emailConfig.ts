@@ -22,5 +22,6 @@ export interface ICompletionEmailConfig {
 
 export interface IEmailResponse {
   success: boolean;
-  response: string;
+  message?: string;
+  error?: string;
 }
