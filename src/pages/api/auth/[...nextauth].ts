@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import getUserByEmail from "@/actions/getUserByEmail";
-import { JWT } from "next-auth/jwt/types";
+import MailerService from "@/services/MailerService";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_PUBLIC_SECRET,
@@ -51,6 +51,31 @@ export const authOptions: NextAuthOptions = {
           token.id = user?.id;
           token.role = "AUTHOR";
         }
+        const courses = await prisma?.course.findMany({
+          take: 3,
+          select: {
+            courseId: true,
+            name: true,
+            thumbnail: true,
+          },
+        });
+        const configData = {
+          name: token.name,
+          url: `${process.env.NEXTAUTH_URL}/courses`,
+          email: token?.email,
+          courses: courses.map((c) => {
+            return {
+              name: c.name,
+              thumbnail: c.thumbnail,
+              link: `${process.env.NEXTAUTH_URL}/courses/${c.courseId}`,
+            };
+          }),
+        };
+
+        MailerService.sendMail("NEW_USER", configData).then((result) => {
+          console.log(result.error);
+        });
+
         return token;
       }
       return {

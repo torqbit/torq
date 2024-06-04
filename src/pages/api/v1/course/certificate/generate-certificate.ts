@@ -10,6 +10,7 @@ import { ContentManagementService } from "@/services/cms/ContentManagementServic
 import appConstant from "@/services/appConstant";
 import path from "path";
 import { generateCertificate } from "@/lib/addCertificate";
+import MailerService from "@/services/MailerService";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -162,6 +163,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               data: {
                 courseState: "COMPLETED",
               },
+            });
+
+            const configData = {
+              name: token?.name,
+              email: token?.email,
+              courseName: course.name,
+              productName: process.env.NEXT_PUBLIC_PLATFORM_NAME,
+              url: `${process.env.NEXTAUTH_URL}/courses/${course.courseId}/certificate/${createCertificate.id}`,
+            };
+
+            MailerService.sendMail("COURSE_COMPLETION", configData).then((result) => {
+              console.log(result.error);
             });
 
             return res.status(200).json({

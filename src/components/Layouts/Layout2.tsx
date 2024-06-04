@@ -117,10 +117,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
           if (result.countUnreadNotifications) {
             dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
           }
-          dispatch({
-            type: "SET_LOADER",
-            payload: false,
-          });
         },
         (error) => {}
       );
@@ -140,6 +136,10 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       dispatch({
         type: "SWITCH_THEME",
         payload: userSession.theme || "light",
+      });
+      dispatch({
+        type: "SET_LOADER",
+        payload: false,
       });
     } else {
       interval && clearInterval(interval);
