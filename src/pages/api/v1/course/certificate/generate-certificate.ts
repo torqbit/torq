@@ -169,7 +169,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               name: token?.name,
               email: token?.email,
               courseName: course.name,
-              productName: process.env.PLATFORM_NAME,
+              productName: process.env.NEXT_PUBLIC_PLATFORM_NAME,
               url: `${process.env.NEXTAUTH_URL}/courses/${course.courseId}/certificate/${createCertificate.id}`,
             };
 
