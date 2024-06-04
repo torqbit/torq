@@ -10,7 +10,7 @@ import { ContentManagementService } from "@/services/cms/ContentManagementServic
 import appConstant from "@/services/appConstant";
 import path from "path";
 import { generateCertificate } from "@/lib/addCertificate";
-import { MailerService, getEmailConfig } from "@/services/MailerService";
+import MailerService from "@/services/MailerService";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -165,17 +165,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               },
             });
 
-            const configData = getEmailConfig("COURSE_COMPLETION");
+            const configData = {
+              name: token?.name,
+              email: token?.email,
+              courseName: course.name,
+              productName: process.env.PLATFORM_NAME,
+              url: `${process.env.NEXTAUTH_URL}/courses/${course.courseId}/certificate/${createCertificate.id}`,
+            };
 
-            new MailerService().sendMail(
-              "COURSE_COMPLETION",
-              configData,
-              String(token?.email),
-              String(token?.name),
-              String(token?.id),
-
-              Number(courseId)
-            );
+            MailerService.sendMail("COURSE_COMPLETION", configData).then((result) => {
+              console.log(result.response);
+            });
 
             return res.status(200).json({
               success: true,

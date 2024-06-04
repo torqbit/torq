@@ -1,15 +1,13 @@
 import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
-import getUserById from "@/actions/getUserById";
 import withValidation from "@/lib/api-middlewares/with-validation";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { withMethods } from "@/lib/api-middlewares/with-method";
-
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
-import { MailerService, getEmailConfig } from "@/services/MailerService";
+import MailerService from "@/services/MailerService";
 
 export const validateReqBody = z.object({
   courseId: z.number(),
@@ -76,16 +74,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         });
 
-        const configData = getEmailConfig("COURSE_ENROLMENT");
+        const configData = {
+          name: token.name,
+          email: token.email,
+          productName: process.env.PLATFORM_NAME,
+          url: `${process.env.NEXTAUTH_URL}/courses/${courseId}`,
+          course: {
+            name: course.name,
+            thumbnail: course.thumbnail,
+          },
+        };
 
-        new MailerService().sendMail(
-          "COURSE_ENROLMENT",
-          configData,
-          String(token?.email),
-          String(token.name),
-          String(token?.id),
-          courseId
-        );
+        MailerService.sendMail("COURSE_ENROLMENT", configData).then((result) => {
+          console.log(result.response);
+        });
 
         return res.status(200).json({
           success: true,

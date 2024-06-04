@@ -1,24 +1,13 @@
-import { IEmailConfig, IEmailEventType } from "@/lib/types/email";
+import { IEmailEventType } from "@/lib/types/email";
 
 import { render } from "@react-email/render";
-import WelcomeEmailPage, { IWelcomeEmail } from "@/components/Email/WelcomeEmail";
+import WelcomeEmailPage from "@/components/Email/WelcomeEmail";
 import nodemailer from "nodemailer";
-import CourseRegistraionEmail, { CourseRegistrationProps } from "@/components/Email/CourseRegistrationEmail";
-import CourseCompletionEmail, { CourseCompletionProps } from "@/components/Email/CourseCompletionEmail";
-import { courseCompletionEmailConfig, courseRegistrationEmailConfig, welcomeEmailConfig } from "@/lib/emailConfig";
-
-export const getEmailConfig = (eventType: IEmailEventType) => {
-  switch (eventType) {
-    case "NEW_USER":
-      return welcomeEmailConfig;
-    case "COURSE_ENROLMENT":
-      return courseRegistrationEmailConfig;
-    case "COURSE_COMPLETION":
-      return courseCompletionEmailConfig;
-  }
-};
-
-export class MailerService {
+import { CourseEnrolmentEmail } from "@/components/Email/CourseRegistrationEmail";
+import CourseCompletionEmail from "@/components/Email/CourseCompletionEmail";
+import { ICompletionEmailConfig, IEmailResponse, IEnrolmentEmailConfig, IWelcomeEmailConfig } from "@/lib/emailConfig";
+import appConstant from "./appConstant";
+class MailerService {
   transporter: any;
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -32,117 +21,93 @@ export class MailerService {
       from: `${process.env.FROM_SMTP_USER_EMAIL}`,
     });
   }
-  sendMail = (
-    eventType: IEmailEventType,
-    config: any,
-    toEmail: string,
-    userName: string,
-    studentId: string,
-    courseId?: number
-  ) => {
+  sendMail = (eventType: IEmailEventType, config: any) => {
     switch (eventType) {
       case "NEW_USER":
-        let c = config as IEmailConfig;
-        return this.sendWelcomeMail(config, this.transporter, toEmail, userName);
+        return this.sendWelcomeMail(config as IWelcomeEmailConfig);
       case "COURSE_ENROLMENT":
-        return this.sendRegistrationMail(config, this.transporter, toEmail, userName, Number(courseId));
+        return this.sendEnrolmentMail(config as IEnrolmentEmailConfig);
       case "COURSE_COMPLETION":
-        return this.sendCompletionMail(config, this.transporter, toEmail, userName, Number(courseId), studentId);
+        return this.sendCompletionMail(config as ICompletionEmailConfig);
+      default:
+        throw new Error("something went wrong");
     }
   };
 
-  async sendWelcomeMail(config: IEmailConfig, transporter: any, toEmail: string, userName: string) {
-    const courses = await prisma?.course.findMany({
-      take: 3,
-      select: {
-        name: true,
-        thumbnail: true,
-      },
-    });
-    const htmlString = render(
-      WelcomeEmailPage({ name: userName, courses: courses, configData: config } as IWelcomeEmail)
-    );
-
-    const sendMail = transporter.sendMail({
-      to: toEmail,
-      from: `Torqbit <${process.env.FROM_SMTP_USER_EMAIL}>`,
-      subject: "Welcome User",
-
-      html: htmlString,
-    });
+  async sendWelcomeMail(config: IWelcomeEmailConfig): Promise<IEmailResponse> {
+    try {
+      const htmlString = render(WelcomeEmailPage({ configData: config }));
+      const sendMail = await this.transporter.sendMail({
+        to: config.email,
+        from: `${process.env.PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        subject: `Welcome to ${appConstant.platformName}: Ignite Your Learning Journey!`,
+        html: htmlString,
+      });
+      return { success: true, response: "Email sent successfully" };
+    } catch (error: any) {
+      let errResponse;
+      if (error.command === "CONN") {
+        errResponse = "Connection failed";
+      } else if (error.command === "AUTH PLAIN") {
+        errResponse = "authentication failed";
+      } else {
+        errResponse = error.response;
+      }
+      return { success: false, response: `Error sending email:${errResponse}` };
+    }
   }
 
-  async sendRegistrationMail(
-    config: IEmailConfig,
-    transporter: any,
-    toEmail: string,
-    userName: string,
-    courseId: number
-  ) {
-    const course = await prisma?.course.findUnique({
-      where: {
-        courseId: courseId,
-      },
-      select: {
-        name: true,
-        thumbnail: true,
-      },
-    });
-    const htmlString = render(
-      CourseRegistraionEmail({
-        name: userName,
-        course: course,
-        configData: config,
-        courseId,
-      } as CourseRegistrationProps)
-    );
+  async sendEnrolmentMail(config: IEnrolmentEmailConfig) {
+    try {
+      const htmlString = render(CourseEnrolmentEmail({ configData: config }));
+      const sendMail = await this.transporter.sendMail({
+        to: config.email,
+        from: `${process.env.PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        subject: "Course Enrolment",
+        html: htmlString,
+      });
 
-    const sendMail = transporter.sendMail({
-      to: toEmail,
-      from: `Torqbit <${process.env.FROM_SMTP_USER_EMAIL}>`,
-      subject: "Course Registration",
-      html: htmlString,
-    });
+      return { success: true, response: "Email sent successfully" };
+    } catch (error: any) {
+      let errResponse;
+      if (error.command === "CONN") {
+        errResponse = "Connection failed";
+      } else if (error.command === "AUTH PLAIN") {
+        errResponse = "authentication failed";
+      } else {
+        errResponse = error.response;
+      }
+      return { success: false, response: `Error sending email:${errResponse}` };
+    }
   }
 
-  async sendCompletionMail(
-    config: IEmailConfig,
-    transporter: any,
-    toEmail: string,
-    userName: string,
-    courseId: number,
-    studentId: string
-  ) {
-    const course = await prisma?.course.findUnique({
-      where: {
-        courseId: courseId,
-      },
-      select: {
-        name: true,
-        thumbnail: true,
-      },
-    });
-    const courseCertificate = await prisma?.courseCertificates.findFirst({
-      where: {
-        courseId: courseId,
-        studentId: studentId,
-      },
-    });
-    const htmlString = render(
-      CourseCompletionEmail({
-        name: userName,
-        course: course,
-        configData: config,
-        courseId: courseId,
-        issuedCertificateId: courseCertificate?.id,
-      } as CourseCompletionProps)
-    );
+  async sendCompletionMail(config: ICompletionEmailConfig) {
+    try {
+      const htmlString = render(
+        CourseCompletionEmail({
+          configData: config,
+        })
+      );
 
-    const sendMail = transporter.sendMail({
-      to: toEmail,
-      from: `Torqbit <${process.env.FROM_SMTP_USER_EMAIL}>`,
-      subject: "Course Completion",
-      html: htmlString,
-    });
+      const sendMail = await this.transporter.sendMail({
+        to: config.email,
+        from: `${process.env.PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        subject: "Course Completion",
+        html: htmlString,
+      });
+      return { success: true, response: "Email sent successfully" };
+    } catch (error: any) {
+      let errResponse;
+      if (error.command === "CONN") {
+        errResponse = "Connection failed";
+      } else if (error.command === "AUTH PLAIN") {
+        errResponse = "authentication failed";
+      } else {
+        errResponse = error.response;
+      }
+      return { success: false, response: `Error sending email:${errResponse}` };
+    }
   }
 }
+
+export default new MailerService();

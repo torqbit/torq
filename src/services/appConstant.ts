@@ -1,4 +1,5 @@
 export default {
+  platformName: "Troqbit",
   cmnErrorMsg: "Something went wrong. Please try again later",
   courseTags: ["HTML", "CSS", "JS", "ReactJS"],
   assignmentLang: ["html", "css", "javascript", "java", "python", "go", "nodejs", "reactjs"],

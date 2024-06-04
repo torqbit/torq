@@ -1,4 +1,5 @@
-import { IEmailConfig } from "@/lib/types/email";
+import { IWelcomeEmailConfig } from "@/lib/emailConfig";
+
 import {
   Body,
   Button,
@@ -17,15 +18,11 @@ import {
 } from "@react-email/components";
 import { Flex } from "antd";
 import * as React from "react";
-
-export interface IWelcomeEmail {
-  name: string;
-
-  courses: { name: string; thumbnail: string }[];
-  configData: IEmailConfig;
+interface IProps {
+  configData: IWelcomeEmailConfig;
 }
 
-export const WelcomeEmailPage = ({ name, courses, configData }: IWelcomeEmail) => {
+export const WelcomeEmailPage = ({ configData }: IProps) => {
   return (
     <Html>
       <Head />
@@ -71,11 +68,17 @@ export const WelcomeEmailPage = ({ name, courses, configData }: IWelcomeEmail) =
               </Flex>
             </Heading>
             <Section className="px-[20px]">
-              <Text className="text-black text-[20px] leading-[20px]">Hey, {name}!</Text>
-              <Text className="text-[#888] text-[14px] leading-[20px]">{configData.description("")}</Text>
-              <Text className="text-[#888] text-[14px] leading-[20px]">{configData.linkDescription}</Text>
+              <Text className="text-black text-[20px] leading-[20px]">Hey, {configData.name}!</Text>
+              <Text className="text-[#888] text-[14px] leading-[20px]">
+                Welcome to the {configData.productName} Platform. we&apos;re excited to have you join our community. You
+                can nowexcel in the field of software development, connect with fellow learners and help each other to
+                move forward.
+              </Text>
+              <Text className="text-[#888] text-[14px] leading-[20px]">
+                Choose from the courses below or click on the button at the bottom to view all the courses.
+              </Text>
               <Section className="flex item-center   gap-5">
-                {courses.map((c, i) => {
+                {configData.courses.map((c, i) => {
                   return (
                     <div
                       key={i}
@@ -86,7 +89,7 @@ export const WelcomeEmailPage = ({ name, courses, configData }: IWelcomeEmail) =
                         <div>
                           <Heading className="text-[#000] text-left text-[15px] mb-1 ">{c.name}</Heading>
                           <Text className="leading-[20px] text-[#888] text-[14px] text-left m-0 mb-4">
-                            {configData.supportDescription}
+                            If you have any questions, feel free to email our support team, or even send a reply .
                           </Text>
                         </div>
                         <Section className="flex item-center justify-start">
@@ -94,7 +97,7 @@ export const WelcomeEmailPage = ({ name, courses, configData }: IWelcomeEmail) =
                             href={configData.url}
                             className="bg-[#5b63d3] px-5 py-2 text-white text-left text-[12px]  rounded"
                           >
-                            {configData.buttonText}
+                            Learn More
                           </Button>
                         </Section>
                       </Flex>
@@ -103,14 +106,19 @@ export const WelcomeEmailPage = ({ name, courses, configData }: IWelcomeEmail) =
                 })}
               </Section>
 
-              <Text className="text-[#888] text-[14px] leading-[20px]">{configData.queryDescription}</Text>
+              <Text className="text-[#888] text-[14px] leading-[20px]">
+                If you have any questions, feel free to email our support team, or even send a reply to this email. We
+                wouuld be happy to answer any queries.
+              </Text>
               <Text className="text-[#000] text-[15px] m-0 ">
                 Thanks & Regards <br />
               </Text>
-              <Text className="text-black text-[15px] my-2">{configData.productName} team</Text>
+              <Text className="text-black text-[15px] my-2">Torqbit team</Text>
 
               <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
-              <Text className="text-[#888] text-[14px] leading-[20px]">{configData.urlIssueDescription}</Text>
+              <Text className="text-[#888] text-[14px] leading-[20px]">
+                If you're having trouble with the button above, copy and paste the URL below into your web browser.
+              </Text>
               <Link className="text-blue-600 cursor-pointer">{configData.url}</Link>
             </Section>
           </Container>
