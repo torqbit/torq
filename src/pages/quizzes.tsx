@@ -3,7 +3,6 @@ import styles from "@/styles/Dashboard.module.scss";
 import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import { Space, Tag } from "antd";
-import WelcomeEmailPage from "@/components/Email/WelcomeEmail";
 
 const QuizzesPage = () => {
   const { data: user } = useSession();
