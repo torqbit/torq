@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { getNotifi } from "../get/notification";
+
 import { getToken } from "next-auth/jwt";
 
 import { getCookieName } from "@/lib/utils";
@@ -29,8 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    const notifications = token?.id && (await getNotifi(token?.id, 10000, 0));
-    return res.status(200).json({ notifications, success: true });
+    return res.status(200).json({ success: true });
   } catch (error) {
     return errorHandler(error, res);
   }
