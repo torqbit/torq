@@ -40,6 +40,8 @@ export const config = {
   matcher: [
     "/",
     "/courses",
+    "/courses/:path*",
+    "/notifications",
     "/guides",
     "/quizzes",
     "/add-course",
