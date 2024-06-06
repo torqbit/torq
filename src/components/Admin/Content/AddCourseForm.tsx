@@ -16,6 +16,7 @@ import ProgramService from "@/services/ProgramService";
 import {
   CourseAPIResponse,
   CourseData,
+  CourseLessonAPIResponse,
   IVideoLesson,
   UploadVideoObjectType,
   UploadedResourceDetail,
@@ -85,7 +86,7 @@ const AddCourseForm: FC = () => {
   const [uploadResourceUrl, setUploadResUrl] = useState<UploadedResourceDetail>();
 
   const onDiscard = () => {
-    ProgramService.getCourses(
+    ProgramService.getCourseDetails(
       Number(router.query.id),
       (result: CourseAPIResponse) => {
         ProgramService.deleteCourse(
@@ -108,7 +109,7 @@ const AddCourseForm: FC = () => {
   const onSubmit = () => {
     setSettingloading(true);
 
-    ProgramService.getCourses(
+    ProgramService.getCourseDetails(
       Number(router.query.id),
       (result: CourseAPIResponse) => {
         let course = {
@@ -566,10 +567,36 @@ const AddCourseForm: FC = () => {
       disabled: (!courseThumbnail && !uploadVideo?.videoUrl) || !tabActive,
       children: courseThumbnail && uploadVideo?.videoUrl && (
         <Preview
-          uploadVideo={uploadVideo}
-          chapter={courseData.chapters}
-          courseDetail={courseData}
-          addContentPreview={true}
+          videoUrl={uploadVideo?.videoUrl}
+          enrolled={false}
+          onEnrollCourse={() => {}}
+          courseDetail={
+            {
+              course: {
+                name: courseData.name,
+                description: courseData.description,
+                courseTrailer: uploadVideo.videoUrl,
+              },
+              lessons: courseData.chapters.map((c) => {
+                return {
+                  chapterSeq: c.sequenceId,
+                  chapterName: c.name,
+                  lessons: c.resource.map((r) => {
+                    return {
+                      videoId: r.video.id,
+                      lessonId: r.resourceId,
+                      videoUrl: r.video.videoUrl,
+                      videoDuration: r.video.videoDuration,
+                      isWatched: false,
+                      title: r.name,
+                    };
+                  }),
+                };
+              }),
+            } as CourseLessonAPIResponse
+          }
+          isCourseCompleted={false}
+          isCourseStarted={false}
         />
       ),
     },
@@ -579,7 +606,7 @@ const AddCourseForm: FC = () => {
     let intervalId: NodeJS.Timer | undefined;
     if (checkVideoState && uploadVideo && uploadVideo.state == "PROCESSING" && typeof intervalId === "undefined") {
       intervalId = setInterval(() => {
-        ProgramService.getCourses(
+        ProgramService.getCourseDetails(
           Number(router.query.id),
           (result) => {
             setUploadVideo({
@@ -610,7 +637,7 @@ const AddCourseForm: FC = () => {
     setSettingloading(true);
 
     router.query.id &&
-      ProgramService.getCourses(
+      ProgramService.getCourseDetails(
         Number(router.query.id),
         (result) => {
           setUploadVideo({

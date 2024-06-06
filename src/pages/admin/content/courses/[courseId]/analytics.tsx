@@ -86,7 +86,7 @@ const AnalyticsPage: NextPage = () => {
     setLoading(true);
 
     router.query.courseId &&
-      ProgramService.getCourses(
+      ProgramService.getCourseDetails(
         Number(router.query.courseId),
         (result) => {
           setCourseName(result.courseDetails.name);

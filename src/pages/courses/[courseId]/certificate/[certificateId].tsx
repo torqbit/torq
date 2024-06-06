@@ -38,7 +38,7 @@ const ShowCertificate = () => {
     ProgramService.getCourses(
       Number(router.query.courseId),
       (result) => {
-        setCourseName(result.courseDetails.name);
+        setCourseName(result.course?.name);
         getCertificateImgUrl();
       },
       (error) => {}
