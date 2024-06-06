@@ -1,4 +1,4 @@
-import { Avatar, Drawer, Skeleton, Space, message } from "antd";
+import { Avatar, Drawer, Flex, Skeleton, Space, message } from "antd";
 import styles from "@/styles/LearnLecture.module.scss";
 import React, { FC, useState, useRef, useEffect } from "react";
 import { IComments, IReplyDrawer } from "./CourseDiscussion";
@@ -18,6 +18,8 @@ const ReplyDrawer: FC<{
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
+  const dummyReply = Array.from({ length: 8 }, (_, index) => index + 1);
+
   const isMax415Width = useMediaPredicate("(max-width: 415px)");
   const scrollRef = useRef<any>(null);
   const onScollReply = () => {
@@ -54,13 +56,13 @@ const ReplyDrawer: FC<{
       cmtId,
       (result) => {
         setAllReplyComments(result.allReplyComments);
+        setListLoading(false);
       },
       (error) => {
         message.error(error);
+        setListLoading(false);
       }
     );
-
-    setListLoading(false);
   };
   const fetchAllReplyComment = () => {
     if (replyDrawer.sltCommentId) {
@@ -76,16 +78,18 @@ const ReplyDrawer: FC<{
     <Element name="reply_cmt_drawer">
       <Drawer
         title={
-          <Space align="center">
-            <Avatar
-              size={40}
-              src={sltComment?.user?.image}
-              icon={<UserOutlined rev={undefined} />}
-              className={styles.user_icon}
-              alt="Profile"
-            />
-            <h3 style={{ marginBottom: 0 }}>{sltComment?.user?.name}</h3>
-          </Space>
+          <Skeleton avatar title={false} loading={listLoading} active>
+            <Space align="center">
+              <Avatar
+                size={40}
+                src={sltComment?.user?.image}
+                icon={<UserOutlined rev={undefined} />}
+                className={styles.user_icon}
+                alt="Profile"
+              />
+              <h3 style={{ marginBottom: 0 }}>{sltComment?.user?.name}</h3>
+            </Space>
+          </Skeleton>
         }
         width={isMax415Width ? "100%" : 500}
         className={styles.reply_drawer}
@@ -110,17 +114,16 @@ const ReplyDrawer: FC<{
         <div id="reply_cmt_list" ref={scrollRef}>
           <section className={styles.list_reply_cmt} id="list_reply_cmt">
             {listLoading ? (
-              <Skeleton
-                className={styles.comment_box}
-                avatar
-                title={{ width: "100%" }}
-                paragraph={{ rows: 2, width: "100%" }}
-              />
+              <Flex vertical gap={10} className={styles.comment_box}>
+                {dummyReply.map((n) => {
+                  return <Skeleton avatar title={false} loading={true} active></Skeleton>;
+                })}
+              </Flex>
             ) : (
               allReplyComments.map((comment, i) => {
                 return (
                   <CommentBox
-                    replyList={false}
+                    replyList={true}
                     showReplyDrawer={() => {}}
                     resourceId={resourceId}
                     comment={comment}

@@ -296,7 +296,7 @@
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
 
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-primary);
       .tag_commented {
         padding: 5px 10px 15px 10px;
         margin: 5px 0;
@@ -342,12 +342,15 @@
         .comment_text_wrapper {
           padding: 10px;
           height: 100%;
+          border-radius: 8px;
+          border-top-left-radius: 0px;
+          background-color: var(--bg-primary);
         }
         border-radius: 8px;
         white-space: pre-wrap;
         .qa_edit_input {
           min-height: 80px;
-          background-color: var(--bg-primary);
+          background-color: var(--bg-secondary);
         }
       }
     }
@@ -381,21 +384,22 @@
   overflow-x: hidden;
 
   .headerWrapper {
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
   }
   .bodyWrapper {
     overflow: auto;
     padding: 0px 15px;
+    background-color: var(--bg-secondary);
   }
   .footerWrapper {
     border: none;
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-primary);
     padding: 10px 15px;
     padding-bottom: 0;
   }
   .list_reply_cmt {
     height: 75vh;
-    background-color: var(--bg-primary);
+    background-color: var(--bg-secondary);
     color: var(--font-primary);
     .comment_time {
       color: var(--label-color);
@@ -422,7 +426,7 @@
       display: flex;
       justify-content: right;
 
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-primary);
 
       img {
         cursor: pointer;
