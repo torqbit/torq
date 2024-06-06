@@ -81,6 +81,7 @@ const LearnCoursesPage: NextPage = () => {
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
+          console.log(result, "result");
           setCourseDetail(result);
         },
         (error) => {

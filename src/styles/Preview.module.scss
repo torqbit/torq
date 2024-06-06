@@ -30,11 +30,16 @@
     background-image: linear-gradient(to bottom, rgba(4, 0, 0, 0.2), rgba(4, 0, 0, 2), rgba(0, 0, 0, 5));
 
     width: 800px;
+    h2 {
+      color: #fff;
+    }
+    p {
+      color: var(--font-secondary);
+    }
     h2,
     p {
       margin: 0;
       padding: 0;
-      color: var(--font-secondary);
 
       max-width: 400px;
     }
