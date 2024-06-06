@@ -11,7 +11,6 @@ import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/R
 import { IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { INotification } from "@/lib/types/discussions";
 import { DummydataList } from "@/lib/dummyData";
-import { useAppContext } from "@/components/ContextApi/AppContext";
 
 const NotificationList: FC = () => {
   const { data: user } = useSession();
@@ -27,7 +26,6 @@ const NotificationList: FC = () => {
   const [notificationsList, setNotificationsList] = useState<INotification[]>();
 
   const [selectedNotification, setSelectedNotification] = useState<INotification>();
-  const { globalState, dispatch } = useAppContext();
 
   const showReplyDrawer = (item?: INotification) => {
     !replyDrawer.isOpen &&
@@ -73,7 +71,15 @@ const NotificationList: FC = () => {
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
           (result) => {
-            getNotification();
+            // getNotification();
+            let updatedNofitcationList = notificationsList?.map((n) => {
+              if (n.id === selectedNotification?.id) {
+                return { ...n, isView: true };
+              } else {
+                return n;
+              }
+            });
+            setNotificationsList(updatedNofitcationList);
           },
           (error) => {}
         );

@@ -115,6 +115,8 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       (result) => {
         if (result.countUnreadNotifications) {
           dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
+        } else {
+          dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: 0 });
         }
       },
       (error) => {}

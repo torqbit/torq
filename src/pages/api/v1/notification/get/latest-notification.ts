@@ -20,6 +20,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       where: {
         toUserId: token?.id,
         isView: false,
+        NOT: {
+          fromUserId: token?.id,
+        },
       },
     });
 
