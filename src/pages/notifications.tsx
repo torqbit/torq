@@ -21,7 +21,7 @@ const NotificationList: FC = () => {
     isOpen: false,
     sltCommentId: 0,
   });
-
+  const [notificationsCount, setNotificationsCount] = useState<number>();
   const [notifications, setNotifications] = useState<INotification[]>();
   const [notificationsList, setNotificationsList] = useState<INotification[]>();
 
@@ -51,6 +51,7 @@ const NotificationList: FC = () => {
         (result) => {
           setNotifications(result.notifications);
           setNotificationsList(result.notifications);
+          setNotificationsCount(result.notificationsCount);
           setLoading(false);
         },
         (error) => {
@@ -70,7 +71,15 @@ const NotificationList: FC = () => {
         NotificationService.updateNotification(
           Number(selectedNotification?.id),
           (result) => {
-            getNotification();
+            // getNotification();
+            let updatedNofitcationList = notificationsList?.map((n) => {
+              if (n.id === selectedNotification?.id) {
+                return { ...n, isView: true };
+              } else {
+                return n;
+              }
+            });
+            setNotificationsList(updatedNofitcationList);
           },
           (error) => {}
         );
@@ -105,7 +114,12 @@ const NotificationList: FC = () => {
   }, [user?.id]);
 
   const loadMore =
-    !dataLoading && !loading ? (
+    !dataLoading &&
+    !loading &&
+    notificationsList &&
+    notificationsCount &&
+    notificationsCount > 10 &&
+    notificationsCount > notificationsList?.length ? (
       <>
         {!allNotificationRender && (
           <Flex style={{ marginTop: 20 }} align="center" justify="center">
@@ -115,7 +129,7 @@ const NotificationList: FC = () => {
                 onLoadMore();
               }}
             >
-              loading more
+              Load More
             </Button>
           </Flex>
         )}
@@ -135,8 +149,6 @@ const NotificationList: FC = () => {
       renderItem={(item, index) => (
         <List.Item
           onClick={() => {
-            console.log(item, "itme");
-
             showReplyDrawer(item);
           }}
           className={styles.notification_bar}

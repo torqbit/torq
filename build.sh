@@ -1,9 +1,11 @@
+#!/bin/bash
+cd /opt/torqbit
 pm2 stop $2
-rm -rf console
+rm -rf torq
 
 
-git clone https://amezng:${GH_TOKEN}@github.com/torqbit/console.git
-cd console
+git clone https://amezng:${GH_TOKEN}@github.com/torqbit/torq.git
+cd torq
 git fetch --all
 git checkout $1
 
@@ -20,6 +22,8 @@ DATABASE_URL=$DATABASE_URL
 NEXT_PUBLIC_SECRET=$NEXT_PUBLIC_SECRET
 NEXTAUTH_URL=$NEXTAUTH_URL
 NEXT_PUBLIC_APP_ENV=$NEXT_PUBLIC_APP_ENV
+.NODE_ENV=$NODE_ENV
+MEDIA_UPLOAD_PATH=$MEDIA_UPLOAD_PATH
 GOOGLE_ID=$GOOGLE_ID
 GOOGLE_SECRET=$GOOGLE_SECRET
 IKIT_PUBLIC_KEY=$IKIT_PUBLIC_KEY
@@ -27,6 +31,9 @@ IKIT_PRIVATE_KEY=$IKIT_PRIVATE_KEY
 IKIT_URL_ENDPOINT=$IKIT_URL_ENDPOINT
 IKIT_AUTH_ENDPOINT=$IKIT_AUTH_ENDPOINT
 PDF_DIRECTORY=$PDF_DIRECTORY
+NEXT_SMTP_HOST=$NEXT_SMTP_HOST
+NEXT_SMTP_USER=$NEXT_SMTP_USER
+NEXT_SMTP_PASSWORD=$NEXT_SMTP_PASSWORD
 
 EOF
 yarn install
@@ -34,5 +41,4 @@ npx prisma generate
 npx prisma db push
 yarn build
 cp -R .next/static/ /var/www/console/.next
-pm2 start torqbit-dev
-
+pm2 start $2
