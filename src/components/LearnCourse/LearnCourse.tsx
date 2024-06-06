@@ -324,7 +324,7 @@ const LearnCourse: FC<{}> = () => {
   useEffect(() => {
     setLoading(true);
     router.query.courseId &&
-      ProgramService.getCourses(
+      ProgramService.getCourseDetails(
         Number(router.query.courseId),
         (result) => {
           if (result.courseDetails?.chapters.filter((c) => c.state === "ACTIVE").length === 0) {

@@ -215,6 +215,32 @@ class ProgramService {
     });
   };
 
+  getCourseDetails = (
+    courseId: number,
+    onSuccess: (response: CourseAPIResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/course/${courseId}/detail`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as CourseAPIResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
   getAllCourse = (
     programId: number,
     state: string,
