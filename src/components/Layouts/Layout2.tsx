@@ -108,23 +108,33 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     }
     dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: selectedMenu as ISiderMenu });
   };
-  let interval: any = undefined;
+  let intervalId: NodeJS.Timer | undefined;
 
-  const onCheckLatestNotification = () => {
-    interval = setInterval(() => {
-      NotificationService.countLatestNotification(
-        (result) => {
-          if (result.countUnreadNotifications) {
-            dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
-          }
-        },
-        (error) => {}
-      );
-    }, 5000);
+  const getLatestNotificationCount = () => {
+    NotificationService.countLatestNotification(
+      (result) => {
+        if (result.countUnreadNotifications) {
+          dispatch({ type: "SET_UNREAD_NOTIFICATION", payload: result.countUnreadNotifications });
+        }
+      },
+      (error) => {}
+    );
   };
   useEffect(() => {
     if (user) {
-      onCheckLatestNotification();
+      if (typeof intervalId === "undefined") {
+        intervalId = setInterval(() => {
+          getLatestNotificationCount();
+        }, 5000);
+      }
+    }
+    return () => intervalId && clearInterval(intervalId);
+  });
+
+  useEffect(() => {
+    if (user) {
+      getLatestNotificationCount();
+
       onChangeSelectedBar();
       const userSession = user.user as UserSession;
 
@@ -141,8 +151,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         type: "SET_LOADER",
         payload: false,
       });
-    } else {
-      interval && clearInterval(interval);
     }
   }, [user]);
 

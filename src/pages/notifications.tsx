@@ -11,6 +11,7 @@ import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/R
 import { IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { INotification } from "@/lib/types/discussions";
 import { DummydataList } from "@/lib/dummyData";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 
 const NotificationList: FC = () => {
   const { data: user } = useSession();
@@ -21,11 +22,12 @@ const NotificationList: FC = () => {
     isOpen: false,
     sltCommentId: 0,
   });
-
+  const [totalNotificationsCount, setTotalNotificationsCount] = useState<number>();
   const [notifications, setNotifications] = useState<INotification[]>();
   const [notificationsList, setNotificationsList] = useState<INotification[]>();
 
   const [selectedNotification, setSelectedNotification] = useState<INotification>();
+  const { globalState, dispatch } = useAppContext();
 
   const showReplyDrawer = (item?: INotification) => {
     !replyDrawer.isOpen &&
@@ -51,6 +53,7 @@ const NotificationList: FC = () => {
         (result) => {
           setNotifications(result.notifications);
           setNotificationsList(result.notifications);
+          setTotalNotificationsCount(result.totalNotificationsCount);
           setLoading(false);
         },
         (error) => {
@@ -105,7 +108,12 @@ const NotificationList: FC = () => {
   }, [user?.id]);
 
   const loadMore =
-    !dataLoading && !loading ? (
+    !dataLoading &&
+    !loading &&
+    notificationsList &&
+    totalNotificationsCount &&
+    totalNotificationsCount > 10 &&
+    totalNotificationsCount > notificationsList?.length ? (
       <>
         {!allNotificationRender && (
           <Flex style={{ marginTop: 20 }} align="center" justify="center">
@@ -115,7 +123,7 @@ const NotificationList: FC = () => {
                 onLoadMore();
               }}
             >
-              loading more
+              Load More
             </Button>
           </Flex>
         )}
@@ -135,8 +143,6 @@ const NotificationList: FC = () => {
       renderItem={(item, index) => (
         <List.Item
           onClick={() => {
-            console.log(item, "itme");
-
             showReplyDrawer(item);
           }}
           className={styles.notification_bar}
