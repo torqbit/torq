@@ -8,6 +8,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { useMediaPredicate } from "react-media-hook";
 import { Element, animateScroll as scroll, scrollSpy, scroller } from "react-scroll";
 import DiscussionsService from "@/services/DiscussionsService";
+import { getDummyArray } from "@/lib/dummyData";
 
 const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
@@ -18,7 +19,6 @@ const ReplyDrawer: FC<{
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
-  const dummyReply = Array.from({ length: 8 }, (_, index) => index + 1);
 
   const isMax415Width = useMediaPredicate("(max-width: 415px)");
   const scrollRef = useRef<any>(null);
@@ -115,7 +115,7 @@ const ReplyDrawer: FC<{
           <section className={styles.list_reply_cmt} id="list_reply_cmt">
             {listLoading ? (
               <Flex vertical gap={10} className={styles.comment_box}>
-                {dummyReply.map((n) => {
+                {getDummyArray(8).map((n) => {
                   return <Skeleton avatar title={false} loading={true} active></Skeleton>;
                 })}
               </Flex>
