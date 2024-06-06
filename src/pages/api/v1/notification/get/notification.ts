@@ -82,7 +82,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const notifications = token?.id && (await getNotifi(token?.id, Number(limit), Number(offSet)));
 
     if (notifications && notifications.length > 0) {
-      const totalNotificationsCount = await prisma.notification.count({
+      const notificationsCount = await prisma.notification.count({
         where: {
           toUserId: token.id,
           NOT: {
@@ -90,7 +90,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         },
       });
-      return res.status(200).json({ success: true, notifications, totalNotificationsCount });
+      return res.status(200).json({ success: true, notifications, notificationsCount });
     } else {
       res.status(400).json({ success: false, error: "No notifications" });
     }

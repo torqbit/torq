@@ -21,7 +21,7 @@ const NotificationList: FC = () => {
     isOpen: false,
     sltCommentId: 0,
   });
-  const [totalNotificationsCount, setTotalNotificationsCount] = useState<number>();
+  const [notificationsCount, setNotificationsCount] = useState<number>();
   const [notifications, setNotifications] = useState<INotification[]>();
   const [notificationsList, setNotificationsList] = useState<INotification[]>();
 
@@ -51,7 +51,7 @@ const NotificationList: FC = () => {
         (result) => {
           setNotifications(result.notifications);
           setNotificationsList(result.notifications);
-          setTotalNotificationsCount(result.totalNotificationsCount);
+          setNotificationsCount(result.notificationsCount);
           setLoading(false);
         },
         (error) => {
@@ -117,9 +117,9 @@ const NotificationList: FC = () => {
     !dataLoading &&
     !loading &&
     notificationsList &&
-    totalNotificationsCount &&
-    totalNotificationsCount > 10 &&
-    totalNotificationsCount > notificationsList?.length ? (
+    notificationsCount &&
+    notificationsCount > 10 &&
+    notificationsCount > notificationsList?.length ? (
       <>
         {!allNotificationRender && (
           <Flex style={{ marginTop: 20 }} align="center" justify="center">

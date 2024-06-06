@@ -17,7 +17,7 @@ export type ApiResponse = {
   notifications: INotification[];
   length: number;
   countUnreadNotifications: number;
-  totalNotificationsCount: number;
+  notificationsCount: number;
 };
 
 type FailedApiResponse = {
