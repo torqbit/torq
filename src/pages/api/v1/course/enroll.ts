@@ -6,7 +6,7 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
-import { getCookieName } from "@/lib/utils";
+import { addDays, getCookieName } from "@/lib/utils";
 import MailerService from "@/services/MailerService";
 
 export const validateReqBody = z.object({
@@ -60,12 +60,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let courseType = course?.courseType;
 
     if (course) {
-      const addDays = function (days: number) {
-        let date = new Date();
-        date.setDate(date.getDate() + days);
-        return date;
-      };
-
       const expiryDate = addDays(Number(course.expiryInDays));
 
       // IF COURSE IS FREE
