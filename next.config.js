@@ -3,11 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
-    if (cfg.cache && !dev) {
-      cfg.cache = Object.freeze({
+    if (config.cache && !dev) {
+      config.cache = Object.freeze({
         type: "memory",
       });
-      cfg.cache.maxMemoryGenerations = 0;
+      config.cache.maxMemoryGenerations = 0;
     }
     // Important: return the modified config
     return config;
