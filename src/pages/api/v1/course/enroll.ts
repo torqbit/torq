@@ -29,6 +29,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       where: {
         courseId: courseId,
       },
+      select: {
+        courseType: true,
+        thumbnail: true,
+        name: true,
+        expiryInDays: true,
+      },
     });
     let courseType = course?.courseType;
     if (!token || !token.isActive) {
