@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!token || !token.isActive) {
       return res.status(400).json({
         success: false,
-        message: " You don't have an active user",
+        error: " You don't have an active user",
       });
     }
 
@@ -41,9 +41,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     if (alreadyEnrolled) {
       return res.status(400).json({
-        success: true,
-        already: true,
-        message: "You have already enrolled in this course",
+        success: false,
+        error: "You have already enrolled in this course",
       });
     }
 
@@ -70,6 +69,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const expiryDate = addDays(Number(course.expiryInDays));
 
       // IF COURSE IS FREE
+
       if (courseType === "FREE") {
         await prisma.courseRegistration.create({
           data: {
