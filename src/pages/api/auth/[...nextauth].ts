@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
       const dbUser = await getUserByEmail(token?.email as string);
       if (trigger === "update" && session?.name) {
         token.name = session?.name;
+        token.phone = session?.phone;
       }
       if (!dbUser) {
         if (account) {
@@ -104,10 +105,13 @@ export const authOptions: NextAuthOptions = {
         session.isActive = token.isActive;
         session.user = token.user as Object;
         session.user.name = token.name;
+
         if ((trigger = "update" && newSession?.name)) {
-          session.user.name = newSession.name;
+          session.user.name = newSession?.name;
+          session.phone = newSession?.phone;
         }
       }
+
       return session;
     },
   },

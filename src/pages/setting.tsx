@@ -10,6 +10,7 @@ import { NextPage } from "next";
 import { Session } from "next-auth";
 import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 
 const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string; phone: string }) => void }> = ({
   user,
@@ -79,15 +80,17 @@ const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string
 const Setting: NextPage = () => {
   const { data: user, update } = useSession();
   const [messageApi, contextMessageHolder] = message.useMessage();
+  const { dispatch,globalState } = useAppContext();
 
   const onChange = (key: string) => {};
   const onUpdateProfile = async (info: { name: string; phone: string }) => {
-    update({ name: info.name });
     const res = await postFetch({ name: info.name, userId: user?.id, phone: info.phone }, "/api/user/update");
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
+      update(info);
+
+      dispatch({ type: "SET_USER", payload:{name:info.name,phone:info.phone,theme:globalState.theme} });
       messageApi.success(result.message);
-      window.location.reload();
     } else {
       messageApi.error(result.error);
     }
@@ -100,6 +103,7 @@ const Setting: NextPage = () => {
       children: user && <ProfileSetting user={user} onUpdateProfile={onUpdateProfile} />,
     },
   ];
+
   return (
     <Layout2>
       {contextMessageHolder}
