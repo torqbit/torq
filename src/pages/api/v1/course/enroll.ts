@@ -25,6 +25,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await req.body;
     const { courseId } = body;
 
+    // check is user Active
+
+    if (!token || !token.isActive) {
+      return res.status(400).json({
+        success: false,
+        message: " You don't have an active user",
+      });
+    }
+
+    // check user already enrolled
+
+    const alreadyEnrolled = await prisma.courseRegistration.findFirst({
+      where: { courseId: courseId, studentId: token?.id },
+    });
+    if (alreadyEnrolled) {
+      return res.status(400).json({
+        success: true,
+        already: true,
+        message: "You have already enrolled in this course",
+      });
+    }
+
     const course = await prisma.course.findUnique({
       where: {
         courseId: courseId,
@@ -37,12 +59,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     let courseType = course?.courseType;
-    if (!token || !token.isActive) {
-      return res.status(400).json({
-        success: false,
-        message: " You don't have an active user",
-      });
-    }
 
     if (course) {
       const addDays = function (days: number) {
@@ -53,24 +69,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const expiryDate = addDays(Number(course.expiryInDays));
 
-      // check is user Active
-
-      // check user already enrolled
-      const alreadyEnrolled = await prisma.courseRegistration.findFirst({
-        where: { courseId: courseId, studentId: token.id },
-      });
-      if (alreadyEnrolled) {
-        return res.status(201).json({
-          success: true,
-          already: true,
-          message: "You have already enrolled in this course",
-        });
-      }
-
       // IF COURSE IS FREE
       if (courseType === "FREE") {
-        // set expire duration in course
-
         await prisma.courseRegistration.create({
           data: {
             studentId: token.id,
@@ -100,10 +100,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           message: "Congratulations you have successfully enrolled this course",
         });
       }
+
+      // IF COURSE IS PAID
+
       if (courseType === "PAID") {
         return res.status(400).json({
           success: false,
-
           error: "Paid course not configured",
         });
       }
