@@ -11,7 +11,6 @@ import MailerService from "@/services/MailerService";
 
 export const validateReqBody = z.object({
   courseId: z.number(),
-  courseType: z.string(),
 });
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -24,13 +23,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
     const body = await req.body;
-    const { courseId, courseType } = body;
+    const { courseId } = body;
 
     const course = await prisma.course.findUnique({
       where: {
         courseId: courseId,
       },
     });
+    let courseType = course?.courseType;
     if (!token || !token.isActive) {
       return res.status(400).json({
         success: false,
