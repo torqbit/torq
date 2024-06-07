@@ -5,4 +5,5 @@ export interface UserSession {
   email?: string | null;
   image?: string | null;
   theme?: Theme;
+  phone?: string;
 }

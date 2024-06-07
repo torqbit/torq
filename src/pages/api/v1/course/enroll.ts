@@ -6,12 +6,11 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
-import { getCookieName } from "@/lib/utils";
+import { addDays, getCookieName } from "@/lib/utils";
 import MailerService from "@/services/MailerService";
 
 export const validateReqBody = z.object({
   courseId: z.number(),
-  courseType: z.string(),
 });
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -24,47 +23,48 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
     const body = await req.body;
-    const { courseId, courseType } = body;
+    const { courseId } = body;
+
+    // check is user Active
+
+    if (!token || !token.isActive) {
+      return res.status(400).json({
+        success: false,
+        error: " You don't have an active user",
+      });
+    }
+
+    // check user already enrolled
+
+    const alreadyEnrolled = await prisma.courseRegistration.findFirst({
+      where: { courseId: courseId, studentId: token?.id },
+    });
+    if (alreadyEnrolled) {
+      return res.status(400).json({
+        success: false,
+        error: "You have already enrolled in this course",
+      });
+    }
 
     const course = await prisma.course.findUnique({
       where: {
         courseId: courseId,
       },
+      select: {
+        courseType: true,
+        thumbnail: true,
+        name: true,
+        expiryInDays: true,
+      },
     });
-    if (!token || !token.isActive) {
-      return res.status(400).json({
-        success: false,
-        message: " You don't have an active user",
-      });
-    }
+    let courseType = course?.courseType;
 
     if (course) {
-      const addDays = function (days: number) {
-        let date = new Date();
-        date.setDate(date.getDate() + days);
-        return date;
-      };
-
       const expiryDate = addDays(Number(course.expiryInDays));
 
-      // check is user Active
-
-      // check user already enrolled
-      const alreadyEnrolled = await prisma.courseRegistration.findFirst({
-        where: { courseId: courseId, studentId: token.id },
-      });
-      if (alreadyEnrolled) {
-        return res.status(201).json({
-          success: true,
-          already: true,
-          message: "You have already enrolled in this course",
-        });
-      }
-
       // IF COURSE IS FREE
-      if (courseType === "FREE") {
-        // set expire duration in course
 
+      if (courseType === "FREE") {
         await prisma.courseRegistration.create({
           data: {
             studentId: token.id,
@@ -94,10 +94,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           message: "Congratulations you have successfully enrolled this course",
         });
       }
+
+      // IF COURSE IS PAID
+
       if (courseType === "PAID") {
         return res.status(400).json({
           success: false,
-
           error: "Paid course not configured",
         });
       }

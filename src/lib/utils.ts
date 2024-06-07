@@ -7,3 +7,9 @@ export const getCookieName = () => {
   }
   return cookieName;
 };
+
+export const addDays = function (days: number) {
+  let date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
+};

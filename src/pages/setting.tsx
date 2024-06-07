@@ -10,21 +10,14 @@ import { NextPage } from "next";
 import { Session } from "next-auth";
 import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 
-const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
-  const [messageApi, contextMessageHolder] = message.useMessage();
+const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string; phone: string }) => void }> = ({
+  user,
+  onUpdateProfile,
+}) => {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
 
-  const onUpdateProfile = async (info: { name: string; phone: string }) => {
-    const res = await postFetch({ name: info.name, userId: user?.id, phone: info.phone }, "/api/user/update");
-    const result = (await res.json()) as IResponse;
-    if (res.ok && result.success) {
-      messageApi.success(result.message);
-      window.location.reload();
-    } else {
-      messageApi.error(result.error);
-    }
-  };
   useEffect(() => {
     setPageLoading(true);
 
@@ -41,7 +34,6 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
         </>
       ) : (
         <section className={styles.user_profile_page}>
-          {contextMessageHolder}
           <div className={styles.content_center}>
             <div className={styles.left_content}>
               <img
@@ -86,19 +78,36 @@ const ProfileSetting: FC<{ user: Session }> = ({ user }) => {
 };
 
 const Setting: NextPage = () => {
-  const { data: user } = useSession();
+  const { data: user, update } = useSession();
+  const [messageApi, contextMessageHolder] = message.useMessage();
+  const { dispatch,globalState } = useAppContext();
 
   const onChange = (key: string) => {};
+  const onUpdateProfile = async (info: { name: string; phone: string }) => {
+    const res = await postFetch({ name: info.name, userId: user?.id, phone: info.phone }, "/api/user/update");
+    const result = (await res.json()) as IResponse;
+    if (res.ok && result.success) {
+      update(info);
+
+      dispatch({ type: "SET_USER", payload:{name:info.name,phone:info.phone,theme:globalState.theme} });
+      messageApi.success(result.message);
+    } else {
+      messageApi.error(result.error);
+    }
+  };
 
   const items: TabsProps["items"] = [
     {
       key: "1",
       label: "Profile",
-      children: user && <ProfileSetting user={user} />,
+      children: user && <ProfileSetting user={user} onUpdateProfile={onUpdateProfile} />,
     },
   ];
+
   return (
     <Layout2>
+      {contextMessageHolder}
+
       <section className={styleLayout.setting_content}>
         <h2>Hello {user?.user?.name}</h2>
         <h3>Setting</h3>

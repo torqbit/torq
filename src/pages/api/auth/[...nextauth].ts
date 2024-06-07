@@ -43,14 +43,19 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async jwt({ token, user, account, profile }) {
+    async jwt({ token, user, account, profile, trigger, session }) {
       const dbUser = await getUserByEmail(token?.email as string);
+      if (trigger === "update" && session?.name) {
+        token.name = session?.name;
+        token.phone = session?.phone;
+      }
       if (!dbUser) {
         if (account) {
           token.accessToken = account.access_token;
           token.id = user?.id;
           token.role = "AUTHOR";
         }
+
         const courses = await prisma?.course.findMany({
           take: 3,
           select: {
@@ -92,14 +97,21 @@ export const authOptions: NextAuthOptions = {
         },
       };
     },
-    async session({ session, token }) {
+    async session({ session, token, trigger, newSession }) {
       if (token) {
         session.id = token.id;
         session.role = token.role;
         session.phone = token.phone as string;
         session.isActive = token.isActive;
         session.user = token.user as Object;
+        session.user.name = token.name;
+
+        if ((trigger = "update" && newSession?.name)) {
+          session.user.name = newSession?.name;
+          session.phone = newSession?.phone;
+        }
       }
+
       return session;
     },
   },

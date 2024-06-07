@@ -13,9 +13,6 @@ import { useEffect, useState } from "react";
 
 const LearnCoursesPage: NextPage = () => {
   const router = useRouter();
-  const [videoUrl, setVideoUrl] = useState<string>();
-  const [chapterList, setChapterList] = useState<ChapterDetail[]>();
-  const [courseType, setCourseType] = useState<string>();
   const [courseDetail, setCourseDetail] = useState<CourseLessonAPIResponse>();
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>();
@@ -47,7 +44,6 @@ const LearnCoursesPage: NextPage = () => {
       const res = await postFetch(
         {
           courseId: Number(router.query.courseId),
-          courseType: courseType,
         },
         "/api/v1/course/enroll"
       );
