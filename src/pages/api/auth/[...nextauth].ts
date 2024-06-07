@@ -46,7 +46,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, profile, trigger, session }) {
       const dbUser = await getUserByEmail(token?.email as string);
       if (trigger === "update" && session?.name) {
-        console.log({ token, user, session }, "jwt data");
         token.name = session?.name;
       }
       if (!dbUser) {
