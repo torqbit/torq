@@ -1,14 +1,15 @@
 .learn_course_page {
-  padding: 20px 40px;
+  padding: 20px 0 0 20px;
   overflow-y: hidden;
   display: flex;
+  gap: 20px;
   .lessons_video_player_wrapper {
-    width: calc(100vw - 680px);
+    width: calc(100vw - 720px);
   }
   .video_container,
   .certificatePage {
     width: 100%;
-    height: 75vh;
+    aspect-ratio: 16/9;
     min-height: 400px;
     position: relative;
     background-color: var(--bg-primary);
