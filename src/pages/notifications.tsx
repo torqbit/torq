@@ -184,7 +184,6 @@ const NotificationList: FC = () => {
             replyDrawer={replyDrawer}
             onCloseDrawer={onCloseDrawer}
             resourceId={Number(selectedNotification?.resourceId)}
-            fetchAllDiscussion={() => {}}
           />
         </List.Item>
       )}

@@ -23,9 +23,7 @@ const QAForm: FC<{
 
   parentCommentId?: number;
   tagCommentId?: number;
-  onPost: (comment: string) => void;
-
-  onCloseDrawer?: () => void;
+  onPost: (comment: string, setComment: (value: string) => void, setLoading: (value: boolean) => void) => void;
 }> = ({
   parentCommentId,
   loadingPage,
@@ -33,7 +31,7 @@ const QAForm: FC<{
   style,
   resourceId,
   tagCommentId,
-  onCloseDrawer,
+
   onPost,
 }) => {
   const router = useRouter();
@@ -49,8 +47,7 @@ const QAForm: FC<{
           placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.shiftKey) {
-              onPost(comment);
-              setComment("");
+              onPost(comment, setComment, setLoading);
             }
           }}
           rows={3}
@@ -64,25 +61,21 @@ const QAForm: FC<{
       ) : (
         <Flex align="center" justify="right" className={styles.qa_form_footer}>
           <Space>
-            {loading ? (
-              <LoadingOutlined rev={undefined} style={{ fontSize: 20, color: "#4096ff" }} spin />
-            ) : (
-              <Button
-                type="primary"
-                className={styles.comment_post_btn}
-                style={{ marginTop: 10, marginBottom: 10 }}
-                onClick={() => {
-                  onPost(comment);
-                  setComment("");
-                }}
-                title="Post"
-              >
-                <Flex align="center" gap={10}>
-                  Post
-                  {SvgIcons.send}
-                </Flex>
-              </Button>
-            )}
+            <Button
+              type="primary"
+              loading={loading}
+              className={styles.comment_post_btn}
+              style={{ marginTop: 10, marginBottom: 10 }}
+              onClick={() => {
+                comment === "" ? message.warning("add a comment first") : onPost(comment, setComment, setLoading);
+              }}
+              title="Post"
+            >
+              <Flex align="center" gap={10}>
+                Post
+                {!loading && SvgIcons.send}
+              </Flex>
+            </Button>
           </Space>
         </Flex>
       )}

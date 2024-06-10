@@ -7,7 +7,7 @@ import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
 /**
- * api for adding a reply on comment
+ * Post reply on a query
  * @param req
  * @param res
  * @returns
@@ -67,7 +67,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
       });
 
-      return res.status(200).json({ success: true });
+      const CommentData = await prisma.discussion.findUnique({
+        where: {
+          id: addDiscussion.id,
+        },
+
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      return res.status(200).json({ success: true, comment: CommentData });
     } else {
       return res.status(400).json({ success: false, error: "You are not enrolled to this course" });
     }

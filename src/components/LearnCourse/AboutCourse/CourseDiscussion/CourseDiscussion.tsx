@@ -60,6 +60,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       resourceId,
       pageSize,
       (result) => {
+        console.log(allComments, "all");
         setAllComments(result.allComments);
         setTotalCmt(result.total);
       },
@@ -89,7 +90,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         Number(query.notifi),
 
         (result) => {
-          fetchAllDiscussion();
+          allComments.map((c) => {});
         },
         (error) => {
           message.error(error);
@@ -115,19 +116,26 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       getAllDiscussioin(resourceId, newPageSize);
     }
   };
-  const onPostQA = async (comment: string) => {
+  const onQueryPost = async (
+    comment: string,
+    setComment: (value: string) => void,
+    setLoading: (value: boolean) => void
+  ) => {
     try {
-      DiscussionsService.postParentComment(
+      setLoading(true);
+      DiscussionsService.postQuery(
         resourceId,
         Number(router.query.courseId),
         comment,
         (result) => {
           message.success("comment added");
-          fetchAllDiscussion();
-          onCloseDrawer && onCloseDrawer();
+          allComments.unshift(result.comment);
+          setComment("");
+          setLoading(false);
         },
         (error) => {
           message.error(error);
+          setLoading(false);
         }
       );
     } catch (error) {}
@@ -135,7 +143,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm loadingPage={loading} resourceId={resourceId} placeholder="Ask a Question" onPost={onPostQA} />
+      <QAForm loadingPage={loading} resourceId={resourceId} placeholder="Ask a Question" onPost={onQueryPost} />
 
       {allComments.map((comment, i) => {
         return (
@@ -145,17 +153,13 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             comment={comment}
             key={i}
             replyList={false}
-            fetchAllDiscussion={fetchAllDiscussion}
+            allComment={allComments}
+            setAllComment={setAllComments}
           />
         );
       })}
 
-      <ReplyDrawer
-        replyDrawer={replyDrawer}
-        resourceId={resourceId}
-        onCloseDrawer={onCloseDrawer}
-        fetchAllDiscussion={fetchAllDiscussion}
-      />
+      <ReplyDrawer replyDrawer={replyDrawer} resourceId={resourceId} onCloseDrawer={onCloseDrawer} />
       {totalCmt !== allComments.length && (
         <Divider>
           <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>

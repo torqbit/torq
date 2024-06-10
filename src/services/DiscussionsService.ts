@@ -24,7 +24,7 @@ type FailedApiResponse = {
   error: string;
 };
 class DiscussionsSerivice {
-  postParentComment = (
+  postQuery = (
     lessonId: number,
     courseId: number,
     comment: string,
@@ -48,7 +48,7 @@ class DiscussionsSerivice {
     );
   };
 
-  postReplyComment = (
+  postReply = (
     lessonId: number,
     courseId: number,
     comment: string,

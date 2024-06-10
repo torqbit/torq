@@ -15,8 +15,7 @@ const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
   onCloseDrawer: () => void;
   resourceId: number;
-  fetchAllDiscussion: () => void;
-}> = ({ replyDrawer, onCloseDrawer, resourceId, fetchAllDiscussion }) => {
+}> = ({ replyDrawer, onCloseDrawer, resourceId }) => {
   const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
@@ -73,21 +72,28 @@ const ReplyDrawer: FC<{
     }
   };
 
-  const onPostQA = async (comment: string) => {
+  const onPostReply = async (
+    comment: string,
+    setComment: (value: string) => void,
+    setLoading: (value: boolean) => void
+  ) => {
     try {
-      DiscussionsService.postReplyComment(
+      setLoading(true);
+      DiscussionsService.postReply(
         resourceId,
         Number(router.query.courseId),
         comment,
         Number(sltComment?.id),
         (result) => {
           message.success("comment added ");
-          onCloseDrawer && onCloseDrawer();
-          fetchAllDiscussion();
-          fetchAllReplyComment();
+          allReplyComments.unshift(result.comment);
+          setComment("");
+          setLoading(false);
+          onScollReply();
         },
         (error) => {
           message.error(error);
+          setLoading(false);
         }
       );
     } catch (error) {}
@@ -125,8 +131,7 @@ const ReplyDrawer: FC<{
             parentCommentId={replyDrawer.sltCommentId}
             placeholder="Reply"
             loadingPage={false}
-            onCloseDrawer={onCloseDrawer}
-            onPost={onPostQA}
+            onPost={onPostReply}
           />
         }
       >
@@ -148,10 +153,8 @@ const ReplyDrawer: FC<{
                     comment={comment}
                     parentCommentId={replyDrawer.sltCommentId}
                     key={i}
-                    fetchAllDiscussion={() => {
-                      onScollReply();
-                      fetchAllDiscussion();
-                    }}
+                    allComment={allReplyComments}
+                    setAllComment={setAllReplyComments}
                   />
                 );
               })

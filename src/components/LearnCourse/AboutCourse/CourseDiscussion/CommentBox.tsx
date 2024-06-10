@@ -26,10 +26,21 @@ const CommentBox: FC<{
   parentCommentId?: number;
   comment: IComments;
   replyList: boolean;
-  fetchAllDiscussion: () => void;
+
   showReplyDrawer: (cmt: IComments) => void;
   reFreshReplyCommnet?: boolean;
-}> = ({ comment, fetchAllDiscussion, replyList, resourceId, parentCommentId, showReplyDrawer }) => {
+  allComment?: IComments[];
+  setAllComment: (value: IComments[]) => void;
+}> = ({
+  comment,
+
+  replyList,
+  resourceId,
+  parentCommentId,
+  showReplyDrawer,
+  allComment,
+  setAllComment,
+}) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,7 +71,8 @@ const CommentBox: FC<{
       cmtId,
       (result) => {
         message.success(result.message);
-        fetchAllDiscussion();
+        const commentLeft = allComment?.filter((c) => c.id !== cmtId);
+        commentLeft && setAllComment(commentLeft);
         if (replyList) {
           getTotalReplyCmt(comment.id);
         }
@@ -90,7 +102,7 @@ const CommentBox: FC<{
       comment.id,
       editComment,
       (result) => {
-        fetchAllDiscussion();
+        comment.comment = editComment;
         message.success(result.message);
         setEditComment(result.comment.comment);
         setEdited(false);

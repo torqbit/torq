@@ -7,7 +7,7 @@ import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
 /**
- * api for adding a comment
+ * Post a query
  * @param req
  * @param res
  * @returns
@@ -50,6 +50,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           resourceId: lessonId,
           comment: comment,
         },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
       });
       if (isEnrolled.course.user.id != token?.id) {
         await prisma.notification.create({
@@ -61,7 +70,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         });
       }
-      return res.status(200).json({ success: true });
+
+      return res.status(200).json({ success: true, comment: addDiscussion });
     } else {
       return res.status(400).json({ success: false, error: "You are not enrolled to this course" });
     }
