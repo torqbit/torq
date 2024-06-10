@@ -60,7 +60,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       resourceId,
       pageSize,
       (result) => {
-        console.log(allComments, "all");
         setAllComments(result.allComments);
         setTotalCmt(result.total);
       },
@@ -89,9 +88,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       NotificationService.updateNotification(
         Number(query.notifi),
 
-        (result) => {
-          allComments.map((c) => {});
-        },
+        (result) => {},
         (error) => {
           message.error(error);
         }

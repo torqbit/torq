@@ -125,7 +125,7 @@ class DiscussionsSerivice {
       }
     });
   };
-  getReplyCount = (
+  getTotalReplies = (
     parentCmtId: number,
 
     onSuccess: (response: ApiResponse) => void,
@@ -146,7 +146,7 @@ class DiscussionsSerivice {
     });
   };
 
-  getAllReply = (
+  getAllReplies = (
     parentCmtId: number,
 
     onSuccess: (response: ApiResponse) => void,

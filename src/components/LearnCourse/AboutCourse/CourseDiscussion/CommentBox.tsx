@@ -51,7 +51,7 @@ const CommentBox: FC<{
   const attachedFiles = comment.attachedFiles as any;
 
   const getTotalReplyCmt = async (id: number) => {
-    DiscussionsService.getReplyCount(
+    DiscussionsService.getTotalReplies(
       id,
       (result) => {
         setAllReplyCmtCount(result.allReplyCmts);

@@ -51,9 +51,9 @@ const ReplyDrawer: FC<{
     } catch (err) {}
   };
 
-  const getAllReplyComment = async (cmtId: number) => {
+  const getAllReplies = async (cmtId: number) => {
     setListLoading(true);
-    DiscussionsService.getAllReply(
+    DiscussionsService.getAllReplies(
       cmtId,
       (result) => {
         setAllReplyComments(result.allReplyComments);
@@ -67,7 +67,7 @@ const ReplyDrawer: FC<{
   };
   const fetchAllReplyComment = () => {
     if (replyDrawer.sltCommentId) {
-      getAllReplyComment(replyDrawer.sltCommentId);
+      getAllReplies(replyDrawer.sltCommentId);
       getCommentById(replyDrawer.sltCommentId);
     }
   };
