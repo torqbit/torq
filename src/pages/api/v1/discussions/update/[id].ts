@@ -23,7 +23,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    return res.status(200).json({ comment: newComment, success: true, message: "Comment Edited" });
+    return res
+      .status(200)
+      .json({
+        comment: newComment,
+        success: true,
+        message: newComment.parentCommentId ? "Reply has been edited" : "Query has been edited",
+      });
   } catch (error) {
     return errorHandler(error, res);
   }
