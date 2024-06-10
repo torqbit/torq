@@ -9,6 +9,7 @@ import { useMediaPredicate } from "react-media-hook";
 import { Element, animateScroll as scroll, scrollSpy, scroller } from "react-scroll";
 import DiscussionsService from "@/services/DiscussionsService";
 import { getDummyArray } from "@/lib/dummyData";
+import { useRouter } from "next/router";
 
 const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
@@ -16,6 +17,7 @@ const ReplyDrawer: FC<{
   resourceId: number;
   fetchAllDiscussion: () => void;
 }> = ({ replyDrawer, onCloseDrawer, resourceId, fetchAllDiscussion }) => {
+  const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
@@ -52,7 +54,7 @@ const ReplyDrawer: FC<{
 
   const getAllReplyComment = async (cmtId: number) => {
     setListLoading(true);
-    DiscussionsService.getAllReplyCount(
+    DiscussionsService.getAllReply(
       cmtId,
       (result) => {
         setAllReplyComments(result.allReplyComments);
@@ -69,6 +71,26 @@ const ReplyDrawer: FC<{
       getAllReplyComment(replyDrawer.sltCommentId);
       getCommentById(replyDrawer.sltCommentId);
     }
+  };
+
+  const onPostQA = async (comment: string) => {
+    try {
+      DiscussionsService.postReplyComment(
+        resourceId,
+        Number(router.query.courseId),
+        comment,
+        Number(sltComment?.id),
+        (result) => {
+          message.success("Comment Added");
+          onCloseDrawer && onCloseDrawer();
+          fetchAllDiscussion();
+          fetchAllReplyComment();
+        },
+        (error) => {
+          message.error("Comment not Added");
+        }
+      );
+    } catch (error) {}
   };
 
   React.useEffect(() => {
@@ -102,12 +124,9 @@ const ReplyDrawer: FC<{
             resourceId={resourceId}
             parentCommentId={replyDrawer.sltCommentId}
             placeholder="Reply"
-            fetchAllDiscussion={() => {
-              fetchAllReplyComment();
-              fetchAllDiscussion();
-            }}
             loadingPage={false}
             onCloseDrawer={onCloseDrawer}
+            onPost={onPostQA}
           />
         }
       >

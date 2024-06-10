@@ -36,6 +36,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   const [allComments, setAllComments] = useState<IComments[]>([]);
   const [pageSize, setPageSize] = useState<number>(3);
   const [totalCmt, setTotalCmt] = useState<number>(0);
+
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
     isOpen: false,
@@ -114,15 +115,28 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       getAllDiscussioin(resourceId, newPageSize);
     }
   };
+  const onPostQA = async (comment: string) => {
+    try {
+      DiscussionsService.postParentComment(
+        resourceId,
+        Number(router.query.courseId),
+        comment,
+        (result) => {
+          message.success("Comment Added");
+          fetchAllDiscussion();
+
+          onCloseDrawer && onCloseDrawer();
+        },
+        (error) => {
+          message.error("Comment not Added");
+        }
+      );
+    } catch (error) {}
+  };
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm
-        loadingPage={loading}
-        resourceId={resourceId}
-        placeholder="Ask a Question"
-        fetchAllDiscussion={fetchAllDiscussion}
-      />
+      <QAForm loadingPage={loading} resourceId={resourceId} placeholder="Ask a Question" onPost={onPostQA} />
 
       {allComments.map((comment, i) => {
         return (
@@ -131,7 +145,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             showReplyDrawer={showReplyDrawer}
             comment={comment}
             key={i}
-            replyList={true}
+            replyList={false}
             fetchAllDiscussion={fetchAllDiscussion}
           />
         );

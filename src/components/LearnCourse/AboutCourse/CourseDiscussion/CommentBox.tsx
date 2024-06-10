@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
 import { Avatar, Button, Input, Popconfirm, Space, message } from "antd";
 import { UserOutlined, DeleteOutlined, EditOutlined, CloseOutlined } from "@ant-design/icons";
@@ -28,10 +28,10 @@ const CommentBox: FC<{
   replyList: boolean;
   fetchAllDiscussion: () => void;
   showReplyDrawer: (cmt: IComments) => void;
+  reFreshReplyCommnet?: boolean;
 }> = ({ comment, fetchAllDiscussion, replyList, resourceId, parentCommentId, showReplyDrawer }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
-  const { dispatch } = useAppContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [editActive, setEditActive] = useState<boolean>(false);
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
@@ -40,10 +40,10 @@ const CommentBox: FC<{
   const attachedFiles = comment.attachedFiles as any;
 
   const getTotalReplyCmt = async (id: number) => {
-    DiscussionsService.getAllReplyCount(
+    DiscussionsService.getReplyCount(
       id,
       (result) => {
-        setAllReplyCmtCount(result.allReplyComments.length);
+        setAllReplyCmtCount(result.allReplyCmts);
       },
       (error) => {
         message.error(error);
@@ -52,9 +52,7 @@ const CommentBox: FC<{
   };
 
   React.useEffect(() => {
-    if (replyList) {
-      getTotalReplyCmt(comment.id);
-    }
+    getTotalReplyCmt(comment.id);
   }, [comment.id]);
 
   const onDeleteComment = async (cmtId: number) => {
@@ -175,7 +173,7 @@ const CommentBox: FC<{
               )}
             </div>
           </div>
-          {replyList && (
+          {!replyList && (
             <div className={styles.comment_footer}>
               <div className={styles.reply_btn}>
                 {isEdited ? (
@@ -189,7 +187,7 @@ const CommentBox: FC<{
                   </Space>
                 ) : (
                   <Space align="center">
-                    {replyList && (
+                    {
                       <span
                         onClick={() => {
                           onUpdateMultipleNotificaton();
@@ -201,7 +199,7 @@ const CommentBox: FC<{
                           "Cancel"
                         ) : (
                           <span>
-                            {allReplyCmtCount > 0 && replyList && (
+                            {allReplyCmtCount > 0 && (
                               <span>
                                 {" "}
                                 {allReplyCmtCount === 1 ? `${allReplyCmtCount} Reply` : `${allReplyCmtCount} Replies`}
@@ -210,7 +208,7 @@ const CommentBox: FC<{
                           </span>
                         )}
                       </span>
-                    )}
+                    }
 
                     {attachedFiles?.length > 0 && (
                       <ImagePreview imgs={attachedFiles?.map((img: IAttachedFiles) => img.url)} />

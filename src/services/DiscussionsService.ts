@@ -1,7 +1,6 @@
 import { Course, Discussion } from "@prisma/client";
 
-import { getFetch, postFetch, postWithFile } from "./request";
-import { ICommentInfo } from "@/lib/types/discussions";
+import { getFetch, postFetch } from "./request";
 import { IComments } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 export interface ICourseList extends Course {
   courseId: number;
@@ -25,8 +24,42 @@ type FailedApiResponse = {
   error: string;
 };
 class DiscussionsSerivice {
-  addComment = (formData: any, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    postWithFile(formData, `/api/v1/discussions/add/`).then((result) => {
+  postParentComment = (
+    lessonId: number,
+    courseId: number,
+    comment: string,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    postFetch({ lessonId: lessonId, courseId: courseId, comment: comment }, `/api/v1/discussions/post/`).then(
+      (result) => {
+        if (result.status == 400) {
+          result.json().then((r) => {
+            const failedResponse = r as FailedApiResponse;
+            onFailure(failedResponse.error);
+          });
+        } else if (result.status == 200) {
+          result.json().then((r) => {
+            const apiResponse = r as ApiResponse;
+            onSuccess(apiResponse);
+          });
+        }
+      }
+    );
+  };
+
+  postReplyComment = (
+    lessonId: number,
+    courseId: number,
+    comment: string,
+    parentCommentId: number,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    postFetch(
+      { lessonId: lessonId, courseId: courseId, comment: comment, parentCommentId: parentCommentId },
+      `/api/v1/discussions/add-reply-post/`
+    ).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -113,7 +146,7 @@ class DiscussionsSerivice {
     });
   };
 
-  getAllReplyCount = (
+  getAllReply = (
     parentCmtId: number,
 
     onSuccess: (response: ApiResponse) => void,
