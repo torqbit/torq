@@ -1,9 +1,7 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
 import { Avatar, Button, Input, Popconfirm, Space, message } from "antd";
-import { UserOutlined, DeleteOutlined, EditOutlined, CloseOutlined } from "@ant-design/icons";
-import Image from "next/image";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { UserOutlined, CloseOutlined } from "@ant-design/icons";
 import { useSession } from "next-auth/react";
 import moment from "moment";
 import { IComments } from "./CourseDiscussion";
@@ -11,7 +9,6 @@ import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
-import { useAppContext } from "@/components/ContextApi/AppContext";
 import SvgIcons from "@/components/SvgIcons";
 moment.locale("en", { ...customFromNow });
 

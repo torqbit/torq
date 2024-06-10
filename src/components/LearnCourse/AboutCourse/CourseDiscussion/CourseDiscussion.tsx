@@ -1,13 +1,11 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
-import { Button, Divider, Drawer, message, Upload } from "antd";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { Button, Divider, message } from "antd";
 import { Discussion } from "@prisma/client";
 import QAForm from "./DiscussionForm";
 import CommentBox from "./CommentBox";
 import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
-import { useAppContext } from "@/components/ContextApi/AppContext";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 
@@ -31,12 +29,10 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   loading,
 }) => {
   const router = useRouter();
-  const { dispatch } = useAppContext();
   const query = router.query;
   const [allComments, setAllComments] = useState<IComments[]>([]);
   const [pageSize, setPageSize] = useState<number>(3);
   const [totalCmt, setTotalCmt] = useState<number>(0);
-
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
     isOpen: false,
@@ -140,7 +136,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm loadingPage={loading} resourceId={resourceId} placeholder="Ask a Question" onPost={onQueryPost} />
+      <QAForm loadingPage={loading} placeholder="Ask a Question" onPost={onQueryPost} />
 
       {allComments.map((comment, i) => {
         return (

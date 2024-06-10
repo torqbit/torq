@@ -1,40 +1,22 @@
-import { Badge, Button, Flex, Skeleton, UploadFile, UploadProps } from "antd";
+import { Button, Flex, Skeleton } from "antd";
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
-import { Input, Modal, Space, Tooltip, message, Upload } from "antd";
-import { LoadingOutlined, InboxOutlined } from "@ant-design/icons";
-import Image from "next/image";
-import { IResponse, postWithFile } from "@/services/request";
-import { useSession } from "next-auth/react";
-import { bytesToSize } from "@/services/helper";
-import appConstant from "@/services/appConstant";
-import DiscussionsService from "@/services/DiscussionsService";
-import { error } from "console";
+import { Input, Space, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { IReplyDrawer } from "./CourseDiscussion";
-import { useRouter } from "next/router";
-const { Dragger } = Upload;
 
 const QAForm: FC<{
   loadingPage: boolean;
   style?: React.CSSProperties;
   placeholder?: string;
-  resourceId: number;
 
-  parentCommentId?: number;
-  tagCommentId?: number;
   onPost: (comment: string, setComment: (value: string) => void, setLoading: (value: boolean) => void) => void;
 }> = ({
-  parentCommentId,
   loadingPage,
   placeholder = "Ask a Question",
   style,
-  resourceId,
-  tagCommentId,
 
   onPost,
 }) => {
-  const router = useRouter();
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 

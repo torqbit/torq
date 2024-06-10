@@ -125,15 +125,7 @@ const ReplyDrawer: FC<{
         placement="right"
         onClose={onCloseDrawer}
         open={replyDrawer.isOpen}
-        footer={
-          <QAForm
-            resourceId={resourceId}
-            parentCommentId={replyDrawer.sltCommentId}
-            placeholder="Reply"
-            loadingPage={false}
-            onPost={onPostReply}
-          />
-        }
+        footer={<QAForm placeholder="Reply" loadingPage={false} onPost={onPostReply} />}
       >
         <div id="reply_cmt_list" ref={scrollRef}>
           <section className={styles.list_reply_cmt} id="list_reply_cmt">
