@@ -48,6 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         createdAt: "desc",
       },
     });
+
     return res.status(200).json({ success: true, allComments: allComments, total });
   } catch (err) {
     return errorHandler(err, res);

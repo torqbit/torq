@@ -1,13 +1,11 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
-import { Button, Divider, Drawer, message, Upload } from "antd";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { Button, Divider, message } from "antd";
 import { Discussion } from "@prisma/client";
 import QAForm from "./DiscussionForm";
 import CommentBox from "./CommentBox";
 import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
-import { useAppContext } from "@/components/ContextApi/AppContext";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 
@@ -31,7 +29,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   loading,
 }) => {
   const router = useRouter();
-  const { dispatch } = useAppContext();
   const query = router.query;
   const [allComments, setAllComments] = useState<IComments[]>([]);
   const [pageSize, setPageSize] = useState<number>(3);
@@ -87,9 +84,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       NotificationService.updateNotification(
         Number(query.notifi),
 
-        (result) => {
-          fetchAllDiscussion();
-        },
+        (result) => {},
         (error) => {
           message.error(error);
         }
@@ -107,22 +102,41 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     }
   }, [query.notifi, query.comment]);
 
-  const oClickMore = () => {
+  const onClickMore = () => {
     if (totalCmt > pageSize) {
       const newPageSize = pageSize + 5;
       setPageSize(newPageSize);
       getAllDiscussioin(resourceId, newPageSize);
     }
   };
+  const onQueryPost = async (
+    comment: string,
+    setComment: (value: string) => void,
+    setLoading: (value: boolean) => void
+  ) => {
+    try {
+      setLoading(true);
+      DiscussionsService.postQuery(
+        resourceId,
+        Number(router.query.courseId),
+        comment,
+        (result) => {
+          message.success(result.message);
+          allComments.unshift(result.comment);
+          setComment("");
+          setLoading(false);
+        },
+        (error) => {
+          message.error(error);
+          setLoading(false);
+        }
+      );
+    } catch (error) {}
+  };
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm
-        loadingPage={loading}
-        resourceId={resourceId}
-        placeholder="Ask a Question"
-        fetchAllDiscussion={fetchAllDiscussion}
-      />
+      <QAForm loadingPage={loading} placeholder="Ask a Question" onPost={onQueryPost} />
 
       {allComments.map((comment, i) => {
         return (
@@ -131,21 +145,17 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             showReplyDrawer={showReplyDrawer}
             comment={comment}
             key={i}
-            replyList={true}
-            fetchAllDiscussion={fetchAllDiscussion}
+            replyList={false}
+            allComment={allComments}
+            setAllComment={setAllComments}
           />
         );
       })}
 
-      <ReplyDrawer
-        replyDrawer={replyDrawer}
-        resourceId={resourceId}
-        onCloseDrawer={onCloseDrawer}
-        fetchAllDiscussion={fetchAllDiscussion}
-      />
+      <ReplyDrawer replyDrawer={replyDrawer} resourceId={resourceId} onCloseDrawer={onCloseDrawer} />
       {totalCmt !== allComments.length && (
         <Divider>
-          <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={oClickMore}>
+          <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>
             Load More
           </Button>
         </Divider>

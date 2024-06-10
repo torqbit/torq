@@ -9,13 +9,14 @@ import { useMediaPredicate } from "react-media-hook";
 import { Element, animateScroll as scroll, scrollSpy, scroller } from "react-scroll";
 import DiscussionsService from "@/services/DiscussionsService";
 import { getDummyArray } from "@/lib/dummyData";
+import { useRouter } from "next/router";
 
 const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
   onCloseDrawer: () => void;
   resourceId: number;
-  fetchAllDiscussion: () => void;
-}> = ({ replyDrawer, onCloseDrawer, resourceId, fetchAllDiscussion }) => {
+}> = ({ replyDrawer, onCloseDrawer, resourceId }) => {
+  const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
@@ -50,9 +51,9 @@ const ReplyDrawer: FC<{
     } catch (err) {}
   };
 
-  const getAllReplyComment = async (cmtId: number) => {
+  const getAllReplies = async (cmtId: number) => {
     setListLoading(true);
-    DiscussionsService.getAllReplyCount(
+    DiscussionsService.getAllReplies(
       cmtId,
       (result) => {
         setAllReplyComments(result.allReplyComments);
@@ -66,9 +67,36 @@ const ReplyDrawer: FC<{
   };
   const fetchAllReplyComment = () => {
     if (replyDrawer.sltCommentId) {
-      getAllReplyComment(replyDrawer.sltCommentId);
+      getAllReplies(replyDrawer.sltCommentId);
       getCommentById(replyDrawer.sltCommentId);
     }
+  };
+
+  const onPostReply = async (
+    comment: string,
+    setComment: (value: string) => void,
+    setLoading: (value: boolean) => void
+  ) => {
+    try {
+      setLoading(true);
+      DiscussionsService.postReply(
+        resourceId,
+        Number(router.query.courseId),
+        comment,
+        Number(sltComment?.id),
+        (result) => {
+          message.success(result.message);
+          allReplyComments.unshift(result.comment);
+          setComment("");
+          setLoading(false);
+          onScollReply();
+        },
+        (error) => {
+          message.error(error);
+          setLoading(false);
+        }
+      );
+    } catch (error) {}
   };
 
   React.useEffect(() => {
@@ -97,19 +125,7 @@ const ReplyDrawer: FC<{
         placement="right"
         onClose={onCloseDrawer}
         open={replyDrawer.isOpen}
-        footer={
-          <QAForm
-            resourceId={resourceId}
-            parentCommentId={replyDrawer.sltCommentId}
-            placeholder="Reply"
-            fetchAllDiscussion={() => {
-              fetchAllReplyComment();
-              fetchAllDiscussion();
-            }}
-            loadingPage={false}
-            onCloseDrawer={onCloseDrawer}
-          />
-        }
+        footer={<QAForm placeholder="Reply" loadingPage={false} onPost={onPostReply} />}
       >
         <div id="reply_cmt_list" ref={scrollRef}>
           <section className={styles.list_reply_cmt} id="list_reply_cmt">
@@ -129,10 +145,8 @@ const ReplyDrawer: FC<{
                     comment={comment}
                     parentCommentId={replyDrawer.sltCommentId}
                     key={i}
-                    fetchAllDiscussion={() => {
-                      onScollReply();
-                      fetchAllDiscussion();
-                    }}
+                    allComment={allReplyComments}
+                    setAllComment={setAllReplyComments}
                   />
                 );
               })

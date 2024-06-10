@@ -1,9 +1,7 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
 import { Avatar, Button, Input, Popconfirm, Space, message } from "antd";
-import { UserOutlined, DeleteOutlined, EditOutlined, CloseOutlined } from "@ant-design/icons";
-import Image from "next/image";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { UserOutlined, CloseOutlined } from "@ant-design/icons";
 import { useSession } from "next-auth/react";
 import moment from "moment";
 import { IComments } from "./CourseDiscussion";
@@ -11,7 +9,6 @@ import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
-import { useAppContext } from "@/components/ContextApi/AppContext";
 import SvgIcons from "@/components/SvgIcons";
 moment.locale("en", { ...customFromNow });
 
@@ -26,12 +23,23 @@ const CommentBox: FC<{
   parentCommentId?: number;
   comment: IComments;
   replyList: boolean;
-  fetchAllDiscussion: () => void;
+
   showReplyDrawer: (cmt: IComments) => void;
-}> = ({ comment, fetchAllDiscussion, replyList, resourceId, parentCommentId, showReplyDrawer }) => {
+  reFreshReplyCommnet?: boolean;
+  allComment?: IComments[];
+  setAllComment: (value: IComments[]) => void;
+}> = ({
+  comment,
+
+  replyList,
+  resourceId,
+  parentCommentId,
+  showReplyDrawer,
+  allComment,
+  setAllComment,
+}) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
-  const { dispatch } = useAppContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [editActive, setEditActive] = useState<boolean>(false);
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
@@ -40,10 +48,10 @@ const CommentBox: FC<{
   const attachedFiles = comment.attachedFiles as any;
 
   const getTotalReplyCmt = async (id: number) => {
-    DiscussionsService.getAllReplyCount(
+    DiscussionsService.getTotalReplies(
       id,
       (result) => {
-        setAllReplyCmtCount(result.allReplyComments.length);
+        setAllReplyCmtCount(result.allReplyCmts);
       },
       (error) => {
         message.error(error);
@@ -52,9 +60,7 @@ const CommentBox: FC<{
   };
 
   React.useEffect(() => {
-    if (replyList) {
-      getTotalReplyCmt(comment.id);
-    }
+    getTotalReplyCmt(comment.id);
   }, [comment.id]);
 
   const onDeleteComment = async (cmtId: number) => {
@@ -62,7 +68,8 @@ const CommentBox: FC<{
       cmtId,
       (result) => {
         message.success(result.message);
-        fetchAllDiscussion();
+        const commentLeft = allComment?.filter((c) => c.id !== cmtId);
+        commentLeft && setAllComment(commentLeft);
         if (replyList) {
           getTotalReplyCmt(comment.id);
         }
@@ -92,7 +99,7 @@ const CommentBox: FC<{
       comment.id,
       editComment,
       (result) => {
-        fetchAllDiscussion();
+        comment.comment = editComment;
         message.success(result.message);
         setEditComment(result.comment.comment);
         setEdited(false);
@@ -175,7 +182,7 @@ const CommentBox: FC<{
               )}
             </div>
           </div>
-          {replyList && (
+          {!replyList && (
             <div className={styles.comment_footer}>
               <div className={styles.reply_btn}>
                 {isEdited ? (
@@ -189,7 +196,7 @@ const CommentBox: FC<{
                   </Space>
                 ) : (
                   <Space align="center">
-                    {replyList && (
+                    {
                       <span
                         onClick={() => {
                           onUpdateMultipleNotificaton();
@@ -201,7 +208,7 @@ const CommentBox: FC<{
                           "Cancel"
                         ) : (
                           <span>
-                            {allReplyCmtCount > 0 && replyList && (
+                            {allReplyCmtCount > 0 && (
                               <span>
                                 {" "}
                                 {allReplyCmtCount === 1 ? `${allReplyCmtCount} Reply` : `${allReplyCmtCount} Replies`}
@@ -210,7 +217,7 @@ const CommentBox: FC<{
                           </span>
                         )}
                       </span>
-                    )}
+                    }
 
                     {attachedFiles?.length > 0 && (
                       <ImagePreview imgs={attachedFiles?.map((img: IAttachedFiles) => img.url)} />
