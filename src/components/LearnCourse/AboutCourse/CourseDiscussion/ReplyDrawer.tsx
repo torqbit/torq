@@ -85,7 +85,7 @@ const ReplyDrawer: FC<{
         comment,
         Number(sltComment?.id),
         (result) => {
-          message.success("comment added ");
+          message.success(result.message);
           allReplyComments.unshift(result.comment);
           setComment("");
           setLoading(false);

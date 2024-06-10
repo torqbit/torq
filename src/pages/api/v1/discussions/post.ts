@@ -71,7 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
       }
 
-      return res.status(200).json({ success: true, comment: addDiscussion });
+      return res.status(200).json({ success: true, comment: addDiscussion, message: "Query has been posted" });
     } else {
       return res.status(400).json({ success: false, error: "You are not enrolled to this course" });
     }

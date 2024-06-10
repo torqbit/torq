@@ -128,7 +128,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         Number(router.query.courseId),
         comment,
         (result) => {
-          message.success("comment added");
+          message.success(result.message);
           allComments.unshift(result.comment);
           setComment("");
           setLoading(false);
