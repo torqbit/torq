@@ -6,6 +6,8 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
+// api for adding a reply on comment
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     let cookieName = getCookieName();
@@ -23,17 +25,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         studentId: String(token?.id),
         courseId: Number(courseId),
       },
-      select: {
-        course: {
-          select: {
-            user: {
-              select: {
-                id: true,
-              },
-            },
-          },
-        },
-      },
     });
 
     if (isEnrolled) {
@@ -47,27 +38,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       const allthreadDiscussion = await prisma.discussion.findMany({
         distinct: ["userId"],
+
         where: {
           parentCommentId: parentCommentId,
+          NOT: {
+            userId: token?.id,
+          },
         },
         select: {
           userId: true,
         },
       });
 
-      allthreadDiscussion
-        .filter((discussion) => discussion.userId != token?.id)
-        .map(async (user) => {
-          return await prisma.notification.create({
-            data: {
-              notificationType: "COMMENT",
-              toUserId: user.userId,
-              commentId: addDiscussion.id,
-              fromUserId: String(token?.id) || "",
-              tagCommentId: parentCommentId,
-            },
-          });
+      allthreadDiscussion.map(async (user) => {
+        return await prisma.notification.create({
+          data: {
+            notificationType: "COMMENT",
+            toUserId: user.userId,
+            commentId: addDiscussion.id,
+            fromUserId: String(token?.id) || "",
+            tagCommentId: parentCommentId,
+          },
         });
+      });
 
       return res.status(200).json({ success: true });
     } else {
