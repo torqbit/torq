@@ -108,7 +108,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     }
   }, [query.notifi, query.comment]);
 
-  const oClickMore = () => {
+  const onClickMore = () => {
     if (totalCmt > pageSize) {
       const newPageSize = pageSize + 5;
       setPageSize(newPageSize);
@@ -122,13 +122,12 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         Number(router.query.courseId),
         comment,
         (result) => {
-          message.success("Comment Added");
+          message.success("comment added");
           fetchAllDiscussion();
-
           onCloseDrawer && onCloseDrawer();
         },
         (error) => {
-          message.error("Comment not Added");
+          message.error(error);
         }
       );
     } catch (error) {}
@@ -159,7 +158,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       />
       {totalCmt !== allComments.length && (
         <Divider>
-          <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={oClickMore}>
+          <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>
             Load More
           </Button>
         </Divider>

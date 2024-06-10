@@ -6,7 +6,12 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
-// api for adding a comment
+/**
+ * api for adding a comment
+ * @param req
+ * @param res
+ * @returns
+ */
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -56,7 +61,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         });
       }
-
       return res.status(200).json({ success: true });
     } else {
       return res.status(400).json({ success: false, error: "You are not enrolled to this course" });

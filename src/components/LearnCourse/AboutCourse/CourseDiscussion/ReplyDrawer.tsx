@@ -81,13 +81,13 @@ const ReplyDrawer: FC<{
         comment,
         Number(sltComment?.id),
         (result) => {
-          message.success("Comment Added");
+          message.success("comment added ");
           onCloseDrawer && onCloseDrawer();
           fetchAllDiscussion();
           fetchAllReplyComment();
         },
         (error) => {
-          message.error("Comment not Added");
+          message.error(error);
         }
       );
     } catch (error) {}

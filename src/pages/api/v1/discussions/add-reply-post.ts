@@ -6,7 +6,12 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
 
-// api for adding a reply on comment
+/**
+ * api for adding a reply on comment
+ * @param req
+ * @param res
+ * @returns
+ */
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
