@@ -40,6 +40,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           comment: comment,
           parentCommentId: parentCommentId,
         },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
       });
       const allthreadDiscussion = await prisma.discussion.findMany({
         distinct: ["userId"],
@@ -67,23 +76,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
       });
 
-      const CommentData = await prisma.discussion.findUnique({
-        where: {
-          id: addDiscussion.id,
-        },
-
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-      });
-
-      return res.status(200).json({ success: true, comment: CommentData });
+      return res.status(200).json({ success: true, comment: addDiscussion });
     } else {
       return res.status(400).json({ success: false, error: "You are not enrolled to this course" });
     }
