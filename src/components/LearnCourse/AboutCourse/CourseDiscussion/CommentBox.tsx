@@ -101,6 +101,7 @@ const CommentBox: FC<{
       (result) => {
         comment.comment = editComment;
         message.success(result.message);
+
         setEditComment(result.comment.comment);
         setEdited(false);
       },
@@ -132,6 +133,7 @@ const CommentBox: FC<{
               {moment(new Date(comment.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
             </h5>
           </Space>
+
           <div className={`${styles.comment_body} comment-card-body`}>
             {editActive && (
               <div className={styles.comment_body_header}>
@@ -227,6 +229,18 @@ const CommentBox: FC<{
               </div>
             </div>
           )}
+          <div style={{ marginTop: 5 }}>
+            {replyList && isEdited && (
+              <Space>
+                <Button type="primary" loading={loading} size="small" onClick={onEditComment}>
+                  Save
+                </Button>
+                <Button size="small" onClick={() => setEdited(false)}>
+                  Cancel
+                </Button>
+              </Space>
+            )}
+          </div>
         </div>
       </div>
     </>
