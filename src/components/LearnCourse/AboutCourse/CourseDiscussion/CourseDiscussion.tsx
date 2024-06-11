@@ -111,7 +111,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   const onClickMore = () => {
     if (commentCount > pageSize) {
-      const newPageSize = pageSize + 5;
+      const newPageSize = pageSize + appConstant.defaultPageSize;
       setPageSize(newPageSize);
       getDiscussions(newPageSize);
     }
