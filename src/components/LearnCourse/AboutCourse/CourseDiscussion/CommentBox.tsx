@@ -17,11 +17,11 @@ const CommentBox: FC<{
   parentCommentId?: number;
   comment: IComment;
   replyList: boolean;
-
   showReplyDrawer: (cmt: IComment) => void;
   reFreshReplyCommnet?: boolean;
-  allComment?: IComment[];
+  comments?: IComment[];
   setAllComment: (value: IComment[]) => void;
+  onUpdateReplyCount: (id: number, method: string) => void;
 }> = ({
   comment,
 
@@ -29,43 +29,26 @@ const CommentBox: FC<{
   resourceId,
   parentCommentId,
   showReplyDrawer,
-  allComment,
+  comments,
   setAllComment,
+  onUpdateReplyCount,
 }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [editActive, setEditActive] = useState<boolean>(false);
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
-  const [repliesCount, setRepliesCount] = useState<number>(0);
   const [editComment, setEditComment] = useState<string>("");
-
-  const getRepliesCount = async (id: number) => {
-    DiscussionsService.getTotalReplies(
-      id,
-      (result) => {
-        setRepliesCount(result.repliesCount);
-      },
-      (error) => {
-        message.error(error);
-      }
-    );
-  };
-
-  React.useEffect(() => {
-    getRepliesCount(comment.id);
-  }, [comment.id]);
 
   const onDeleteComment = async (commentId: number) => {
     DiscussionsService.deleteComment(
       commentId,
       (result) => {
         message.success(result.message);
-        const commentLeft = allComment?.filter((c) => c.id !== commentId);
+        const commentLeft = comments?.filter((c) => c.id !== commentId);
         commentLeft && setAllComment(commentLeft);
-        if (replyList) {
-          getRepliesCount(comment.id);
-        }
+        const parentCommentId = comments?.find((c) => c.id === commentId)?.parentCommentId;
+        replyList && onUpdateReplyCount(Number(parentCommentId), "delete");
       },
       (error) => {
         message.error(error);
@@ -122,7 +105,7 @@ const CommentBox: FC<{
             <h4>{comment.user.name}</h4>
             <p className="dot">•</p>
             <h5 className={styles.comment_time}>
-              {moment(new Date(comment.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
+              {moment(new Date(comment.updatedAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
             </h5>
           </Space>
 
@@ -197,13 +180,18 @@ const CommentBox: FC<{
                           showReplyDrawer(comment);
                         }}
                       >
-                        {repliesCount === 0 && "Reply"}
+                        {comment.replyCount === 0 && "Reply"}
                         {isReply.open ? (
                           "Cancel"
                         ) : (
                           <span>
-                            {repliesCount > 0 && (
-                              <span> {repliesCount === 1 ? `${repliesCount} Reply` : `${repliesCount} Replies`}</span>
+                            {comment.replyCount > 0 && (
+                              <span>
+                                {" "}
+                                {comment.replyCount === 1
+                                  ? `${comment.replyCount} Reply`
+                                  : `${comment.replyCount} Replies`}
+                              </span>
                             )}
                           </span>
                         )}

@@ -16,7 +16,8 @@ const ReplyDrawer: FC<{
   onCloseDrawer: () => void;
   resourceId: number;
   comments: IComment[];
-}> = ({ replyDrawer, onCloseDrawer, resourceId, comments }) => {
+  onUpdateReplyCount: (id: number, method: string) => void;
+}> = ({ replyDrawer, onCloseDrawer, resourceId, comments, onUpdateReplyCount }) => {
   const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComment>();
@@ -88,6 +89,8 @@ const ReplyDrawer: FC<{
         (result) => {
           message.success(result.message);
           queryReplies.unshift(result.comment);
+          onUpdateReplyCount(Number(sltComment?.id), "");
+
           setCommentText("");
           setLoading(false);
           onScollReply();
@@ -154,8 +157,9 @@ const ReplyDrawer: FC<{
                     comment={comment}
                     parentCommentId={replyDrawer.sltCommentId}
                     key={i}
-                    allComment={queryReplies}
+                    comments={queryReplies}
                     setAllComment={setQueryReplies}
+                    onUpdateReplyCount={onUpdateReplyCount}
                   />
                 );
               })

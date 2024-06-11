@@ -28,25 +28,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         parentCommentId: null,
       },
     });
-    const comments = await prisma.discussion.findMany({
-      where: {
-        resourceId: Number(resourceId),
-        parentCommentId: null,
-      },
-      ...pagination,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
-        },
-      },
 
-      orderBy: {
-        createdAt: "desc",
-      },
+    const rawData = await prisma.$queryRaw<any[]>`
+      select dis.id, dis.userId, name, image,  comment, updatedAt, 
+COUNT(thread.reply_id) as replyCount FROM Discussion as dis
+INNER JOIN User ON dis.userId = User.id
+LEFT OUTER JOIN ( SELECT id as reply_id, parentCommentId FROM Discussion) as thread
+ON dis.id = thread.parentCommentId
+WHERE dis.parentCommentId is NULL AND dis.resourceId =${resourceId}
+GROUP BY dis.id, userId, comment, dis.createdAt
+ ORDER BY dis.createdAt DESC LIMIT ${pageSize};
+  `;
+
+    const comments = rawData.map((data) => {
+      return {
+        ...data,
+        comment: data.comment,
+        id: data.id,
+
+        user: {
+          id: data.userId,
+          name: data.name,
+          image: data.image,
+        },
+        updatedAt: data.updatedAt,
+        replyCount: Number(data.replyCount),
+      };
     });
 
     return res.status(200).json({ success: true, comments: comments, total });
