@@ -145,7 +145,16 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         comment,
         (result) => {
           message.success(result.message);
-          comments.unshift(result.comment);
+          let data = result.comment;
+          let newComment = {
+            ...data,
+            comment: data.comment,
+            id: data.id,
+            user: data.user,
+            createdAt: data.createdAt,
+            replyCount: 0,
+          };
+          setComments([newComment, ...comments]);
           setCommentText("");
           setLoading(false);
         },

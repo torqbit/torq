@@ -88,7 +88,8 @@ const ReplyDrawer: FC<{
         Number(sltComment?.id),
         (result) => {
           message.success(result.message);
-          queryReplies.unshift(result.comment);
+
+          setQueryReplies([...queryReplies, result.comment]);
           onUpdateReplyCount(Number(sltComment?.id), "");
 
           setCommentText("");
