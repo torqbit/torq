@@ -16,6 +16,9 @@ export interface IComment extends Discussion {
     name: string;
     image: string;
   };
+  id: number;
+  createdAt: Date;
+  replyCount: number;
 }
 
 export interface IReplyDrawer {
@@ -34,7 +37,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   const [pageSize, setPageSize] = useState<number>(appConstant.defaultPageSize);
   const [commentCount, setCommentCount] = useState<number>(0);
   const [listLoading, setListLoading] = useState<boolean>(false);
-
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
     isOpen: false,
   });
@@ -91,6 +93,20 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         getDiscussions(pageSize);
       }
     }
+  };
+
+  const onUpdateReplyCount = (id: number, method: string) => {
+    const newReplyCount = comments.map((cm) => {
+      if (cm.id === id) {
+        return {
+          ...cm,
+          replyCount: method === "delete" ? cm.replyCount - 1 : cm.replyCount + 1,
+        };
+      } else {
+        return cm;
+      }
+    });
+    setComments(newReplyCount);
   };
 
   React.useEffect(() => {
@@ -152,8 +168,9 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             comment={comment}
             key={i}
             replyList={false}
-            allComment={comments}
+            comments={comments}
             setAllComment={setComments}
+            onUpdateReplyCount={onUpdateReplyCount}
           />
         );
       })}
@@ -178,6 +195,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         resourceId={resourceId}
         onCloseDrawer={onCloseDrawer}
         comments={comments}
+        onUpdateReplyCount={onUpdateReplyCount}
       />
       {commentCount !== comments.length && (
         <Divider>
