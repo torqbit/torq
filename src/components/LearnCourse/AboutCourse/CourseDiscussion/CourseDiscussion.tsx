@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
-import { Button, Divider, message } from "antd";
+import { Button, Divider, Flex, message } from "antd";
 import { Discussion } from "@prisma/client";
 import QAForm from "./DiscussionForm";
 import CommentBox from "./CommentBox";
@@ -34,6 +34,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   const [pageSize, setPageSize] = useState<number>(3);
   const [totalCmt, setTotalCmt] = useState<number>(0);
   const [listLoading, setListLoading] = useState<boolean>(false);
+
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
     isOpen: false,
     sltCommentId: 0,
@@ -47,11 +48,29 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   };
 
   const onCloseDrawer = () => {
+    if (router.query.queryId || router.query.threadId) {
+      router.push(`/courses/${router.query.courseId}/lesson/${router.query.lessonId}`);
+    }
     setReplyDrawer({ isOpen: false, sltCommentId: 0 });
+  };
+  const getDiscussion = () => {
+    setListLoading(true);
+    DiscussionsService.getComment(
+      Number(router.query.queryId),
+      (result) => {
+        setAllComments([result.comment]);
+        setTotalCmt(1);
+        setListLoading(false);
+      },
+      (error) => {
+        setListLoading(false);
+      }
+    );
   };
 
   const getAllDiscussioin = async (resId: number, pageSize: number) => {
     setListLoading(true);
+
     DiscussionsService.getCommentsList(
       resourceId,
       pageSize,
@@ -66,9 +85,14 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
     setListLoading(false);
   };
+
   const fetchAllDiscussion = () => {
     if (resourceId) {
-      getAllDiscussioin(resourceId, pageSize);
+      if (router.query.queryId && router.query.tab) {
+        getDiscussion();
+      } else {
+        getAllDiscussioin(resourceId, pageSize);
+      }
     }
   };
 
@@ -152,7 +176,27 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         );
       })}
 
-      <ReplyDrawer replyDrawer={replyDrawer} resourceId={resourceId} onCloseDrawer={onCloseDrawer} />
+      {router.query.queryId && (
+        <Flex align="center" justify="flex-end">
+          <Button
+            type="primary"
+            onClick={() => {
+              setPageSize(3);
+              getAllDiscussioin(resourceId, pageSize);
+              router.push(`/courses/${router.query.courseId}/lesson/${router.query.lessonId}`);
+            }}
+          >
+            Load all{" "}
+          </Button>
+        </Flex>
+      )}
+
+      <ReplyDrawer
+        replyDrawer={replyDrawer}
+        resourceId={resourceId}
+        onCloseDrawer={onCloseDrawer}
+        allComments={allComments}
+      />
       {totalCmt !== allComments.length && (
         <Divider>
           <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>

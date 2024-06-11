@@ -39,7 +39,7 @@ class NotificationService {
       }
     });
   };
-  getNotification = (
+  getNotifications = (
     offSet: number | undefined,
     limit: number | undefined,
     onSuccess: (response: ApiResponse) => void,

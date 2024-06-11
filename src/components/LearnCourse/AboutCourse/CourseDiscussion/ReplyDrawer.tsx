@@ -15,12 +15,12 @@ const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
   onCloseDrawer: () => void;
   resourceId: number;
-}> = ({ replyDrawer, onCloseDrawer, resourceId }) => {
+  allComments: IComments[];
+}> = ({ replyDrawer, onCloseDrawer, resourceId, allComments }) => {
   const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComments>();
   const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
-
   const isMax415Width = useMediaPredicate("(max-width: 415px)");
   const scrollRef = useRef<any>(null);
   const onScollReply = () => {
@@ -102,6 +102,14 @@ const ReplyDrawer: FC<{
   React.useEffect(() => {
     fetchAllReplyComment();
   }, [replyDrawer.sltCommentId]);
+
+  useEffect(() => {
+    if (router.query.threadId) {
+      replyDrawer.isOpen = true;
+      replyDrawer.sltCommentId = Number(router.query.threadId);
+      setSltComment(allComments.find((cm) => cm.id === Number(router.query.threadId)));
+    }
+  }, [router.query.threadId]);
   return (
     <Element name="reply_cmt_drawer">
       <Drawer

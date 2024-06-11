@@ -19,6 +19,7 @@ export const getNotifi = async (userId: string, limit: number, offSet: number) =
       comment: {
         select: {
           comment: true,
+          resourceId: true,
         },
       },
       resource: {
