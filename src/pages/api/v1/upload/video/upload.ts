@@ -9,7 +9,16 @@ import fs from "fs";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 import { UploadVideoObjectType } from "@/types/courses/Course";
 import prisma from "@/lib/prisma";
-import { readFieldWithFile } from "../../discussions/add";
+import { IncomingForm } from "formidable";
+export const readFieldWithFile = (req: NextApiRequest) => {
+  const form = new IncomingForm({ multiples: true });
+  return new Promise((resolve, reject) => {
+    form.parse(req, (err, fields, files) => {
+      if (err) reject(err);
+      resolve({ fields, files });
+    });
+  });
+};
 
 export const config = {
   api: {

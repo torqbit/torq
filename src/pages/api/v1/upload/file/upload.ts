@@ -4,11 +4,10 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 
 import fs from "fs";
-import { saveToDir } from "../video/upload";
+import { readFieldWithFile, saveToDir } from "../video/upload";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
 import url from "url";
 import prisma from "@/lib/prisma";
-import { readFieldWithFile } from "../../discussions/add";
 
 export const config = {
   api: {
