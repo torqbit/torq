@@ -20,9 +20,10 @@ const ReplyDrawer: FC<{
   const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComment>();
-  const [commentReplies, setcommentReplies] = useState<IComment[]>([]);
+  const [queryReplies, setQueryReplies] = useState<IComment[]>([]);
   const isMax415Width = useMediaPredicate("(max-width: 415px)");
   const scrollRef = useRef<any>(null);
+
   const onScollReply = () => {
     if (scrollRef.current) {
       scroller.scrollTo("reply_cmt_drawer", {
@@ -56,7 +57,7 @@ const ReplyDrawer: FC<{
     DiscussionsService.getAllReplies(
       cmtId,
       (result) => {
-        setcommentReplies(result.commentReplies);
+        setQueryReplies(result.queryReplies);
         setListLoading(false);
       },
       (error) => {
@@ -86,7 +87,7 @@ const ReplyDrawer: FC<{
         Number(sltComment?.id),
         (result) => {
           message.success(result.message);
-          commentReplies.unshift(result.comment);
+          queryReplies.unshift(result.comment);
           setCommentText("");
           setLoading(false);
           onScollReply();
@@ -144,7 +145,7 @@ const ReplyDrawer: FC<{
                 })}
               </Flex>
             ) : (
-              commentReplies.map((comment, i) => {
+              queryReplies.map((comment, i) => {
                 return (
                   <CommentBox
                     replyList={true}
@@ -153,8 +154,8 @@ const ReplyDrawer: FC<{
                     comment={comment}
                     parentCommentId={replyDrawer.sltCommentId}
                     key={i}
-                    allComment={commentReplies}
-                    setAllComment={setcommentReplies}
+                    allComment={queryReplies}
+                    setAllComment={setQueryReplies}
                   />
                 );
               })

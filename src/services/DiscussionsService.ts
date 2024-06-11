@@ -14,7 +14,7 @@ export type ApiResponse = {
   newComment: Discussion;
   comment: IComment;
   comments: IComment[];
-  commentReplies: IComment[];
+  queryReplies: IComment[];
   total: number;
   repliesCount: number;
   message: string;

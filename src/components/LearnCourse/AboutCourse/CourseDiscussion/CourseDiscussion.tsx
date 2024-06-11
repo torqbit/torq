@@ -145,6 +145,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     <section className={styles.qa_discussion_tab}>
       <QAForm loadingPage={loading} placeholder="Ask a Question" onPost={onQueryPost} />
       {comments.map((comment, i) => {
+        console.log(comment, "c");
         return (
           <CommentBox
             resourceId={resourceId}

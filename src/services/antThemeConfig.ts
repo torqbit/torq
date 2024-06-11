@@ -3,6 +3,7 @@ export default {
     borderRadius: 4,
     colorText: "#666",
     colorPrimary: "#5b63d3",
+    colorSplit: "#888",
   },
   components: {
     Layout: {
