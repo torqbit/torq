@@ -105,7 +105,7 @@ const CommentBox: FC<{
             <h4>{comment.user.name}</h4>
             <p className="dot">•</p>
             <h5 className={styles.comment_time}>
-              {moment(new Date(comment.updatedAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
+              {moment(new Date(comment.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}
             </h5>
           </Space>
 

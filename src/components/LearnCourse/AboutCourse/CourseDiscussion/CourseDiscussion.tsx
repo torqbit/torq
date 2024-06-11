@@ -17,7 +17,7 @@ export interface IComment extends Discussion {
     image: string;
   };
   id: number;
-  updatedAt: Date;
+  createdAt: Date;
   replyCount: number;
 }
 

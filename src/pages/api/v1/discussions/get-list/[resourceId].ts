@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     const rawData = await prisma.$queryRaw<any[]>`
-      select dis.id, dis.userId, name, image,  comment, updatedAt, 
+      select dis.id, dis.userId, name, image,  comment, dis.createdAt, 
 COUNT(thread.reply_id) as replyCount FROM Discussion as dis
 INNER JOIN User ON dis.userId = User.id
 LEFT OUTER JOIN ( SELECT id as reply_id, parentCommentId FROM Discussion) as thread
@@ -51,13 +51,14 @@ GROUP BY dis.id, userId, comment, dis.createdAt
           name: data.name,
           image: data.image,
         },
-        updatedAt: data.updatedAt,
+        createdAt: data.createdAt,
         replyCount: Number(data.replyCount),
       };
     });
 
     return res.status(200).json({ success: true, comments: comments, total });
   } catch (err) {
+    console.log(err);
     return errorHandler(err, res);
   }
 };
