@@ -145,7 +145,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     <section className={styles.qa_discussion_tab}>
       <QAForm loadingPage={loading} placeholder="Ask a Question" onPost={onQueryPost} />
       {comments.map((comment, i) => {
-        console.log(comment, "c");
         return (
           <CommentBox
             resourceId={resourceId}
@@ -169,7 +168,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
               router.push(`/courses/${router.query.courseId}/lesson/${router.query.lessonId}`);
             }}
           >
-            Load all{" "}
+            Load all
           </Button>
         </Flex>
       )}
