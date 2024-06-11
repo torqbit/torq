@@ -58,7 +58,6 @@ GROUP BY dis.id, userId, comment, dis.createdAt
 
     return res.status(200).json({ success: true, comments: comments, total });
   } catch (err) {
-    console.log(err);
     return errorHandler(err, res);
   }
 };
