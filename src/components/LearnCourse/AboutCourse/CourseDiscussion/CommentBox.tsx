@@ -5,11 +5,11 @@ import { UserOutlined, CloseOutlined } from "@ant-design/icons";
 import { useSession } from "next-auth/react";
 import moment from "moment";
 import { IComment } from "./CourseDiscussion";
-import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 import SvgIcons from "@/components/SvgIcons";
+
 moment.locale("en", { ...customFromNow });
 
 const CommentBox: FC<{
