@@ -9,7 +9,7 @@ const QAForm: FC<{
   style?: React.CSSProperties;
   placeholder?: string;
 
-  onPost: (comment: string, setComment: (value: string) => void, setLoading: (value: boolean) => void) => void;
+  onPost: (comment: string, setCommentText: (value: string) => void, setLoading: (value: boolean) => void) => void;
 }> = ({
   loadingPage,
   placeholder = "Ask a Question",
@@ -17,7 +17,7 @@ const QAForm: FC<{
 
   onPost,
 }) => {
-  const [comment, setComment] = useState<string>("");
+  const [commentText, setCommentText] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
@@ -29,13 +29,13 @@ const QAForm: FC<{
           placeholder={placeholder}
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.shiftKey) {
-              onPost(comment, setComment, setLoading);
+              onPost(commentText, setCommentText, setLoading);
             }
           }}
           rows={3}
           className={styles.qa_form_input}
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
         />
       )}
       {loadingPage ? (
@@ -49,7 +49,9 @@ const QAForm: FC<{
               className={styles.comment_post_btn}
               style={{ marginTop: 10, marginBottom: 10 }}
               onClick={() => {
-                comment === "" ? message.warning("add a comment first") : onPost(comment, setComment, setLoading);
+                commentText === ""
+                  ? message.warning("add a comment first")
+                  : onPost(commentText, setCommentText, setLoading);
               }}
               title="Post"
             >

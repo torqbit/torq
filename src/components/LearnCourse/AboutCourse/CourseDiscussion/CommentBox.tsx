@@ -4,7 +4,7 @@ import { Avatar, Button, Input, Popconfirm, Space, message } from "antd";
 import { UserOutlined, CloseOutlined } from "@ant-design/icons";
 import { useSession } from "next-auth/react";
 import moment from "moment";
-import { IComments } from "./CourseDiscussion";
+import { IComment } from "./CourseDiscussion";
 import ImagePreview from "@/components/ImagePreview/ImagePreview";
 import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
@@ -12,22 +12,16 @@ import NotificationService from "@/services/NotificationService";
 import SvgIcons from "@/components/SvgIcons";
 moment.locale("en", { ...customFromNow });
 
-export interface IAttachedFiles {
-  url: string;
-  fileId: string;
-  caption?: string;
-}
-
 const CommentBox: FC<{
   resourceId: number;
   parentCommentId?: number;
-  comment: IComments;
+  comment: IComment;
   replyList: boolean;
 
-  showReplyDrawer: (cmt: IComments) => void;
+  showReplyDrawer: (cmt: IComment) => void;
   reFreshReplyCommnet?: boolean;
-  allComment?: IComments[];
-  setAllComment: (value: IComments[]) => void;
+  allComment?: IComment[];
+  setAllComment: (value: IComment[]) => void;
 }> = ({
   comment,
 
@@ -43,15 +37,14 @@ const CommentBox: FC<{
   const [loading, setLoading] = useState<boolean>(false);
   const [editActive, setEditActive] = useState<boolean>(false);
   const [isReply, setReply] = useState<{ open: boolean; id: number }>({ open: false, id: 0 });
-  const [allReplyCmtCount, setAllReplyCmtCount] = useState<number>(0);
+  const [repliesCount, setRepliesCount] = useState<number>(0);
   const [editComment, setEditComment] = useState<string>("");
-  const attachedFiles = comment.attachedFiles as any;
 
-  const getTotalReplyCmt = async (id: number) => {
+  const getRepliesCount = async (id: number) => {
     DiscussionsService.getTotalReplies(
       id,
       (result) => {
-        setAllReplyCmtCount(result.allReplyCmts);
+        setRepliesCount(result.repliesCount);
       },
       (error) => {
         message.error(error);
@@ -60,18 +53,18 @@ const CommentBox: FC<{
   };
 
   React.useEffect(() => {
-    getTotalReplyCmt(comment.id);
+    getRepliesCount(comment.id);
   }, [comment.id]);
 
-  const onDeleteComment = async (cmtId: number) => {
+  const onDeleteComment = async (commentId: number) => {
     DiscussionsService.deleteComment(
-      cmtId,
+      commentId,
       (result) => {
         message.success(result.message);
-        const commentLeft = allComment?.filter((c) => c.id !== cmtId);
+        const commentLeft = allComment?.filter((c) => c.id !== commentId);
         commentLeft && setAllComment(commentLeft);
         if (replyList) {
-          getTotalReplyCmt(comment.id);
+          getRepliesCount(comment.id);
         }
       },
       (error) => {
@@ -80,7 +73,7 @@ const CommentBox: FC<{
     );
   };
 
-  const onUpdateMultipleNotificaton = () => {
+  const onUpdateMultipleNotificatons = () => {
     session?.id &&
       NotificationService.updateMultipleNotification(
         comment.id,
@@ -101,7 +94,6 @@ const CommentBox: FC<{
       (result) => {
         comment.comment = editComment;
         message.success(result.message);
-
         setEditComment(result.comment.comment);
         setEdited(false);
       },
@@ -201,29 +193,22 @@ const CommentBox: FC<{
                     {
                       <span
                         onClick={() => {
-                          onUpdateMultipleNotificaton();
+                          onUpdateMultipleNotificatons();
                           showReplyDrawer(comment);
                         }}
                       >
-                        {allReplyCmtCount === 0 && "Reply"}
+                        {repliesCount === 0 && "Reply"}
                         {isReply.open ? (
                           "Cancel"
                         ) : (
                           <span>
-                            {allReplyCmtCount > 0 && (
-                              <span>
-                                {" "}
-                                {allReplyCmtCount === 1 ? `${allReplyCmtCount} Reply` : `${allReplyCmtCount} Replies`}
-                              </span>
+                            {repliesCount > 0 && (
+                              <span> {repliesCount === 1 ? `${repliesCount} Reply` : `${repliesCount} Replies`}</span>
                             )}
                           </span>
                         )}
                       </span>
                     }
-
-                    {attachedFiles?.length > 0 && (
-                      <ImagePreview imgs={attachedFiles?.map((img: IAttachedFiles) => img.url)} />
-                    )}
                   </Space>
                 )}
               </div>

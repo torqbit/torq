@@ -1,7 +1,7 @@
 import { Avatar, Drawer, Flex, Skeleton, Space, message } from "antd";
 import styles from "@/styles/LearnLecture.module.scss";
 import React, { FC, useState, useRef, useEffect } from "react";
-import { IComments, IReplyDrawer } from "./CourseDiscussion";
+import { IComment, IReplyDrawer } from "./CourseDiscussion";
 import CommentBox from "./CommentBox";
 import QAForm from "./DiscussionForm";
 import { UserOutlined } from "@ant-design/icons";
@@ -15,12 +15,12 @@ const ReplyDrawer: FC<{
   replyDrawer: IReplyDrawer;
   onCloseDrawer: () => void;
   resourceId: number;
-  allComments: IComments[];
-}> = ({ replyDrawer, onCloseDrawer, resourceId, allComments }) => {
+  comments: IComment[];
+}> = ({ replyDrawer, onCloseDrawer, resourceId, comments }) => {
   const router = useRouter();
   const [listLoading, setListLoading] = useState<boolean>(false);
-  const [sltComment, setSltComment] = useState<IComments>();
-  const [allReplyComments, setAllReplyComments] = useState<IComments[]>([]);
+  const [sltComment, setSltComment] = useState<IComment>();
+  const [commentReplies, setcommentReplies] = useState<IComment[]>([]);
   const isMax415Width = useMediaPredicate("(max-width: 415px)");
   const scrollRef = useRef<any>(null);
   const onScollReply = () => {
@@ -56,7 +56,7 @@ const ReplyDrawer: FC<{
     DiscussionsService.getAllReplies(
       cmtId,
       (result) => {
-        setAllReplyComments(result.allReplyComments);
+        setcommentReplies(result.commentReplies);
         setListLoading(false);
       },
       (error) => {
@@ -74,7 +74,7 @@ const ReplyDrawer: FC<{
 
   const onPostReply = async (
     comment: string,
-    setComment: (value: string) => void,
+    setCommentText: (value: string) => void,
     setLoading: (value: boolean) => void
   ) => {
     try {
@@ -86,8 +86,8 @@ const ReplyDrawer: FC<{
         Number(sltComment?.id),
         (result) => {
           message.success(result.message);
-          allReplyComments.unshift(result.comment);
-          setComment("");
+          commentReplies.unshift(result.comment);
+          setCommentText("");
           setLoading(false);
           onScollReply();
         },
@@ -107,7 +107,7 @@ const ReplyDrawer: FC<{
     if (router.query.threadId) {
       replyDrawer.isOpen = true;
       replyDrawer.sltCommentId = Number(router.query.threadId);
-      setSltComment(allComments.find((cm) => cm.id === Number(router.query.threadId)));
+      setSltComment(comments.find((cm) => cm.id === Number(router.query.threadId)));
     }
   }, [router.query.threadId]);
   return (
@@ -144,7 +144,7 @@ const ReplyDrawer: FC<{
                 })}
               </Flex>
             ) : (
-              allReplyComments.map((comment, i) => {
+              commentReplies.map((comment, i) => {
                 return (
                   <CommentBox
                     replyList={true}
@@ -153,8 +153,8 @@ const ReplyDrawer: FC<{
                     comment={comment}
                     parentCommentId={replyDrawer.sltCommentId}
                     key={i}
-                    allComment={allReplyComments}
-                    setAllComment={setAllReplyComments}
+                    allComment={commentReplies}
+                    setAllComment={setcommentReplies}
                   />
                 );
               })
