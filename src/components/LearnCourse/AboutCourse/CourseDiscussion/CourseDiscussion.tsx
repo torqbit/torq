@@ -1,15 +1,15 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
-import { Button, Divider, message } from "antd";
+import { Button, Divider, Flex, message } from "antd";
 import { Discussion } from "@prisma/client";
 import QAForm from "./DiscussionForm";
 import CommentBox from "./CommentBox";
 import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
 import DiscussionsService from "@/services/DiscussionsService";
-import NotificationService from "@/services/NotificationService";
+import appConstant from "@/services/appConstant";
 
-export interface IComments extends Discussion {
+export interface IComment extends Discussion {
   comment: string;
   user: {
     id: string;
@@ -20,7 +20,7 @@ export interface IComments extends Discussion {
 
 export interface IReplyDrawer {
   isOpen: boolean;
-  sltCommentId: number;
+  sltCommentId?: number;
 }
 
 const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean }> = ({
@@ -30,16 +30,16 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 }) => {
   const router = useRouter();
   const query = router.query;
-  const [allComments, setAllComments] = useState<IComments[]>([]);
-  const [pageSize, setPageSize] = useState<number>(3);
-  const [totalCmt, setTotalCmt] = useState<number>(0);
+  const [comments, setComments] = useState<IComment[]>([]);
+  const [pageSize, setPageSize] = useState<number>(appConstant.defaultPageSize);
+  const [commentCount, setCommentCount] = useState<number>(0);
   const [listLoading, setListLoading] = useState<boolean>(false);
+
   const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
     isOpen: false,
-    sltCommentId: 0,
   });
 
-  const showReplyDrawer = (comment: IComments) => {
+  const showReplyDrawer = (comment: IComment) => {
     setReplyDrawer({
       isOpen: true,
       sltCommentId: comment.id,
@@ -47,17 +47,33 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   };
 
   const onCloseDrawer = () => {
-    setReplyDrawer({ isOpen: false, sltCommentId: 0 });
+    setReplyDrawer({ isOpen: false, sltCommentId: undefined });
+  };
+  const getDiscussion = () => {
+    setListLoading(true);
+    DiscussionsService.getComment(
+      Number(router.query.queryId),
+      (result) => {
+        setComments([result.comment]);
+        setCommentCount(1);
+        setListLoading(false);
+      },
+      (error) => {
+        message.error(error);
+        setListLoading(false);
+      }
+    );
   };
 
-  const getAllDiscussioin = async (resId: number, pageSize: number) => {
+  const getDiscussions = async (pageSize: number) => {
     setListLoading(true);
+
     DiscussionsService.getCommentsList(
       resourceId,
       pageSize,
       (result) => {
-        setAllComments(result.allComments);
-        setTotalCmt(result.total);
+        setComments(result.comments);
+        setCommentCount(result.total);
       },
       (error) => {
         message.error(error);
@@ -66,31 +82,23 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
     setListLoading(false);
   };
+
   const fetchAllDiscussion = () => {
     if (resourceId) {
-      getAllDiscussioin(resourceId, pageSize);
+      if (router.query.queryId && router.query.tab) {
+        getDiscussion();
+      } else {
+        getDiscussions(pageSize);
+      }
     }
   };
 
   React.useEffect(() => {
     if (resourceId) {
-      setPageSize(3);
+      setPageSize(appConstant.defaultPageSize);
       fetchAllDiscussion();
     }
   }, [resourceId]);
-
-  const updateNotification = async () => {
-    try {
-      NotificationService.updateNotification(
-        Number(query.notifi),
-
-        (result) => {},
-        (error) => {
-          message.error(error);
-        }
-      );
-    } catch (err) {}
-  };
 
   React.useEffect(() => {
     if (query.comment) {
@@ -98,20 +106,19 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         sltCommentId: Number(query.comment),
         isOpen: true,
       });
-      updateNotification();
     }
   }, [query.notifi, query.comment]);
 
   const onClickMore = () => {
-    if (totalCmt > pageSize) {
-      const newPageSize = pageSize + 5;
+    if (commentCount > pageSize) {
+      const newPageSize = pageSize + appConstant.defaultPageSize;
       setPageSize(newPageSize);
-      getAllDiscussioin(resourceId, newPageSize);
+      getDiscussions(newPageSize);
     }
   };
   const onQueryPost = async (
     comment: string,
-    setComment: (value: string) => void,
+    setCommentText: (value: string) => void,
     setLoading: (value: boolean) => void
   ) => {
     try {
@@ -122,8 +129,8 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         comment,
         (result) => {
           message.success(result.message);
-          allComments.unshift(result.comment);
-          setComment("");
+          comments.unshift(result.comment);
+          setCommentText("");
           setLoading(false);
         },
         (error) => {
@@ -137,8 +144,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
   return (
     <section className={styles.qa_discussion_tab}>
       <QAForm loadingPage={loading} placeholder="Ask a Question" onPost={onQueryPost} />
-
-      {allComments.map((comment, i) => {
+      {comments.map((comment, i) => {
         return (
           <CommentBox
             resourceId={resourceId}
@@ -146,14 +152,34 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             comment={comment}
             key={i}
             replyList={false}
-            allComment={allComments}
-            setAllComment={setAllComments}
+            allComment={comments}
+            setAllComment={setComments}
           />
         );
       })}
 
-      <ReplyDrawer replyDrawer={replyDrawer} resourceId={resourceId} onCloseDrawer={onCloseDrawer} />
-      {totalCmt !== allComments.length && (
+      {router.query.queryId && (
+        <Flex align="center" justify="flex-end">
+          <Button
+            type="primary"
+            onClick={() => {
+              setPageSize(3);
+              getDiscussions(pageSize);
+              router.push(`/courses/${router.query.courseId}/lesson/${router.query.lessonId}`);
+            }}
+          >
+            Load all
+          </Button>
+        </Flex>
+      )}
+
+      <ReplyDrawer
+        replyDrawer={replyDrawer}
+        resourceId={resourceId}
+        onCloseDrawer={onCloseDrawer}
+        comments={comments}
+      />
+      {commentCount !== comments.length && (
         <Divider>
           <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>
             Load More

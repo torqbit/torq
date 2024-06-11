@@ -61,6 +61,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         select: {
           userId: true,
+          resourceId: true,
         },
       });
 
@@ -72,6 +73,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             commentId: addDiscussion.id,
             fromUserId: String(token?.id) || "",
             tagCommentId: parentCommentId,
+            resourceId: user.resourceId,
           },
         });
       });

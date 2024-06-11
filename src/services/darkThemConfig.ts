@@ -6,13 +6,15 @@ export default {
     colorBorder: "#374362",
     colorTextPlaceholder: "#2f3647",
     colorPrimary: "#5b63d3",
-
+    colorSplit: "#2f3647",
     colorTextDisabled: "#68696d",
   },
+
   components: {
     Layout: {
       bodyBg: "#202433",
     },
+
     Menu: {
       itemColor: "#939db8",
       groupTitleColor: "#eee",

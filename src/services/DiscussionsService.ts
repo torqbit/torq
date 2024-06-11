@@ -1,7 +1,7 @@
 import { Course, Discussion } from "@prisma/client";
 
 import { getFetch, postFetch } from "./request";
-import { IComments } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
+import { IComment } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 export interface ICourseList extends Course {
   courseId: number;
   tags: string[];
@@ -12,11 +12,11 @@ export type ApiResponse = {
   success: boolean;
   error: string;
   newComment: Discussion;
-  comment: IComments;
-  allComments: IComments[];
-  allReplyComments: IComments[];
+  comment: IComment;
+  comments: IComment[];
+  queryReplies: IComment[];
   total: number;
-  allReplyCmts: number;
+  repliesCount: number;
   message: string;
 };
 

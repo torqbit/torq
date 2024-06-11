@@ -278,7 +278,7 @@ const LessonPage: NextPage = () => {
       children: courseDetail?.description,
     },
     {
-      key: "2",
+      key: "QA",
       label: "Q & A",
 
       children: session && currentLesson?.lesson && (
@@ -341,7 +341,6 @@ const LessonPage: NextPage = () => {
                       allowFullScreen
                       style={{
                         position: "absolute",
-
                         width: "100%",
                         height: "100%",
                         outline: "none",
@@ -415,6 +414,7 @@ const LessonPage: NextPage = () => {
                 </>
               }
               tabBarGutter={40}
+              defaultActiveKey={String(router.query.tab)}
               className={styles.add_course_tabs}
               items={items}
             />

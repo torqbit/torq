@@ -3,6 +3,7 @@ export default {
   courseTags: ["HTML", "CSS", "JS", "ReactJS"],
   assignmentLang: ["html", "css", "javascript", "java", "python", "go", "nodejs", "reactjs"],
   courseType: ["FREE", "PAID"],
+  defaultPageSize: 5,
   privatePath: ["/add-course"],
   attachmentFileFolder: "discussion-attachment",
   assignmentFileFolder: "assignment-files",

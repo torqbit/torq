@@ -6,7 +6,7 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const allReplyComments = await prisma.discussion.findMany({
+    const queryReplies = await prisma.discussion.findMany({
       where: {
         parentCommentId: Number(req.query.parentCmtId),
       },
@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    return res.status(200).json({ success: true, allReplyComments: allReplyComments });
+    return res.status(200).json({ success: true, queryReplies: queryReplies });
   } catch (err) {
     return errorHandler(err, res);
   }

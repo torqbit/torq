@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         parentCommentId: null,
       },
     });
-    const allComments = await prisma.discussion.findMany({
+    const comments = await prisma.discussion.findMany({
       where: {
         resourceId: Number(resourceId),
         parentCommentId: null,
@@ -49,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    return res.status(200).json({ success: true, allComments: allComments, total });
+    return res.status(200).json({ success: true, comments: comments, total });
   } catch (err) {
     return errorHandler(err, res);
   }

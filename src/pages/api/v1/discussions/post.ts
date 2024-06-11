@@ -67,6 +67,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             toUserId: isEnrolled.course.user.id,
             commentId: addDiscussion.id,
             fromUserId: String(token?.id) || "",
+            resourceId: lessonId,
           },
         });
       }

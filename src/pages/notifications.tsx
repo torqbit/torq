@@ -7,45 +7,26 @@ import Link from "next/link";
 import { truncateString } from "@/services/helper";
 import moment from "moment";
 import NotificationService from "@/services/NotificationService";
-import ReplyDrawer from "@/components/LearnCourse/AboutCourse/CourseDiscussion/ReplyDrawer";
-import { IReplyDrawer } from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
 import { INotification } from "@/lib/types/discussions";
 import { DummydataList } from "@/lib/dummyData";
+import { useRouter } from "next/router";
+import { getFetch } from "@/services/request";
 
 const NotificationList: FC = () => {
+  const router = useRouter();
   const { data: user } = useSession();
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDatatLoading] = useState<boolean>();
   const [allNotificationRender, setAllNotificationRender] = useState<boolean>();
-  const [replyDrawer, setReplyDrawer] = useState<IReplyDrawer>({
-    isOpen: false,
-    sltCommentId: 0,
-  });
   const [notificationsCount, setNotificationsCount] = useState<number>();
   const [notifications, setNotifications] = useState<INotification[]>();
   const [notificationsList, setNotificationsList] = useState<INotification[]>();
-
-  const [selectedNotification, setSelectedNotification] = useState<INotification>();
-
-  const showReplyDrawer = (item?: INotification) => {
-    !replyDrawer.isOpen &&
-      setReplyDrawer({
-        isOpen: true,
-        sltCommentId: Number(item?.tagCommentId),
-      });
-    setSelectedNotification(item);
-    updateNotification();
-  };
-
-  const onCloseDrawer = () => {
-    setReplyDrawer({ isOpen: false, sltCommentId: 0 });
-  };
 
   const getNotification = async () => {
     try {
       setLoading(true);
 
-      NotificationService.getNotification(
+      NotificationService.getNotifications(
         0,
         10,
         (result) => {
@@ -65,31 +46,24 @@ const NotificationList: FC = () => {
     }
   };
 
-  const updateNotification = async () => {
+  const updateNotification = async (item: INotification) => {
     try {
-      user?.id &&
-        NotificationService.updateNotification(
-          Number(selectedNotification?.id),
-          (result) => {
-            // getNotification();
-            let updatedNofitcationList = notificationsList?.map((n) => {
-              if (n.id === selectedNotification?.id) {
-                return { ...n, isView: true };
-              } else {
-                return n;
-              }
-            });
-            setNotificationsList(updatedNofitcationList);
-          },
-          (error) => {}
-        );
+      let apiPath = item.tagCommentId
+        ? `/api/v1/notification/updateMany/update?tagCommentId=${item.tagCommentId}`
+        : `/api/v1/notification/update/${item.id}`;
+      getFetch(apiPath);
+      let courseId = item.tagCommentId ? item.tagComment?.resource?.chapter?.courseId : item.resource.chapter.courseId;
+      let resourceId = item.comment.resourceId;
+      item.tagCommentId
+        ? router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&threadId=${item?.tagCommentId}`)
+        : router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&queryId=${item?.id}`);
     } catch (err) {}
   };
 
   const onLoadMore = () => {
     DummydataList && setNotificationsList(notificationsList?.concat(DummydataList) as INotification[]);
 
-    NotificationService.getNotification(
+    NotificationService.getNotifications(
       notificationsList?.length,
       5,
       (result) => {
@@ -149,7 +123,7 @@ const NotificationList: FC = () => {
       renderItem={(item, index) => (
         <List.Item
           onClick={() => {
-            showReplyDrawer(item);
+            updateNotification(item);
           }}
           className={styles.notification_bar}
         >
@@ -180,11 +154,6 @@ const NotificationList: FC = () => {
               <span>{moment(new Date(item.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}</span>
             </Flex>
           </Skeleton>
-          <ReplyDrawer
-            replyDrawer={replyDrawer}
-            onCloseDrawer={onCloseDrawer}
-            resourceId={Number(selectedNotification?.resourceId)}
-          />
         </List.Item>
       )}
     />
