@@ -20,6 +20,7 @@ export const getNotifi = async (userId: string, limit: number, offSet: number) =
         select: {
           comment: true,
           resourceId: true,
+          parentCommentId: true,
         },
       },
       resource: {

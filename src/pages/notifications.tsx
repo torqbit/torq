@@ -142,7 +142,7 @@ const NotificationList: FC = () => {
                     <span className={styles.title}> {item.fromUser.name}</span>
                     {item.notificationType === "COMMENT" ? (
                       <span className={styles.reply_text}>
-                        replied on Question {" : "}
+                        {item.comment.parentCommentId ? " replied on query : " : " posted a query  "}
                         <span>{truncateString(item?.tagComment?.comment as string, 20)}</span>
                       </span>
                     ) : (
