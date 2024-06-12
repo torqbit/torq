@@ -102,7 +102,7 @@ const CommentBox: FC<{
       >
         <Avatar
           size={40}
-          src={comment.user?.image ? comment.user.image : appConstant.defaultProfile}
+          src={comment.user?.image}
           icon={<UserOutlined />}
           className={styles.user_icon}
           alt="Profile"

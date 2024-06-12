@@ -9,7 +9,7 @@ export default {
   assignmentFileFolder: "assignment-files",
   assignmentMaxScore: 10,
   certificateDirectory: "/courses/certificates/",
-  defaultProfile: "/img/profile/profile.svg",
+
   fontDirectory: {
     dmSerif: {
       italic: "/public/fonts/DM_Serif_Display/DMSerifDisplay-Italic.ttf",

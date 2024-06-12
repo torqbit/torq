@@ -11,6 +11,7 @@ import { INotification } from "@/lib/types/discussions";
 import { DummydataList } from "@/lib/dummyData";
 import { useRouter } from "next/router";
 import { getFetch } from "@/services/request";
+import { UserOutlined } from "@ant-design/icons";
 
 const NotificationList: FC = () => {
   const router = useRouter();
@@ -133,7 +134,7 @@ const NotificationList: FC = () => {
               <List.Item.Meta
                 avatar={
                   <Badge color="blue" dot={!item.isView}>
-                    <Avatar src={item.fromUser.image} />
+                    <Avatar src={item.fromUser.image} icon={<UserOutlined />} />
                   </Badge>
                 }
                 title={
