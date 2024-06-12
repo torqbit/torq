@@ -35,7 +35,7 @@ GROUP BY dis.id, userId, comment, dis.createdAt
       };
     });
 
-    return res.status(200).json({ success: true, comment, messsage: "Comment Found" });
+    return res.status(200).json({ success: true, comment: comment[0], messsage: "Comment Found" });
   } catch (err) {
     return errorHandler(err, res);
   }

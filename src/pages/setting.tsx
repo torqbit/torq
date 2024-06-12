@@ -4,23 +4,20 @@ import styles from "@/styles/Profile.module.scss";
 import { useSession } from "next-auth/react";
 import Layout2 from "@/components/Layouts/Layout2";
 import { Button, Form, Input, Tabs, Spin, TabsProps, message } from "antd";
-
 import { postFetch, IResponse } from "@/services/request";
 import { NextPage } from "next";
 import { Session } from "next-auth";
-import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { useAppContext } from "@/components/ContextApi/AppContext";
+import appConstant from "@/services/appConstant";
 
 const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string; phone: string }) => void }> = ({
   user,
   onUpdateProfile,
 }) => {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-
   useEffect(() => {
     setPageLoading(true);
-
     if (user) {
       setPageLoading(false);
     }
@@ -38,7 +35,7 @@ const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string
             <div className={styles.left_content}>
               <img
                 className={styles.user_profile_pic}
-                src={user?.user?.image ? user?.user?.image : "/img/profile/profile-circle-svgrepo-com.svg"}
+                src={user?.user?.image ? user?.user?.image : appConstant.defaultProfile}
                 alt=""
               />
             </div>
@@ -80,7 +77,7 @@ const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string
 const Setting: NextPage = () => {
   const { data: user, update } = useSession();
   const [messageApi, contextMessageHolder] = message.useMessage();
-  const { dispatch,globalState } = useAppContext();
+  const { dispatch, globalState } = useAppContext();
 
   const onChange = (key: string) => {};
   const onUpdateProfile = async (info: { name: string; phone: string }) => {
@@ -89,7 +86,7 @@ const Setting: NextPage = () => {
     if (res.ok && result.success) {
       update(info);
 
-      dispatch({ type: "SET_USER", payload:{name:info.name,phone:info.phone,theme:globalState.theme} });
+      dispatch({ type: "SET_USER", payload: { name: info.name, phone: info.phone, theme: globalState.theme } });
       messageApi.success(result.message);
     } else {
       messageApi.error(result.error);

@@ -56,7 +56,7 @@ const QAForm: FC<{
               title="Post"
             >
               <Flex align="center" gap={10}>
-                Post
+                {placeholder === "Reply" ? "Reply" : "Post"}
                 {!loading && SvgIcons.send}
               </Flex>
             </Button>

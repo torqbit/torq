@@ -33,6 +33,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (isEnrolled) {
+      const queryAuthor = await prisma.discussion.findUnique({
+        where: {
+          id: parentCommentId,
+        },
+        select: {
+          userId: true,
+          resourceId: true,
+        },
+      });
+
       const addDiscussion = await prisma.discussion.create({
         data: {
           userId: String(token?.id),
@@ -50,9 +60,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         },
       });
-      const allthreadDiscussion = await prisma.discussion.findMany({
+      const repliesAuthors = await prisma.discussion.findMany({
         distinct: ["userId"],
-
         where: {
           parentCommentId: parentCommentId,
           NOT: {
@@ -65,18 +74,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
 
-      allthreadDiscussion.map(async (user) => {
-        return await prisma.notification.create({
-          data: {
-            notificationType: "COMMENT",
-            toUserId: user.userId,
-            commentId: addDiscussion.id,
-            fromUserId: String(token?.id) || "",
-            tagCommentId: parentCommentId,
-            resourceId: user.resourceId,
-          },
-        });
-      });
+      queryAuthor &&
+        repliesAuthors
+          .concat([queryAuthor])
+          .filter((u) => u.userId !== token?.id)
+          .map(async (user) => {
+            return prisma.notification.create({
+              data: {
+                notificationType: "COMMENT",
+                toUserId: user.userId,
+                commentId: addDiscussion.id,
+                fromUserId: String(token?.id) || "",
+                tagCommentId: parentCommentId,
+                resourceId: user.resourceId,
+              },
+            });
+          });
 
       return res.status(200).json({ success: true, comment: addDiscussion, message: "Reply has been posted" });
     } else {
