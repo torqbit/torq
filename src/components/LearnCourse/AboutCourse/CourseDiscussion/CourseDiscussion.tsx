@@ -155,6 +155,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             replyCount: 0,
           };
           setComments([newComment, ...comments]);
+          setCommentCount(commentCount + 1);
           setCommentText("");
           setLoading(false);
         },
