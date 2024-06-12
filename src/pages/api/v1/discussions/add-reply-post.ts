@@ -33,7 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (isEnrolled) {
-      const queryDiscussion = await prisma.discussion.findUnique({
+      const queryAuthor = await prisma.discussion.findUnique({
         where: {
           id: parentCommentId,
         },
@@ -60,7 +60,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         },
       });
-      const allthreadDiscussion = await prisma.discussion.findMany({
+      const repliesAuthors = await prisma.discussion.findMany({
         distinct: ["userId"],
         where: {
           parentCommentId: parentCommentId,
@@ -73,24 +73,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           resourceId: true,
         },
       });
-      const isAuthorExist = allthreadDiscussion.find((d) => d.userId === token?.id);
 
-      if (queryDiscussion?.userId !== token?.id && !isAuthorExist) {
-        queryDiscussion && allthreadDiscussion.push(queryDiscussion);
-      }
-
-      allthreadDiscussion.map(async (user) => {
-        return await prisma.notification.create({
-          data: {
-            notificationType: "COMMENT",
-            toUserId: user.userId,
-            commentId: addDiscussion.id,
-            fromUserId: String(token?.id) || "",
-            tagCommentId: parentCommentId,
-            resourceId: user.resourceId,
-          },
-        });
-      });
+      queryAuthor &&
+        repliesAuthors
+          .concat([queryAuthor])
+          .filter((u) => u.userId !== token?.id)
+          .map(async (user) => {
+            return prisma.notification.create({
+              data: {
+                notificationType: "COMMENT",
+                toUserId: user.userId,
+                commentId: addDiscussion.id,
+                fromUserId: String(token?.id) || "",
+                tagCommentId: parentCommentId,
+                resourceId: user.resourceId,
+              },
+            });
+          });
 
       return res.status(200).json({ success: true, comment: addDiscussion, message: "Reply has been posted" });
     } else {
