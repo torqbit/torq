@@ -6,11 +6,39 @@ import prisma from "@/lib/prisma";
 import getUserByEmail from "@/actions/getUserByEmail";
 import MailerService from "@/services/MailerService";
 
+const sendWelcomeEmail = async (name: string, email: string) => {
+  const courses = await prisma?.course.findMany({
+    take: 3,
+    select: {
+      courseId: true,
+      name: true,
+      thumbnail: true,
+    },
+  });
+  const configData = {
+    name: name,
+    url: `${process.env.NEXTAUTH_URL}/courses`,
+    email: email,
+    courses: courses.map((c) => {
+      return {
+        name: c.name,
+        thumbnail: c.thumbnail,
+        link: `${process.env.NEXTAUTH_URL}/courses/${c.courseId}`,
+      };
+    }),
+  };
+
+  MailerService.sendMail("NEW_USER", configData).then((result) => {
+    console.log(result.error);
+  });
+};
+
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_PUBLIC_SECRET,
   adapter: {
     ...PrismaAdapter(prisma),
     createUser(user) {
+      sendWelcomeEmail(String(user.name), String(user.email));
       return prisma.user.create({
         data: {
           ...user,
@@ -55,31 +83,6 @@ export const authOptions: NextAuthOptions = {
           token.id = user?.id;
           token.role = "AUTHOR";
         }
-
-        const courses = await prisma?.course.findMany({
-          take: 3,
-          select: {
-            courseId: true,
-            name: true,
-            thumbnail: true,
-          },
-        });
-        const configData = {
-          name: token.name,
-          url: `${process.env.NEXTAUTH_URL}/courses`,
-          email: token?.email,
-          courses: courses.map((c) => {
-            return {
-              name: c.name,
-              thumbnail: c.thumbnail,
-              link: `${process.env.NEXTAUTH_URL}/courses/${c.courseId}`,
-            };
-          }),
-        };
-
-        MailerService.sendMail("NEW_USER", configData).then((result) => {
-          console.log(result.error);
-        });
 
         return token;
       }

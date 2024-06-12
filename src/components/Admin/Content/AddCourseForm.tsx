@@ -1,36 +1,29 @@
 import React, { FC, useEffect, useState } from "react";
-
 import Layout2 from "@/components/Layouts/Layout2";
 import Link from "next/link";
-
 import Setting from "./Setting";
 import styles from "@/styles/Dashboard.module.scss";
-
-import { Button, Dropdown, Form, Tabs, TabsProps, message } from "antd";
+import { Dropdown, Form, Tabs, TabsProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
 import Preview from "./Preview";
-
 import ProgramService from "@/services/ProgramService";
 import {
   CourseAPIResponse,
   CourseData,
   CourseLessonAPIResponse,
   IVideoLesson,
-  UploadVideoObjectType,
   UploadedResourceDetail,
   VideoAPIResponse,
   VideoInfo,
 } from "@/types/courses/Course";
 import AddCourseChapter from "@/components/Admin/Content/AddCourseChapter";
-import { Resource, ResourceContentType, courseDifficultyType } from "@prisma/client";
-import { IAddResource, ResourceDetails } from "@/lib/types/program";
+import { ResourceContentType } from "@prisma/client";
+import { ResourceDetails } from "@/lib/types/program";
 import AddVideoLesson from "@/components/Admin/Content/AddVideoLesson";
-
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
-import { useAppContext } from "@/components/ContextApi/AppContext";
 
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
@@ -86,19 +79,11 @@ const AddCourseForm: FC = () => {
   const [uploadResourceUrl, setUploadResUrl] = useState<UploadedResourceDetail>();
 
   const onDiscard = () => {
-    ProgramService.getCourseDetails(
+    ProgramService.deleteCourse(
       Number(router.query.id),
-      (result: CourseAPIResponse) => {
-        ProgramService.deleteCourse(
-          Number(router.query.id),
-          (result) => {
-            messageApi.success(result.message);
-            router.push(`/admin/content`);
-          },
-          (error) => {
-            messageApi.error(error);
-          }
-        );
+      (result) => {
+        messageApi.success(result.message);
+        router.push(`/admin/content`);
       },
       (error) => {
         messageApi.error(error);
@@ -108,40 +93,28 @@ const AddCourseForm: FC = () => {
 
   const onSubmit = () => {
     setSettingloading(true);
-
-    ProgramService.getCourseDetails(
-      Number(router.query.id),
-      (result: CourseAPIResponse) => {
-        let course = {
-          name: courseData?.name || form.getFieldsValue().course_name,
-          expiryInDays: Number(courseData?.expiryInDays),
-          description: courseData?.description || form.getFieldsValue().course_description,
-          thumbnail: result.courseDetails.thumbnail || "",
-          tvThumbnail: result.courseDetails.tvThumbnail || "",
-          tvUrl: result.courseDetails.tvUrl || "",
-          tvProviderId: result.courseDetails.tvProviderId || "",
-          courseId: Number(router.query.id),
-          difficultyLevel: courseData.difficultyLevel,
-          certificateTemplate: courseData.certificateTemplate,
-        };
-
-        ProgramService.updateCourse(
-          course,
-          (result) => {
-            setActiveKey("2");
-            form.resetFields();
-            setRefresh(!refresh);
-            setTabActive(true);
-            messageApi.success("Course has been updated");
-            setSettingloading(false);
-          },
-          (error) => {
-            messageApi.error(error);
-            setSettingloading(false);
-          }
-        );
+    let course = {
+      name: form.getFieldsValue().course_name || courseData?.name,
+      expiryInDays: Number(courseData?.expiryInDays),
+      description: form.getFieldsValue().course_description || courseData.description,
+      courseId: Number(router.query.id),
+      difficultyLevel: courseData.difficultyLevel,
+      certificateTemplate: courseData.certificateTemplate,
+    };
+    ProgramService.updateCourse(
+      course,
+      (result) => {
+        setActiveKey("2");
+        form.resetFields();
+        setRefresh(!refresh);
+        setTabActive(true);
+        messageApi.success("Course has been updated");
+        setSettingloading(false);
       },
-      (error) => {}
+      (error) => {
+        messageApi.error(error);
+        setSettingloading(false);
+      }
     );
   };
 
