@@ -9,6 +9,7 @@ import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 import SvgIcons from "@/components/SvgIcons";
+import appConstant from "@/services/appConstant";
 
 moment.locale("en", { ...customFromNow });
 
@@ -99,7 +100,13 @@ const CommentBox: FC<{
         }}
         onMouseLeave={() => setEditActive(false)}
       >
-        <Avatar size={40} src={comment.user.image} icon={<UserOutlined />} className={styles.user_icon} alt="Profile" />
+        <Avatar
+          size={40}
+          src={comment.user?.image ? comment.user.image : appConstant.profileUrl}
+          icon={<UserOutlined />}
+          className={styles.user_icon}
+          alt="Profile"
+        />
         <div className={styles.comment}>
           <Space className={styles.user_info}>
             <h4>{comment.user.name}</h4>

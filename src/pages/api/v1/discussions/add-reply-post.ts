@@ -33,6 +33,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (isEnrolled) {
+      const queryDiscussion = await prisma.discussion.findUnique({
+        where: {
+          id: parentCommentId,
+        },
+        select: {
+          userId: true,
+          resourceId: true,
+        },
+      });
+
       const addDiscussion = await prisma.discussion.create({
         data: {
           userId: String(token?.id),
@@ -52,7 +62,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       const allthreadDiscussion = await prisma.discussion.findMany({
         distinct: ["userId"],
-
         where: {
           parentCommentId: parentCommentId,
           NOT: {
@@ -64,6 +73,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           resourceId: true,
         },
       });
+      const isAuthorExist = allthreadDiscussion.find((d) => d.userId === token?.id);
+
+      if (queryDiscussion?.userId !== token?.id && !isAuthorExist) {
+        queryDiscussion && allthreadDiscussion.push(queryDiscussion);
+      }
 
       allthreadDiscussion.map(async (user) => {
         return await prisma.notification.create({

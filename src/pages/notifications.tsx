@@ -56,7 +56,7 @@ const NotificationList: FC = () => {
       let resourceId = item.comment.resourceId;
       item.tagCommentId
         ? router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&threadId=${item?.tagCommentId}`)
-        : router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&queryId=${item?.id}`);
+        : router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&queryId=${item?.commentId}`);
     } catch (err) {}
   };
 
