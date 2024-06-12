@@ -35,15 +35,12 @@ export function getFileExtension(fileName: string) {
 }
 
 export const saveToDir = async (fullName: string, sourcePath: string) => {
-  console.log(String(process.env.MEDIA_UPLOAD_PATH), "media env file uplaod path");
-
   if (!process.env.MEDIA_UPLOAD_PATH) {
     throw new Error(" Environment variable MEDIA_UPLOAD_PATH is not set.");
   }
   const isDirExist = fs.existsSync(String(process.env.MEDIA_UPLOAD_PATH));
 
   if (!isDirExist) {
-    console.log("hit");
     throw new Error("Local directory for uploading media does not exist");
   }
 

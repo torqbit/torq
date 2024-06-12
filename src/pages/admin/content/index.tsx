@@ -204,7 +204,6 @@ const Content: NextPage = () => {
 
     ProgramService.getCoursesByAuthor(
       (res) => {
-        console.log(res, "result");
         setCoursesAuthored({
           ...coursesAuthored,
           fetchCourses: false,
