@@ -3,13 +3,14 @@ import styleLayout from "../styles/Dashboard.module.scss";
 import styles from "@/styles/Profile.module.scss";
 import { useSession } from "next-auth/react";
 import Layout2 from "@/components/Layouts/Layout2";
-import { Button, Form, Input, Tabs, Spin, TabsProps, message } from "antd";
+import { Button, Form, Input, Tabs, Spin, TabsProps, message, Avatar } from "antd";
 import { postFetch, IResponse } from "@/services/request";
 import { NextPage } from "next";
 import { Session } from "next-auth";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import appConstant from "@/services/appConstant";
+import { UserOutlined } from "@ant-design/icons";
 
 const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string; phone: string }) => void }> = ({
   user,
@@ -33,10 +34,10 @@ const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string
         <section className={styles.user_profile_page}>
           <div className={styles.content_center}>
             <div className={styles.left_content}>
-              <img
+              <Avatar
                 className={styles.user_profile_pic}
-                src={user?.user?.image ? user?.user?.image : appConstant.defaultProfile}
-                alt=""
+                src={user.user?.image}
+                icon={<UserOutlined style={{ fontSize: 100, marginTop: 35 }} size={400} />}
               />
             </div>
             <div className={styles.right_content}>

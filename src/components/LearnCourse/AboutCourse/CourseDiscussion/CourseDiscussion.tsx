@@ -207,7 +207,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         comments={comments}
         onUpdateReplyCount={onUpdateReplyCount}
       />
-      {commentCount !== comments.length && (
+      {commentCount !== comments.length && comments.length !== 0 && (
         <Divider>
           <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>
             Load More
