@@ -14,7 +14,6 @@ import {
   Section,
   Text,
   Tailwind,
-  TailwindConfig,
 } from "@react-email/components";
 import { Flex } from "antd";
 import * as React from "react";
@@ -23,34 +22,12 @@ interface IProps {
 }
 const WelcomeEmailPage = ({ configData }: IProps) => {
   return (
-    <Html>
-      <Head />
+    <Tailwind>
+      <Html>
+        <Head />
 
-      <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
-      <Tailwind
-        config={
-          {
-            theme: {
-              screens: {
-                sm: "640px",
-                // => @media (min-width: 640px) { ... }
+        <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
 
-                md: "768px",
-                // => @media (min-width: 768px) { ... }
-
-                lg: "1024px",
-                // => @media (min-width: 1024px) { ... }
-
-                xl: "1280px",
-                // => @media (min-width: 1280px) { ... }
-
-                "2xl": "1636px",
-                // => @media (min-width: 1536px) { ... }
-              },
-            },
-          } as TailwindConfig
-        }
-      >
         <Head>
           <style></style>
         </Head>
@@ -76,15 +53,12 @@ const WelcomeEmailPage = ({ configData }: IProps) => {
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 Choose from the courses below or click on the button at the bottom to view all the courses.
               </Text>
-              <Section className="flex item-center   gap-5">
+              <Section className="">
                 {configData.courses.map((c, i) => {
                   return (
-                    <div
-                      key={i}
-                      className="text-center bg-[#fff] min-h-[150px] p-2 mt-[32px] mb-[32px] flex md:flex-row flex-col gap-5"
-                    >
-                      <Img src={c.thumbnail} alt="course" height={150} width={150} className="object-cover" />
-                      <Flex vertical justify="space-between" className=" px-5 ">
+                    <div key={i} className="text-center bg-[#fff] min-h-[150px] p-2 mt-[32px] mb-[32px]">
+                      <Img src={c.thumbnail} alt="course" height={150} className="object-cover w-full" />
+                      <Flex vertical justify="space-between" className="">
                         <div>
                           <Heading className="text-[#000] text-left text-[15px] mb-1 ">{c.name}</Heading>
                           <Text className="leading-[20px] text-[#888] text-[14px] text-left m-0 mb-4">
@@ -118,12 +92,14 @@ const WelcomeEmailPage = ({ configData }: IProps) => {
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 If you're having trouble with the button above, copy and paste the URL below into your web browser.
               </Text>
-              <Link className="text-blue-600 cursor-pointer">{configData.url}</Link>
+              <Link href={configData.url} className="text-blue-600 cursor-pointer">
+                {configData.url}
+              </Link>
             </Section>
           </Container>
         </Body>
-      </Tailwind>
-    </Html>
+      </Html>
+    </Tailwind>
   );
 };
 

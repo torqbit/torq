@@ -23,36 +23,12 @@ interface IProps {
 
 export const CourseEnrolmentEmail = ({ configData }: IProps) => {
   return (
-    <Html>
-      <Head />
+    <Tailwind>
+      <Html>
+        <Head />
 
-      <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
-      <Tailwind
-        config={
-          {
-            theme: {
-              extend: {},
+        <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
 
-              screens: {
-                sm: "640px",
-                // => @media (min-width: 640px) { ... }
-
-                md: "768px",
-                // => @media (min-width: 768px) { ... }
-
-                lg: "1024px",
-                // => @media (min-width: 1024px) { ... }
-
-                xl: "1280px",
-                // => @media (min-width: 1280px) { ... }
-
-                "2xl": "1636px",
-                // => @media (min-width: 1536px) { ... }
-              },
-            },
-          } as TailwindConfig
-        }
-      >
         <Head>
           <style></style>
         </Head>
@@ -77,24 +53,24 @@ export const CourseEnrolmentEmail = ({ configData }: IProps) => {
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 It&apos;s time to move forward. Click on the link below to get Start
               </Text>
-              <Section className="flex item-center   gap-5">
-                <div className="text-center bg-[#fff] min-h-[150px] p-2 mt-[32px] mb-[32px] flex md:flex-row flex-col gap-5">
-                  <Img src={configData.course.thumbnail} width={150} height={150} alt="course" />
-                  <Flex vertical justify="space-between" className=" px-5 ">
+              <Section className=" item-center   gap-5">
+                <div className="text-center bg-[#fff] min-h-[150px] p-2 mt-[32px] mb-[32px]">
+                  <Img src={configData.course.thumbnail} height={150} className="object-cover w-full" alt="course" />
+                  <Flex vertical justify="space-between" className="  ">
                     <div>
                       <Heading className="text-[#000] text-left text-[15px] mb-1 ">{configData.course.name}</Heading>
                       <Text className="leading-[20px] text-[#888] text-[14px] text-left m-0 mb-4">
                         If you have any questions, feel free to email our support team, or even send a reply .
                       </Text>
                     </div>
-                    <Section className="flex item-center justify-start">
+                    <div className="flex item-center justify-start">
                       <Button
                         href={`${configData.url}`}
                         className="bg-[#5b63d3] px-5 py-2 text-white text-left text-[12px]  rounded"
                       >
                         Start Course
                       </Button>
-                    </Section>
+                    </div>
                   </Flex>
                 </div>
               </Section>
@@ -112,12 +88,14 @@ export const CourseEnrolmentEmail = ({ configData }: IProps) => {
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 If you&apos;re having trouble with the button above, copy and paste the URL below into your web browser.
               </Text>
-              <Link className="text-blue-600 cursor-pointer">{configData.url}</Link>
+              <Link href={configData.url} className="text-blue-600 cursor-pointer">
+                {configData.url}
+              </Link>
             </Section>
           </Container>
         </Body>
-      </Tailwind>
-    </Html>
+      </Html>
+    </Tailwind>
   );
 };
 

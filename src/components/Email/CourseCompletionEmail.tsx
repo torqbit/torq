@@ -10,11 +10,9 @@ import {
   Img,
   Link,
   Preview,
-  Row,
   Section,
   Text,
   Tailwind,
-  TailwindConfig,
 } from "@react-email/components";
 import { Flex } from "antd";
 import * as React from "react";
@@ -25,36 +23,10 @@ interface IProps {
 
 export const CourseCompletionEmail = ({ configData }: IProps) => {
   return (
-    <Html>
-      <Head />
-
-      <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
-      <Tailwind
-        config={
-          {
-            theme: {
-              extend: {},
-
-              screens: {
-                sm: "640px",
-                // => @media (min-width: 640px) { ... }
-
-                md: "768px",
-                // => @media (min-width: 768px) { ... }
-
-                lg: "1024px",
-                // => @media (min-width: 1024px) { ... }
-
-                xl: "1280px",
-                // => @media (min-width: 1280px) { ... }
-
-                "2xl": "1636px",
-                // => @media (min-width: 1536px) { ... }
-              },
-            },
-          } as TailwindConfig
-        }
-      >
+    <Tailwind>
+      <Html>
+        <Head />
+        <Preview>{`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`}</Preview>
         <Head>
           <style></style>
         </Head>
@@ -107,8 +79,8 @@ export const CourseCompletionEmail = ({ configData }: IProps) => {
             </Section>
           </Container>
         </Body>
-      </Tailwind>
-    </Html>
+      </Html>
+    </Tailwind>
   );
 };
 
