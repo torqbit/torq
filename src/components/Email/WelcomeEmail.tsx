@@ -33,16 +33,16 @@ const WelcomeEmailPage = ({ configData }: IProps) => {
         </Head>
         <Body className="bg-[#f5f5f5] my-auto mx-auto font-sans ">
           <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto    max-w-[465px]">
-            <Heading className="text-black   w-full  text-[20px] font-normal  my-0 text-center py-2  mx-0 bg-[#fff]">
-              <Flex align="center" justify="center">
-                <Img
-                  height={50}
-                  width={50}
-                  style={{ display: "unset" }}
-                  src={`https://torqbit-dev.b-cdn.net/static/torq.png`}
-                />
-              </Flex>
+            <Heading className="text-black   w-full  text-[20px] font-normal  my-0  py-2 px-[20px]  mx-0 ">
+              <Img
+                height={50}
+                width={50}
+                style={{ display: "unset" }}
+                src={`https://torqbit-dev.b-cdn.net/static/torq.png`}
+              />
             </Heading>
+            <Hr className="border border-solid border-[#eaeaea]  mx-0 w-full" />
+
             <Section className="px-[20px]">
               <Text className="text-black text-[20px] leading-[20px]">Hey, {configData.name}!</Text>
               <Text className="text-[#888] text-[14px] leading-[20px]">
@@ -50,34 +50,17 @@ const WelcomeEmailPage = ({ configData }: IProps) => {
                 join our community. You can nowexcel in the field of software development, connect with fellow learners
                 and help each other to move forward.
               </Text>
+
               <Text className="text-[#888] text-[14px] leading-[20px]">
-                Choose from the courses below or click on the button at the bottom to view all the courses.
+                Visit your dashboard and browse all the courses to start learning.
               </Text>
-              <Section className="">
-                {configData.courses.map((c, i) => {
-                  return (
-                    <div key={i} className="text-center bg-[#fff] min-h-[150px] p-2 mt-[32px] mb-[32px]">
-                      <Img src={c.thumbnail} alt="course" height={150} className="object-cover w-full" />
-                      <Flex vertical justify="space-between" className="">
-                        <div>
-                          <Heading className="text-[#000] text-left text-[15px] mb-1 ">{c.name}</Heading>
-                          <Text className="leading-[20px] text-[#888] text-[14px] text-left m-0 mb-4">
-                            If you have any questions, feel free to email our support team, or even send a reply .
-                          </Text>
-                        </div>
-                        <Section className="flex item-center justify-start">
-                          <Button
-                            href={c.link}
-                            className="bg-[#5b63d3] px-5 py-2 text-white text-left text-[12px]  rounded"
-                          >
-                            Learn More
-                          </Button>
-                        </Section>
-                      </Flex>
-                    </div>
-                  );
-                })}
-              </Section>
+
+              <Button
+                href={configData.url}
+                className="bg-[#5b63d3] px-5 py-2 text-white text-left text-[12px]  rounded"
+              >
+                Visit Dashboard
+              </Button>
 
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 If you have any questions, feel free to email our support team, or even send a reply to this email. We

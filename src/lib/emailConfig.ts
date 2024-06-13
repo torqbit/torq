@@ -2,7 +2,6 @@ export interface IWelcomeEmailConfig {
   name: string;
   url: string;
   email: string;
-  courses: { name: string; thumbnail: string; link: string }[];
 }
 
 export interface IEnrolmentEmailConfig {
