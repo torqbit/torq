@@ -83,6 +83,11 @@ const Preview: FC<{
       showArrow: false,
     };
   });
+  const [activeCollapseKey, setActiveCollapseKey] = useState<string[]>(items ? items.map((item, i) => `${i + 1}`) : []);
+
+  const onChange = (key: string | string[]) => {
+    setActiveCollapseKey(key as string[]);
+  };
 
   const onViewCertificate = () => {
     ProgramService.getCertificate(
@@ -171,26 +176,25 @@ const Preview: FC<{
 
         <h2>Table of Contents</h2>
         <div>
-          {items &&
-            items.map((item, i) => {
-              return (
-                <div key={i} className={styles.chapter_list}>
-                  <Collapse
-                    defaultActiveKey={"1"}
-                    size="small"
-                    accordion={false}
-                    items={[
-                      {
-                        key: item.key,
-                        label: item.label,
-                        children: item.children,
-                        showArrow: false,
-                      },
-                    ]}
-                  />
-                </div>
-              );
-            })}
+          <div className={styles.chapter_list}>
+            <Collapse
+              onChange={onChange}
+              activeKey={activeCollapseKey}
+              size="small"
+              accordion={false}
+              items={
+                items &&
+                items.map((item, i) => {
+                  return {
+                    key: item.key,
+                    label: item.label,
+                    children: item.children,
+                    showArrow: false,
+                  };
+                })
+              }
+            />
+          </div>
         </div>
       </Space>
     </section>

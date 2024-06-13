@@ -247,7 +247,7 @@ model CourseRegistration {
   updatedAt      DateTime    @updatedAt
   expireIn       DateTime?
 
-  user   User   @relation(fields: [studentId], references: [id])
+  user   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   @@unique([registrationId])

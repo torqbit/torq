@@ -12,8 +12,6 @@ const Label: FC<{
   deleteChapter: (id: number) => void;
   type: string;
   keyValue: string;
-  onRender: (value: string[]) => void;
-  render: string[];
   onAddResource: (id: number, content: ResourceContentType) => void;
   onEditResource: (id: number) => void;
   icon: ReactNode;
@@ -22,8 +20,7 @@ const Label: FC<{
 }> = ({
   title,
   type,
-  onRender,
-  render,
+
   keyValue,
   onEditResource,
   icon,
@@ -33,14 +30,6 @@ const Label: FC<{
   id,
   updateState,
 }) => {
-  const onActive = (value: string[]) => {
-    if (render.includes(value[0])) {
-      let currentValue = render.filter((v) => v !== value[0]);
-      onRender(currentValue);
-    } else {
-      render.push(value[0]);
-    }
-  };
   const dropdownMenu: MenuProps["items"] = [
     {
       key: "1",
@@ -71,10 +60,7 @@ const Label: FC<{
         <div>
           <Flex gap={10} align="center">
             {icon}
-            <div style={{ cursor: "pointer" }} onClick={() => type === "chapter" && onActive([keyValue])}>
-              {" "}
-              {title}
-            </div>
+            <div style={{ cursor: "pointer" }}> {title}</div>
           </Flex>
         </div>
         <div>
@@ -163,10 +149,7 @@ const Curriculum: FC<{
   onEditResource,
   onDiscard,
 }) => {
-  const renderKey = chapters.map((c, i) => {
-    return `${i + 1}`;
-  });
-  const [render, setRender] = useState(renderKey);
+  const [collapse, setCollapse] = useState<boolean>(false);
 
   const items = chapters.map((content, i) => {
     return {
@@ -176,13 +159,11 @@ const Curriculum: FC<{
           title={content.name}
           icon={SvgIcons.folder}
           type="chapter"
-          onRender={setRender}
           onEditResource={handleEditChapter}
           deleteChapter={deleteChapter}
           updateState={updateChapterState}
           onAddResource={onAddResource}
           id={content.chapterId}
-          render={render}
           keyValue={`${i + 1}`}
           state={content.state === "ACTIVE" ? "Published" : "Draft"}
         />
@@ -199,8 +180,6 @@ const Curriculum: FC<{
               type="resource"
               onEditResource={onEditResource}
               onAddResource={() => {}}
-              onRender={setRender}
-              render={render}
               keyValue={`${i + 1}`}
               state={res.state === "ACTIVE" ? "Published" : "Draft"}
             />
@@ -210,6 +189,17 @@ const Curriculum: FC<{
       showArrow: false,
     };
   });
+  const [activeCollapseKey, setActiveCollapseKey] = useState<string[]>(items.map((item, i) => `${i + 1}`));
+
+  const onChange = (key: string | string[]) => {
+    setActiveCollapseKey(key as string[]);
+    if (key.length === items.length) {
+      setCollapse(false);
+    } else if (key.length === 0) {
+      setCollapse(true);
+    }
+  };
+
   return (
     <section className={styles.curriculum}>
       <div className={styles.curriculum_container}>
@@ -258,9 +248,12 @@ const Curriculum: FC<{
 
               <Button
                 className={styles.add_btn}
-                onClick={() => (render[0] === "" ? setRender(chapters.map((c, i) => `${i + 1}`)) : setRender([""]))}
+                onClick={() => {
+                  collapse ? setActiveCollapseKey(items.map((item, i) => `${i + 1}`)) : setActiveCollapseKey([]);
+                  setCollapse(!collapse);
+                }}
               >
-                {render[0] !== "" ? (
+                {!collapse ? (
                   <Flex align="center" justify="center" gap={10}>
                     {SvgIcons.barUpIcon} Collapse All
                   </Flex>
@@ -275,27 +268,21 @@ const Curriculum: FC<{
         )}
       </div>
       {chapters.length > 0 ? (
-        <div>
-          {items.map((item, i) => {
-            return (
-              <div key={i} className={styles.chapter_list}>
-                <Collapse
-                  defaultActiveKey={"1"}
-                  size="small"
-                  accordion={false}
-                  activeKey={render}
-                  items={[
-                    {
-                      key: item.key,
-                      label: item.label,
-                      children: item.children,
-                      showArrow: false,
-                    },
-                  ]}
-                />
-              </div>
-            );
-          })}
+        <div className={styles.chapter_list}>
+          <Collapse
+            onChange={onChange}
+            size="small"
+            activeKey={activeCollapseKey}
+            accordion={false}
+            items={items.map((item, i) => {
+              return {
+                key: item.key,
+                label: item.label,
+                children: item.children,
+                showArrow: false,
+              };
+            })}
+          />
         </div>
       ) : (
         <div className={styles.no_chapter_btn}>
