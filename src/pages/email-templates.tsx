@@ -2,7 +2,7 @@ import CourseEnrolmentEmail from "@/components/Email/CourseRegistrationEmail";
 import WelcomeEmailPage from "@/components/Email/WelcomeEmail";
 
 const EmailTemplatePage = () => {
-  return (
+  const signUp = (
     <WelcomeEmailPage
       configData={{
         name: "mehrab",
@@ -10,18 +10,22 @@ const EmailTemplatePage = () => {
         email: "",
       }}
     />
-    // <CourseEnrolmentEmail
-    //   configData={{
-    //     name: "Mehrab",
-    //     url: "/dash",
-    //     email: "/",
-    //     course: {
-    //       name: "Git Branch",
-    //       thumbnail: "https://torqbit-dev.b-cdn.net/static//courses/banners/Git-Intro_banner-1717674874299.jpg",
-    //     },
-    //   }}
-    // />
   );
+
+  const enrollment = (
+    <CourseEnrolmentEmail
+      configData={{
+        name: "Mehrab",
+        url: "/dash",
+        email: "/",
+        course: {
+          name: "Git Branch",
+          thumbnail: "https://torqbit-dev.b-cdn.net/static//courses/banners/Git-Intro_banner-1717674874299.jpg",
+        },
+      }}
+    />
+  );
+  return <></>;
 };
 
 export default EmailTemplatePage;
