@@ -23,6 +23,8 @@ const CommentBox: FC<{
   comments?: IComment[];
   setAllComment: (value: IComment[]) => void;
   onUpdateReplyCount: (id: number, method: string) => void;
+  setCommentCount?: (vlaue: number) => void;
+  commentCount?: number;
 }> = ({
   comment,
 
@@ -33,6 +35,8 @@ const CommentBox: FC<{
   comments,
   setAllComment,
   onUpdateReplyCount,
+  setCommentCount,
+  commentCount,
 }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
@@ -50,6 +54,7 @@ const CommentBox: FC<{
         commentLeft && setAllComment(commentLeft);
         const parentCommentId = comments?.find((c) => c.id === commentId)?.parentCommentId;
         replyList && onUpdateReplyCount(Number(parentCommentId), "delete");
+        !replyList && commentCount && setCommentCount && setCommentCount(commentCount - 1);
       },
       (error) => {
         message.error(error);

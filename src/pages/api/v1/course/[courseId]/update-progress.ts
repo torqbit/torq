@@ -25,10 +25,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userId = token?.id;
     const body = await req.body;
     const { resourceId, courseId } = body;
-    const isEnrolled = await prisma.courseRegistration.findFirst({
+    const isEnrolled = await prisma.courseRegistration.findUnique({
       where: {
-        studentId: userId,
-        courseId: Number(courseId),
+        studentId_courseId: {
+          studentId: String(userId),
+          courseId: Number(courseId),
+        },
       },
       select: {
         courseId: true,
@@ -55,7 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       INNER JOIN Chapter as ch ON co.courseId = ch.courseId 
       INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
       INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-      LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.user_id
+      LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.studentId
       WHERE co.courseId = ${Number(courseId)} AND re.state = 'ACTIVE' AND cr.studentId = ${userId}`;
 
       if (courseProgress.length > 0) {

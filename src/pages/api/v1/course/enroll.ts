@@ -36,8 +36,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // check user already enrolled
 
-    const alreadyEnrolled = await prisma.courseRegistration.findFirst({
-      where: { courseId: courseId, studentId: token?.id },
+    const alreadyEnrolled = await prisma.courseRegistration.findUnique({
+      where: {
+        studentId_courseId: {
+          courseId: Number(courseId),
+          studentId: String(token?.id),
+        },
+      },
+      select: {
+        registrationId: true,
+      },
     });
     if (alreadyEnrolled) {
       return res.status(400).json({

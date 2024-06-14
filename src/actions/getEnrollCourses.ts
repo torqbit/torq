@@ -24,10 +24,12 @@ export const getUserEnrolledUserId = async (userId: string) => {
 };
 export const getUserEnrolledCoursesId = async (courseId: number, userId: string) => {
   try {
-    const course = await prisma.courseRegistration.findFirst({
+    const course = await prisma.courseRegistration.findUnique({
       where: {
-        studentId: userId,
-        courseId: courseId,
+        studentId_courseId: {
+          studentId: userId,
+          courseId: courseId,
+        },
       },
       select: {
         courseId: true,

@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { courseId } = req.query;
     const result = await prisma.$queryRaw<
       any[]
-    >`  SELECT COUNT(DISTINCT user_id) AS distinctCount, YEAR(createdAt) AS year, MONTHNAME(createdAt) AS month, COUNT(user_id) users 
+    >`  SELECT COUNT(DISTINCT studentId) AS distinctCount, YEAR(createdAt) AS year, MONTHNAME(createdAt) AS month, COUNT(studentId) users 
     FROM CourseProgress WHERE courseId = ${Number(
       courseId
     )}  GROUP BY MONTHNAME(createdAt),MONTH(createdAt), YEAR(createdAt) ORDER BY MONTH(createdAt) `;

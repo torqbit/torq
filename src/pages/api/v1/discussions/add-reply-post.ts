@@ -25,10 +25,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const body = await req.body;
     const { lessonId, courseId, comment, parentCommentId } = body;
 
-    const isEnrolled = await prisma.courseRegistration.findFirst({
+    const isEnrolled = await prisma.courseRegistration.findUnique({
       where: {
-        studentId: String(token?.id),
-        courseId: Number(courseId),
+        studentId_courseId: {
+          studentId: String(token?.id),
+          courseId: Number(courseId),
+        },
       },
     });
 
@@ -64,8 +66,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         distinct: ["userId"],
         where: {
           parentCommentId: parentCommentId,
-          NOT: {
-            userId: token?.id,
+          userId: {
+            notIn: [String(token?.id), String(queryAuthor?.userId)],
           },
         },
         select: {

@@ -19,10 +19,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const userId = token?.id;
   const { courseId } = req.query;
   try {
-    const alreadyRegisterd = await prisma.courseRegistration.findFirst({
+    const alreadyRegisterd = await prisma.courseRegistration.findUnique({
       where: {
-        studentId: userId,
-        courseId: Number(courseId),
+        studentId_courseId: {
+          studentId: String(userId),
+          courseId: Number(courseId),
+        },
       },
 
       select: {

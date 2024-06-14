@@ -17,7 +17,7 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Account` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `user_id` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `provider` VARCHAR(191) NOT NULL,
     `provider_account_id` VARCHAR(191) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE `Account` (
     `oauth_token_secret` VARCHAR(191) NULL,
     `oauth_token` TEXT NULL,
 
-    INDEX `Account_user_id_idx`(`user_id`),
+    INDEX `Account_user_id_idx`(`userId`),
     UNIQUE INDEX `Account_provider_provider_account_id_key`(`provider`, `provider_account_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -40,11 +40,11 @@ CREATE TABLE `Account` (
 CREATE TABLE `Session` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `session_token` VARCHAR(191) NOT NULL,
-    `user_id` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
     `expires` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `Session_session_token_key`(`session_token`),
-    INDEX `Session_user_id_idx`(`user_id`),
+    INDEX `Session_user_id_idx`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -66,7 +66,7 @@ CREATE TABLE `Course` (
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `thumbNail` VARCHAR(191) NOT NULL,
-    `user_id` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
     `tags` JSON NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -98,7 +98,7 @@ CREATE TABLE `CourseProgress` (
     `courseProgressId` INTEGER NOT NULL AUTO_INCREMENT,
     `courseId` INTEGER NOT NULL,
     `resourceId` INTEGER NOT NULL,
-    `user_id` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `resourceWatched` DATETIME(3) NOT NULL,
     `lastActivityDate` DATETIME(3) NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE `CourseProgress` (
 CREATE TABLE `CourseRegistration` (
     `registrationId` INTEGER NOT NULL AUTO_INCREMENT,
     `courseId` INTEGER NOT NULL,
-    `user_id` INTEGER NOT NULL,
+    `userId` INTEGER NOT NULL,
     `courseState` ENUM('ENROLLED', 'STARTED', 'COMPLETED') NOT NULL DEFAULT 'ENROLLED',
     `image` VARCHAR(191) NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
@@ -123,7 +123,7 @@ CREATE TABLE `CourseRegistration` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    INDEX `CourseRegistration_user_id_idx`(`user_id`),
+    INDEX `CourseRegistration_user_id_idx`(`userId`),
     INDEX `CourseRegistration_courseId_idx`(`courseId`),
     UNIQUE INDEX `CourseRegistration_registrationId_key`(`registrationId`),
     PRIMARY KEY (`registrationId`)

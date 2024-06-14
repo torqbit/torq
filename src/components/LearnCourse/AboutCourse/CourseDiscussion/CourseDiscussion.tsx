@@ -74,6 +74,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       resourceId,
       pageSize,
       (result) => {
+        console.log(result);
         setComments(result.comments);
         setCommentCount(result.total);
       },
@@ -181,6 +182,8 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
             comments={comments}
             setAllComment={setComments}
             onUpdateReplyCount={onUpdateReplyCount}
+            setCommentCount={setCommentCount}
+            commentCount={commentCount}
           />
         );
       })}
@@ -207,7 +210,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
         comments={comments}
         onUpdateReplyCount={onUpdateReplyCount}
       />
-      {commentCount !== comments.length && comments.length !== 0 && (
+      {commentCount !== comments.length && comments.length > 0 && commentCount > 5 && (
         <Divider>
           <Button type="text" loading={listLoading} className={styles.load_more_comment} onClick={onClickMore}>
             Load More

@@ -36,10 +36,12 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
 
   if (user && params) {
-    const isCompleted = await prisma?.courseRegistration.findFirst({
+    const isCompleted = await prisma?.courseRegistration.findUnique({
       where: {
-        studentId: user.id,
-        courseId: Number(params.courseId),
+        studentId_courseId: {
+          studentId: user.id,
+          courseId: Number(params.courseId),
+        },
       },
     });
 

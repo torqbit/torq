@@ -43,8 +43,6 @@ model User {
   discussion           Discussion[]
   fromUserNotification Notification[]       @relation("fromUser")
   toUserNotification   Notification[]       @relation("toUser")
-  submissionTask       SubmissionTask[]     @relation("user")
-  evaluatedAssignment  SubmissionTask[]     @relation("evaluatedByUser")
   courseCertificate    CourseCertificates[]
 }
 
@@ -53,7 +51,7 @@ model User {
 //****** Account Schema ******//
 model Account {
   id                 String  @id @default(cuid())
-  userId             String  @map("user_id")
+  userId             String
   type               String
   provider           String
   providerAccountId  String  @map("provider_account_id")
@@ -78,7 +76,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
+  userId       String
   expires      DateTime
   accessToken  String   @unique
   createdAt    DateTime @default(now())
@@ -133,7 +131,7 @@ model Course {
   tvState             VideoState?
   thumbnail           String?
   icon                String?
-  authorId            String                @map("user_id")
+  authorId            String
   skills              Json?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @default(now())
@@ -186,22 +184,22 @@ enum ResourceContentType {
 }
 
 model Resource {
-  resourceId         Int                 @id @default(autoincrement())
-  name               String
-  description        String?             @db.Text()
-  chapterId          Int
-  sequenceId         Int
-  contentType        ResourceContentType
-  isActive           Boolean             @default(true)
-  state              StateType           @default(DRAFT)
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  chapter            Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
-  courseProgress     CourseProgress[]
-  discussions        Discussion[]
-  resourceAssignInfo AssignmentAndTask[]
-  notifications      Notification[]
-  video              Video?
+  resourceId     Int                 @id @default(autoincrement())
+  name           String
+  description    String?             @db.Text()
+  chapterId      Int
+  sequenceId     Int
+  contentType    ResourceContentType
+  isActive       Boolean             @default(true)
+  state          StateType           @default(DRAFT)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  chapter        Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
+  courseProgress CourseProgress[]
+  discussions    Discussion[]
+
+  notifications Notification[]
+  video         Video?
 
   @@unique([resourceId])
   @@index([chapterId])
@@ -250,7 +248,7 @@ model CourseRegistration {
   user   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
-  @@unique([registrationId])
+  @@unique([studentId, courseId])
   @@index([studentId])
   @@index([courseId])
 }
@@ -262,7 +260,7 @@ model CourseProgress {
   courseProgressId Int      @id @default(autoincrement())
   courseId         Int
   resourceId       Int
-  studentId        String   @map("user_id")
+  studentId        String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
@@ -272,62 +270,6 @@ model CourseProgress {
   @@index([resourceId])
   @@index([courseId])
 }
-
-//****** CourseProgress Schema  End******//
-
-//****** AssignmentAndTask Schema  ******//
-enum SubmissionStatus {
-  PENDING
-  SUBMITTED
-  EVALUATED
-}
-
-model AssignmentAndTask {
-  id               Int              @id @default(autoincrement())
-  assignmentId     Int
-  userId           Int
-  sequenceNo       Int
-  isStarted        Boolean          @default(false)
-  submissionStatus SubmissionStatus @default(PENDING)
-  startedAt        DateTime?
-  deadLine         DateTime?
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-  resource         Resource         @relation(fields: [assignmentId], references: [resourceId], map: "assingmentTask_resource_fk")
-  submissionTask   SubmissionTask   @relation(fields: [id], references: [assignmentTaskId], map: "assingmentTask_submission_fk")
-
-  @@index([id])
-  @@index([assignmentId])
-  @@index([userId])
-}
-
-//****** AssignmentAndTask Schema  End******//
-
-//****** SubmissionTask Schema ******//
-model SubmissionTask {
-  id                 Int                 @id @unique @default(autoincrement())
-  userId             String
-  evaluatedByUserId  String?
-  assignmentTaskId   Int                 @unique
-  assignmentId       Int
-  isEvaluated        Boolean
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  evaluatedOn        DateTime?
-  evaluationComments String?             @db.Text()
-  score              Int?
-  content            Json?
-  assignmentTask     AssignmentAndTask[]
-  user               User                @relation(name: "user", fields: [userId], references: [id])
-  evaluatedByUser    User?               @relation(name: "evaluatedByUser", fields: [evaluatedByUserId], references: [id])
-
-  @@index([assignmentTaskId])
-  @@index([assignmentId])
-  @@index([userId])
-  @@index([evaluatedByUserId])
-}
-
-//****** SubmissionTask Schema End******//
 
 //****** Discussion Schema ******//
 model Discussion {
@@ -383,9 +325,6 @@ model Notification {
   @@index([resourceId])
 }
 
-//****** Notification Schema End******//
-
-//****** Torbit - Landing page ******//
 //****** UserJoinWaiting Schema ******//
 model UserJoinWaiting {
   id         Int      @default(autoincrement()) @db.Int()
