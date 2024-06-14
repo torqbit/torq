@@ -169,7 +169,9 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
           </Head>
 
           <Layout hasSider className="default-container">
-            <Sidebar menu={user?.role == "AUTHOR" ? usersMenu.concat(authorSiderMenu) : usersMenu} />
+            <Sidebar
+              menu={user?.role == "AUTHOR" || user?.role == "ADMIN" ? usersMenu.concat(authorSiderMenu) : usersMenu}
+            />
             <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
               <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
             </Layout>

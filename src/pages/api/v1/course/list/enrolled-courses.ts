@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   INNER JOIN Chapter as ch ON co.courseId = ch.courseId 
   INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
   INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-  LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.user_id
+  LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.studentId
   WHERE  re.state = 'ACTIVE' AND cr.studentId = ${token?.id} AND cr.courseState != ${CourseState.COMPLETED}
   GROUP BY co.courseId, co.name
   UNION
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   INNER JOIN Chapter as ch ON co.courseId = ch.courseId 
   INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
   INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-  INNER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.user_id
+  INNER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.studentId
   WHERE  re.state = 'ACTIVE' AND cr.studentId = ${token?.id} AND cr.courseState = ${CourseState.COMPLETED}
   GROUP BY co.courseId, co.name
   `;

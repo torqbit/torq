@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const progress = await prisma.courseProgress.findMany({
       where: {
         courseId: Number(courseId),
-        studentId: Number(userId),
+        studentId: String(userId),
       },
     });
 

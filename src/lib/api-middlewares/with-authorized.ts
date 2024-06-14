@@ -7,7 +7,7 @@ export function withUserAuthorized(handler: NextApiHandler) {
     try {
       const session = await getServerSession(req, res, authOptions);
 
-      if (!session || session.role !== "AUTHOR") {
+      if (!session || !(session.role == "ADMIN" || session.role == "AUTHOR")) {
         return res.status(401).json({ success: false, error: " You are not authorized" });
       }
       return handler(req, res);

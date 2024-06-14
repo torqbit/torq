@@ -150,15 +150,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               fs.unlinkSync(imgPath);
               fs.unlinkSync(pdfTempPath);
             }
-            const courseRegistrationData = await prisma.courseRegistration.findFirst({
-              where: {
-                courseId: course?.courseId,
-                studentId: token?.id,
-              },
-            });
+
             await prisma.courseRegistration.update({
               where: {
-                registrationId: courseRegistrationData?.registrationId,
+                studentId_courseId: {
+                  courseId: Number(course?.courseId),
+                  studentId: String(token?.id),
+                },
               },
               data: {
                 courseState: "COMPLETED",

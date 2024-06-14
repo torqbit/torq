@@ -9,7 +9,6 @@ import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 import SvgIcons from "@/components/SvgIcons";
-import appConstant from "@/services/appConstant";
 
 moment.locale("en", { ...customFromNow });
 
@@ -21,8 +20,10 @@ const CommentBox: FC<{
   showReplyDrawer: (cmt: IComment) => void;
   reFreshReplyCommnet?: boolean;
   comments?: IComment[];
-  setAllComment: (value: IComment[]) => void;
+  setAllComment: (comments: IComment[]) => void;
   onUpdateReplyCount: (id: number, method: string) => void;
+  setCommentCount?: (count: number) => void;
+  commentCount?: number;
 }> = ({
   comment,
 
@@ -33,6 +34,8 @@ const CommentBox: FC<{
   comments,
   setAllComment,
   onUpdateReplyCount,
+  setCommentCount,
+  commentCount,
 }) => {
   const { data: session } = useSession();
   const [isEdited, setEdited] = useState<boolean>(false);
@@ -50,6 +53,7 @@ const CommentBox: FC<{
         commentLeft && setAllComment(commentLeft);
         const parentCommentId = comments?.find((c) => c.id === commentId)?.parentCommentId;
         replyList && onUpdateReplyCount(Number(parentCommentId), "delete");
+        !replyList && commentCount && setCommentCount && setCommentCount(commentCount - 1);
       },
       (error) => {
         message.error(error);

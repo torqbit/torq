@@ -27,10 +27,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const userId = token?.id;
     const body = await req.body;
     const { resourceId, chapterId, sequenceId, courseId } = body;
-    const isEnrolled = await prisma.courseRegistration.findFirst({
+    const isEnrolled = await prisma.courseRegistration.findUnique({
       where: {
-        studentId: userId,
-        courseId: Number(courseId),
+        studentId_courseId: {
+          studentId: String(userId),
+          courseId: Number(courseId),
+        },
       },
       select: {
         courseId: true,
