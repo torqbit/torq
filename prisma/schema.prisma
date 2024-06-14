@@ -21,6 +21,7 @@ enum Theme {
 enum Role {
   STUDENT
   AUTHOR
+  ADMIN
   TA
 }
 
@@ -44,6 +45,7 @@ model User {
   fromUserNotification Notification[]       @relation("fromUser")
   toUserNotification   Notification[]       @relation("toUser")
   courseCertificate    CourseCertificates[]
+  CourseProgress       CourseProgress[]
 }
 
 //****** User Schema End ******//
@@ -263,6 +265,7 @@ model CourseProgress {
   studentId        String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   resource         Resource @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
   course           Course   @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
@@ -282,8 +285,8 @@ model Discussion {
   parentCommentId    Int?
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
-  user               User           @relation(fields: [userId], references: [id])
-  resource           Resource       @relation(fields: [resourceId], references: [resourceId])
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource           Resource       @relation(fields: [resourceId], references: [resourceId], onDelete: Cascade)
   tagCmtNotification Notification[] @relation(name: "tagComment")
   cmtNotification    Notification[] @relation(name: "comment")
 
@@ -356,7 +359,7 @@ model CourseCertificates {
   imagePath String?
   pdfPath   String?
   issueDate DateTime @default(now())
-  student   User     @relation(fields: [studentId], references: [id])
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([studentId])
 }

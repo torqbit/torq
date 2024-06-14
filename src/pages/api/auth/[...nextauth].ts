@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
       return prisma.user.create({
         data: {
           ...user,
-          role: user.email == process.env.ADMIN_EMAIL ? "AUTHOR" : "STUDENT",
+          role: user.email == process.env.ADMIN_EMAIL ? "ADMIN" : "STUDENT",
         },
       });
     },
