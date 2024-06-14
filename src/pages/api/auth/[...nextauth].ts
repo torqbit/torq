@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
         if (account) {
           token.accessToken = account.access_token;
           token.id = user?.id;
-          token.role = "AUTHOR";
+          token.role = "STUDENT";
         }
 
         return token;

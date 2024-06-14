@@ -9,7 +9,6 @@ import { customFromNow } from "@/services/momentConfig";
 import DiscussionsService from "@/services/DiscussionsService";
 import NotificationService from "@/services/NotificationService";
 import SvgIcons from "@/components/SvgIcons";
-import appConstant from "@/services/appConstant";
 
 moment.locale("en", { ...customFromNow });
 
@@ -21,9 +20,9 @@ const CommentBox: FC<{
   showReplyDrawer: (cmt: IComment) => void;
   reFreshReplyCommnet?: boolean;
   comments?: IComment[];
-  setAllComment: (value: IComment[]) => void;
+  setAllComment: (comments: IComment[]) => void;
   onUpdateReplyCount: (id: number, method: string) => void;
-  setCommentCount?: (vlaue: number) => void;
+  setCommentCount?: (count: number) => void;
   commentCount?: number;
 }> = ({
   comment,

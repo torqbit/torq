@@ -74,7 +74,6 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
       resourceId,
       pageSize,
       (result) => {
-        console.log(result);
         setComments(result.comments);
         setCommentCount(result.total);
       },

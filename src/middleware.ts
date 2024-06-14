@@ -28,10 +28,18 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  if (req.nextUrl.pathname.match("/admin/*") && isAuthenticated && token.role !== "AUTHOR") {
+  if (
+    req.nextUrl.pathname.match("/admin/*") &&
+    isAuthenticated &&
+    !(token.role === "AUTHOR" || token.role === "ADMIN")
+  ) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
-  if (req.nextUrl.pathname.startsWith("/program/add-program") && isAuthenticated && token.role !== "AUTHOR") {
+  if (
+    req.nextUrl.pathname.startsWith("/program/add-program") &&
+    isAuthenticated &&
+    !(token.role === "AUTHOR" || token.role === "ADMIN")
+  ) {
     return NextResponse.redirect(new URL("/programs", req.url));
   }
 }

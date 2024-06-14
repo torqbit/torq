@@ -112,7 +112,7 @@ const UserTab: FC = () => {
     {
       title: "Role",
       render: (u: User) => {
-        if (u.role === "AUTHOR") {
+        if (u.role === "AUTHOR" || u.role === "ADMIN") {
           return <Tag color="orange">{u.role}</Tag>;
         } else {
           return <Tag>{u.role}</Tag>;
