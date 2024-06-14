@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import getUserByEmail from "@/actions/getUserByEmail";
 import MailerService from "@/services/MailerService";
+import { $Enums } from "@prisma/client";
 
 const sendWelcomeEmail = async (name: string, email: string) => {
   const configData = {
@@ -27,7 +28,8 @@ export const authOptions: NextAuthOptions = {
       return prisma.user.create({
         data: {
           ...user,
-          role: user.email == process.env.ADMIN_EMAIL ? "ADMIN" : "STUDENT",
+          role: user.email == process.env.ADMIN_EMAIL ? $Enums.Role.ADMIN : $Enums.Role.STUDENT,
+          theme: "light",
         },
       });
     },
