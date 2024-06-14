@@ -4,8 +4,7 @@ import Layout2 from "@/components/Layouts/Layout2";
 
 import styles from "@/styles/Config.module.scss";
 
-import { Flex, Form, Tabs, TabsProps, message } from "antd";
-import SvgIcons from "@/components/SvgIcons";
+import { Breadcrumb, Flex, Form, Tabs, TabsProps, message } from "antd";
 import MediaStorage from "./MediaStorage";
 import { useSession } from "next-auth/react";
 import ProgramService from "@/services/ProgramService";
@@ -93,11 +92,16 @@ const Config: FC = () => {
         <h1>
           Hello <span>{user?.user?.name}</span>
         </h1>
-        <Flex align="center" gap={3} className={styles.header_link}>
-          <a href="#">Adminstration</a>
-          {SvgIcons.chevronRight}
-          <span> Configuration</span>
-        </Flex>
+        <Breadcrumb
+          items={[
+            {
+              title: <a href="/">Adminstration</a>,
+            },
+            {
+              title: "Configuration",
+            },
+          ]}
+        />
         <Tabs
           tabBarGutter={40}
           activeKey={activeKey}

@@ -2,7 +2,7 @@ import Layout2 from "@/components/Layouts/Layout2";
 import SvgIcons from "@/components/SvgIcons";
 import { getCookieName } from "@/lib/utils";
 import ProgramService from "@/services/ProgramService";
-import { Button, Flex, Space, Spin } from "antd";
+import { Breadcrumb, Button, Flex, Space } from "antd";
 import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
 import { useSession } from "next-auth/react";
@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import styles from "@/styles/Certificate.module.scss";
 import { CourseCertificates } from "@prisma/client";
 import prisma from "@/lib/prisma";
-import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const ShowCertificate = () => {
@@ -53,12 +52,19 @@ const ShowCertificate = () => {
         <Space direction="vertical" size={"middle"} className={styles.certificate_page}>
           <div>
             <h2>Hello {session?.user?.name}</h2>
-
-            <Flex style={{ fontSize: 20 }} className={styles.certificate_header}>
-              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
-              <Link href={`/courses/${router.query.courseId}`}> {courseName}</Link>
-              <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div> Certificate
-            </Flex>
+            <Breadcrumb
+              items={[
+                {
+                  title: <Link href={`/courses`}>Courses</Link>,
+                },
+                {
+                  title: `${courseName}`,
+                },
+                {
+                  title: "Certificate",
+                },
+              ]}
+            />
           </div>
           <p className={styles.about_description}>
             Torqbit certifies the successful completion of <span>{courseName}</span> by{" "}
