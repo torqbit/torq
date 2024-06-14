@@ -247,8 +247,9 @@ model CourseRegistration {
   updatedAt      DateTime    @updatedAt
   expireIn       DateTime?
 
-  user   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  user        User                @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course      Course              @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  certificate CourseCertificates?
 
   @@unique([studentId, courseId])
   @@index([studentId])
@@ -353,13 +354,15 @@ model ServiceProvider {
 }
 
 model CourseCertificates {
-  id        String   @id @default(cuid())
-  studentId String
-  courseId  Int
-  imagePath String?
-  pdfPath   String?
-  issueDate DateTime @default(now())
-  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  id               String             @id @default(cuid())
+  studentId        String
+  courseId         Int
+  imagePath        String?
+  pdfPath          String?
+  issueDate        DateTime           @default(now())
+  student          User               @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  RegisteredCourse CourseRegistration @relation(fields: [courseId, studentId], references: [courseId, studentId], onDelete: Cascade)
 
+  @@unique([courseId, studentId])
   @@index([studentId])
 }

@@ -10,37 +10,28 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Certificate.module.scss";
-import { CourseCertificates } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 const ShowCertificate = () => {
-  const [certificateData, setCertificateData] = useState<CourseCertificates>();
+  const [certificateData, setCertificateData] = useState<{ pdfPath: string; imgPath: string; courseName: string }>();
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>();
   const [courseName, setCourseName] = useState<string>();
   const router = useRouter();
-  const getCertificateImgUrl = () => {
+  const getCertificateImgUrl = () => {};
+  useEffect(() => {
     setLoading(true);
     ProgramService.getCertificate(
-      Number(router.query.courseId),
+      String(router.query.certificateId),
       (result) => {
-        setCertificateData(result.certificateDetail.getIssuedCertificate);
+        setCertificateData(result.certificateDetail);
+        setCourseName(result.certificateDetail.courseName);
         setLoading(false);
       },
       (error) => {
         setLoading(false);
       }
-    );
-  };
-  useEffect(() => {
-    ProgramService.getCourses(
-      Number(router.query.courseId),
-      (result) => {
-        setCourseName(result.course?.name);
-        getCertificateImgUrl();
-      },
-      (error) => {}
     );
   }, [router.query.courseId]);
 
@@ -72,16 +63,18 @@ const ShowCertificate = () => {
           </p>
           <div className={styles.certificate_image}>
             <img
-              src={String(certificateData?.imagePath)}
-              height={500}
-              width={800}
+              src={String(certificateData?.imgPath)}
+              height={707}
+              width={1000}
               alt={session?.user?.name ?? "Certificate"}
             />
 
             <Button
               type="primary"
               onClick={() => {
-                router.push(`/courses/${router.query.courseId}/certificate/download/${certificateData?.id}`);
+                router.push(
+                  `/courses/${router.query.courseId}/certificate/download/${String(router.query.certificateId)}`
+                );
               }}
             >
               <Flex align="center" gap={10}>

@@ -16,11 +16,11 @@ export type ApiResponse = {
   message: string;
   registerCourses: IRegisteredCourses[];
   courseDetails: CourseInfo;
+  certificateId: string;
   certificateDetail: {
-    getIssuedCertificate: CourseCertificates;
-    course: {
-      name: string;
-    };
+    imgPath: string;
+    pdfPath: string;
+    courseName: string;
   };
   certificateIssueId: string;
 
@@ -940,12 +940,12 @@ class ProgramService {
   };
 
   getCertificate = (
-    courseId: number,
+    certificateId: string,
 
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/course/certificate/${courseId}?`, {
+    fetch(`/api/v1/course/certificate/${certificateId}?`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -966,6 +966,32 @@ class ProgramService {
     });
   };
 
+  getCertificateByCourseId = (
+    courseId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/course/certificate/get-certificate?courseId=${courseId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
   checkProgress = (
     resourceId: number,
 

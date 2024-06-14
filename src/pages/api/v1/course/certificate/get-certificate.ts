@@ -16,29 +16,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-    const course = await prisma.course.findUnique({
+
+    const getIssuedCertificate = await prisma.courseCertificates.findUnique({
       where: {
-        courseId: Number(courseId),
+        courseId_studentId: {
+          courseId: Number(courseId),
+          studentId: String(token?.id),
+        },
       },
       select: {
-        name: true,
-      },
-    });
-
-    const getIssuedCertificate = await prisma.courseCertificates.findFirst({
-      where: {
-        courseId: Number(courseId),
-        studentId: token?.id,
+        id: true,
       },
     });
     return res.status(200).json({
       success: true,
       statusCode: 200,
       message: "Fetched course",
-      certificateDetail: {
-        getIssuedCertificate,
-        course,
-      },
+      certificateId: getIssuedCertificate?.id,
     });
   } catch (error) {
     return errorHandler(error, res);

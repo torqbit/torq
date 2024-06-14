@@ -81,10 +81,10 @@ const Preview: FC<{
   };
 
   const onViewCertificate = () => {
-    ProgramService.getCertificate(
+    ProgramService.getCertificateByCourseId(
       Number(router.query.courseId),
       (result) => {
-        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        const id = String(result.certificateId);
         router.push(`/courses/${router.query.courseId}/certificate/${id}`);
       },
       (error) => {}
