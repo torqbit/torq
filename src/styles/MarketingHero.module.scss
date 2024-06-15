@@ -1,0 +1,41 @@
+.heroWrapper {
+  width: 100%;
+  .heroContentContainer {
+    position: relative;
+    width: 700px;
+    margin: 0 auto;
+
+    height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    h1 {
+      font-size: 72px;
+      font-weight: bold;
+      text-align: center;
+    }
+    p {
+      color: var(--font-secondary);
+      text-align: center;
+
+      font-size: 16px;
+      line-height: 1.4;
+      margin-bottom: 40px;
+    }
+    button {
+      width: 250px;
+    }
+  }
+
+  .heroWaveIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .dotPatternIcon {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+  }
+}
