@@ -1,9 +1,7 @@
 import { createContext, Dispatch, useContext, useReducer } from "react";
-import { Session } from "next-auth";
 import { INotification } from "@/lib/types/discussions";
 import { UserSession } from "@/lib/types/user";
 import { Theme } from "@prisma/client";
-import { boolean } from "zod";
 
 export type ISiderMenu =
   | "dashboard"
@@ -52,7 +50,7 @@ const AppContext = createContext<{
 });
 
 // Create a provider component
-export const AppProvider: React.FC<{ children: any; themeSwitcher: () => void }> = ({ children, themeSwitcher }) => {
+export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
   const [globalState, dispatch] = useReducer((currentState: AppState, action: AppAction) => {
     switch (action.type) {
       case "SET_UNREAD_NOTIFICATION":

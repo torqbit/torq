@@ -16,9 +16,6 @@
   "dependencies": {
     "@ant-design/cssinjs": "1.18.1",
     "@ant-design/icons": "^5.2.6",
-    "@codemirror/lang-css": "^6.2.0",
-    "@codemirror/lang-html": "^6.4.5",
-    "@codemirror/lang-javascript": "^6.1.9",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@nivo/core": "0.76.0",
     "@nivo/line": "0.76.0",
@@ -28,7 +25,6 @@
     "@react-pdf/renderer": "^3.1.14",
     "@types/react-dom": "18.0.11",
     "@types/react-scroll": "^1.8.7",
-    "@uiw/react-codemirror": "^4.21.5",
     "antd": "5.12.4",
     "antd-img-crop": "^4.18.0",
     "canvas": "^2.11.2",
@@ -53,7 +49,6 @@
     "react-pdf": "^7.6.0",
     "react-player": "^2.12.0",
     "react-scroll": "^1.8.9",
-    "request-ip": "^3.3.0",
     "sass": "^1.60.0",
     "typescript": "5.0.3",
     "zod": "^3.21.4"
