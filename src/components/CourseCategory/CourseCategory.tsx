@@ -33,7 +33,7 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
             <Card key={index} bordered={false} style={{ width: 250 }}>
               <p className={styles.course__title}>{co.name}</p>
               {co.tools.map((t, index) => (
-                <Tag key={index} bordered={false}>
+                <Tag key={index} bordered={false} className={styles.tags}>
                   {t}
                 </Tag>
               ))}

@@ -33,6 +33,11 @@
         list-style: none;
       }
     }
+    .switchBtn {
+      background-color: var(--bg-secondary);
+      border-color: var(--bg-secondary);
+      color: var(--font-primary);
+    }
 
     button {
       border-radius: 30px;

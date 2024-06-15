@@ -64,6 +64,7 @@ export default {
       colorTextPlaceholder: "#939db8",
       activeShadow: "none",
     },
+
     Dropdown: {
       colorPrimary: "#666",
       controlItemBgActive: "#EEE",
