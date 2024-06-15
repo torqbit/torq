@@ -8,7 +8,7 @@ export default function MyDocument() {
     <Html lang="en" data-theme="light">
       <Head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/pwa/app-icon-512.png"></link>
+        <link rel="apple-touch-icon" href="/favicon.ico"></link>
         <meta name="theme-color" content="#000" />
       </Head>
       <body>

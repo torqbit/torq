@@ -1,5 +1,6 @@
 export default {
   cmnErrorMsg: "Something went wrong. Please try again later",
+  platformName: "Torqbit",
   courseTags: ["HTML", "CSS", "JS", "ReactJS"],
   assignmentLang: ["html", "css", "javascript", "java", "python", "go", "nodejs", "reactjs"],
   courseType: ["FREE", "PAID"],
