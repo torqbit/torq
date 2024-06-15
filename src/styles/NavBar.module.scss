@@ -1,0 +1,42 @@
+.navBarContainer {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  z-index: 1;
+  nav {
+    margin: 20px 0px;
+    background-color: var(--bg-primary);
+    height: 50px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 15px;
+
+    h4 {
+      margin: 0;
+      padding: 0;
+      color: var(--font-primary);
+      font-size: 20px;
+    }
+    ul {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin: 0;
+      li {
+        font-size: 16px;
+        color: var(--font-secondary);
+        &:hover {
+          color: var(--font-primary);
+        }
+        list-style: none;
+      }
+    }
+
+    button {
+      border-radius: 30px;
+      width: 150px;
+    }
+  }
+}
