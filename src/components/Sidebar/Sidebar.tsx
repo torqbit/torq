@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-import { Avatar, Button, Dropdown, Layout, Menu, MenuProps, Modal, Space, Tooltip } from "antd";
+import { Avatar, Button, Dropdown, Flex, Layout, Menu, MenuProps, Modal, Space, Tooltip } from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import SvgIcons from "../SvgIcons";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { Theme } from "@prisma/client";
 import { postFetch } from "@/services/request";
+import appConstant from "@/services/appConstant";
 
 const { Sider } = Layout;
 
@@ -56,14 +57,12 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
         <div className={styles.logo}>
           <Link href="/">
             {collapsed ? (
-              <Image src="/icon/torq.svg" alt="torq" width={40} height={40} />
+              <Image src="/icon/torqbit.png" alt="torq" width={40} height={40} />
             ) : (
-              <Image
-                src={`/icon/torq-${globalState.session?.theme == "dark" ? "light" : "dark"}.svg`}
-                alt="torq"
-                width={100}
-                height={40}
-              />
+              <Flex align="center" gap={5}>
+                <Image src={`/icon/torqbit.png`} alt="torq" width={40} height={40} />
+                <h4 className={styles.logoText}>{appConstant.platformName}</h4>
+              </Flex>
             )}
           </Link>
           {!collapsed && (

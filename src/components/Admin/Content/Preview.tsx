@@ -1,24 +1,15 @@
-import { useAppContext } from "@/components/ContextApi/AppContext";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import SvgIcons from "@/components/SvgIcons";
-import { IResourceDetail } from "@/lib/types/learn";
+
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
-import {
-  ChapterDetail,
-  CourseAPIResponse,
-  CourseData,
-  CourseInfo,
-  CourseLessonAPIResponse,
-  VideoInfo,
-  VideoLesson,
-} from "@/types/courses/Course";
-import { Button, Collapse, Flex, Space, Spin, Tag } from "antd";
+import { CourseLessonAPIResponse, VideoLesson } from "@/types/courses/Course";
+import { Breadcrumb, Button, Collapse, Flex, Space, Tag } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 
 const Label: FC<{
   title: string;
@@ -90,10 +81,10 @@ const Preview: FC<{
   };
 
   const onViewCertificate = () => {
-    ProgramService.getCertificate(
+    ProgramService.getCertificateByCourseId(
       Number(router.query.courseId),
       (result) => {
-        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        const id = String(result.certificateId);
         router.push(`/courses/${router.query.courseId}/certificate/${id}`);
       },
       (error) => {}
@@ -104,10 +95,16 @@ const Preview: FC<{
       <Space direction="vertical">
         <div style={{ fontSize: 20 }} className={styles.coursehHeaderLinks}>
           {courseDetail && !addContentPreview && (
-            <Flex>
-              <Link href={"/courses"}>Courses</Link> <div style={{ marginTop: 3 }}>{SvgIcons.chevronRight} </div>{" "}
-              <div>{courseDetail.course.name}</div>
-            </Flex>
+            <Breadcrumb
+              items={[
+                {
+                  title: <a href="/courses"> Courses</a>,
+                },
+                {
+                  title: `${courseDetail.course.name}`,
+                },
+              ]}
+            />
           )}
         </div>
         <div className={styles.video_container}>

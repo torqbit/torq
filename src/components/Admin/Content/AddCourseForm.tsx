@@ -570,6 +570,7 @@ const AddCourseForm: FC = () => {
           }
           isCourseCompleted={false}
           isCourseStarted={false}
+          addContentPreview={true}
         />
       ),
     },

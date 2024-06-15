@@ -130,6 +130,7 @@ export default {
     Breadcrumb: {
       itemColor: "#939db8",
       linkColor: "#fff",
+      separatorColor: "#939db8",
     },
     Segmented: {
       itemSelectedBg: "#283040",

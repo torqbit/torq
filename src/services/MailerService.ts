@@ -66,7 +66,7 @@ class MailerService {
       const sendMail = await this.transporter.sendMail({
         to: config.email,
         from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
-        subject: "Course Enrolment",
+        subject: `Get Started: ${config.course.name}`,
         html: htmlString,
       });
 
@@ -88,7 +88,7 @@ class MailerService {
       const sendMail = await this.transporter.sendMail({
         to: config.email,
         from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
-        subject: "Course Completion",
+        subject: `Congratulations on Completing ${config.courseName}`,
         html: htmlString,
       });
       return { success: true, message: "Email sent successfully" };

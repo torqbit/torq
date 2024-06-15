@@ -12,9 +12,9 @@ const DownloadCertificate = () => {
   const router = useRouter();
   useEffect(() => {
     ProgramService.getCertificate(
-      Number(router.query.courseId),
+      String(router.query.certificateId),
       (result) => {
-        setCertificatePdfPath(String(result.certificateDetail.getIssuedCertificate.pdfPath));
+        setCertificatePdfPath(String(result.certificateDetail.pdfPath));
       },
       (error) => {}
     );
