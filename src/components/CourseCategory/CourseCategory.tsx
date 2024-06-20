@@ -10,6 +10,7 @@ type ICourseDisplay = {
 export type ICourseCategory = {
   name: string;
   description: string;
+  image: string;
   courses: ICourseDisplay[];
 };
 
@@ -23,7 +24,7 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
 
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
       <div>
-        <img src="/img/categories/front-end-screen.png" alt="" />
+        <img src={category.image} alt="" />
       </div>
       <div className={styles.category__detail}>
         <h1>{category.name}</h1>

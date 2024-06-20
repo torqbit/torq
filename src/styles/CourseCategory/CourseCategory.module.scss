@@ -35,10 +35,13 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       row-gap: 20px;
+      p {
+        color: var(--font-primary);
+      }
       > div {
         background-color: var(--bg-primary);
         .tags {
-          background-color: var(--bg-secondary);
+          background-color: var(--bg-tag);
           color: var(--font-secondary);
         }
       }

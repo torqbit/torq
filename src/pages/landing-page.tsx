@@ -1,19 +1,19 @@
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { CourseCategory, ICourseCategory } from "@/components/CourseCategory/CourseCategory";
+import About from "@/components/Marketing/LandingPage/About";
+import Footer from "@/components/Marketing/LandingPage/Footer";
 import Hero from "@/components/Marketing/LandingPage/Hero";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
-import antThemeConfig from "@/services/antThemeConfig";
-import darkThemConfig from "@/services/darkThemConfig";
 import { Theme } from "@prisma/client";
-import { ConfigProvider } from "antd";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const LandingPage: NextPage = () => {
   const { dispatch, globalState } = useAppContext();
 
-  const courseCategory: ICourseCategory = {
+  const courseCategoryFrontend: ICourseCategory = {
     name: "Frontend Development",
+    image: "/img/categories/front-end-screen.png",
     description:
       "Learn to build a portfolio website using web technologies, that captivates users interest and drives more attention from all around the world",
     courses: [
@@ -32,6 +32,48 @@ const LandingPage: NextPage = () => {
       {
         name: "Foundations of Web Development",
         tools: ["HTML", "CSS"],
+      },
+    ],
+  };
+
+  const courseCategoryBackend: ICourseCategory = {
+    name: "Backend Development",
+    image: "/img/categories/backend-screen.png",
+    description:
+      "Transform the personal website into a full blown portfolio website builder by integrating with database, adding social authentication, providing customisations and much more",
+    courses: [
+      {
+        name: "Server Side Development with Node.JS",
+        tools: ["Node", "http", "Networks"],
+      },
+      {
+        name: "REST API Development with Next.JS",
+        tools: ["Routes", "page caching"],
+      },
+      {
+        name: "Databasse & Object Relational Mapping",
+        tools: ["MySQL", "ORM", "Postgres"],
+      },
+      {
+        name: "Social Authentication with Next Auth",
+        tools: ["Auth", "JWT", "Cryptography"],
+      },
+    ],
+  };
+
+  const courseCategoryDevops: ICourseCategory = {
+    name: "Cloud Infrastructure",
+    image: "/img/categories/devops-screen.png",
+    description:
+      "Move the developed platform into a cloud, to transform into software as a Service using conatainers and leverage AWS cloud infrastructure to host the database, EKS, S3, Route53 and many more to run the service in production",
+    courses: [
+      {
+        name: "Containerisation with Docker & Kubernetes",
+        tools: ["CRI-O", "Helm", "Kubernetes"],
+      },
+      {
+        name: "Cloud Development with Amazone Web Services",
+        tools: ["Node", "http", "Networks"],
       },
     ],
   };
@@ -69,7 +111,12 @@ const LandingPage: NextPage = () => {
       ) : (
         <>
           <Hero />
-          <CourseCategory direction="ltr" category={courseCategory} />
+          {/* <CourseCategory direction="ltr" category={courseCategoryFrontend} />
+          <CourseCategory direction="rtl" category={courseCategoryBackend} />
+          <CourseCategory direction="ltr" category={courseCategoryDevops} />
+
+          <About />
+          <Footer /> */}
         </>
       )}
     </>

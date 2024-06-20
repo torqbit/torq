@@ -3,6 +3,10 @@
   position: relative;
   overflow: hidden;
 
+  .heroWave {
+    stroke: var(--wave-color);
+  }
+
   .heroContentContainer {
     position: relative;
     z-index: 1;
@@ -42,5 +46,30 @@
     position: absolute;
     bottom: 50px;
     right: 50px;
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .heroWrapper {
+    .heroContentContainer {
+      width: 350px;
+
+      h1 {
+        font-size: 25px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+
+    .heroWaveIcon {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .dotPatternIcon {
+      display: none;
+    }
   }
 }

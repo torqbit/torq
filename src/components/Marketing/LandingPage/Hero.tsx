@@ -5,12 +5,15 @@ import styles from "@/styles/MarketingHero.module.scss";
 import { Button } from "antd";
 
 import SvgIcons from "@/components/SvgIcons";
+import SvgComponent from "../HeroWave";
 
 const MarketingHero: FC<{}> = () => {
   return (
     <section className={styles.heroWrapper}>
       <NavBar />
-      <div className={styles.heroWaveIcon}>{SvgIcons.heroWave}</div>
+      <div className={styles.heroWaveIcon}>
+        <SvgComponent className={styles.heroWave} />
+      </div>
       <div className={styles.dotPatternIcon}>{SvgIcons.dotPattern}</div>
 
       <div className={styles.heroContentContainer}>

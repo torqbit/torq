@@ -45,3 +45,136 @@
     }
   }
 }
+
+// about
+
+.aboutContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 40px;
+  }
+  .cardWrapper {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    .card {
+      border-radius: 15px;
+      box-shadow: var(--hd-box-shadow);
+      background-color: var(--bg-secondary);
+
+      max-width: 300px;
+      height: 350px;
+      .icon {
+        height: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0px;
+      }
+      .content {
+        height: 50%;
+        padding: 10px 20px;
+        background-color: var(--bg-primary);
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        h4 {
+          color: var(--font-primary);
+          font-size: 20px;
+        }
+        p {
+          color: var(--font-secondary);
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  .paceYourLearning {
+    width: 960px;
+    border-radius: 15px;
+    box-shadow: var(--hd-box-shadow);
+    background-color: var(--bg-primary);
+    margin: 40px 0px;
+    display: flex;
+
+    > div:first-child {
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 300px;
+      height: 200px;
+      background-color: var(--bg-secondary);
+    }
+    > div:last-child {
+      padding: 20px;
+      h4 {
+        color: var(--font-primary);
+        font-size: 20px;
+      }
+      p {
+        color: var(--font-secondary);
+        max-width: 400px;
+        line-height: 1.5;
+      }
+      button {
+        width: 300px;
+      }
+    }
+  }
+}
+
+//footer
+
+.footerContainer {
+  background-color: #000;
+  color: #fff;
+  padding: 40px 0px;
+  display: flex;
+  justify-content: center;
+  footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 120px;
+    align-items: flex-start;
+    > div:first-child {
+      display: flex;
+      flex-direction: column;
+      .socialIcons {
+        margin-top: 50px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+    }
+
+    .linkList {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      ul {
+        margin: 0;
+        padding: 0;
+        li {
+          list-style: none;
+          padding-top: 10px;
+          color: var(--font-secondary);
+          cursor: pointer;
+          &:hover {
+            color: var(--hover-text);
+          }
+        }
+      }
+    }
+  }
+}
