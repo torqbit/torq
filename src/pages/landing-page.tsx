@@ -22,16 +22,16 @@ const LandingPage: NextPage = () => {
         tools: ["HTML", "CSS"],
       },
       {
-        name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        name: "Code Collaboration with Git & Github",
+        tools: ["Github", "Git"],
       },
       {
-        name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        name: "Programming with Javascript & Typescript",
+        tools: ["Javascript", "ES6 & ES7"],
       },
       {
-        name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        name: "UI Component Development with ReactJS",
+        tools: ["Hooks", "State Management"],
       },
     ],
   };
@@ -62,7 +62,7 @@ const LandingPage: NextPage = () => {
   };
 
   const courseCategoryDevops: ICourseCategory = {
-    name: "Cloud Infrastructure",
+    name: "DevOps & Infrastructure",
     image: "/img/categories/devops-screen.png",
     description:
       "Move the developed platform into a cloud, to transform into software as a Service using conatainers and leverage AWS cloud infrastructure to host the database, EKS, S3, Route53 and many more to run the service in production",
@@ -111,12 +111,12 @@ const LandingPage: NextPage = () => {
       ) : (
         <>
           <Hero />
-          {/* <CourseCategory direction="ltr" category={courseCategoryFrontend} />
+          <CourseCategory direction="ltr" category={courseCategoryFrontend} />
           <CourseCategory direction="rtl" category={courseCategoryBackend} />
           <CourseCategory direction="ltr" category={courseCategoryDevops} />
 
           <About />
-          <Footer /> */}
+          <Footer />
         </>
       )}
     </>

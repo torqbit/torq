@@ -27,15 +27,15 @@ const Footer = () => {
   const socialLinks = [
     {
       icon: SvgIcons.discord,
-      href: "#",
+      href: "https://discord.gg/NqP35bn2",
     },
     {
       icon: SvgIcons.github,
-      href: "#",
+      href: "https://github.com/torqbit",
     },
     {
       icon: SvgIcons.youtube,
-      href: "#",
+      href: "https://www.youtube.com/@torqbit",
     },
   ];
   return (
@@ -45,7 +45,7 @@ const Footer = () => {
           <Link href={"/"}>
             <Flex align="center" gap={5}>
               <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
-              <h4>{appConstant.platformName.toUpperCase()}</h4>
+              <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
             </Flex>
           </Link>
           <div className={styles.socialIcons}>
@@ -61,7 +61,6 @@ const Footer = () => {
 
         <div>
           <Flex gap={120}>
-            {" "}
             {footerContent.map((content, i) => {
               return (
                 <div key={i} className={styles.linkList}>

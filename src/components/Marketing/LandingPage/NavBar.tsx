@@ -50,7 +50,7 @@ const NavBar: FC<{}> = () => {
         <Link href={"/"}>
           <Flex align="center" gap={5}>
             <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
-            <h4>{appConstant.platformName.toUpperCase()}</h4>
+            <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
           </Flex>
         </Link>
         <ul>

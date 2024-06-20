@@ -17,6 +17,7 @@ body {
   --bg-selected: #f0f0f0;
   --selected-side-bar: #696a6b;
   --font-primary: #000;
+  --mktg-card-bg: #f4f4f8;
   --font-label: #888;
   --primary-button: #000;
   --segment-bg: #e0dfdf;
@@ -57,8 +58,8 @@ body {
   --segment-bg: #151823;
   --font-primary: #fff;
   --bg-elevated: #374362;
+  --mktg-card-bg: #202433;
   --wave-color: #153953;
-
   --font-warning: #faad14;
   --hover-text: #c4c4c4;
   --btn-primary: #5b63d3;
@@ -66,7 +67,6 @@ body {
   --draft-bg: #202433;
   --publish-bg: #202433;
   --bg-tag: #374362;
-
   --border-color: #2f3647;
   --ft-color: #fff;
   --card-bg: #0e1326;
@@ -76,6 +76,16 @@ body {
   --label-color: #68696d;
   --primary: #4096ff;
   --hover-bg: var(--header-bg);
+}
+
+.font-brand {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 h1,
