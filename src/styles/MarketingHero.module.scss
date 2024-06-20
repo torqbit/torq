@@ -49,13 +49,16 @@
   }
 }
 
+.hamburger {
+  display: none;
+}
 @media only screen and (max-width: 415px) {
   .heroWrapper {
     .heroContentContainer {
       width: 350px;
-
+      height: 100vh;
       h1 {
-        font-size: 25px;
+        font-size: 35px;
       }
 
       button {
@@ -71,5 +74,13 @@
     .dotPatternIcon {
       display: none;
     }
+  }
+  .hamburger {
+    display: unset;
+    color: var(--font-primary);
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
   }
 }

@@ -48,7 +48,9 @@ const About = () => {
             we&apos;re currently offering our courses for free during our initial launch, to get feedback and stabilize
             the learning platform
           </p>
-          <Button type="primary">Get started for free</Button>
+          <div className={styles.buttonWrapper}>
+            <Button type="primary">Get started for free</Button>
+          </div>
         </div>
       </div>
     </section>
