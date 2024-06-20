@@ -10,6 +10,12 @@ export default function MyDocument() {
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/favicon.ico"></link>
         <meta name="theme-color" content="#000" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&display=swap"
+          rel="stylesheet"
+        ></link>
       </Head>
       <body>
         <Main />
