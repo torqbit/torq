@@ -17,6 +17,8 @@
   }
 
   .category__detail {
+    position: relative;
+    z-index: 1;
     width: 540px;
     h1 {
       font-size: 72px;
@@ -25,11 +27,24 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    p {
+      color: var(--font-secondary);
+    }
 
     & > div {
       display: grid;
       grid-template-columns: 1fr 1fr;
       row-gap: 20px;
+      p {
+        color: var(--font-primary);
+      }
+      > div {
+        background-color: var(--bg-primary);
+        .tags {
+          background-color: var(--bg-tag);
+          color: var(--font-secondary);
+        }
+      }
     }
 
     .course__title {

@@ -1,10 +1,14 @@
 import { FC } from "react";
 import styles from "@/styles/NavBar.module.scss";
 import Image from "next/image";
-import { Button, Flex } from "antd";
+import { Button, Flex, Tooltip } from "antd";
 import appConstant from "@/services/appConstant";
 import Link from "next/link";
+import SvgIcons from "@/components/SvgIcons";
+import { useAppContext } from "@/components/ContextApi/AppContext";
 const NavBar: FC<{}> = () => {
+  const { dispatch } = useAppContext();
+
   const navLinks = [
     {
       title: "Courses",
@@ -23,6 +27,23 @@ const NavBar: FC<{}> = () => {
       href: "/",
     },
   ];
+  const onChangeTheme = () => {
+    const currentTheme = localStorage.getItem("theme");
+
+    if (currentTheme === "dark") {
+      localStorage.setItem("theme", "light");
+      dispatch({
+        type: "SWITCH_THEME",
+        payload: "light",
+      });
+    } else if (currentTheme === "light") {
+      localStorage.setItem("theme", "dark");
+      dispatch({
+        type: "SWITCH_THEME",
+        payload: "dark",
+      });
+    }
+  };
   return (
     <div className={styles.navBarContainer}>
       <nav>
@@ -41,6 +62,17 @@ const NavBar: FC<{}> = () => {
             );
           })}
         </ul>
+        <Tooltip title={""}>
+          <Button
+            type="default"
+            className={styles.switchBtn}
+            shape="circle"
+            onClick={() => {
+              onChangeTheme();
+            }}
+            icon={localStorage.getItem("theme") == "dark" ? SvgIcons.sun : SvgIcons.moon}
+          />
+        </Tooltip>
         <Button type="primary">Get Started</Button>
       </nav>
     </div>

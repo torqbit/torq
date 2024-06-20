@@ -12,6 +12,7 @@ body {
   --bg-secondary: #eee;
   --bg-primary: #fff;
   --bg-elevated: #fff;
+  --bg-tag: #eee;
   --font-secondary: #666;
   --bg-selected: #f0f0f0;
   --selected-side-bar: #696a6b;
@@ -38,6 +39,8 @@ body {
   --btn-primary: #5b63d3;
   --border-radius: 4px;
   --ft-color-dull: #848484;
+  --hover-text: #c4c4c4;
+  --wave-color: #c4c4c4;
   --ft-color: #0e1326;
   --theme-btn-bg: #fff;
   --label-color: #68696d;
@@ -54,12 +57,15 @@ body {
   --segment-bg: #151823;
   --font-primary: #fff;
   --bg-elevated: #374362;
-  --font-warning: #faad14;
+  --wave-color: #153953;
 
+  --font-warning: #faad14;
+  --hover-text: #c4c4c4;
   --btn-primary: #5b63d3;
   --font-secondary: #939db8;
   --draft-bg: #202433;
   --publish-bg: #202433;
+  --bg-tag: #374362;
 
   --border-color: #2f3647;
   --ft-color: #fff;

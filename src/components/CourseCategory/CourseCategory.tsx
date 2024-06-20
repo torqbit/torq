@@ -10,6 +10,7 @@ type ICourseDisplay = {
 export type ICourseCategory = {
   name: string;
   description: string;
+  image: string;
   courses: ICourseDisplay[];
 };
 
@@ -23,7 +24,7 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
 
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
       <div>
-        <img src="/img/categories/front-end-screen.png" alt="" />
+        <img src={category.image} alt="" />
       </div>
       <div className={styles.category__detail}>
         <h1>{category.name}</h1>
@@ -33,7 +34,7 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
             <Card key={index} bordered={false} style={{ width: 250 }}>
               <p className={styles.course__title}>{co.name}</p>
               {co.tools.map((t, index) => (
-                <Tag key={index} bordered={false}>
+                <Tag key={index} bordered={false} className={styles.tags}>
                   {t}
                 </Tag>
               ))}
