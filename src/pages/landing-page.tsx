@@ -32,7 +32,9 @@ const LandingPage: NextPage = () => {
       },
       {
         name: "UI Component Development with ReactJS",
-        tools: ["Hooks", "State management"],
+
+        tools: ["Hooks", "State Management"],
+
       },
     ],
   };
@@ -63,7 +65,7 @@ const LandingPage: NextPage = () => {
   };
 
   const courseCategoryDevops: ICourseCategory = {
-    name: "Cloud Infrastructure",
+    name: "DevOps & Infrastructure",
     image: "/img/categories/devops-screen.png",
     description:
       "Move the developed platform into a cloud, to transform into software as a Service using conatainers and leverage AWS cloud infrastructure to host the database, EKS, S3, Route53 and many more to run the service in production",
@@ -112,9 +114,11 @@ const LandingPage: NextPage = () => {
       ) : (
         <>
           <Hero />
+
           <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
           <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
           <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
+
 
           <About />
           <Footer />
