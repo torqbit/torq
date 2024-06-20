@@ -60,7 +60,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <Flex gap={120}>
+          <div className={styles.linkWrapper}>
             {" "}
             {footerContent.map((content, i) => {
               return (
@@ -74,7 +74,7 @@ const Footer = () => {
                 </div>
               );
             })}
-          </Flex>
+          </div>
         </div>
       </footer>
     </section>

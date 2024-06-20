@@ -1,7 +1,7 @@
 import * as React from "react";
 const SvgComponent = (props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={1440} height={983} fill="none" {...props}>
-    <mask id="a" width={1440} height={983} x={0} y={0} maskUnits="userSpaceOnUse">
+    <mask id="a" x={0} y={0} maskUnits="userSpaceOnUse">
       <path fill="#fff" d="M1440 0H0v982.065h1440V0Z" />
     </mask>
     <g strokeMiterlimit={10} mask="url(#a)">

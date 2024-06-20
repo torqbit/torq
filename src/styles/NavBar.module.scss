@@ -157,22 +157,124 @@
         gap: 20px;
       }
     }
-
-    .linkList {
+    .linkWrapper {
       display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      ul {
-        margin: 0;
-        padding: 0;
-        li {
-          list-style: none;
-          padding-top: 10px;
-          color: var(--font-secondary);
-          cursor: pointer;
-          &:hover {
-            color: var(--hover-text);
+      gap: 120px;
+      .linkList {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        ul {
+          margin: 0;
+          padding: 0;
+          li {
+            list-style: none;
+            padding-top: 10px;
+            color: var(--font-secondary);
+            cursor: pointer;
+            &:hover {
+              color: var(--hover-text);
+            }
           }
+        }
+      }
+    }
+  }
+}
+
+.sideNaveContainer {
+  background-color: red;
+  display: none;
+}
+
+@media only screen and (max-width: 415px) {
+  .sideNaveContainer {
+    position: relative;
+    z-index: 2;
+    display: block;
+    background-color: var(--bg-primary);
+
+    .platformLogo {
+      padding: 10px;
+      color: var(--font-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .switchBtn {
+        background-color: var(--bg-secondary);
+        border-color: var(--bg-secondary);
+        color: var(--font-primary);
+      }
+    }
+    .animateContainer {
+      position: fixed;
+      z-index: 2;
+      height: 100vh;
+
+      background-color: var(--bg-primary);
+    }
+    .links__text {
+      font-size: 25px;
+      padding: 20px;
+      color: var(--font-secondary);
+    }
+  }
+  .navBarContainer {
+    display: none;
+  }
+
+  .aboutContainer {
+    .cardWrapper {
+      flex-direction: column;
+    }
+    .paceYourLearning {
+      width: 100%;
+      flex-direction: column;
+      > div:first-child {
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        width: 100%;
+      }
+      > div:last-child {
+        .buttonWrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        button {
+          width: 200px;
+        }
+      }
+    }
+  }
+  .footerContainer {
+    footer {
+      gap: 40px;
+
+      flex-direction: column-reverse;
+
+      > div:first-child {
+        flex-direction: row;
+        align-items: center;
+        gap: 60px;
+
+        .socialIcons {
+          margin: 0;
+        }
+      }
+      .linkWrapper {
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+
+        flex-direction: column;
+
+        gap: 40px;
+
+        .linkList {
+          flex-direction: column;
         }
       }
     }

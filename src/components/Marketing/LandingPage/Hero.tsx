@@ -1,16 +1,33 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import NavBar from "./NavBar";
 import styles from "@/styles/MarketingHero.module.scss";
-
 import { Button } from "antd";
-
 import SvgIcons from "@/components/SvgIcons";
 import SvgComponent from "./HeroWave";
+import Hamburger from "hamburger-react";
+import SideNav from "./animate";
 
 const MarketingHero: FC<{}> = () => {
+  const [showSideNav, setSideNav] = useState(false);
+
+  const onAnchorClick = () => {
+    setSideNav(false);
+  };
   return (
     <section className={styles.heroWrapper}>
       <NavBar />
+      <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
+
+      <div className={styles.hamburger}>
+        <Hamburger
+          rounded
+          direction="left"
+          toggled={showSideNav}
+          onToggle={(toggle: boolean | ((prevState: boolean) => boolean)) => {
+            setSideNav(toggle);
+          }}
+        />
+      </div>
       <div className={styles.heroWaveIcon}>
         <SvgComponent className={styles.heroWave} />
       </div>

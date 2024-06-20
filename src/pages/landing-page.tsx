@@ -1,3 +1,4 @@
+import React from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { CourseCategory, ICourseCategory } from "@/components/CourseCategory/CourseCategory";
 import About from "@/components/Marketing/LandingPage/About";
@@ -7,10 +8,10 @@ import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { Theme } from "@prisma/client";
 import { NextPage } from "next";
 import { useEffect } from "react";
-
+import { useMediaQuery } from "react-responsive";
 const LandingPage: NextPage = () => {
   const { dispatch, globalState } = useAppContext();
-
+  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
   const courseCategoryFrontend: ICourseCategory = {
     name: "Frontend Development",
     image: "/img/categories/front-end-screen.png",
@@ -22,16 +23,16 @@ const LandingPage: NextPage = () => {
         tools: ["HTML", "CSS"],
       },
       {
-        name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        name: "Code Collaboration with Git & Github",
+        tools: ["Github", "Git"],
       },
       {
-        name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        name: "Programming with Javascript & Typescript",
+        tools: ["Javascript", "ES6 & ES7"],
       },
       {
-        name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        name: "UI Component Development with ReactJS",
+        tools: ["Hooks", "State management"],
       },
     ],
   };
@@ -111,12 +112,12 @@ const LandingPage: NextPage = () => {
       ) : (
         <>
           <Hero />
-          {/* <CourseCategory direction="ltr" category={courseCategoryFrontend} />
-          <CourseCategory direction="rtl" category={courseCategoryBackend} />
-          <CourseCategory direction="ltr" category={courseCategoryDevops} />
+          <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
+          <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
+          <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
 
           <About />
-          <Footer /> */}
+          <Footer />
         </>
       )}
     </>
