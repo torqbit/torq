@@ -5,7 +5,7 @@ import styles from "@/styles/MarketingHero.module.scss";
 import { Button } from "antd";
 
 import SvgIcons from "@/components/SvgIcons";
-import SvgComponent from "../HeroWave";
+import SvgComponent from "./HeroWave";
 
 const MarketingHero: FC<{}> = () => {
   return (
