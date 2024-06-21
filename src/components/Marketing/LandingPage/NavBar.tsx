@@ -1,12 +1,12 @@
 import { FC } from "react";
 import styles from "@/styles/NavBar.module.scss";
 import Image from "next/image";
-import { Button, Dropdown, Flex, MenuProps, Space, Tooltip } from "antd";
+import { Button, Divider, Dropdown, Flex, MenuProps, Tooltip } from "antd";
 import appConstant from "@/services/appConstant";
 import Link from "next/link";
 import SvgIcons from "@/components/SvgIcons";
 import { useAppContext } from "@/components/ContextApi/AppContext";
-import { DownOutlined } from "@ant-design/icons";
+
 const NavBar: FC<{}> = () => {
   const { dispatch } = useAppContext();
 
@@ -62,41 +62,51 @@ const NavBar: FC<{}> = () => {
         },
         {
           key: "1-3",
-          label: "Code Collaboration with Git & Github",
+          label: "Programming with Javascript & Typescript",
         },
         {
           key: "1-4",
-          label: "Code Collaboration with Git & Github",
+          label: "UI Component Development with ReactJS",
         },
       ],
     },
     {
-      key: "1",
+      key: "2",
       type: "group",
-      label: "Back end Development",
+      label: "  Back end Development",
       children: [
         {
           key: "2-1",
-          label: "Foundations of Web Development",
+          label: "Server Side Development with Node.JS",
         },
         {
           key: "2-2",
-          label: "Code Collaboration with Git & Github",
+          label: "REST API Development with Next.JS",
         },
         {
           key: "2-3",
-          label: "Code Collaboration with Git & Github",
+          label: "Databases & Object Relational Mapping",
         },
         {
           key: "2-4",
-          label: "Code Collaboration with Git & Github",
+          label: "Social Authentcation with Next Auth",
         },
       ],
     },
     {
-      key: "4",
-      danger: true,
-      label: "a danger item",
+      key: "3",
+      type: "group",
+      label: " Devops & Infrastructure",
+      children: [
+        {
+          key: "3-1",
+          label: "Containerisation with Docker & Kubernetes",
+        },
+        {
+          key: "3-2",
+          label: "Cloud Deployment with AWS",
+        },
+      ],
     },
   ];
   return (
@@ -119,13 +129,12 @@ const NavBar: FC<{}> = () => {
                   className="another__class"
                 >
                   <a onClick={(e) => e.preventDefault()}>
-                    <Space>
+                    <Flex align="center" gap={4} style={{ cursor: "pointer" }}>
                       {link.title}
-                      <DownOutlined />
-                    </Space>
+                      <i style={{ marginTop: 8 }}>{link.title === "Courses" && SvgIcons.chevronDown}</i>
+                    </Flex>
                   </a>
                 </Dropdown>
-                {/* <Link href={link.href}>{link.title}</Link> */}
               </li>
             );
           })}

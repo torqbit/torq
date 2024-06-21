@@ -11,6 +11,7 @@ body {
 :root[data-theme="light"] {
   --bg-secondary: #eee;
   --bg-primary: #fff;
+  --font-dropdown-label: #000;
   --bg-elevated: #fff;
   --bg-tag: #eee;
   --font-secondary: #666;
@@ -57,6 +58,7 @@ body {
   --bg-primary: #283040;
   --segment-bg: #151823;
   --font-primary: #fff;
+  --font-dropdown-label: #fff;
   --bg-elevated: #374362;
   --mktg-card-bg: #202433;
   --wave-color: #153953;
@@ -176,13 +178,24 @@ a {
   overflow: auto;
 }
 
+.nav__overlay > ul > li > div {
+  color: var(--font-dropdown-label) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
 .nav__overlay > ul {
   margin-top: 10px !important;
+  background-color: var(--bg-primary) !important;
+  padding: 10px !important;
 }
 
 .nav__overlay > ul > li > ul {
   display: grid;
   grid-template-columns: repeat(2, 200px);
+  padding: 10px !important;
+}
+.nav__overlay > ul > li > ul > li:hover {
+  background-color: var(--bg-secondary) !important;
 }
 
 .evaluate_assign_editor_view {
