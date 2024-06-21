@@ -186,37 +186,77 @@
 .sideNaveContainer {
   display: none;
 }
+.platformNameLogo {
+  display: none;
+}
 
 @media only screen and (max-width: 415px) {
   .sideNaveContainer {
-    position: relative;
-    z-index: 2;
-    display: block;
-    background-color: var(--bg-primary);
+    display: unset;
+  }
 
-    .platformLogo {
-      padding: 10px;
-      color: var(--font-primary);
+  .drawerHeader {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 20px;
+    .drawerTitle,
+    .childrenDrawerTitle {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      .switchBtn {
-        background-color: var(--bg-secondary);
-        border-color: var(--bg-secondary);
-        color: var(--font-primary);
+    }
+    .childrenDrawerTitle {
+      margin: 0;
+      height: 40px;
+      font-size: 20px;
+    }
+  }
+  .coursesListWrapper {
+    ul,
+    li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .coursesLabel {
+      font-size: 18px;
+      color: var(--font-primary);
+      padding: 10px 0px;
+    }
+    .childrenWrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      li {
+        display: flex;
+        align-items: center;
+        padding: 5px 10px;
+
+        border-radius: 8px;
+        width: 100%;
+
+        color: var(--font-secondary);
       }
     }
-    .animateContainer {
-      position: fixed;
-      z-index: 2;
-      height: 100vh;
+  }
 
-      background-color: var(--bg-primary);
-    }
-    .links__text {
-      font-size: 25px;
-      padding: 20px;
-      color: var(--font-secondary);
+  .menuDrawer > a {
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 25px;
+    padding: 20px 0px;
+    color: var(--font-secondary);
+    .menuTitle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      i {
+        margin-top: 5px;
+      }
     }
   }
   .navBarContainer {

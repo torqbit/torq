@@ -181,6 +181,7 @@ a {
 .nav__overlay > ul > li > div {
   color: var(--font-dropdown-label) !important;
   border-bottom: 1px solid var(--border-color);
+  font-size: 15px;
 }
 
 .nav__overlay > ul {

@@ -52,6 +52,9 @@
 .hamburger {
   display: none;
 }
+.platformNameLogo {
+  display: none;
+}
 @media only screen and (max-width: 415px) {
   .heroWrapper {
     .heroContentContainer {
@@ -82,5 +85,13 @@
     right: 0;
     top: 0;
     z-index: 2;
+  }
+  .platformNameLogo {
+    display: unset;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 2;
+    color: var(--font-primary);
   }
 }
