@@ -59,7 +59,7 @@
   .heroWrapper {
     .heroContentContainer {
       width: 350px;
-      height: 100vh;
+      max-height: 600px;
       h1 {
         font-size: 35px;
       }
