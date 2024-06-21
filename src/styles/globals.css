@@ -176,6 +176,15 @@ a {
   overflow: auto;
 }
 
+.nav__overlay > ul {
+  margin-top: 10px !important;
+}
+
+.nav__overlay > ul > li > ul {
+  display: grid;
+  grid-template-columns: repeat(2, 200px);
+}
+
 .evaluate_assign_editor_view {
   border: 1px solid #eee;
   padding: 20px 20px 30px 20px;
