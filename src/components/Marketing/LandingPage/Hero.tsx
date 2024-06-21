@@ -5,7 +5,7 @@ import { Button, Flex } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import SvgComponent from "./HeroWave";
 import Hamburger from "hamburger-react";
-import SideNav from "./animate";
+import SideNav from "./SideNavBar";
 
 import appConstant from "@/services/appConstant";
 import Link from "next/link";

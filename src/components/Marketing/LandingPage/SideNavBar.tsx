@@ -1,11 +1,10 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 
-import { animated, useSpring, useSpringRef, useTrail } from "@react-spring/web";
 import styles from "@/styles/NavBar.module.scss";
 import Link from "next/link";
 import Image from "next/image";
 
-import { Button, Divider, Drawer, Flex, Tooltip } from "antd";
+import { Button, Drawer, Flex, Tooltip } from "antd";
 import appConstant from "@/services/appConstant";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import SvgIcons from "@/components/SvgIcons";
