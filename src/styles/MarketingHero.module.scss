@@ -33,7 +33,8 @@
       margin-bottom: 40px;
     }
     button {
-      width: 250px;
+      width: 323px;
+      height: 50px;
     }
   }
 
@@ -52,17 +53,20 @@
 .hamburger {
   display: none;
 }
+.platformNameLogo {
+  display: none;
+}
 @media only screen and (max-width: 415px) {
   .heroWrapper {
     .heroContentContainer {
       width: 350px;
-      height: 100vh;
+      max-height: 600px;
       h1 {
         font-size: 35px;
       }
 
       button {
-        width: 100%;
+        max-width: 200px;
       }
     }
 
@@ -82,5 +86,13 @@
     right: 0;
     top: 0;
     z-index: 2;
+  }
+  .platformNameLogo {
+    display: unset;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 2;
+    color: var(--font-primary);
   }
 }

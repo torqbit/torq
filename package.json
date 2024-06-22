@@ -23,7 +23,6 @@
     "@react-email/components": "0.0.19",
     "@react-email/render": "0.0.15",
     "@react-pdf/renderer": "^3.1.14",
-    "@react-spring/web": "^9.7.3",
     "@types/react-dom": "18.0.11",
     "@types/react-scroll": "^1.8.7",
     "antd": "5.12.4",

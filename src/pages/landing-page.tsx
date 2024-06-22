@@ -9,6 +9,9 @@ import { Theme } from "@prisma/client";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
+import { ConfigProvider } from "antd";
+import darkThemConfig from "@/services/darkThemConfig";
+import antThemeConfig from "@/services/antThemeConfig";
 const LandingPage: NextPage = () => {
   const { dispatch, globalState } = useAppContext();
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
@@ -34,7 +37,6 @@ const LandingPage: NextPage = () => {
         name: "UI Component Development with ReactJS",
 
         tools: ["Hooks", "State Management"],
-
       },
     ],
   };
@@ -108,23 +110,20 @@ const LandingPage: NextPage = () => {
   }, []);
 
   return (
-    <>
+    <ConfigProvider theme={globalState?.theme == "dark" ? darkThemConfig : antThemeConfig}>
       {globalState.pageLoading ? (
         <SpinLoader />
       ) : (
         <>
           <Hero />
-
           <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
           <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
           <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
-
-
           <About />
           <Footer />
         </>
       )}
-    </>
+    </ConfigProvider>
   );
 };
 

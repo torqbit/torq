@@ -1,11 +1,15 @@
 import { FC, useState } from "react";
 import NavBar from "./NavBar";
 import styles from "@/styles/MarketingHero.module.scss";
-import { Button } from "antd";
+import { Button, Flex } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import SvgComponent from "./HeroWave";
 import Hamburger from "hamburger-react";
-import SideNav from "./animate";
+import SideNav from "./SideNavBar";
+
+import appConstant from "@/services/appConstant";
+import Link from "next/link";
+import Image from "next/image";
 
 const MarketingHero: FC<{}> = () => {
   const [showSideNav, setSideNav] = useState(false);
@@ -17,6 +21,12 @@ const MarketingHero: FC<{}> = () => {
     <section className={styles.heroWrapper}>
       <NavBar />
       <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
+      <Link href={"/"} className={styles.platformNameLogo}>
+        <Flex align="center" gap={5}>
+          <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
+          <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
+        </Flex>
+      </Link>
 
       <div className={styles.hamburger}>
         <Hamburger

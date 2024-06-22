@@ -21,7 +21,7 @@ export default {
       color: "#666",
     },
     Card: {
-      paddingLG: 0,
+      paddingLG: 20,
     },
     Form: {
       labelColor: "#888",

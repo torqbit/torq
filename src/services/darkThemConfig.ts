@@ -30,7 +30,7 @@ export default {
     },
 
     Card: {
-      paddingLG: 0,
+      paddingLG: 20,
     },
     Form: {
       labelColor: "#888",
