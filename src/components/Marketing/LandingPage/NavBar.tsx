@@ -80,7 +80,7 @@ const NavBar: FC<{}> = () => {
     },
     {
       title: "Updates",
-      href: "/",
+      href: "/updates",
     },
     {
       title: "Story",
@@ -88,7 +88,7 @@ const NavBar: FC<{}> = () => {
     },
     {
       title: "Blogs",
-      href: "/",
+      href: "/blogs",
     },
   ];
   const onChangeTheme = () => {
@@ -112,7 +112,7 @@ const NavBar: FC<{}> = () => {
   return (
     <div className={styles.navBarContainer}>
       <nav>
-        <Link href={"/"}>
+        <Link href={"/landing-page"}>
           <Flex align="center" gap={5}>
             <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
             <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
@@ -122,19 +122,23 @@ const NavBar: FC<{}> = () => {
           {navLinks.map((link, i) => {
             return (
               <li key={i}>
-                <Dropdown
-                  menu={{ items }}
-                  trigger={["click"]}
-                  overlayClassName="nav__overlay"
-                  className="another__class"
-                >
-                  <a onClick={(e) => e.preventDefault()}>
-                    <Flex align="center" gap={4} style={{ cursor: "pointer" }}>
-                      {link.title}
-                      <i style={{ marginTop: 8 }}>{link.title === "Courses" && SvgIcons.chevronDown}</i>
-                    </Flex>
-                  </a>
-                </Dropdown>
+                {link.title === "Courses" ? (
+                  <Dropdown
+                    menu={{ items }}
+                    trigger={["click"]}
+                    overlayClassName="nav__overlay"
+                    className="another__class"
+                  >
+                    <Link onClick={(e) => e.preventDefault()} href={link.href}>
+                      <Flex align="center" gap={4} style={{ cursor: "pointer" }}>
+                        {link.title}
+                        <i style={{ marginTop: 8 }}> {SvgIcons.chevronDown}</i>
+                      </Flex>
+                    </Link>
+                  </Dropdown>
+                ) : (
+                  <Link href={link.href}>{link.title}</Link>
+                )}
               </li>
             );
           })}

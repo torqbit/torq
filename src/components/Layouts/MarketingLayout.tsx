@@ -1,14 +1,12 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import React from "react";
 import styles from "@/styles/MarketingHero.module.scss";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
-import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import { Badge, ConfigProvider, Flex, Layout, MenuProps } from "antd";
+import { useAppContext } from "../ContextApi/AppContext";
+import { ConfigProvider, Flex } from "antd";
 import Link from "next/link";
 import darkThemConfig from "@/services/darkThemConfig";
 import antThemeConfig from "@/services/antThemeConfig";
-import { useRouter } from "next/router";
 import SpinLoader from "../SpinLoader/SpinLoader";
 import SideNav from "../Marketing/LandingPage/SideNavBar";
 import NavBar from "../Marketing/LandingPage/NavBar";
@@ -22,9 +20,8 @@ const MarketingLayout: FC<{ children?: React.ReactNode; className?: string; hero
   className,
   heroSection,
 }) => {
-  const { data: user, status, update } = useSession();
-  const { globalState, dispatch } = useAppContext();
-  const router = useRouter();
+  const { globalState } = useAppContext();
+
   const [showSideNav, setSideNav] = useState(false);
 
   const onAnchorClick = () => {
@@ -35,7 +32,7 @@ const MarketingLayout: FC<{ children?: React.ReactNode; className?: string; hero
       {globalState.pageLoading ? (
         <SpinLoader />
       ) : (
-        <ConfigProvider theme={globalState.session?.theme == "dark" ? darkThemConfig : antThemeConfig}>
+        <ConfigProvider theme={globalState.theme == "dark" ? darkThemConfig : antThemeConfig}>
           <Head>
             <title>Torq | Learn to lead</title>
             <meta name="description" content="Learn, build and solve the problems that matters the most" />
@@ -45,7 +42,7 @@ const MarketingLayout: FC<{ children?: React.ReactNode; className?: string; hero
           <section className={styles.heroWrapper}>
             <NavBar />
             <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
-            <Link href={"/"} className={styles.platformNameLogo}>
+            <Link href={"/landing-page"} className={styles.platformNameLogo}>
               <Flex align="center" gap={5}>
                 <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
                 <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>

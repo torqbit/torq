@@ -13,8 +13,24 @@ import { items } from "./NavBar";
 const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, onAnchorClick }) => {
   const { dispatch } = useAppContext();
   const [showChildrenDrawer, setShowChildrenDrawer] = useState<boolean>(false);
-
-  const menuItems = ["Courses", "Updates", "Story", "Blogs"];
+  const menuItems = [
+    {
+      label: "Courses",
+      href: "#",
+    },
+    {
+      label: "Updates",
+      href: "/updates",
+    },
+    {
+      label: "Story",
+      href: "#",
+    },
+    {
+      label: "Blogs",
+      href: "/blogs",
+    },
+  ];
 
   const onHandleChildrenDrawer = (value: boolean) => {
     setShowChildrenDrawer(value);
@@ -74,14 +90,14 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
         <div className={styles.menuDrawer}>
           {menuItems.map((item, i) => {
             return (
-              <Link key={i} href={"#"} onClick={() => item === "Courses" && onHandleChildrenDrawer(true)}>
-                {item === "Courses" ? (
+              <Link key={i} href={item.href} onClick={() => item.label === "Courses" && onHandleChildrenDrawer(true)}>
+                {item.label === "Courses" ? (
                   <div className={styles.menuTitle}>
-                    <div>{item}</div>
+                    <div>{item.label}</div>
                     <i>{SvgIcons.chevronRight}</i>
                   </div>
                 ) : (
-                  item
+                  item.label
                 )}
               </Link>
             );

@@ -42,7 +42,7 @@ const Footer = () => {
     <section className={styles.footerContainer}>
       <footer>
         <div>
-          <Link href={"/"}>
+          <Link href={"/landing-page"}>
             <Flex align="center" gap={5}>
               <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
               <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
@@ -60,10 +60,8 @@ const Footer = () => {
         </div>
 
         <div>
-
           <div className={styles.linkWrapper}>
             {" "}
-
             {footerContent.map((content, i) => {
               return (
                 <div key={i} className={styles.linkList}>
