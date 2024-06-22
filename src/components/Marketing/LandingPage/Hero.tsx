@@ -18,26 +18,27 @@ const MarketingHero: FC<{}> = () => {
     setSideNav(false);
   };
   return (
-    <section className={styles.heroWrapper}>
-      <NavBar />
-      <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
-      <Link href={"/"} className={styles.platformNameLogo}>
-        <Flex align="center" gap={5}>
-          <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
-          <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
-        </Flex>
-      </Link>
+    // <section className={styles.heroWrapper}>
+    //   <NavBar />
+    //   <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
+    //   <Link href={"/"} className={styles.platformNameLogo}>
+    //     <Flex align="center" gap={5}>
+    //       <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
+    //       <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
+    //     </Flex>
+    //   </Link>
 
-      <div className={styles.hamburger}>
-        <Hamburger
-          rounded
-          direction="left"
-          toggled={showSideNav}
-          onToggle={(toggle: boolean | ((prevState: boolean) => boolean)) => {
-            setSideNav(toggle);
-          }}
-        />
-      </div>
+    //   <div className={styles.hamburger}>
+    //     <Hamburger
+    //       rounded
+    //       direction="left"
+    //       toggled={showSideNav}
+    //       onToggle={(toggle: boolean | ((prevState: boolean) => boolean)) => {
+    //         setSideNav(toggle);
+    //       }}
+    //     />
+    //   </div>
+    <>
       <div className={styles.heroWaveIcon}>
         <SvgComponent className={styles.heroWave} />
       </div>
@@ -53,7 +54,7 @@ const MarketingHero: FC<{}> = () => {
         </p>
         <Button type="primary">Get Started for free</Button>
       </div>
-    </section>
+    </>
   );
 };
 

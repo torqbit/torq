@@ -2,16 +2,13 @@ import React from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { CourseCategory, ICourseCategory } from "@/components/CourseCategory/CourseCategory";
 import About from "@/components/Marketing/LandingPage/About";
-import Footer from "@/components/Marketing/LandingPage/Footer";
 import Hero from "@/components/Marketing/LandingPage/Hero";
-import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { Theme } from "@prisma/client";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
-import { ConfigProvider } from "antd";
-import darkThemConfig from "@/services/darkThemConfig";
-import antThemeConfig from "@/services/antThemeConfig";
+import MarketingLayout from "@/components/Layouts/MarketingLayout";
+
 const LandingPage: NextPage = () => {
   const { dispatch, globalState } = useAppContext();
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
@@ -110,20 +107,12 @@ const LandingPage: NextPage = () => {
   }, []);
 
   return (
-    <ConfigProvider theme={globalState?.theme == "dark" ? darkThemConfig : antThemeConfig}>
-      {globalState.pageLoading ? (
-        <SpinLoader />
-      ) : (
-        <>
-          <Hero />
-          <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
-          <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
-          <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
-          <About />
-          <Footer />
-        </>
-      )}
-    </ConfigProvider>
+    <MarketingLayout heroSection={<Hero />}>
+      <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
+      <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
+      <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
+      <About />
+    </MarketingLayout>
   );
 };
 
