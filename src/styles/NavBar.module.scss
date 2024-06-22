@@ -268,8 +268,9 @@
       flex-direction: column;
     }
     .paceYourLearning {
-      width: 100%;
+      width: 300px;
       flex-direction: column;
+      height: 400px;
       > div:first-child {
         border-top-right-radius: 15px;
         border-top-left-radius: 15px;
@@ -283,6 +284,7 @@
           align-items: center;
           justify-content: center;
         }
+
         button {
           width: 200px;
         }
