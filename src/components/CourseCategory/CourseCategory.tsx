@@ -21,11 +21,6 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
   isMobile,
 }) => (
   <section className={styles.course__category}>
-    {/* {direction == "rtl" && !isMobile && (
-      <i style={{ left: 0, top: -100, transform: "rotate(-90deg)" }}>{SvgIcons.categoryWave}</i>
-    )}
-    {direction == "ltr" && !isMobile && <i style={{ right: 0, top: -50 }}>{SvgIcons.categoryWave}</i>} */}
-
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
       <div>
         <img src={category.image} alt="" />

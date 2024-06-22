@@ -73,7 +73,7 @@ const NavBar: FC<{}> = () => {
     {
       key: "2",
       type: "group",
-      label: "  Back end Development",
+      label: "Back end Development",
       children: [
         {
           key: "2-1",
@@ -89,14 +89,14 @@ const NavBar: FC<{}> = () => {
         },
         {
           key: "2-4",
-          label: "Social Authentcation with Next Auth",
+          label: "Social Authentication with Next Auth",
         },
       ],
     },
     {
       key: "3",
       type: "group",
-      label: " Devops & Infrastructure",
+      label: "Devops & Infrastructure",
       children: [
         {
           key: "3-1",
