@@ -61,7 +61,7 @@ const LandingPage: NextPage = () => {
             lineHeight: 1.5,
           }}
         >
-          There are no blogs currently. Visit here later again
+          There are no updates currently. Visit here later again
         </p>
       </div>
     </MarketingLayout>
