@@ -8,6 +8,7 @@ import { NextPage } from "next";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
+import CoursePreview from "@/components/Marketing/Courses/CoursePreview";
 
 const LandingPage: NextPage = () => {
   const { dispatch, globalState } = useAppContext();
@@ -107,12 +108,13 @@ const LandingPage: NextPage = () => {
   }, []);
 
   return (
-    <MarketingLayout heroSection={<Hero />}>
-      <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
-      <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
-      <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
-      <About />
-    </MarketingLayout>
+    // <MarketingLayout heroSection={<Hero />}>
+    //   <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
+    //   <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
+    //   <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
+    //   <About />
+    // </MarketingLayout>
+    <MarketingLayout heroSection={<CoursePreview />}>\</MarketingLayout>
   );
 };
 
