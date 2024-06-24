@@ -12,6 +12,9 @@ export default {
     Menu: {
       itemColor: "#666",
     },
+    Divider: {
+      colorSplit: "#d9d9d9",
+    },
     Radio: {
       buttonSolidCheckedActiveBg: "#000",
       buttonSolidCheckedBg: "#000",

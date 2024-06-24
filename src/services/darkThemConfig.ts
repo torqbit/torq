@@ -28,6 +28,9 @@ export default {
     Sider: {
       color: "#666",
     },
+    Divider: {
+      colorSplit: "#374362",
+    },
 
     Card: {
       paddingLG: 20,

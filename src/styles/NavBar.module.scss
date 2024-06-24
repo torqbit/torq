@@ -227,6 +227,129 @@
   }
 }
 
+// course preview
+
+.coursePreviewContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .contentWrapper {
+    display: flex;
+
+    gap: 25px;
+    div:first-child {
+      h1 {
+        font-size: 35px;
+      }
+    }
+    .videoContainer {
+      width: 800px;
+      height: 450px;
+      border-radius: 8px;
+      background-color: var(--bg-primary);
+      position: relative;
+    }
+    .authorInfo {
+      img {
+        height: 60px;
+        width: 60px;
+        border-radius: 8px;
+      }
+      span {
+        color: var(--font-secondary);
+      }
+      div {
+        color: var(--font-primary);
+      }
+    }
+    .descriptionWrapper {
+      margin: 20px 0px;
+      p {
+        color: var(--font-secondary);
+        line-height: 1.5;
+      }
+    }
+
+    .courseEnrollmentCard {
+      border-radius: 8px;
+      background-color: var(--bg-primary);
+      padding: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      width: 375px;
+
+      .cardWrapper {
+        padding: 0px;
+        img {
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
+          border-bottom-left-radius: 0px;
+          border-bottom-left-radius: 0px;
+          height: 375px;
+          width: 375px;
+        }
+        .cardDetail {
+          i {
+            stroke: var(--font-secondary);
+          }
+          > div:first-child {
+            background-color: var(--ft-color-dull);
+            padding: 15px;
+            font-size: 18px;
+            font-weight: 500;
+
+            color: var(--font-primary);
+          }
+          > div:nth-child(2) {
+            padding: 10px;
+
+            margin: 10px 0px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            color: var(--font-secondary);
+          }
+        }
+        .buttonWrapper {
+          padding-bottom: 10px;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          button {
+            width: 100%;
+            height: 40px;
+            margin: 0px 10px;
+          }
+        }
+      }
+    }
+  }
+  .chapter_list {
+    max-width: 800px;
+    h1 {
+      font-size: 25px;
+      margin-bottom: 20px;
+    }
+    .resContainer {
+      height: 35px;
+
+      border-bottom: 1px solid var(--border-color);
+
+      padding: 5px 0px;
+      padding-left: 20px;
+    }
+    .time_tag {
+      color: var(--font-secondary);
+      padding: 0px 10px;
+    }
+  }
+}
+
 .sideNaveContainer {
   display: none;
 }
@@ -378,6 +501,69 @@
         font-size: 16px;
         line-height: 1.4;
         margin-bottom: 40px;
+      }
+    }
+  }
+
+  .coursePreviewContainer {
+    .contentWrapper {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      gap: 25px;
+      div:first-child {
+        h1 {
+          font-size: 20px;
+          margin: 10px 0px;
+        }
+      }
+      .videoContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin-top: 60px;
+        height: 210px;
+      }
+      .authorInfo {
+        img {
+          height: 50px;
+          width: 50px;
+        }
+      }
+
+      .courseEnrollmentCard {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 20px;
+
+        .cardWrapper {
+          img {
+            height: 100%;
+            width: 100%;
+          }
+
+          .buttonWrapper {
+            button {
+              margin: 0px 10px;
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+    .chapter_list {
+      max-width: 400px;
+      margin: 0px 10px;
+      h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
       }
     }
   }
