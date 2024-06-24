@@ -83,10 +83,6 @@ const NavBar: FC<{}> = () => {
       href: "/updates",
     },
     {
-      title: "Story",
-      href: "/",
-    },
-    {
       title: "Blogs",
       href: "/blogs",
     },
