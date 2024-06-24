@@ -5,6 +5,8 @@ import { Button, Collapse, Divider, Flex, Space, Tag } from "antd";
 import { FC, ReactNode, useState } from "react";
 import MarketingSvgIcons from "../MarketingSvgIcons";
 import { ICoursePageDetail } from "@/types/courses/Course";
+import { User } from "@prisma/client";
+import Link from "next/link";
 
 const Label: FC<{
   title: string;
@@ -30,7 +32,7 @@ const Label: FC<{
     </div>
   );
 };
-const CoursePreview: FC<{ courseDetails: ICoursePageDetail }> = ({ courseDetails }) => {
+const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ courseDetails, user }) => {
   const courseListDetail = {
     course: {
       name: courseDetails.name,
@@ -115,6 +117,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail }> = ({ courseDetails
       label: "Certificate on course completion",
     },
   ];
+
   const onChange = (key: string | string[]) => {
     setActiveCollapseKey(key as string[]);
   };
@@ -170,9 +173,9 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail }> = ({ courseDetails
                 </div>
               </div>
               <Divider />
-              <div className={styles.buttonWrapper}>
-                <Button type="primary"> {courseDetails.state === "ACTIVE" ? "Enroll for free" : "Notify me"}</Button>
-              </div>
+              <Link href={user ? `/courses/${courseDetails.courseId}` : `/login`} className={styles.buttonWrapper}>
+                <Button type="primary">{courseDetails.state === "ACTIVE" ? "Enroll for free" : "Notify me"}</Button>
+              </Link>
             </div>
           </div>
         </div>

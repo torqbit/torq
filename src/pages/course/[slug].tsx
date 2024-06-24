@@ -15,7 +15,7 @@ interface IProps {
 }
 
 const CourseDetailPage: FC<IProps> = ({ courseDetail, user }) => {
-  const { dispatch, globalState } = useAppContext();
+  const { dispatch } = useAppContext();
 
   const setGlobalTheme = (theme: Theme) => {
     dispatch({
@@ -44,7 +44,7 @@ const CourseDetailPage: FC<IProps> = ({ courseDetail, user }) => {
   }, []);
   return (
     <>
-      <MarketingLayout heroSection={<CoursePreview courseDetails={courseDetail} />}>\</MarketingLayout>
+      <MarketingLayout heroSection={<CoursePreview courseDetails={courseDetail} user={user} />}>\</MarketingLayout>
     </>
   );
 };
@@ -61,6 +61,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     },
     select: {
       name: true,
+      courseId: true,
       description: true,
       tvUrl: true,
       difficultyLevel: true,

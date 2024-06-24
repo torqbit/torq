@@ -148,6 +148,7 @@ interface IChapter extends Chapter {
   resource: IResource[];
 }
 export interface ICoursePageDetail {
+  courseId: number;
   state: StateType;
   name: string;
   description: string;
