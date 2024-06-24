@@ -3,27 +3,32 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
+import { StateType } from "@prisma/client";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const allCourse = await prisma.course.findMany({
-      select: {
-        courseId: true,
-        name: true,
-        difficultyLevel: true,
-        state: true,
-        thumbnail: true,
-        description: true,
-        totalResources: true,
+    const { slug } = req.query;
+    const course = await prisma.course.findUnique({
+      where: {
+        slug: String(slug),
+      },
+      include: {
         user: {
           select: {
             name: true,
+            image: true,
           },
         },
         chapters: {
-          select: {
+          where: {
+            state: StateType.ACTIVE,
+          },
+          include: {
             resource: {
-              select: {
+              where: {
+                state: StateType.ACTIVE,
+              },
+              include: {
                 video: {
                   select: {
                     videoDuration: true,
@@ -36,13 +41,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     return res.status(200).json({
-      info: false,
       success: true,
-      message: "course successfully fetched",
-      courses: allCourse,
+      statusCode: 200,
+      message: "Course details successfully fetched for the slug",
+      courseDetails: course,
     });
   } catch (error) {
-    console.error(error);
     return errorHandler(error, res);
   }
 };

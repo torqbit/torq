@@ -126,6 +126,7 @@ model Course {
   name                String
   about               String                @db.Text()
   description         String                @db.Text()
+  slug                String?
   tvProviderId        String?
   tvProviderName      String?
   tvUrl               String?
@@ -152,6 +153,7 @@ model Course {
   CourseRegistraion   CourseRegistration[]
   courseProgress      CourseProgress[]
 
+  @@unique([slug])
   @@unique([courseId, name])
   @@index([authorId])
 }
