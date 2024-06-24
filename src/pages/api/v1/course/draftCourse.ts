@@ -42,6 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       data: {
         name: "Untitled",
         description: "Description about the Untitled Course",
+        slug: `untitled-${new Date().getTime()}`,
         durationInMonths: 1,
         thumbnail: "",
         state: "DRAFT",

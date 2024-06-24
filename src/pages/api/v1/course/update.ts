@@ -3,7 +3,8 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
-import { StateType } from "@prisma/client";
+import { createSlug } from "@/lib/utils";
+import { title } from "process";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -16,13 +17,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     if (findCourse) {
+      let slug = `untitled-${new Date().getTime()}`;
+      if (body.name && body.name != "Untitled") {
+        slug = createSlug(body.name);
+      }
       const updateCourse = await prisma.course.update({
         where: {
           courseId: Number(courseId),
         },
         data: {
           ...body,
-          about: "",
+          slug: slug,
         },
       });
 

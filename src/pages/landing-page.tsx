@@ -54,7 +54,7 @@ const LandingPage: NextPage = () => {
         tools: ["Routes", "page caching"],
       },
       {
-        name: "Databasse & Object Relational Mapping",
+        name: "Database & Object Relational Mapping",
         tools: ["MySQL", "ORM", "Postgres"],
       },
       {
