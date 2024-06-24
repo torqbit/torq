@@ -108,13 +108,13 @@ const LandingPage: NextPage = () => {
   }, []);
 
   return (
-    // <MarketingLayout heroSection={<Hero />}>
-    //   <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
-    //   <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
-    //   <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
-    //   <About />
-    // </MarketingLayout>
-    <MarketingLayout heroSection={<CoursePreview />}>\</MarketingLayout>
+    <MarketingLayout heroSection={<Hero />}>
+      <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
+      <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
+      <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
+      <About />
+    </MarketingLayout>
+    // <MarketingLayout heroSection={<CoursePreview />}>\</MarketingLayout>
   );
 };
 

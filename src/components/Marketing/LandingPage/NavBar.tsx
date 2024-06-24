@@ -71,7 +71,7 @@ export const items: MenuProps["items"] = [
 ];
 
 const NavBar: FC<{}> = () => {
-  const { dispatch } = useAppContext();
+  const { dispatch, globalState } = useAppContext();
 
   const navLinks = [
     {
@@ -147,7 +147,7 @@ const NavBar: FC<{}> = () => {
             onClick={() => {
               onChangeTheme();
             }}
-            icon={localStorage.getItem("theme") == "dark" ? SvgIcons.sun : SvgIcons.moon}
+            icon={globalState.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
           />
         </Tooltip>
         <Button type="primary">Get Started</Button>
