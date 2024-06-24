@@ -4,7 +4,7 @@ import { CourseCategory, ICourseCategory } from "@/components/CourseCategory/Cou
 import About from "@/components/Marketing/LandingPage/About";
 import Hero from "@/components/Marketing/LandingPage/Hero";
 import { Theme } from "@prisma/client";
-import { GetStaticProps, NextPage } from "next";
+import { NextPage } from "next";
 import { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
@@ -116,15 +116,6 @@ const LandingPage: NextPage = () => {
     </MarketingLayout>
     // <MarketingLayout heroSection={<CoursePreview />}>\</MarketingLayout>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const data = "Hello from getStaticProps!";
-  return {
-    props: {
-      data: data,
-    },
-  };
 };
 
 export default LandingPage;
