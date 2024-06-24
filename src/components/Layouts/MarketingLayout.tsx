@@ -15,11 +15,14 @@ import appConstant from "@/services/appConstant";
 import Hamburger from "hamburger-react";
 import Footer from "../Marketing/LandingPage/Footer";
 
-const MarketingLayout: FC<{ children?: React.ReactNode; className?: string; heroSection?: React.ReactNode }> = ({
-  children,
-  className,
-  heroSection,
-}) => {
+import { User } from "@prisma/client";
+
+const MarketingLayout: FC<{
+  children?: React.ReactNode;
+  className?: string;
+  heroSection?: React.ReactNode;
+  user: User;
+}> = ({ children, className, heroSection, user }) => {
   const { globalState } = useAppContext();
 
   const [showSideNav, setSideNav] = useState(false);
@@ -52,7 +55,7 @@ const MarketingLayout: FC<{ children?: React.ReactNode; className?: string; hero
         </Head>
 
         <section className={styles.heroWrapper}>
-          <NavBar />
+          <NavBar user={user} />
           <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
           <Link href={"/landing-page"} className={styles.platformNameLogo}>
             <Flex align="center" gap={5}>

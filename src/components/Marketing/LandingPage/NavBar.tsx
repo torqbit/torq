@@ -1,11 +1,13 @@
 import { FC } from "react";
 import styles from "@/styles/NavBar.module.scss";
 import Image from "next/image";
-import { Button, Divider, Dropdown, Flex, MenuProps, Tooltip } from "antd";
+import { Button, Dropdown, Flex, MenuProps, Tooltip } from "antd";
 import appConstant from "@/services/appConstant";
 import Link from "next/link";
 import SvgIcons from "@/components/SvgIcons";
 import { useAppContext } from "@/components/ContextApi/AppContext";
+import { User } from "@prisma/client";
+
 export const items: MenuProps["items"] = [
   {
     key: "1",
@@ -70,7 +72,8 @@ export const items: MenuProps["items"] = [
   },
 ];
 
-const NavBar: FC<{}> = () => {
+const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
+  console.log(user, "u");
   const { dispatch, globalState } = useAppContext();
 
   const navLinks = [
@@ -150,9 +153,12 @@ const NavBar: FC<{}> = () => {
             icon={globalState.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
           />
         </Tooltip>
-        <Button type="primary">Get Started</Button>
+        <Link href={user ? `/dashboard` : `/login`}>
+          <Button type="primary">{user ? "Go to Dashboard" : "Get Started"}</Button>
+        </Link>
       </nav>
     </div>
   );
 };
+
 export default NavBar;
