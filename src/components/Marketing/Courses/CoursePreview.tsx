@@ -1,10 +1,12 @@
 import SvgIcons from "@/components/SvgIcons";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import styles from "@/styles/NavBar.module.scss";
-import { Breadcrumb, Button, Card, Collapse, Divider, Flex, Space, Tag } from "antd";
-import Link from "next/link";
+import { Button, Collapse, Divider, Flex, Space, Tag } from "antd";
 import { FC, ReactNode, useState } from "react";
 import MarketingSvgIcons from "../MarketingSvgIcons";
+import { ICoursePageDetail } from "@/types/courses/Course";
+import { User } from "@prisma/client";
+import Link from "next/link";
 
 const Label: FC<{
   title: string;
@@ -30,90 +32,31 @@ const Label: FC<{
     </div>
   );
 };
-const CoursePreview = () => {
+const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ courseDetails, user }) => {
   const courseListDetail = {
     course: {
-      name: "Foundation of Web Development",
-      description: "Description about the Git History",
-      courseTrailer: "https://iframe.mediadelivery.net/embed/227219/6dd12bc6-4856-4095-9dc2-0f6f0de5137b",
+      name: courseDetails.name,
+      description: courseDetails.description,
+      courseTrailer: courseDetails.tvUrl,
+      difficulty: courseDetails.difficultyLevel,
     },
-    lessons: [
-      {
-        chapterSeq: 1,
-        chapterName: "Chapter 1",
-        lessons: [
-          {
-            title: "Lesson 1",
-            videoDuration: 2268,
-            lessonId: 1,
-            isWatched: false,
-          },
-          {
-            title: "Lesson 2",
-            videoDuration: 950,
-            lessonId: 2,
-            isWatched: false,
-          },
-          {
-            title: "Lesson 3",
-            videoDuration: 780,
-            lessonId: 3,
-            isWatched: false,
-          },
-        ],
-      },
-      {
-        chapterSeq: 1,
-        chapterName: "Chapter 2",
-        lessons: [
-          {
-            title: "Lesson 1",
-            videoDuration: 1450,
-            lessonId: 1,
-            isWatched: false,
-          },
-          {
-            title: "Lesson 2",
-            videoDuration: 3502,
-            lessonId: 2,
-            isWatched: false,
-          },
-          {
-            title: "Lesson 3",
-            videoDuration: 1500,
-            lessonId: 3,
-            isWatched: false,
-          },
-        ],
-      },
-      {
-        chapterSeq: 1,
-        chapterName: "Chapter 3",
-        lessons: [
-          {
-            title: "Lesson 1",
-            videoDuration: 1259,
-            lessonId: 1,
-            isWatched: false,
-          },
-          {
-            title: "Lesson 2",
-            videoDuration: 1659,
-            lessonId: 2,
-            isWatched: false,
-          },
-          {
-            title: "Lesson 3",
-            videoDuration: 1259,
-            lessonId: 3,
-            isWatched: false,
-          },
-        ],
-      },
-    ],
+
+    chapters: courseDetails.chapters.map((chapter) => {
+      return {
+        chapterSeq: chapter.sequenceId,
+        chapterName: chapter.name,
+        lessons: chapter.resource.map((r) => {
+          return {
+            title: r.name,
+            videoDuration: r.video.videoDuration,
+            lessonId: r.resourceId,
+          };
+        }),
+      };
+    }),
   };
 
-  const items = courseListDetail?.lessons.map((content, i) => {
+  const items = courseListDetail?.chapters.map((content, i) => {
     let totalTime = 0;
     content.lessons.forEach((data) => {
       totalTime = totalTime + data.videoDuration;
@@ -141,36 +84,47 @@ const CoursePreview = () => {
     };
   });
   const [activeCollapseKey, setActiveCollapseKey] = useState<string[]>(items ? items.map((item, i) => `${i + 1}`) : []);
+  let duration: number = 0;
 
-  const courseDetail = [
+  courseDetails.chapters.forEach((chapter) => {
+    chapter.resource.forEach((r) => {
+      duration = duration + r.video.videoDuration;
+    });
+  });
+
+  const totalDuration = convertSecToHourandMin(duration);
+
+  const courseFeatures = [
+    {
+      icon: MarketingSvgIcons.info,
+      label: courseDetails.state === "ACTIVE" ? "Available for all" : "N/A",
+    },
     {
       icon: MarketingSvgIcons.courseLevel,
-      label: "Beginner",
+      label: courseDetails.difficultyLevel,
     },
     {
       icon: MarketingSvgIcons.megaPhone,
       label: "English",
     },
-    {
-      icon: MarketingSvgIcons.users,
-      label: "20 students",
-    },
+
     {
       icon: MarketingSvgIcons.clock,
-      label: "12h 20m",
+      label: totalDuration,
     },
     {
       icon: MarketingSvgIcons.certificate,
       label: "Certificate on course completion",
     },
   ];
+
   const onChange = (key: string | string[]) => {
     setActiveCollapseKey(key as string[]);
   };
   return (
     <section className={styles.coursePreviewContainer}>
       <div className={styles.contentWrapper}>
-        <Space direction="vertical">
+        <Space direction="vertical" style={{ width: "100%" }}>
           <div className={styles.videoContainer}>
             {
               <iframe
@@ -183,40 +137,34 @@ const CoursePreview = () => {
                   borderRadius: "8px",
                 }}
                 allowFullScreen={true}
-                src={courseListDetail.course.courseTrailer}
+                src={String(courseListDetail.course.courseTrailer)}
               ></iframe>
             }
           </div>
 
-          <h1>Foundation of Web Development</h1>
+          <h1>{courseDetails.name}</h1>
           <Flex align="center" gap={10} className={styles.authorInfo}>
-            <img src="https://placehold.co/50x50" alt="" />
+            <img src={courseDetails.user.image} alt="" />
             <Space direction="vertical" size={"small"}>
               <span>A Course by</span>
-              <div>Shad Amez</div>
+              <div>{courseDetails.user.name}</div>
             </Space>
           </Flex>
           <div className={styles.descriptionWrapper}>
             <h2>Description</h2>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui consequatur repudiandae cumque, numquam ab
-              tempora? Delectus iure animi, nisi nihil omnis itaque atque vero explicabo placeat. Quo vel suscipit iusto
-              aspernatur aliquid maiores modi officia repudiandae illum illo dicta aut perspiciatis quia soluta officiis
-              quas, provident neque! Maxime nesciunt alias minus cupiditate repellat sint voluptatem distinctio illo, a
-              fugiat voluptatum!
-            </p>
+            <p>{courseDetails.description}</p>
           </div>
         </Space>
-        <div>
+        <div style={{ width: "100%" }}>
           <div className={styles.courseEnrollmentCard}>
             <div className={styles.cardWrapper}>
               <img src="https://torqbit-dev.b-cdn.net/static/github.jpeg" alt="" />
               <div className={styles.cardDetail}>
                 <div>Details</div>
                 <div>
-                  {courseDetail.map((c, i) => {
+                  {courseFeatures.map((c, i) => {
                     return (
-                      <Flex align="center" gap={10}>
+                      <Flex key={i} align="center" gap={10}>
                         <i>{c.icon}</i>
                         <div>{c.label}</div>
                       </Flex>
@@ -225,9 +173,9 @@ const CoursePreview = () => {
                 </div>
               </div>
               <Divider />
-              <div className={styles.buttonWrapper}>
-                <Button type="primary"> Enroll for free</Button>
-              </div>
+              <Link href={user ? `/courses/${courseDetails.courseId}` : `/login`} className={styles.buttonWrapper}>
+                <Button type="primary">{courseDetails.state === "ACTIVE" ? "Enroll for free" : "Notify me"}</Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -256,4 +204,5 @@ const CoursePreview = () => {
     </section>
   );
 };
+
 export default CoursePreview;

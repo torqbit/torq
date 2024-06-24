@@ -1,5 +1,6 @@
 import { IResourceDetail } from "@/lib/types/learn";
 import {
+  Chapter,
   Course,
   Resource,
   ResourceContentType,
@@ -137,4 +138,25 @@ export interface UploadedResourceDetail {
   state?: string;
   mediaProvider?: string;
   videoDuration?: number;
+}
+
+interface IResource extends Resource {
+  video: { videoDuration: number };
+}
+
+interface IChapter extends Chapter {
+  resource: IResource[];
+}
+export interface ICoursePageDetail {
+  courseId: number;
+  state: StateType;
+  name: string;
+  description: string;
+  difficultyLevel: string;
+  tvUrl: string;
+  chapters: IChapter[];
+  user: {
+    name: string;
+    image: string;
+  };
 }
