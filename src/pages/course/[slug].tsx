@@ -44,7 +44,10 @@ const CourseDetailPage: FC<IProps> = ({ courseDetail, user }) => {
   }, []);
   return (
     <>
-      <MarketingLayout heroSection={<CoursePreview courseDetails={courseDetail} user={user} />}>\</MarketingLayout>
+      <MarketingLayout
+        user={user}
+        heroSection={<CoursePreview courseDetails={courseDetail} user={user} />}
+      ></MarketingLayout>
     </>
   );
 };
