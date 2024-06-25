@@ -26,7 +26,7 @@ const LandingPage: FC<IProps> = ({ user }) => {
     courses: [
       {
         name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        tools: ["HTML", "CSS", "Tailwind"],
       },
       {
         name: "Code Collaboration with Git & Github",
@@ -80,7 +80,7 @@ const LandingPage: FC<IProps> = ({ user }) => {
         tools: ["CRI-O", "Helm", "Kubernetes"],
       },
       {
-        name: "Cloud Development with Amazone Web Services",
+        name: "Cloud Development with Amazon web services",
         tools: ["Node", "http", "Networks"],
       },
     ],

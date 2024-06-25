@@ -9,19 +9,59 @@ const Footer = () => {
   const footerContent = [
     {
       title: "Resources",
-      links: ["Updates", "Blogs", "Changelog"],
+      links: [
+        {
+          href: "/updates",
+          label: "Updates",
+        },
+        {
+          href: "/blogs",
+          label: "Blogs",
+        },
+      ],
     },
     {
       title: "More",
-      links: ["Discord", "Github", "Youtube"],
+      links: [
+        {
+          href: "#",
+          label: "Discord",
+        },
+        {
+          href: "#",
+          label: "Github",
+        },
+        {
+          href: "#",
+          label: "Youtube",
+        },
+      ],
     },
     {
       title: "About Torqbit",
-      links: ["The Story", "Team"],
+      links: [
+        {
+          href: "#",
+          label: "The Story",
+        },
+        {
+          href: "#",
+          label: "Team",
+        },
+      ],
     },
     {
       title: "Legal",
-      links: ["Terms & Conditions", "Privacy Policy"],
+      links: [
+        {
+          href: "#",
+          label: "Terms & Conditions",
+        },
+        {
+          href: "#",
+          label: "Privacy Policy",
+        },
+      ],
     },
   ];
   const socialLinks = [
@@ -68,7 +108,12 @@ const Footer = () => {
                   <h4>{content.title}</h4>
                   <ul>
                     {content.links.map((link, i) => {
-                      return <li>{link}</li>;
+                      return (
+                        <Link key={i} href={link.href}>
+                          {" "}
+                          <li>{link.label}</li>
+                        </Link>
+                      );
                     })}
                   </ul>
                 </div>

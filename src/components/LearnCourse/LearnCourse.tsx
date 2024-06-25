@@ -15,7 +15,6 @@ import { IResponse, getFetch, postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import QADiscssionTab from "./AboutCourse/CourseDiscussion/CourseDiscussion";
-import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "../SpinLoader/SpinLoader";
 
 const Label: FC<{
@@ -311,10 +310,10 @@ const LearnCourse: FC<{}> = () => {
   };
 
   const onViewCertificate = () => {
-    ProgramService.getCertificate(
+    ProgramService.getCertificateByCourseId(
       Number(router.query.courseId),
       (result) => {
-        const id = String(result?.certificateDetail?.getIssuedCertificate?.id);
+        const id = String(result?.certificateId);
         router.push(`/courses/${router.query.courseId}/certificate/${id}`);
       },
       (error) => {}

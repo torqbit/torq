@@ -57,7 +57,7 @@ const MarketingLayout: FC<{
         <section className={styles.heroWrapper}>
           <NavBar user={user} />
           <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
-          <Link href={"/landing-page"} className={styles.platformNameLogo}>
+          <Link href={"/"} className={styles.platformNameLogo}>
             <Flex align="center" gap={5}>
               <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
               <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>

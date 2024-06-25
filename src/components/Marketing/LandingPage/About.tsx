@@ -9,7 +9,7 @@ const About = () => {
       icon: MarketingSvgIcons.openSource,
       title: "Open source platform",
       description:
-        "The training has been open sourced, and we train people to becaome open source contributors to build network and learn from the best",
+        "The training platform has been open sourced, and we train people to become open source contributors to build network and learn from the best",
     },
     {
       icon: MarketingSvgIcons.illustrativeVideo,
@@ -21,7 +21,7 @@ const About = () => {
       icon: MarketingSvgIcons.codeIcon,
       title: "High quality coding",
       description:
-        "We emphasizes on writing quality code, as the code is read and debugged multiple times. And such coders are highly demanded.",
+        "We emphasize on writing quality code, as the code is read and debugged multiple times. And such coders are highly demanded.",
     },
   ];
   return (

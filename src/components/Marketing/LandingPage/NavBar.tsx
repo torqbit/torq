@@ -73,7 +73,6 @@ export const items: MenuProps["items"] = [
 ];
 
 const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
-  console.log(user, "u");
   const { dispatch, globalState } = useAppContext();
 
   const navLinks = [
@@ -111,7 +110,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
   return (
     <div className={styles.navBarContainer}>
       <nav>
-        <Link href={"/landing-page"}>
+        <Link href={"/"}>
           <Flex align="center" gap={5}>
             <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
             <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
