@@ -21,7 +21,7 @@ const MarketingLayout: FC<{
   children?: React.ReactNode;
   className?: string;
   heroSection?: React.ReactNode;
-  user: User;
+  user?: User;
 }> = ({ children, className, heroSection, user }) => {
   const { globalState } = useAppContext();
 
@@ -59,7 +59,7 @@ const MarketingLayout: FC<{
           <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
           <Link href={"/"} className={styles.platformNameLogo}>
             <Flex align="center" gap={5}>
-              <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
+              <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} loading="lazy" />
               <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
             </Flex>
           </Link>

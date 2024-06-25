@@ -84,7 +84,7 @@ const Footer = () => {
         <div>
           <Link href={"/landing-page"}>
             <Flex align="center" gap={5}>
-              <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
+              <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} loading="lazy" />
               <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
             </Flex>
           </Link>

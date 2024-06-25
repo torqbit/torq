@@ -5,6 +5,7 @@ import { Tag } from "antd";
 
 import Link from "next/link";
 import { convertSecToHourandMin } from "@/pages/admin/content";
+import Image from "next/image";
 
 interface ICourseCard {
   thumbnail: string;
@@ -29,7 +30,7 @@ const CourseCard: FC<ICourseCard> = ({
     <Link href={`/courses/${courseId}`}>
       <div className={styles.course_card}>
         <div className={styles.card_img}>
-          <img src={thumbnail} alt={courseName} />
+          <Image height={250} width={250} src={thumbnail} alt={courseName} loading="lazy" />
         </div>
         <div className={styles.card_content}>
           <div>

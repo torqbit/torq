@@ -144,6 +144,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
         <Tooltip title={""}>
           <Button
             type="default"
+            name="theme button"
             className={styles.switchBtn}
             shape="circle"
             onClick={() => {

@@ -2,6 +2,10 @@
 
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: ["torqbit-dev.b-cdn.net", "lh3.googleusercontent.com"],
+  },
+
   productionBrowserSourceMaps: false,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
     if (config.cache && !dev) {

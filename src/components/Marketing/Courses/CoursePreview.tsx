@@ -7,6 +7,7 @@ import MarketingSvgIcons from "../MarketingSvgIcons";
 import { ICoursePageDetail } from "@/types/courses/Course";
 import { User } from "@prisma/client";
 import Link from "next/link";
+import Image from "next/image";
 
 const Label: FC<{
   title: string;
@@ -121,6 +122,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
   const onChange = (key: string | string[]) => {
     setActiveCollapseKey(key as string[]);
   };
+
   return (
     <section className={styles.coursePreviewContainer}>
       <div className={styles.contentWrapper}>
@@ -144,7 +146,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
 
           <h1>{courseDetails.name}</h1>
           <Flex align="center" gap={10} className={styles.authorInfo}>
-            <img src={courseDetails.user.image} alt="" />
+            <Image src={courseDetails.user.image} alt="" height={50} width={50} loading="lazy" />
             <Space direction="vertical" size={"small"}>
               <span>A Course by</span>
               <div>{courseDetails.user.name}</div>
@@ -158,7 +160,13 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
         <div style={{ width: "100%" }}>
           <div className={styles.courseEnrollmentCard}>
             <div className={styles.cardWrapper}>
-              <img src="https://torqbit-dev.b-cdn.net/static/github.jpeg" alt="" />
+              <Image
+                src="https://torqbit-dev.b-cdn.net/static/github.jpeg"
+                height={375}
+                width={375}
+                alt=""
+                loading="lazy"
+              />
               <div className={styles.cardDetail}>
                 <div>Details</div>
                 <div>
