@@ -1,5 +1,5 @@
 .course__category {
-  margin: 50px 0;
+  margin: 100px 0;
   position: relative;
 
   i {
@@ -48,7 +48,7 @@
         background-color: var(--bg-primary);
         .tags {
           background-color: var(--bg-tag);
-          color: var(--font-secondary);
+          color: var(--font-tag);
         }
       }
     }
@@ -68,9 +68,7 @@
     }
     .rtl {
       flex-direction: column;
-      img {
-        transform: scaleX(-1);
-      }
+      align-items: flex-end;
     }
     & > div {
       flex-direction: column;

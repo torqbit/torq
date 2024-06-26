@@ -2,6 +2,7 @@
   width: 100%;
   position: relative;
   overflow: hidden;
+  background-color: var(--bg-secondary);
 
   .heroWave {
     stroke: var(--wave-color);
@@ -60,7 +61,7 @@
   .heroWrapper {
     .heroContentContainer {
       width: 350px;
-      max-height: 600px;
+      max-height: 500px;
       h1 {
         font-size: 35px;
       }

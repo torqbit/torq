@@ -20,13 +20,13 @@ const LandingPage: FC<IProps> = ({ user }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
   const courseCategoryFrontend: ICourseCategory = {
     name: "Frontend Development",
-    image: "/img/categories/front-end-screen.png",
+    image: "https://torqbit-dev.b-cdn.net/website/img/front-end-development.png",
     description:
       "Learn to build a portfolio website using web technologies, that captivates users interest and drives more attention from all around the world",
     courses: [
       {
         name: "Foundations of Web Development",
-        tools: ["HTML", "CSS"],
+        tools: ["HTML", "CSS", "Tailwind"],
       },
       {
         name: "Code Collaboration with Git & Github",
@@ -46,7 +46,7 @@ const LandingPage: FC<IProps> = ({ user }) => {
 
   const courseCategoryBackend: ICourseCategory = {
     name: "Backend Development",
-    image: "/img/categories/backend-screen.png",
+    image: "https://torqbit-dev.b-cdn.net/website/img/backend-development.png",
     description:
       "Transform the personal website into a full blown portfolio website builder by integrating with database, adding social authentication, providing customisations and much more",
     courses: [
@@ -71,7 +71,7 @@ const LandingPage: FC<IProps> = ({ user }) => {
 
   const courseCategoryDevops: ICourseCategory = {
     name: "DevOps & Infrastructure",
-    image: "/img/categories/devops-screen.png",
+    image: "https://torqbit-dev.b-cdn.net/website/img/devops.png",
     description:
       "Move the developed platform into a cloud, to transform into software as a Service using conatainers and leverage AWS cloud infrastructure to host the database, EKS, S3, Route53 and many more to run the service in production",
     courses: [
@@ -80,7 +80,7 @@ const LandingPage: FC<IProps> = ({ user }) => {
         tools: ["CRI-O", "Helm", "Kubernetes"],
       },
       {
-        name: "Cloud Development with Amazone Web Services",
+        name: "Cloud Development with Amazon web services",
         tools: ["Node", "http", "Networks"],
       },
     ],

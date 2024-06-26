@@ -9,31 +9,94 @@ const Footer = () => {
   const footerContent = [
     {
       title: "Resources",
-      links: ["Updates", "Blogs", "Changelog"],
+      links: [
+        {
+          arialLabel: "link for updates page",
+          href: "/updates",
+          label: "Updates",
+        },
+        {
+          arialLabel: "link for blogs page",
+
+          href: "/blogs",
+          label: "Blogs",
+        },
+      ],
     },
     {
       title: "More",
-      links: ["Discord", "Github", "Youtube"],
+      links: [
+        {
+          arialLabel: "link for discord page",
+
+          href: "#",
+          label: "Discord",
+        },
+        {
+          arialLabel: "link for Github page",
+
+          href: "#",
+          label: "Github",
+        },
+        {
+          arialLabel: "link for youtube ",
+
+          href: "#",
+          label: "Youtube",
+        },
+      ],
     },
     {
       title: "About Torqbit",
-      links: ["The Story", "Team"],
+      links: [
+        {
+          arialLabel: "link for story page",
+
+          href: "#",
+          label: "The Story",
+        },
+        {
+          arialLabel: "link for team page",
+
+          href: "#",
+          label: "Team",
+        },
+      ],
     },
     {
       title: "Legal",
-      links: ["Terms & Conditions", "Privacy Policy"],
+      links: [
+        {
+          arialLabel: "link for terms & conditions page",
+
+          href: "#",
+          label: "Terms & Conditions",
+        },
+        {
+          arialLabel: "link for privacy page",
+
+          href: "#",
+          label: "Privacy Policy",
+        },
+      ],
     },
   ];
   const socialLinks = [
     {
+      arialLabel: "link to discord",
+
       icon: SvgIcons.discord,
       href: "https://discord.gg/NqP35bn2",
     },
     {
+      arialLabel: "link to github",
+
       icon: SvgIcons.github,
       href: "https://github.com/torqbit",
     },
     {
+      arialLabel: "link to youtube",
+
       icon: SvgIcons.youtube,
       href: "https://www.youtube.com/@torqbit",
     },
@@ -44,14 +107,14 @@ const Footer = () => {
         <div>
           <Link href={"/landing-page"}>
             <Flex align="center" gap={5}>
-              <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
-              <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
+              <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} loading="lazy" />
+              <h1 className="font-brand">{appConstant.platformName.toUpperCase()}</h1>
             </Flex>
           </Link>
           <div className={styles.socialIcons}>
             {socialLinks.map((link, i) => {
               return (
-                <Link key={i} href={link.href}>
+                <Link key={i} href={link.href} aria-label={link.arialLabel}>
                   {link.icon}
                 </Link>
               );
@@ -65,10 +128,17 @@ const Footer = () => {
             {footerContent.map((content, i) => {
               return (
                 <div key={i} className={styles.linkList}>
-                  <h4>{content.title}</h4>
+                  <div className={styles.title}>{content.title}</div>
                   <ul>
                     {content.links.map((link, i) => {
-                      return <li>{link}</li>;
+                      return (
+                        <li key={i}>
+                          <Link href={link.href} aria-label={link.arialLabel}>
+                            {" "}
+                            {link.label}
+                          </Link>
+                        </li>
+                      );
                     })}
                   </ul>
                 </div>

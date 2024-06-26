@@ -1,8 +1,7 @@
 import { FC } from "react";
-
 import styles from "../../styles/CourseCategory/CourseCategory.module.scss";
 import { Card, Flex, Tag } from "antd";
-import SvgIcons from "../SvgIcons";
+import Image from "next/image";
 
 type ICourseDisplay = {
   name: string;
@@ -23,7 +22,7 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
   <section className={styles.course__category}>
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
       <div>
-        <img src={category.image} alt="" />
+        <Image src={category.image} alt="" height={isMobile ? 250 : 600} width={isMobile ? 254 : 800} loading="lazy" />
       </div>
       <div className={styles.category__detail}>
         <h1>{category.name}</h1>

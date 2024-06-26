@@ -21,7 +21,9 @@ const MarketingHero: FC<{}> = () => {
           Torqbit trains you by building real software products, makes you face real world challenges and guides you to
           success
         </p>
-        <Button type="primary">Get Started for free</Button>
+        <Button aria-label="Get Started for free" type="primary">
+          Get Started for free
+        </Button>
       </div>
     </>
   );

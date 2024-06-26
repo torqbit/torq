@@ -9,7 +9,7 @@ const About = () => {
       icon: MarketingSvgIcons.openSource,
       title: "Open source platform",
       description:
-        "The training has been open sourced, and we train people to becaome open source contributors to build network and learn from the best",
+        "The training platform has been open sourced, and we train people to become open source contributors to build network and learn from the best",
     },
     {
       icon: MarketingSvgIcons.illustrativeVideo,
@@ -21,7 +21,7 @@ const About = () => {
       icon: MarketingSvgIcons.codeIcon,
       title: "High quality coding",
       description:
-        "We emphasizes on writing quality code, as the code is read and debugged multiple times. And such coders are highly demanded.",
+        "We emphasize on writing quality code, as the code is read and debugged multiple times. And such coders are highly demanded.",
     },
   ];
   return (
@@ -33,7 +33,7 @@ const About = () => {
             <div key={i} className={styles.card}>
               <div className={styles.icon}>{detail.icon}</div>
               <div className={styles.content}>
-                <h4>{detail.title}</h4>
+                <h2>{detail.title}</h2>
                 <p>{detail.description}</p>
               </div>
             </div>
@@ -43,13 +43,15 @@ const About = () => {
       <div className={styles.paceYourLearning}>
         <div>{MarketingSvgIcons.rocket}</div>
         <div>
-          <h4>Rocket pace your learning with {appConstant.platformName}</h4>
+          <h2>Rocket pace your learning with {appConstant.platformName}</h2>
           <p>
             we&apos;re currently offering our courses for free during our initial launch, to get feedback and stabilize
             the learning platform
           </p>
           <div className={styles.buttonWrapper}>
-            <Button type="primary">Get started for free</Button>
+            <Button aria-label="Get started for free" type="primary">
+              Get started for free
+            </Button>
           </div>
         </div>
       </div>
