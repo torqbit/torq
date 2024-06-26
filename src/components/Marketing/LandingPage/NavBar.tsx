@@ -110,10 +110,10 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
   return (
     <div className={styles.navBarContainer}>
       <nav>
-        <Link href={"/"}>
+        <Link href={"/"} aria-label="Go back to landing page">
           <Flex align="center" gap={5}>
             <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} />
-            <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
+            <h1 className="font-brand">{appConstant.platformName.toUpperCase()}</h1>
           </Flex>
         </Link>
         <ul>
@@ -128,14 +128,16 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
                     className="another__class"
                   >
                     <Link onClick={(e) => e.preventDefault()} href={link.href}>
-                      <Flex align="center" gap={4} style={{ cursor: "pointer" }}>
+                      <Flex align="center" aria-label="dropdown menu for courses" gap={4} style={{ cursor: "pointer" }}>
                         {link.title}
                         <i style={{ marginTop: 8 }}> {SvgIcons.chevronDown}</i>
                       </Flex>
                     </Link>
                   </Dropdown>
                 ) : (
-                  <Link href={link.href}>{link.title}</Link>
+                  <Link href={link.href} aria-label={`link to ${link.title} page`}>
+                    {link.title}
+                  </Link>
                 )}
               </li>
             );
@@ -145,6 +147,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
           <Button
             type="default"
             name="theme button"
+            aria-label="Theme Switch"
             className={styles.switchBtn}
             shape="circle"
             onClick={() => {
@@ -153,7 +156,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
             icon={globalState.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
           />
         </Tooltip>
-        <Link href={user ? `/dashboard` : `/login`}>
+        <Link href={user ? `/dashboard` : `/login`} aria-label="Get started">
           <Button type="primary">{user ? "Go to Dashboard" : "Get Started"}</Button>
         </Link>
       </nav>

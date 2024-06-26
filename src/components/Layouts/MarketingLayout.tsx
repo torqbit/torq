@@ -64,7 +64,7 @@ const MarketingLayout: FC<{
             </Flex>
           </Link>
 
-          <div className={styles.hamburger}>
+          <div role="button" className={styles.hamburger} aria-label="Toggle menu">
             <Hamburger
               rounded
               direction="left"

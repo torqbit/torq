@@ -14,6 +14,8 @@ body {
   --font-dropdown-label: #000;
   --bg-elevated: #fff;
   --bg-tag: #eee;
+  --font-tag: #666;
+
   --font-secondary: #666;
   --bg-selected: #f0f0f0;
   --selected-side-bar: #696a6b;
@@ -44,6 +46,8 @@ body {
   --hover-text: #c4c4c4;
   --wave-color: #c4c4c4;
   --ft-color: #0e1326;
+  --font-footer: #939db8;
+
   --theme-btn-bg: #fff;
   --label-color: #68696d;
   --success: #4ece91;
@@ -66,9 +70,11 @@ body {
   --hover-text: #c4c4c4;
   --btn-primary: #5b63d3;
   --font-secondary: #939db8;
+  --font-footer: #939db8;
   --draft-bg: #202433;
   --publish-bg: #202433;
   --bg-tag: #374362;
+  --font-tag: #d5d5d5;
   --border-color: #2f3647;
   --ft-color: #fff;
   --card-bg: #0e1326;

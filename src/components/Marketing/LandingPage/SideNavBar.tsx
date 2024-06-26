@@ -56,16 +56,17 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
         classNames={{ header: styles.drawerHeader }}
         title={
           <div className={styles.drawerTitle}>
-            <Link href={"/"}>
+            <Link href={"/"} aria-label="Go back to landing page">
               <Flex align="center" gap={5}>
                 <Image src={"/icon/torqbit.png"} height={40} width={40} alt={"logo"} loading="lazy" />
-                <h4 className="font-brand">{appConstant.platformName.toUpperCase()}</h4>
+                <h1 className="font-brand">{appConstant.platformName.toUpperCase()}</h1>
               </Flex>
             </Link>
             {isOpen && (
               <Tooltip title={""}>
                 <Button
                   type="default"
+                  aria-label="Theme Switch"
                   className={styles.switchBtn}
                   shape="circle"
                   onClick={() => {
@@ -86,7 +87,12 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
         <div className={styles.menuDrawer}>
           {menuItems.map((item, i) => {
             return (
-              <Link key={i} href={item.href} onClick={() => item.label === "Courses" && onHandleChildrenDrawer(true)}>
+              <Link
+                key={i}
+                href={item.href}
+                aria-label={`link to ${item.label}`}
+                onClick={() => item.label === "Courses" && onHandleChildrenDrawer(true)}
+              >
                 {item.label === "Courses" ? (
                   <div className={styles.menuTitle}>
                     <div>{item.label}</div>

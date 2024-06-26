@@ -14,7 +14,7 @@
     padding: 5px 15px;
     box-shadow: var(--box-shadow);
 
-    h4 {
+    h1 {
       margin: 0;
       padding: 0;
       color: var(--font-primary);
@@ -90,7 +90,7 @@
         background-color: var(--bg-primary);
         border-bottom-left-radius: 15px;
         border-bottom-right-radius: 15px;
-        h4 {
+        h2 {
           color: var(--font-primary);
           font-size: 20px;
         }
@@ -168,13 +168,17 @@
         display: flex;
         align-items: flex-start;
         flex-direction: column;
+        .title {
+          margin-top: 5px;
+          font-size: 16px;
+        }
         ul {
           margin: 0;
           padding: 0;
           li {
             list-style: none;
             padding-top: 10px;
-            color: var(--font-secondary);
+            color: var(--font-footer);
             cursor: pointer;
             &:hover {
               color: var(--hover-text);
@@ -487,6 +491,9 @@
 
         .linkList {
           flex-direction: column;
+          .title {
+            font-size: 16px;
+          }
         }
       }
     }
