@@ -69,13 +69,13 @@ const Footer = () => {
         {
           arialLabel: "link for terms & conditions page",
 
-          href: "#",
+          href: "terms-and-conditions",
           label: "Terms & Conditions",
         },
         {
           arialLabel: "link for privacy page",
 
-          href: "#",
+          href: "/privacy-policy",
           label: "Privacy Policy",
         },
       ],
