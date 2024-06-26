@@ -141,7 +141,7 @@ const TermAndConditonPage: NextPage = () => {
             choices in relation to how we collect, compile, store, use, share and secure your personal information
             across our Website. It also describes your choices regarding access, use and correction of personal
             information and your rights in relation to your personal information and how you can contact us or
-            authorities in the event you have a grievance or complaint. By visiting $
+            authorities in the event you have a grievance or complaint. By visiting
             {process.env.NEXT_PUBLIC_NEXTAUTH_URL}, you agree to be bound by the terms and conditions of this Privacy
             Policy. Kindly go through this Privacy Policy carefully. By using the Website, you indicate that you
             understand and abide by this Policy. If you are not in agreement with the terms and conditions of this
