@@ -27,20 +27,20 @@ const LandingPage: FC<IProps> = ({ user }) => {
     courses: [
       {
         name: "Foundations of Web Development",
-        tools: ["HTML", "CSS", "Tailwind"],
+        tools: ["HTML", "CSS", "Responsive"],
       },
       {
-        name: "Code Collaboration with Git & Github",
-        tools: ["Github", "Git"],
+        name: "Version Control with Git & Github",
+        tools: ["Github", "Git", "Rebase"],
       },
       {
-        name: "Programming with Javascript & Typescript",
-        tools: ["Javascript", "ES6 & ES7"],
+        name: "Programming with Javascript",
+        tools: ["DOM", "ES6+", "OOP"],
       },
       {
-        name: "UI Component Development with ReactJS",
+        name: "UI Development with ReactJS",
 
-        tools: ["Hooks", "State Management"],
+        tools: ["Hooks", "State", "Context"],
       },
     ],
   };
@@ -52,20 +52,20 @@ const LandingPage: FC<IProps> = ({ user }) => {
       "Transform the personal website into a full blown portfolio website builder by integrating with database, adding social authentication, providing customisations and much more",
     courses: [
       {
-        name: "Server Side Development with Node.JS",
-        tools: ["Node", "http", "Networks"],
+        name: "Build CLI Apps with Node.JS",
+        tools: ["HTTP", "Async", "File System"],
       },
       {
-        name: "REST API Development with Next.JS",
-        tools: ["Routes", "page caching"],
+        name: "Build APIs with Next.JS",
+        tools: ["Routes", "Cache", "SSR"],
       },
       {
-        name: "Database & Object Relational Mapping",
-        tools: ["MySQL", "ORM", "Postgres"],
+        name: "Relational Database & ORM",
+        tools: ["RDBMS", "MySQL", "ORM"],
       },
       {
-        name: "Social Authentication with Next Auth",
-        tools: ["Auth", "JWT", "Cryptography"],
+        name: "Authentication with Next Auth",
+        tools: ["OAuth", "JWT", "Security"],
       },
     ],
   };
@@ -77,12 +77,12 @@ const LandingPage: FC<IProps> = ({ user }) => {
       "Move the developed platform into a cloud, to transform into software as a Service using conatainers and leverage AWS cloud infrastructure to host the database, EKS, S3, Route53 and many more to run the service in production",
     courses: [
       {
-        name: "Containerisation with Docker & Kubernetes",
-        tools: ["CRI-O", "Helm", "Kubernetes"],
+        name: "Container Management",
+        tools: ["Docker", "Helm", "Kubernetes"],
       },
       {
-        name: "Cloud Development with Amazon web services",
-        tools: ["Node", "http", "Networks"],
+        name: "Cloud Development with AWS",
+        tools: ["S3", "Route53", "ALB", "EC2"],
       },
     ],
   };
