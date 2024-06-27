@@ -46,7 +46,7 @@ const CoursesPage: NextPage = () => {
           )}
         </>
       ) : (
-        <SpinLoader />
+        <SpinLoader className="course__spinner" />
       )}
     </Layout2>
   );

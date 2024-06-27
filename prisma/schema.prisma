@@ -46,6 +46,7 @@ model User {
   toUserNotification   Notification[]       @relation("toUser")
   courseCertificate    CourseCertificates[]
   CourseProgress       CourseProgress[]
+  conversation         Conversation[]
 }
 
 //****** User Schema End ******//
@@ -329,6 +330,22 @@ model Notification {
   @@index([tagCommentId])
   @@index([commentId])
   @@index([resourceId])
+}
+
+//****   conversation table ****//
+
+model Conversation {
+  id                   Int      @unique @default(autoincrement()) @db.Int()
+  authorId             String
+  tagCommentId         Int?
+  comment              String?  @db.Text
+  attachedFiles        Json?
+  parentConversationId Int?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
 }
 
 //****** UserJoinWaiting Schema ******//

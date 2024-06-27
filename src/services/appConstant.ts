@@ -10,6 +10,7 @@ export default {
   assignmentFileFolder: "assignment-files",
   assignmentMaxScore: 10,
   certificateDirectory: "/courses/certificates/",
+  supportEmail: "support@torqbit.com",
 
   fontDirectory: {
     dmSerif: {
