@@ -35,16 +35,17 @@ const MarketingLayout: FC<{
       {globalState.pageLoading && (
         <div
           style={{
-            position: "absolute",
+            position: "fixed",
             top: 0,
             left: 0,
             bottom: 0,
+            right: 0,
             width: "100%",
             background: "#fff",
             zIndex: 10,
           }}
         >
-          <SpinLoader />
+          <SpinLoader className="marketing__spinner" />
         </div>
       )}
       <ConfigProvider theme={globalState.theme == "dark" ? darkThemConfig : antThemeConfig}>

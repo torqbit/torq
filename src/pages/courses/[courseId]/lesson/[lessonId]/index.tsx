@@ -447,7 +447,7 @@ const LessonPage: NextPage = () => {
           </div>
         </section>
       ) : (
-        <SpinLoader />
+        <SpinLoader className="course__spinner" />
       )}
     </Layout2>
   );

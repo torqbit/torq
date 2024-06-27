@@ -99,7 +99,7 @@ const LearnCoursesPage: NextPage = () => {
           isCourseStarted={courseStatus?.courseStarted}
         />
       ) : (
-        <SpinLoader />
+        <SpinLoader className="course__spinner" />
       )}
     </Layout2>
   );
