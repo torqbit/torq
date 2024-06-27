@@ -11,6 +11,7 @@ import MarketingLayout from "@/components/Layouts/MarketingLayout";
 import { GetServerSidePropsContext, NextPage } from "next";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import AOS from "aos";
 interface IProps {
   user: User;
 }
@@ -109,6 +110,7 @@ const LandingPage: FC<IProps> = ({ user }) => {
   };
 
   useEffect(() => {
+    AOS.init();
     onCheckTheme();
   }, []);
 
