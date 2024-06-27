@@ -15,6 +15,12 @@ export default {
     Divider: {
       colorSplit: "#d9d9d9",
     },
+    Popover: {
+      colorBgElevated: "#fff",
+
+      boxShadowSecondary:
+        "0 4px 4px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)",
+    },
     Radio: {
       buttonSolidCheckedActiveBg: "#000",
       buttonSolidCheckedBg: "#000",

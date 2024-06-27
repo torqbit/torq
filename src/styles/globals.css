@@ -447,6 +447,25 @@ a {
   animation: spinner-d3wgkg 1s infinite linear;
 }
 
+.chat__popup {
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+  height: 40px;
+  width: 40px;
+
+  display: flex;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.chat__popup > i {
+  stroke: #fff;
+  padding-top: 5px;
+}
+
 @keyframes spinner-d3wgkg {
   to {
     transform: rotate(1turn);

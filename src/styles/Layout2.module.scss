@@ -28,3 +28,62 @@
     font-size: 60px;
   }
 }
+
+.cardWrapper {
+  width: 300px;
+  padding: 10px 0px;
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+  h1 {
+    font-size: 14px;
+    color: var(--font-secondary);
+    margin: 5px 0px;
+    margin-top: 0px;
+  }
+  .editBtn {
+    cursor: pointer;
+  }
+  .otherUsersComment {
+    flex-direction: row-reverse;
+    .commentWrapper {
+      border-radius: 8px;
+      border-top-right-radius: 0px;
+    }
+  }
+  .commentWrapper {
+    background-color: var(--bg-secondary);
+    width: 230px;
+    height: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border-top-left-radius: 0px;
+    p {
+      color: var(--font-secondary);
+    }
+  }
+}
+
+.popconfirm_title {
+  margin: -12px -12px 0px -12px;
+  height: 40px;
+  background-color: var(--bg-primary);
+  color: var(--font-primary);
+
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0px 10px;
+}
+
+.commentInputWrapper {
+  background-color: var(--bg-primary);
+  margin: 0px -12px -12px -12px;
+  border: none;
+  input {
+    height: 40px;
+    margin: 0px 10px;
+  }
+}
+.contentWrapper {
+  min-height: 500px;
+}

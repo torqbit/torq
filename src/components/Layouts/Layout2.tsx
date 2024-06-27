@@ -5,7 +5,7 @@ import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import { Badge, ConfigProvider, Layout, MenuProps } from "antd";
+import { Badge, Button, ConfigProvider, Divider, Flex, Input, Layout, MenuProps, Popconfirm, Popover } from "antd";
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
 import { UserSession } from "@/lib/types/user";
@@ -14,12 +14,15 @@ import antThemeConfig from "@/services/antThemeConfig";
 import { useRouter } from "next/router";
 import SpinLoader from "../SpinLoader/SpinLoader";
 import NotificationService from "@/services/NotificationService";
+import ConversationCard from "../Conversation/ConversationCard";
 
 const { Content } = Layout;
 
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
+  const [chatWindow, setChatWindow] = useState<boolean>(false);
+
   const router = useRouter();
 
   const authorSiderMenu: MenuProps["items"] = [
@@ -175,6 +178,46 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
             <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
               <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
             </Layout>
+            <Popover
+              className="chat__popup"
+              placement="topRight"
+              title={<div className={styles.popconfirm_title}>Chat with us</div>}
+              trigger={"click"}
+              content={
+                <>
+                  <div className={styles.contentWrapper}>
+                    <ConversationCard
+                      name="mehrab"
+                      image=""
+                      comment="this is "
+                      id={1}
+                      editComment=""
+                      setComment={() => {}}
+                      onEdit={() => {}}
+                      user={String(user?.id)}
+                      commentUser="1"
+                    />
+                  </div>
+                  <Flex align="center" className={styles.commentInputWrapper}>
+                    {" "}
+                    <Input
+                      placeholder="Add comment"
+                      suffix={<i>{SvgIcons.send}</i>}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && e.shiftKey) {
+                          // onEdit(id, editComment);
+                        }
+                      }}
+                      className={styles.add_conversation_input}
+                      onChange={(e) => {}}
+                    />
+                  </Flex>
+                </>
+              }
+              onOpenChange={() => setChatWindow(!chatWindow)}
+            >
+              <Button type="primary">{chatWindow ? <i>{SvgIcons.xMark}</i> : <i>{SvgIcons.chat}</i>}</Button>
+            </Popover>
           </Layout>
         </ConfigProvider>
       )}
