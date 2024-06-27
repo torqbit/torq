@@ -21,10 +21,23 @@ export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCat
 }) => (
   <section className={styles.course__category}>
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
-      <div>
+      <div
+        data-aos={`${direction == "ltr" ? "slide-right" : "slide-left"}`}
+        data-aos-offset="100"
+        data-aos-delay="50"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out"
+      >
         <Image src={category.image} alt="" height={isMobile ? 250 : 600} width={isMobile ? 254 : 800} loading="lazy" />
       </div>
-      <div className={styles.category__detail}>
+      <div
+        className={styles.category__detail}
+        data-aos="fade-up"
+        data-aos-offset="100"
+        data-aos-delay="150"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out"
+      >
         <h1>{category.name}</h1>
         <p>{category.description}</p>
         <Flex align="center" justify="center">

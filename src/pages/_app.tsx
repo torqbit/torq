@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import "../styles/globals.css";
 import "../styles/globalStyles.scss";
 import "antd/dist/reset.css";
+import "aos/dist/aos.css";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 import NextNProgress from "nextjs-progressbar";

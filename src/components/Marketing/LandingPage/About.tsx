@@ -26,8 +26,23 @@ const About = () => {
   ];
   return (
     <section className={styles.aboutContainer}>
-      <h1>What&apos;s different about {appConstant.platformName}?</h1>
-      <div className={styles.cardWrapper}>
+      <h1
+        data-aos="fade-up"
+        data-aos-offset="100"
+        data-aos-delay="150"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out"
+      >
+        What&apos;s different about {appConstant.platformName}?
+      </h1>
+      <div
+        className={styles.cardWrapper}
+        data-aos="fade-up"
+        data-aos-offset="100"
+        data-aos-delay="150"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out"
+      >
         {cardDetail.map((detail, i) => {
           return (
             <div key={i} className={styles.card}>
@@ -40,7 +55,14 @@ const About = () => {
           );
         })}
       </div>
-      <div className={styles.paceYourLearning}>
+      <div
+        className={styles.paceYourLearning}
+        data-aos="fade-up"
+        data-aos-offset="100"
+        data-aos-delay="150"
+        data-aos-duration="800"
+        data-aos-easing="ease-in-out"
+      >
         <div>{MarketingSvgIcons.rocket}</div>
         <div>
           <h2>Rocket pace your learning with {appConstant.platformName}</h2>

@@ -27,6 +27,7 @@
     "@types/react-scroll": "^1.8.7",
     "antd": "5.12.4",
     "antd-img-crop": "^4.18.0",
+    "aos": "^3.0.0-beta.6",
     "canvas": "^2.11.2",
     "dotenv": "^16.3.1",
     "eslint": "8.37.0",

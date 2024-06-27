@@ -14,16 +14,36 @@ const MarketingHero: FC<{}> = () => {
       <div className={styles.dotPatternIcon}>{SvgIcons.dotPattern}</div>
 
       <div className={styles.heroContentContainer}>
-        <h1>
+        <h1
+          data-aos="fade-up"
+          data-aos-offset="100"
+          data-aos-delay="50"
+          data-aos-duration="800"
+          data-aos-easing="ease-in-out"
+        >
           Become top 1% <br /> Full stack Developer
         </h1>
-        <p>
+        <p
+          data-aos="fade-up"
+          data-aos-offset="100"
+          data-aos-delay="150"
+          data-aos-duration="800"
+          data-aos-easing="ease-in-out"
+        >
           Torqbit trains you by building real software products, makes you face real world challenges and guides you to
           success
         </p>
-        <Button aria-label="Get Started for free" type="primary">
-          Get Started for free
-        </Button>
+        <div
+          data-aos="fade-up"
+          data-aos-offset="100"
+          data-aos-delay="150"
+          data-aos-duration="800"
+          data-aos-easing="ease-in-out"
+        >
+          <Button aria-label="Get Started for free" type="primary">
+            Get Started for free
+          </Button>
+        </div>
       </div>
     </>
   );
