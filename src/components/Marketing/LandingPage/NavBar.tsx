@@ -20,15 +20,15 @@ export const items: MenuProps["items"] = [
       },
       {
         key: "1-2",
-        label: "Code Collaboration with Git & Github",
+        label: "Version Control with Git & Github",
       },
       {
         key: "1-3",
-        label: "Programming with Javascript & Typescript",
+        label: "Programming with Javascript",
       },
       {
         key: "1-4",
-        label: "UI Component Development with ReactJS",
+        label: "UI Development with ReactJS",
       },
     ],
   },
@@ -39,19 +39,19 @@ export const items: MenuProps["items"] = [
     children: [
       {
         key: "2-1",
-        label: "Server Side Development with Node.JS",
+        label: "Build CLI Apps with Node.JS",
       },
       {
         key: "2-2",
-        label: "REST API Development with Next.JS",
+        label: "Build APIs with Next.JS",
       },
       {
         key: "2-3",
-        label: "Databases & Object Relational Mapping",
+        label: "Relational Database & ORM",
       },
       {
         key: "2-4",
-        label: "Social Authentication with Next Auth",
+        label: "Authentication with Next Auth",
       },
     ],
   },
@@ -62,7 +62,7 @@ export const items: MenuProps["items"] = [
     children: [
       {
         key: "3-1",
-        label: "Containerisation with Docker & Kubernetes",
+        label: "Container Management",
       },
       {
         key: "3-2",
