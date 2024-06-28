@@ -3,7 +3,8 @@ import { NextApiResponse, NextApiRequest } from "next";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { error } from "console";
+import { getToken } from "next-auth/jwt";
+import { getCookieName } from "@/lib/utils";
 
 /**
  * Get all conversation
@@ -15,32 +16,52 @@ import { error } from "console";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const query = req.query;
-    const { conversationId } = query;
 
-    const allConversation = await prisma.conversation.findMany({
+    let cookieName = getCookieName();
+
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
+
+    const findConversation = await prisma.conversation.findFirst({
       where: {
-        OR: [
-          {
-            id: Number(conversationId),
-            parentConversationId: null,
-          },
-          {
-            parentConversationId: Number(conversationId),
-          },
-        ],
-      },
-      include: {
-        user: {
-          select: {
-            image: true,
-            name: true,
-            id: true,
-          },
-        },
+        authorId: String(token?.id),
+        parentConversationId: null,
       },
     });
-    if (allConversation.length > 0) {
-      return res.status(200).json({ success: true, message: "All conversation has been fetched", allConversation });
+
+    if (findConversation) {
+      const allConversation = await prisma.conversation.findMany({
+        where: {
+          OR: [
+            {
+              id: findConversation.id,
+              parentConversationId: null,
+            },
+            {
+              parentConversationId: Number(findConversation.id),
+            },
+          ],
+        },
+        include: {
+          user: {
+            select: {
+              image: true,
+              name: true,
+              id: true,
+            },
+          },
+        },
+      });
+      if (allConversation.length > 0) {
+        return res
+          .status(200)
+          .json({ success: true, message: "All conversation has been fetched", conversationList: allConversation });
+      } else {
+        return res.status(400).json({ success: false, error: "No conversation found" });
+      }
     } else {
       return res.status(400).json({ success: false, error: "No conversation found" });
     }
@@ -49,4 +70,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withMethods(["POST"], withAuthentication(handler));
+export default withMethods(["GET"], withAuthentication(handler));

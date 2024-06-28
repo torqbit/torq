@@ -5,7 +5,7 @@ import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
 import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import { Badge, Button, ConfigProvider, Divider, Flex, Input, Layout, MenuProps, Popconfirm, Popover } from "antd";
+import { Badge, Button, ConfigProvider, Flex, Input, Layout, MenuProps, Popover, message } from "antd";
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
 import { UserSession } from "@/lib/types/user";
@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import SpinLoader from "../SpinLoader/SpinLoader";
 import NotificationService from "@/services/NotificationService";
 import ConversationCard from "../Conversation/ConversationCard";
+import ConversationService, { IConversationList } from "@/services/ConversationService";
 
 const { Content } = Layout;
 
@@ -22,6 +23,16 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
   const [chatWindow, setChatWindow] = useState<boolean>(false);
+  const [conversationList, setConversationList] = useState<IConversationList[]>();
+  const [comment, setComment] = useState<string>("");
+  const [editComment, setEditComment] = useState<string>("");
+  const [conversationLoading, setConversationLoading] = useState<{
+    postLoading: boolean;
+    replyLoading: boolean;
+  }>({
+    postLoading: false,
+    replyLoading: false,
+  });
 
   const router = useRouter();
 
@@ -125,6 +136,83 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       (error) => {}
     );
   };
+
+  const getAllConversation = () => {
+    ConversationService.getAllConversation(
+      (result) => {
+        setConversationList(result.conversationList);
+      },
+      (error) => {}
+    );
+  };
+
+  const onEdit = (
+    id: number,
+    comment: string,
+    authorId: string,
+    setEdit: (edit: boolean) => void,
+    setEditOption: (editOption: boolean) => void
+  ) => {
+    setConversationLoading({ postLoading: false, replyLoading: true });
+    ConversationService.updateConversation(
+      comment,
+      id,
+      authorId,
+      (result) => {
+        const updatedList = conversationList?.map((c) => {
+          if (c.id === id) {
+            return {
+              ...c,
+              comment: editComment,
+            };
+          } else {
+            return c;
+          }
+        });
+
+        updatedList && conversationList
+          ? setConversationList(updatedList)
+          : setConversationList(updatedList as IConversationList[]);
+
+        message.success(result.message);
+        setConversationLoading({ postLoading: false, replyLoading: false });
+        setEdit(false);
+        setEditOption(false);
+      },
+      (error) => {
+        message.error(error);
+        setConversationLoading({ postLoading: false, replyLoading: false });
+        setEdit(false);
+        setEditOption(false);
+      }
+    );
+  };
+
+  const onPost = () => {
+    setConversationLoading({ postLoading: true, replyLoading: false });
+
+    if (comment) {
+      ConversationService.addConversation(
+        String(comment),
+
+        (result) => {
+          conversationList
+            ? setConversationList([...conversationList, result.conversation])
+            : setConversationList([result.conversation]);
+          message.success(result.message);
+          setComment("");
+          setConversationLoading({ postLoading: false, replyLoading: false });
+        },
+        (error) => {
+          message.error(error);
+          setConversationLoading({ postLoading: false, replyLoading: false });
+        }
+      );
+    } else {
+      message.warning("Type a comment first");
+      setConversationLoading({ postLoading: false, replyLoading: false });
+    }
+  };
   useEffect(() => {
     if (user) {
       if (typeof intervalId === "undefined") {
@@ -139,7 +227,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   useEffect(() => {
     if (user) {
       getLatestNotificationCount();
-
+      getAllConversation();
       onChangeSelectedBar();
       const userSession = user.user as UserSession;
 
@@ -178,6 +266,11 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
             <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
               <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
             </Layout>
+
+            {/**
+             * Conversation popup
+             */}
+
             <Popover
               className="chat__popup"
               placement="topRight"
@@ -186,30 +279,43 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
               content={
                 <>
                   <div className={styles.contentWrapper}>
-                    <ConversationCard
-                      name="mehrab"
-                      image=""
-                      comment="this is "
-                      id={1}
-                      editComment=""
-                      setComment={() => {}}
-                      onEdit={() => {}}
-                      user={String(user?.id)}
-                      commentUser="1"
-                    />
+                    {conversationList?.map((list, i) => {
+                      return (
+                        <ConversationCard
+                          name={list.user.name}
+                          image={list.user.image}
+                          comment={String(list.comment)}
+                          id={list.id}
+                          editComment={editComment}
+                          setEditComment={setEditComment}
+                          onEdit={onEdit}
+                          user={String(user?.id)}
+                          commentUser={list.user.id}
+                          conversationLoading={conversationLoading.replyLoading}
+                          key={i}
+                        />
+                      );
+                    })}
                   </div>
                   <Flex align="center" className={styles.commentInputWrapper}>
                     {" "}
                     <Input
                       placeholder="Add comment"
-                      suffix={<i>{SvgIcons.send}</i>}
+                      suffix={
+                        <Button loading={conversationLoading.postLoading} onClick={() => onPost()}>
+                          <i>{SvgIcons.send}</i>
+                        </Button>
+                      }
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && e.shiftKey) {
                           // onEdit(id, editComment);
                         }
                       }}
+                      value={comment}
                       className={styles.add_conversation_input}
-                      onChange={(e) => {}}
+                      onChange={(e) => {
+                        setComment(e.target.value);
+                      }}
                     />
                   </Flex>
                 </>

@@ -23,14 +23,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       data: {
         comment: comment,
       },
-      select: {
-        parentConversationId: true,
+      include: {
+        user: {
+          select: {
+            image: true,
+            name: true,
+            id: true,
+          },
+        },
       },
     });
 
     return res.status(200).json({
       success: true,
       message: updated.parentConversationId ? "reply has been updated" : "query has been updated",
+      converstion: updated,
     });
   } catch (err) {
     return errorHandler(err, res);

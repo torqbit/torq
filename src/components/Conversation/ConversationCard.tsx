@@ -1,4 +1,4 @@
-import { Avatar, Flex, Input } from "antd";
+import { Avatar, Button, Flex, Input } from "antd";
 import { FC, useState } from "react";
 import styles from "@/styles/Layout2.module.scss";
 import { UserOutlined } from "@ant-design/icons";
@@ -9,11 +9,18 @@ interface IConversation {
   image: string;
   comment: string;
   id: number;
-  setComment: (comment: string) => void;
-  editComment: string;
-  onEdit: (conversationId: number, editComment: string) => void;
+  setEditComment: (comment: string) => void;
+  editComment?: string;
+  onEdit: (
+    id: number,
+    comment: string,
+    authorId: string,
+    setEdit: (edit: boolean) => void,
+    setEditOption: (editOption: boolean) => void
+  ) => void;
   commentUser: string;
   user: string;
+  conversationLoading: boolean;
 }
 
 const ConversationCard: FC<IConversation> = ({
@@ -21,8 +28,9 @@ const ConversationCard: FC<IConversation> = ({
   image,
   comment,
   id,
-  setComment,
+  setEditComment,
   editComment,
+  conversationLoading,
   onEdit,
   commentUser,
   user,
@@ -42,25 +50,33 @@ const ConversationCard: FC<IConversation> = ({
           <Flex align="center" justify={user !== commentUser ? "space-between" : "right"}>
             <h1>{name}</h1>
             {editOption && user === commentUser && (
-              <Flex align="center" className={styles.editBtn} justify="right">
+              <Flex align="center" className={styles.editBtn}>
                 <i onClick={() => setEdit(!edit)}>{edit ? SvgIcons.xMark : SvgIcons.edit}</i>
               </Flex>
             )}
           </Flex>
           <div className={styles.commentWrapper}>
             {edit ? (
-              <Input.TextArea
-                placeholder="Edit Post"
-                rows={3}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && e.shiftKey) {
-                    onEdit(id, editComment);
-                  }
-                }}
-                className={styles.qa_edit_input}
-                // value={editComment}
-                onChange={(e) => setComment(e.target.value)}
-              />
+              <Flex vertical justify="right" align="flex-end" gap={2}>
+                <Input.TextArea
+                  placeholder="Edit Post"
+                  rows={3}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && e.shiftKey) {
+                      editComment && onEdit(id, editComment, commentUser, setEdit, setEditOption);
+                    }
+                  }}
+                  className={styles.qa_edit_input}
+                  defaultValue={comment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                />
+                <Button
+                  loading={conversationLoading}
+                  onClick={() => editComment && onEdit(id, editComment, commentUser, setEdit, setEditOption)}
+                >
+                  <i>{SvgIcons.send}</i>
+                </Button>
+              </Flex>
             ) : (
               <p>{comment}</p>
             )}

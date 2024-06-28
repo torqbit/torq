@@ -37,21 +37,39 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     if (!isParentCommentExist) {
-      await prisma.conversation.create({
+      const queryPost = await prisma.conversation.create({
         data: {
           comment: comment,
           authorId: String(token?.id),
           parentConversationId: null,
         },
+        include: {
+          user: {
+            select: {
+              image: true,
+              name: true,
+              id: true,
+            },
+          },
+        },
       });
 
-      return res.status(200).json({ success: true, message: "query has been posted" });
+      return res.status(200).json({ success: true, message: "query has been posted", conversation: queryPost });
     } else {
-      await prisma.conversation.create({
+      const replyPost = await prisma.conversation.create({
         data: {
           comment: comment,
           authorId: String(token?.id),
           parentConversationId: isParentCommentExist.id,
+        },
+        include: {
+          user: {
+            select: {
+              image: true,
+              name: true,
+              id: true,
+            },
+          },
         },
       });
       if (isParentCommentExist.isView && isParentCommentExist.authorId !== String(token?.id)) {
@@ -65,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
       }
 
-      return res.status(200).json({ success: true, message: "reply has been posted" });
+      return res.status(200).json({ success: true, message: "reply has been posted", conversation: replyPost });
     }
   } catch (err) {
     return errorHandler(err, res);

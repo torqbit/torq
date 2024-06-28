@@ -41,8 +41,16 @@
     margin-top: 0px;
   }
   .editBtn {
+    position: relative;
     cursor: pointer;
+    i {
+      position: absolute;
+      left: -220px;
+      fill: var(--font-secondary);
+      stroke: var(--font-secondary);
+    }
   }
+
   .otherUsersComment {
     flex-direction: row-reverse;
     .commentWrapper {
@@ -85,5 +93,6 @@
   }
 }
 .contentWrapper {
-  min-height: 500px;
+  height: 500px;
+  overflow: auto;
 }
