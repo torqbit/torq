@@ -28,3 +28,85 @@
     font-size: 60px;
   }
 }
+
+.cardWrapper {
+  min-width: 350px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+
+  .name {
+    font-size: 13px;
+    color: var(--font-secondary);
+    margin: 5px 0px;
+    margin-top: 0px;
+    font-weight: normal;
+  }
+  .editBtn {
+    position: relative;
+    cursor: pointer;
+    i {
+      position: absolute;
+      left: -220px;
+      fill: var(--font-secondary);
+      stroke: var(--font-secondary);
+    }
+  }
+
+  .otherUsersComment {
+    flex-direction: row-reverse;
+    .commentWrapper {
+      border-radius: 8px;
+      border-top-right-radius: 0px;
+    }
+  }
+  .commentWrapper {
+    background-color: var(--bg-secondary);
+
+    height: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border-top-left-radius: 0px;
+    p {
+      color: var(--font-secondary);
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+.popconfirm_title {
+  margin: -12px -12px 0px -12px;
+  height: 40px;
+  background-color: var(--bg-primary);
+  color: var(--font-primary);
+
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0px 10px;
+}
+
+.commentInputWrapper {
+  background-color: var(--bg-primary);
+  margin: 0px -12px -12px -12px;
+  border: none;
+
+  input {
+    height: 40px;
+    margin: 0px 0px 0px 10px;
+  }
+  .postBtn {
+    height: 40px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    width: 80px;
+    border-radius: 0px;
+
+    border-bottom-right-radius: 8px;
+    background-color: var(--bg-primary);
+  }
+}
+.contentWrapper {
+  height: 500px;
+}

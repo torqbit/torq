@@ -31,7 +31,9 @@ export default {
     Divider: {
       colorSplit: "#374362",
     },
-
+    Popover: {
+      colorBgElevated: "#283040",
+    },
     Card: {
       paddingLG: 20,
     },

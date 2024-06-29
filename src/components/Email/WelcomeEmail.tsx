@@ -47,7 +47,7 @@ const WelcomeEmailPage = ({ configData }: IProps) => {
               <Text className="text-black text-[20px] leading-[20px]">Hey, {configData.name}!</Text>
               <Text className="text-[#888] text-[14px] leading-[20px]">
                 Welcome to the {`${process.env.NEXT_PUBLIC_PLATFORM_NAME}`} Platform. we&apos;re excited to have you
-                join our community. You can nowexcel in the field of software development, connect with fellow learners
+                join our community. You can now excel in the field of software development, connect with fellow learners
                 and help each other to move forward.
               </Text>
 

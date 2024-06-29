@@ -337,9 +337,9 @@ model Notification {
 model Conversation {
   id                   Int      @unique @default(autoincrement()) @db.Int()
   authorId             String
-  tagCommentId         Int?
   comment              String?  @db.Text
   attachedFiles        Json?
+  isView               Boolean  @default(false)
   parentConversationId Int?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
