@@ -16,6 +16,8 @@ import SpinLoader from "../SpinLoader/SpinLoader";
 import NotificationService from "@/services/NotificationService";
 import ConversationCard from "../Conversation/ConversationCard";
 import ConversationService, { IConversationList } from "@/services/ConversationService";
+import { IConversationData } from "@/pages/api/v1/conversation/list";
+import { Scrollbars } from "react-custom-scrollbars";
 
 const { Content } = Layout;
 
@@ -23,9 +25,9 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
   const [chatWindow, setChatWindow] = useState<boolean>(false);
-  const [conversationList, setConversationList] = useState<IConversationList[]>();
+  const [conversationList, setConversationList] = useState<IConversationData[]>();
   const [comment, setComment] = useState<string>("");
-  const [editComment, setEditComment] = useState<string>("");
+
   const [conversationLoading, setConversationLoading] = useState<{
     postLoading: boolean;
     replyLoading: boolean;
@@ -58,6 +60,12 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
 
           key: "config",
           icon: SvgIcons.configuration,
+        },
+        {
+          label: <Link href="/admin/conversations">Conversations</Link>,
+
+          key: "conversations",
+          icon: SvgIcons.message,
         },
       ],
     },
@@ -140,65 +148,31 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   const getAllConversation = () => {
     ConversationService.getAllConversation(
       (result) => {
-        setConversationList(result.conversationList);
+        setConversationList(result.comments);
       },
       (error) => {}
     );
   };
 
-  const onEdit = (
-    id: number,
-    comment: string,
-    authorId: string,
-    setEdit: (edit: boolean) => void,
-    setEditOption: (editOption: boolean) => void
-  ) => {
-    setConversationLoading({ postLoading: false, replyLoading: true });
-    ConversationService.updateConversation(
-      comment,
-      id,
-      authorId,
-      (result) => {
-        const updatedList = conversationList?.map((c) => {
-          if (c.id === id) {
-            return {
-              ...c,
-              comment: editComment,
-            };
-          } else {
-            return c;
-          }
-        });
-
-        updatedList && conversationList
-          ? setConversationList(updatedList)
-          : setConversationList(updatedList as IConversationList[]);
-
-        message.success(result.message);
-        setConversationLoading({ postLoading: false, replyLoading: false });
-        setEdit(false);
-        setEditOption(false);
-      },
-      (error) => {
-        message.error(error);
-        setConversationLoading({ postLoading: false, replyLoading: false });
-        setEdit(false);
-        setEditOption(false);
-      }
-    );
-  };
-
   const onPost = () => {
     setConversationLoading({ postLoading: true, replyLoading: false });
-
     if (comment) {
+      let id = conversationList && conversationList[0].id;
       ConversationService.addConversation(
         String(comment),
-
+        id,
         (result) => {
-          conversationList
-            ? setConversationList([...conversationList, result.conversation])
-            : setConversationList([result.conversation]);
+          const updateList = conversationList?.map((list, i) => {
+            if (i === conversationList.length - 1) {
+              return {
+                ...list,
+                comments: [...list.comments, result.conversation.comment],
+              };
+            } else {
+              return list;
+            }
+          });
+          setConversationList(updateList as IConversationData[]);
           message.success(result.message);
           setComment("");
           setConversationLoading({ postLoading: false, replyLoading: false });
@@ -278,33 +252,32 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
               trigger={"click"}
               content={
                 <>
-                  <div className={styles.contentWrapper}>
-                    {conversationList?.map((list, i) => {
-                      return (
-                        <ConversationCard
-                          name={list.user.name}
-                          image={list.user.image}
-                          comment={String(list.comment)}
-                          id={list.id}
-                          editComment={editComment}
-                          setEditComment={setEditComment}
-                          onEdit={onEdit}
-                          user={String(user?.id)}
-                          commentUser={list.user.id}
-                          conversationLoading={conversationLoading.replyLoading}
-                          key={i}
-                        />
-                      );
-                    })}
-                  </div>
+                  <Scrollbars style={{ height: "calc(500px)", width: "400px" }}>
+                    <div className={styles.contentWrapper}>
+                      {conversationList?.map((list, i) => {
+                        return (
+                          <ConversationCard
+                            name={list?.name}
+                            image={list?.image}
+                            comment={list?.comments}
+                            user={String(user?.id)}
+                            commentUser={list?.authorId}
+                            key={i}
+                            contentWidth={"230px"}
+                          />
+                        );
+                      })}
+                    </div>
+                  </Scrollbars>
                   <Flex align="center" className={styles.commentInputWrapper}>
                     {" "}
                     <Input
                       placeholder="Add comment"
+                      style={{ padding: "0px 10px" }}
                       suffix={
-                        <Button loading={conversationLoading.postLoading} onClick={() => onPost()}>
+                        <button className={styles.postBtn} onClick={() => onPost()}>
                           <i>{SvgIcons.send}</i>
-                        </Button>
+                        </button>
                       }
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && e.shiftKey) {

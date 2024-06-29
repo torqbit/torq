@@ -23,11 +23,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
     const body = await req.body;
-    const { comment } = body;
+    const { comment, parentConversationId } = body;
 
     const isParentCommentExist = await prisma.conversation.findFirst({
       where: {
-        authorId: String(token?.id),
+        id: Number(parentConversationId),
         parentConversationId: null,
       },
       select: {
@@ -72,6 +72,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         },
       });
+
       if (isParentCommentExist.isView && isParentCommentExist.authorId !== String(token?.id)) {
         await prisma.conversation.update({
           where: {

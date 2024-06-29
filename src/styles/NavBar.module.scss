@@ -414,6 +414,88 @@
   }
 }
 
+// Conversation page
+
+.conversationPageWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  .postBtn {
+    height: 54px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    width: 80px;
+    border-radius: 0px;
+
+    border-bottom-right-radius: 8px;
+    background-color: var(--bg-primary);
+  }
+  .selectedListWrapper {
+    border-radius: 8px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    position: relative;
+    margin: 20px 0px;
+    margin-bottom: 0px;
+
+    background-color: var(--bg-primary);
+    width: calc(1200px - 280px);
+    height: calc(100vh - 100px);
+
+    .commentInputWrapper {
+      background-color: var(--bg-primary);
+      margin-bottom: 20px;
+    }
+  }
+  > div:last-child {
+    background-color: var(--bg-primary);
+    width: 300px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    .refreshWrapper {
+      color: var(--font-primary);
+      padding: 10px;
+      i {
+        cursor: pointer;
+      }
+    }
+    .activeConveration {
+      position: relative;
+      background-color: var(--bg-secondary);
+      border-bottom: 2px solid var(--border-color);
+
+      > span {
+        width: 4px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        background-color: var(--btn-primary);
+      }
+    }
+    .inActiveConversation {
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .listWrapper {
+      cursor: pointer;
+      padding: 10px 10px 10px 10px;
+    }
+    h1,
+    p {
+      color: var(--font-secondary);
+      margin: 0;
+      padding: 5px 0px 0px 0px;
+    }
+    h1 {
+      color: var(--font-primary);
+
+      font-size: 16px;
+    }
+  }
+}
+
 @media only screen and (max-width: 415px) {
   .sideNaveContainer {
     display: unset;

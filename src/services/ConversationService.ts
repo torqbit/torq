@@ -1,5 +1,6 @@
 import { Conversation } from "@prisma/client";
 import { getFetch, postFetch } from "./request";
+import { IConversationData } from "@/pages/api/v1/conversation/list";
 
 export interface IConversationList extends Conversation {
   user: {
@@ -15,6 +16,7 @@ export type ApiResponse = {
   message: string;
   conversationList: IConversationList[];
   conversation: IConversationList;
+  comments: IConversationData[];
 };
 
 type FailedApiResponse = {
@@ -23,10 +25,28 @@ type FailedApiResponse = {
 class ConversationService {
   addConversation = (
     comment: string,
+    parentConversationId: number | undefined,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    postFetch({ comment: comment }, `/api/v1/conversation/add`).then((result) => {
+    postFetch({ comment: comment, parentConversationId: parentConversationId }, `/api/v1/conversation/add`).then(
+      (result) => {
+        if (result.status == 400) {
+          result.json().then((r) => {
+            const failedResponse = r as FailedApiResponse;
+            onFailure(failedResponse.error);
+          });
+        } else if (result.status == 200) {
+          result.json().then((r) => {
+            const apiResponse = r as ApiResponse;
+            onSuccess(apiResponse);
+          });
+        }
+      }
+    );
+  };
+  getAllConversation = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    getFetch(`/api/v1/conversation/list`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -40,8 +60,28 @@ class ConversationService {
       }
     });
   };
-  getAllConversation = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    getFetch(`/api/v1/conversation/list`).then((result) => {
+  getAllConversationById = (
+    conversationId: number,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    getFetch(`/api/v1/conversation/get-conversation-by-Id?conversationId=${conversationId}`).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  getAllParentConversation = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    getFetch(`/api/v1/conversation/get-parent-conversation`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;

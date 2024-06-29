@@ -30,15 +30,17 @@
 }
 
 .cardWrapper {
-  width: 300px;
-  padding: 10px 0px;
+  min-width: 350px;
+  padding: 10px 20px;
   border-radius: 8px;
   background-color: var(--bg-primary);
-  h1 {
-    font-size: 14px;
+
+  .name {
+    font-size: 13px;
     color: var(--font-secondary);
     margin: 5px 0px;
     margin-top: 0px;
+    font-weight: normal;
   }
   .editBtn {
     position: relative;
@@ -60,13 +62,15 @@
   }
   .commentWrapper {
     background-color: var(--bg-secondary);
-    width: 230px;
+
     height: 100%;
     padding: 10px;
     border-radius: 8px;
     border-top-left-radius: 0px;
     p {
       color: var(--font-secondary);
+      padding: 0;
+      margin: 0;
     }
   }
 }
@@ -87,12 +91,22 @@
   background-color: var(--bg-primary);
   margin: 0px -12px -12px -12px;
   border: none;
+
   input {
     height: 40px;
-    margin: 0px 10px;
+    margin: 0px 0px 0px 10px;
+  }
+  .postBtn {
+    height: 40px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    width: 80px;
+    border-radius: 0px;
+
+    border-bottom-right-radius: 8px;
+    background-color: var(--bg-primary);
   }
 }
 .contentWrapper {
   height: 500px;
-  overflow: auto;
 }

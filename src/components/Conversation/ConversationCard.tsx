@@ -1,87 +1,55 @@
-import { Avatar, Button, Flex, Input } from "antd";
+import { Avatar, Button, Flex, Input, Space } from "antd";
 import { FC, useState } from "react";
 import styles from "@/styles/Layout2.module.scss";
 import { UserOutlined } from "@ant-design/icons";
-import SvgIcons from "../SvgIcons";
 
 interface IConversation {
   name: string;
   image: string;
-  comment: string;
-  id: number;
-  setEditComment: (comment: string) => void;
-  editComment?: string;
-  onEdit: (
-    id: number,
-    comment: string,
-    authorId: string,
-    setEdit: (edit: boolean) => void,
-    setEditOption: (editOption: boolean) => void
-  ) => void;
+  comment: string[];
+
   commentUser: string;
   user: string;
-  conversationLoading: boolean;
+
+  contentWidth: String;
 }
 
 const ConversationCard: FC<IConversation> = ({
   name,
   image,
   comment,
-  id,
-  setEditComment,
-  editComment,
-  conversationLoading,
-  onEdit,
+
   commentUser,
   user,
+
+  contentWidth,
 }) => {
-  const [edit, setEdit] = useState<boolean>(false);
-  const [editOption, setEditOption] = useState<boolean>(false);
+  const baseWidth = 40; // Base width per character (adjust as needed)
 
   return (
-    <div
-      className={styles.cardWrapper}
-      onMouseOver={() => setEditOption(true)}
-      onMouseLeave={() => setEditOption(false)}
-    >
+    <div className={styles.cardWrapper}>
       <Flex align="flex-start" gap={10} className={user === commentUser ? styles.otherUsersComment : ""}>
         <Avatar size={40} src={image} icon={<UserOutlined />} className={styles.user_icon} alt="Profile" />
-        <div>
+        <Flex vertical justify={commentUser === user ? "right" : ""}>
           <Flex align="center" justify={user !== commentUser ? "space-between" : "right"}>
-            <h1>{name}</h1>
-            {editOption && user === commentUser && (
-              <Flex align="center" className={styles.editBtn}>
-                <i onClick={() => setEdit(!edit)}>{edit ? SvgIcons.xMark : SvgIcons.edit}</i>
-              </Flex>
-            )}
+            <div className={styles.name}>{name}</div>
           </Flex>
-          <div className={styles.commentWrapper}>
-            {edit ? (
-              <Flex vertical justify="right" align="flex-end" gap={2}>
-                <Input.TextArea
-                  placeholder="Edit Post"
-                  rows={3}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && e.shiftKey) {
-                      editComment && onEdit(id, editComment, commentUser, setEdit, setEditOption);
-                    }
-                  }}
-                  className={styles.qa_edit_input}
-                  defaultValue={comment}
-                  onChange={(e) => setEditComment(e.target.value)}
-                />
-                <Button
-                  loading={conversationLoading}
-                  onClick={() => editComment && onEdit(id, editComment, commentUser, setEdit, setEditOption)}
-                >
-                  <i>{SvgIcons.send}</i>
-                </Button>
-              </Flex>
-            ) : (
-              <p>{comment}</p>
-            )}
-          </div>
-        </div>
+          <Flex
+            vertical
+            gap={10}
+            align={commentUser === user ? "flex-end" : "flex-start"}
+            style={{ maxWidth: `${contentWidth}` }}
+          >
+            {comment?.map((c, i) => {
+              const calculatedWidth = baseWidth * c.length;
+              return (
+                <div key={i} className={styles.commentWrapper} style={{ maxWidth: `${calculatedWidth}px` }}>
+                  <p>{c}</p>
+                </div>
+              );
+            })}
+          </Flex>
+        </Flex>
       </Flex>
     </div>
   );
