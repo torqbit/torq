@@ -264,6 +264,17 @@
         width: 60px;
         border-radius: 8px;
       }
+      .userOutlineContainer {
+        background-color: red;
+        height: 50px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background-color: var(--bg-primary);
+        font-size: 24px;
+      }
       span {
         color: var(--font-secondary);
       }
