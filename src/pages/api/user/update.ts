@@ -6,12 +6,14 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
-    const { userId, name, role, isActive, phone } = body;
+    const { userId, name, role, isActive, phone, image } = body;
 
     const updateObj: any = {};
     if (name) updateObj.name = name;
     if (phone) updateObj.phone = phone;
     if (role) updateObj.role = role;
+    if (image) updateObj.image = image;
+
     updateObj.isActive = isActive;
 
     const newResource = await prisma.user.update({

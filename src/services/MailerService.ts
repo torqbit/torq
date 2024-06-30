@@ -62,7 +62,6 @@ class MailerService {
   async sendEnrolmentMail(config: IEnrolmentEmailConfig) {
     try {
       const htmlString = render(CourseEnrolmentEmail({ configData: config }));
-      console.log(config, "enrolment config");
       const sendMail = await this.transporter.sendMail({
         to: config.email,
         from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,

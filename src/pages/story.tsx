@@ -1,13 +1,15 @@
-import React from "react";
+import React, { FC } from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
-import { Theme } from "@prisma/client";
-import { NextPage } from "next";
+import { Theme, User } from "@prisma/client";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { useEffect } from "react";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
 import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
 import { useMediaQuery } from "react-responsive";
+import { getCookieName } from "@/lib/utils";
+import { getToken } from "next-auth/jwt";
 
-const StoryPage: NextPage = () => {
+const StoryPage: FC<{ user: User }> = ({ user }) => {
   const { dispatch, globalState } = useAppContext();
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
 
@@ -39,6 +41,7 @@ const StoryPage: NextPage = () => {
 
   return (
     <MarketingLayout
+      user={user}
       heroSection={
         <HeroBlog
           title="Story"
@@ -71,3 +74,13 @@ const StoryPage: NextPage = () => {
 };
 
 export default StoryPage;
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { req } = ctx;
+
+  let cookieName = getCookieName();
+
+  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+
+  return { props: { user } };
+};

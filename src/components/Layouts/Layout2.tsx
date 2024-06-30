@@ -61,12 +61,12 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
           key: "config",
           icon: SvgIcons.configuration,
         },
-        {
-          label: <Link href="/admin/conversations">Conversations</Link>,
+        // {
+        //   label: <Link href="/admin/conversations">Conversations</Link>,
 
-          key: "conversations",
-          icon: SvgIcons.message,
-        },
+        //   key: "conversations",
+        //   icon: SvgIcons.message,
+        // },
       ],
     },
   ];
@@ -245,7 +245,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
              * Conversation popup
              */}
 
-            <Popover
+            {/* <Popover
               className="chat__popup"
               placement="topRight"
               title={<div className={styles.popconfirm_title}>Chat with us</div>}
@@ -296,7 +296,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
               onOpenChange={() => setChatWindow(!chatWindow)}
             >
               <Button type="primary">{chatWindow ? <i>{SvgIcons.xMark}</i> : <i>{SvgIcons.chat}</i>}</Button>
-            </Popover>
+            </Popover> */}
           </Layout>
         </ConfigProvider>
       )}

@@ -52,7 +52,7 @@ const Footer = () => {
         {
           arialLabel: "link for story page",
 
-          href: "#",
+          href: "/story",
           label: "The Story",
         },
         {
