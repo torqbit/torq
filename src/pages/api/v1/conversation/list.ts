@@ -98,7 +98,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const allData = groupContinuousComments(allConversation as IConversationList[]);
 
       if (allConversation.length > 0) {
-        console.log(allData);
         return res.status(200).json({ success: true, message: "All conversation has been fetched", comments: allData });
       } else {
         return res.status(400).json({ success: false, error: "No conversation found" });
