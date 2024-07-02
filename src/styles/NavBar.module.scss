@@ -264,6 +264,16 @@
         width: 60px;
         border-radius: 8px;
       }
+      .userIcon {
+        height: 60px;
+        width: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        background-color: var(--bg-primary);
+        border-radius: 8px;
+      }
       span {
         color: var(--font-secondary);
       }
@@ -323,7 +333,7 @@
           }
         }
         .buttonWrapper {
-          padding-bottom: 10px;
+          padding: 0px 10px 10px 10px;
           width: 100%;
           display: flex;
           align-items: center;

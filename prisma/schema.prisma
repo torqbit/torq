@@ -385,3 +385,16 @@ model CourseCertificates {
   @@unique([courseId, studentId])
   @@index([studentId])
 }
+
+model CourseNotification {
+  id              Int       @unique @default(autoincrement()) @db.Int()
+  email           String
+  courseId        Int
+  createdAt       DateTime  @default(now())
+  mailSent        Boolean
+  mailSentDate    DateTime?
+  isEmailVerified Boolean
+
+  @@unique([email, courseId])
+  @@index([email])
+}

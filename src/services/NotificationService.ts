@@ -1,4 +1,4 @@
-import { Course, Discussion } from "@prisma/client";
+import { Course, CourseNotification, Discussion } from "@prisma/client";
 
 import { getFetch, postFetch } from "./request";
 import { INotification } from "@/lib/types/discussions";
@@ -18,6 +18,8 @@ export type ApiResponse = {
   length: number;
   countUnreadNotifications: number;
   notificationsCount: number;
+  courseNotificationDetail: CourseNotification;
+  mailSent: boolean;
 };
 
 type FailedApiResponse = {
@@ -101,6 +103,54 @@ class NotificationService {
     onFailure: (message: string) => void
   ) => {
     postFetch({ tagCommentId: tagCommentId }, `/api/v1/notification/updateMany/update`).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  // course notification
+
+  createCourseNotification = (
+    courseId: number,
+    email: string,
+    isEmailVerified: boolean,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    postFetch(
+      { courseId: courseId, email: email, isEmailVerified: isEmailVerified },
+      `/api/v1/notification/course/create`
+    ).then((result) => {
+      if (result.status == 400) {
+        result.json().then((r) => {
+          const failedResponse = r as FailedApiResponse;
+          onFailure(failedResponse.error);
+        });
+      } else if (result.status == 200) {
+        result.json().then((r) => {
+          const apiResponse = r as ApiResponse;
+          onSuccess(apiResponse);
+        });
+      }
+    });
+  };
+
+  checkCourseNotifications = (
+    courseId: number,
+
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    getFetch(`/api/v1/notification/course/get?courseId=${courseId}`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;

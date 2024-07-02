@@ -152,6 +152,7 @@ export interface ICoursePageDetail {
   state: StateType;
   name: string;
   description: string;
+  thumbnail: string;
   difficultyLevel: string;
   tvUrl: string;
   chapters: IChapter[];
