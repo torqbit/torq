@@ -69,6 +69,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       tvUrl: true,
       difficultyLevel: true,
       state: true,
+      thumbnail: true,
       user: {
         select: {
           name: true,
@@ -100,7 +101,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     },
   });
-
   return { props: { courseDetail: courseDetail, user } };
 };
 export default CourseDetailPage;
