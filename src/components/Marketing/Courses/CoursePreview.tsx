@@ -8,7 +8,9 @@ import { ICoursePageDetail } from "@/types/courses/Course";
 import { User } from "@prisma/client";
 import Link from "next/link";
 import Image from "next/image";
+
 import NotificationService from "@/services/NotificationService";
+
 import { UserOutlined } from "@ant-design/icons";
 
 const Label: FC<{
@@ -48,22 +50,24 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
       difficulty: courseDetails.difficultyLevel,
     },
 
-    chapters: courseDetails.chapters.map((chapter) => {
-      return {
-        chapterSeq: chapter.sequenceId,
-        chapterName: chapter.name,
-        lessons: chapter.resource.map((r) => {
-          return {
-            title: r.name,
-            videoDuration: r.video.videoDuration,
-            lessonId: r.resourceId,
-          };
-        }),
-      };
-    }),
+    chapters:
+      courseDetails.chapters &&
+      courseDetails.chapters.map((chapter) => {
+        return {
+          chapterSeq: chapter.sequenceId,
+          chapterName: chapter.name,
+          lessons: chapter.resource.map((r) => {
+            return {
+              title: r.name,
+              videoDuration: r.video.videoDuration,
+              lessonId: r.resourceId,
+            };
+          }),
+        };
+      }),
   };
 
-  const items = courseListDetail?.chapters.map((content, i) => {
+  const items = courseListDetail.chapters.map((content, i) => {
     let totalTime = 0;
     content.lessons.forEach((data) => {
       totalTime = totalTime + data.videoDuration;
@@ -117,7 +121,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
 
     {
       icon: MarketingSvgIcons.clock,
-      label: totalDuration,
+      label: "totalDuration",
     },
     {
       icon: MarketingSvgIcons.certificate,
@@ -188,8 +192,10 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
             {courseDetails.user.image ? (
               <Image src={courseDetails.user.image} alt="" height={50} width={50} loading="lazy" />
             ) : (
-              <div className={styles.userIcon}>
-                <UserOutlined />
+
+              <div className={styles.userOutlineContainer}>
+                <UserOutlined height={50} width={50} />
+
               </div>
             )}
             <Space direction="vertical" size={"small"}>
@@ -245,27 +251,29 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
           </div>
         </div>
       </div>
-      <div className={styles.chapter_list}>
-        <h1>Chapters</h1>
+      {courseDetails.chapters.length > 0 && (
+        <div className={styles.chapter_list}>
+          <h1>Chapters</h1>
 
-        <Collapse
-          onChange={onChange}
-          activeKey={activeCollapseKey}
-          size="small"
-          accordion={false}
-          items={
-            items &&
-            items.map((item, i) => {
-              return {
-                key: item.key,
-                label: item.label,
-                children: item.children,
-                showArrow: false,
-              };
-            })
-          }
-        />
-      </div>
+          <Collapse
+            onChange={onChange}
+            activeKey={activeCollapseKey}
+            size="small"
+            accordion={false}
+            items={
+              items &&
+              items.map((item, i) => {
+                return {
+                  key: item.key,
+                  label: item.label,
+                  children: item.children,
+                  showArrow: false,
+                };
+              })
+            }
+          />
+        </div>
+      )}
     </section>
   );
 };

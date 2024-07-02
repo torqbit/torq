@@ -101,7 +101,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     },
   });
-
   return { props: { courseDetail: courseDetail, user } };
 };
 export default CourseDetailPage;

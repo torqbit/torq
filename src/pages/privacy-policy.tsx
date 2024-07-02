@@ -1,7 +1,7 @@
-import React from "react";
+import React, { FC } from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
-import { Theme } from "@prisma/client";
-import { NextPage } from "next";
+import { Theme, User } from "@prisma/client";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { useEffect } from "react";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
 import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
@@ -10,8 +10,10 @@ import appConstant from "@/services/appConstant";
 import Link from "next/link";
 import AboutTorqbit from "@/components/Marketing/AboutTorqbit";
 import DefaulttHero from "@/components/Marketing/Blog/DefaultHero";
+import { getCookieName } from "@/lib/utils";
+import { getToken } from "next-auth/jwt";
 
-const TermAndConditonPage: NextPage = () => {
+const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
   const { dispatch, globalState } = useAppContext();
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
 
@@ -123,6 +125,7 @@ const TermAndConditonPage: NextPage = () => {
 
   return (
     <MarketingLayout
+      user={user}
       heroSection={
         <DefaulttHero
           title="Privacy Policy"
@@ -158,3 +161,12 @@ const TermAndConditonPage: NextPage = () => {
 };
 
 export default TermAndConditonPage;
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { req } = ctx;
+
+  let cookieName = getCookieName();
+
+  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+
+  return { props: { user } };
+};
