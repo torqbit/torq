@@ -108,7 +108,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
   const courseFeatures = [
     {
       icon: MarketingSvgIcons.info,
-      label: courseDetails.state === "ACTIVE" ? "Available for all" : "N/A",
+      label: courseDetails.state === "ACTIVE" ? "Available for all" : "Launching soon ",
     },
     {
       icon: MarketingSvgIcons.courseLevel,
@@ -121,7 +121,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
 
     {
       icon: MarketingSvgIcons.clock,
-      label: "totalDuration",
+      label: courseDetails.state === "ACTIVE" ? totalDuration : "N/A",
     },
     {
       icon: MarketingSvgIcons.certificate,
@@ -192,10 +192,8 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
             {courseDetails.user.image ? (
               <Image src={courseDetails.user.image} alt="" height={50} width={50} loading="lazy" />
             ) : (
-
               <div className={styles.userOutlineContainer}>
                 <UserOutlined height={50} width={50} />
-
               </div>
             )}
             <Space direction="vertical" size={"small"}>
@@ -233,7 +231,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
               ) : (
                 <Flex vertical className={styles.buttonWrapper} gap={10}>
                   {!user && (
-                    <Input type="email" placeholder="enter your email" onChange={(e) => setEmail(e.target.value)} />
+                    <Input type="email" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
                   )}
                   <Button
                     loading={notificationLoading}
