@@ -18,7 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     if (isAlreadyNotified) {
-      return res.status(400).json({ success: false, error: "already notified" });
+      return res.status(400).json({ success: false, error: "You have already subscribed for the course launch." });
     } else {
       await prisma.courseNotification.create({
         data: {
@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       return res.status(200).json({
         success: true,
-        message: "You will be notified!",
+        message: "You will be notified once the course is launched.",
       });
     }
   } catch (error) {
