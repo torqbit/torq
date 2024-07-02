@@ -264,15 +264,18 @@
         width: 60px;
         border-radius: 8px;
       }
-      .userIcon {
-        height: 60px;
-        width: 60px;
+
+      .userOutlineContainer {
+        background-color: red;
+        height: 50px;
+        width: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
-        background-color: var(--bg-primary);
         border-radius: 8px;
+        background-color: var(--bg-primary);
+        font-size: 24px;
+
       }
       span {
         color: var(--font-secondary);

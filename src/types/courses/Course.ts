@@ -155,6 +155,7 @@ export interface ICoursePageDetail {
   thumbnail: string;
   difficultyLevel: string;
   tvUrl: string;
+  thumbnail: string;
   chapters: IChapter[];
   user: {
     name: string;

@@ -3,23 +3,52 @@ import styleLayout from "../styles/Dashboard.module.scss";
 import styles from "@/styles/Profile.module.scss";
 import { useSession } from "next-auth/react";
 import Layout2 from "@/components/Layouts/Layout2";
-import { Button, Form, Input, Tabs, Spin, TabsProps, message, Avatar } from "antd";
-import { postFetch, IResponse } from "@/services/request";
+import { Button, Form, Input, Tabs, Spin, TabsProps, message, Avatar, Tooltip, Upload } from "antd";
+import { postFetch, IResponse, postWithFile } from "@/services/request";
 import { NextPage } from "next";
 import { Session } from "next-auth";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { useAppContext } from "@/components/ContextApi/AppContext";
-import appConstant from "@/services/appConstant";
-import { UserOutlined } from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
+import SvgIcons from "@/components/SvgIcons";
+import ImgCrop from "antd-img-crop";
 
-const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string; phone: string }) => void }> = ({
-  user,
-  onUpdateProfile,
-}) => {
+const ProfileSetting: FC<{
+  user: Session;
+  onUpdateProfile: (info: { name: string; phone: string; image: string }) => void;
+  setUserProfile: (profile: string) => void;
+  userProfile: string;
+}> = ({ user, onUpdateProfile, userProfile, setUserProfile }) => {
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const [userProfileUploading, setuserProfileUploading] = useState<boolean>(false);
+
+  const uploadFile = async (file: any, title: string) => {
+    if (file) {
+      setuserProfileUploading(true);
+      const name = title.replace(/\s+/g, "-");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("title", name);
+      formData.append("dir", "/user/profile/");
+
+      userProfile && formData.append("existingFilePath", userProfile);
+
+      const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
+      if (!postRes.ok) {
+        throw new Error("Failed to upload file");
+      }
+      const res = await postRes.json();
+
+      if (res.success) {
+        setUserProfile(res.fileCDNPath);
+        setuserProfileUploading(false);
+      }
+    }
+  };
   useEffect(() => {
     setPageLoading(true);
     if (user) {
+      setUserProfile(String(user.user?.image));
       setPageLoading(false);
     }
   }, []);
@@ -34,11 +63,50 @@ const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string
         <section className={styles.user_profile_page}>
           <div className={styles.content_center}>
             <div className={styles.left_content}>
-              <Avatar
-                className={styles.user_profile_pic}
-                src={user.user?.image}
-                icon={<UserOutlined style={{ fontSize: 100, marginTop: 35 }} size={400} />}
-              />
+              <Form.Item name="image">
+                <ImgCrop rotationSlider>
+                  <Upload
+                    name="avatar"
+                    listType="picture-card"
+                    className={styles.upload__thumbnail}
+                    showUploadList={false}
+                    style={{ width: 150, height: 150 }}
+                    beforeUpload={(file) => {
+                      uploadFile(file, `${user.user?.name}_profile`);
+                    }}
+                    // onChange={handleChange}
+                  >
+                    {userProfile ? (
+                      <>
+                        <img
+                          style={{ borderRadius: "50%", objectFit: "cover", width: 150, height: 150 }}
+                          src={userProfile ? userProfile : String(user.user?.image)}
+                        />
+
+                        <Tooltip title="Upload course thumbnail">
+                          <div className={styles.camera_btn_img}>
+                            {userProfileUploading && userProfile ? <LoadingOutlined /> : SvgIcons.camera}
+                          </div>
+                        </Tooltip>
+                        <div className={styles.bannerStatus}>{userProfileUploading && "Uploading"}</div>
+                      </>
+                    ) : (
+                      <button
+                        className={styles.upload_img_button}
+                        style={{ border: 0, background: "none", width: 150, height: 150 }}
+                        type="button"
+                      >
+                        {userProfileUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                        {!userProfileUploading ? (
+                          <div style={{ marginTop: 8 }}>Upload Image</div>
+                        ) : (
+                          <div style={{ color: "#000" }}>{userProfileUploading && "Uploading"}</div>
+                        )}
+                      </button>
+                    )}
+                  </Upload>
+                </ImgCrop>
+              </Form.Item>
             </div>
             <div className={styles.right_content}>
               <Form
@@ -78,15 +146,21 @@ const ProfileSetting: FC<{ user: Session; onUpdateProfile: (info: { name: string
 const Setting: NextPage = () => {
   const { data: user, update } = useSession();
   const [messageApi, contextMessageHolder] = message.useMessage();
+  const [userProfile, setUserProfile] = useState<string>();
   const { dispatch, globalState } = useAppContext();
 
   const onChange = (key: string) => {};
-  const onUpdateProfile = async (info: { name: string; phone: string }) => {
-    const res = await postFetch({ name: info.name, userId: user?.id, phone: info.phone }, "/api/user/update");
+  const onUpdateProfile = async (info: { name: string; phone: string; image: string }) => {
+    const res = await postFetch(
+      { name: info.name, userId: user?.id, phone: info.phone, image: userProfile },
+      "/api/user/update"
+    );
     const result = (await res.json()) as IResponse;
     if (res.ok && result.success) {
-      update(info);
-
+      update({
+        ...info,
+        image: userProfile,
+      });
       dispatch({ type: "SET_USER", payload: { name: info.name, phone: info.phone, theme: globalState.theme } });
       messageApi.success(result.message);
     } else {
@@ -98,7 +172,14 @@ const Setting: NextPage = () => {
     {
       key: "1",
       label: "Profile",
-      children: user && <ProfileSetting user={user} onUpdateProfile={onUpdateProfile} />,
+      children: user && (
+        <ProfileSetting
+          user={user}
+          onUpdateProfile={onUpdateProfile}
+          userProfile={String(userProfile)}
+          setUserProfile={setUserProfile}
+        />
+      ),
     },
   ];
 
