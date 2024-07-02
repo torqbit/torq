@@ -1,13 +1,16 @@
 import SvgIcons from "@/components/SvgIcons";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import styles from "@/styles/NavBar.module.scss";
-import { Button, Collapse, Divider, Flex, Space, Tag } from "antd";
-import { FC, ReactNode, useState } from "react";
+import { Button, Collapse, Divider, Flex, Input, Space, Tag, message } from "antd";
+import { FC, ReactNode, useEffect, useState } from "react";
 import MarketingSvgIcons from "../MarketingSvgIcons";
 import { ICoursePageDetail } from "@/types/courses/Course";
 import { User } from "@prisma/client";
 import Link from "next/link";
 import Image from "next/image";
+
+import NotificationService from "@/services/NotificationService";
+
 import { UserOutlined } from "@ant-design/icons";
 
 const Label: FC<{
@@ -35,6 +38,10 @@ const Label: FC<{
   );
 };
 const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ courseDetails, user }) => {
+  const [notificationLoading, setNotificationLoading] = useState<boolean>(false);
+  const [isNotified, setNotified] = useState<boolean>(false);
+
+  const [email, setEmail] = useState<string>("");
   const courseListDetail = {
     course: {
       name: courseDetails.name,
@@ -101,7 +108,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
   const courseFeatures = [
     {
       icon: MarketingSvgIcons.info,
-      label: courseDetails.state === "ACTIVE" ? "Available for all" : "N/A",
+      label: courseDetails.state === "ACTIVE" ? "Available for all" : "Launching soon ",
     },
     {
       icon: MarketingSvgIcons.courseLevel,
@@ -114,7 +121,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
 
     {
       icon: MarketingSvgIcons.clock,
-      label: "totalDuration",
+      label: courseDetails.state === "ACTIVE" ? totalDuration : "N/A",
     },
     {
       icon: MarketingSvgIcons.certificate,
@@ -122,10 +129,43 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
     },
   ];
 
+  const onCreateNotification = (isEmailVerified: boolean, email: string) => {
+    setNotificationLoading(true);
+    NotificationService.createCourseNotification(
+      courseDetails.courseId,
+      email,
+      isEmailVerified,
+      (result) => {
+        message.success(result.message);
+        setNotified(true);
+        setEmail("");
+        setNotificationLoading(false);
+      },
+      (error) => {
+        message.success(error);
+        setNotificationLoading(false);
+      }
+    );
+  };
+
   const onChange = (key: string | string[]) => {
     setActiveCollapseKey(key as string[]);
   };
 
+  useEffect(() => {
+    if (user) {
+      NotificationService.checkCourseNotifications(
+        courseDetails.courseId,
+        (result) => {
+          setNotified(result.mailSent);
+          setNotificationLoading(false);
+        },
+        (error) => {
+          setNotificationLoading(false);
+        }
+      );
+    }
+  }, [user]);
   return (
     <section className={styles.coursePreviewContainer}>
       <div className={styles.contentWrapper}>
@@ -184,9 +224,27 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
                 </div>
               </div>
               <Divider />
-              <Link href={user ? `/courses/${courseDetails.courseId}` : `/login`} className={styles.buttonWrapper}>
-                <Button type="primary">{courseDetails.state === "ACTIVE" ? "Enroll for free" : "Notify me"}</Button>
-              </Link>
+              {courseDetails.state === "ACTIVE" ? (
+                <Link href={user ? `/courses/${courseDetails.courseId}` : `/login`} className={styles.buttonWrapper}>
+                  <Button type="primary">Enroll for free</Button>
+                </Link>
+              ) : (
+                <Flex vertical className={styles.buttonWrapper} gap={10}>
+                  {!user && (
+                    <Input type="email" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
+                  )}
+                  <Button
+                    loading={notificationLoading}
+                    disabled={isNotified}
+                    onClick={() => {
+                      user ? onCreateNotification(true, String(user.email)) : onCreateNotification(false, email);
+                    }}
+                    type="primary"
+                  >
+                    Notify on launch
+                  </Button>
+                </Flex>
+              )}
             </div>
           </div>
         </div>

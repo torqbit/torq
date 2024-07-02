@@ -264,6 +264,7 @@
         width: 60px;
         border-radius: 8px;
       }
+
       .userOutlineContainer {
         background-color: red;
         height: 50px;
@@ -274,6 +275,7 @@
         border-radius: 8px;
         background-color: var(--bg-primary);
         font-size: 24px;
+
       }
       span {
         color: var(--font-secondary);
@@ -334,7 +336,7 @@
           }
         }
         .buttonWrapper {
-          padding-bottom: 10px;
+          padding: 0px 10px 10px 10px;
           width: 100%;
           display: flex;
           align-items: center;
