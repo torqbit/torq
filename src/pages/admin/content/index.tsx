@@ -8,6 +8,9 @@ import ProgramService from "@/services/ProgramService";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { Course } from "@prisma/client";
+import BlogList from "@/components/Admin/Content/BlogList";
+import BlogService, { latestBlogs } from "@/services/BlogService";
+import appConstant from "@/services/appConstant";
 
 export const convertSecToHourandMin = (seconds: number) => {
   let result = "";
@@ -166,6 +169,7 @@ const Content: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isBlog, setBlog] = useState<boolean>(false);
 
   const [coursesAuthored, setCoursesAuthored] = useState<{
     fetchCourses: boolean;
@@ -181,7 +185,13 @@ const Content: NextPage = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const onChange = (key: string) => {};
+  const onChange = (key: string) => {
+    if (key === "2") {
+      setBlog(true);
+    } else {
+      setBlog(false);
+    }
+  };
   const onCourseDelete = (courseId: number) => {
     ProgramService.deleteCourse(
       courseId,
@@ -271,10 +281,20 @@ const Content: NextPage = () => {
         />
       ),
     },
+    {
+      key: "2",
+      label: "Blogs",
+      children: <BlogList />,
+    },
   ];
 
   const previousDraft = (id: number) => {
     router.push(`/admin/content/course/${id}/edit`);
+    setIsModalOpen(false);
+  };
+
+  const previousDraftBlog = (id: string) => {
+    router.push(`/admin/content/blog/${id}`);
     setIsModalOpen(false);
   };
 
@@ -285,6 +305,17 @@ const Content: NextPage = () => {
       undefined,
       (result) => {
         router.push(`/admin/content/course/${result.getCourse.courseId}/edit`);
+      },
+      (error) => {}
+    );
+  };
+
+  const handleBlogOk = () => {
+    setIsModalOpen(false);
+
+    BlogService.createBlog(
+      (result) => {
+        router.push(`/admin/content/blog/${result.blog.id}`);
       },
       (error) => {}
     );
@@ -323,6 +354,39 @@ const Content: NextPage = () => {
       );
     }
   };
+  const onCreateDraftBlog = () => {
+    showModal();
+    if (router.query.blogId) {
+      router.push(`/admin/content/blog/${router.query.blogId}`);
+    } else {
+      BlogService.getLatestDraftBlog(
+        (result) => {
+          if (result.blog) {
+            modal.confirm({
+              title: "Choose from the below options?",
+              content: (
+                <>
+                  <p>You currently have unsaved changes that you had made while creating the blog.</p>
+                </>
+              ),
+              footer: (
+                <Space>
+                  <Button type="primary" onClick={() => previousDraftBlog(result.blog.id)}>
+                    Previous draft blog
+                  </Button>
+                  or
+                  <Button onClick={handleBlogOk}>Create a new blog</Button>
+                </Space>
+              ),
+            });
+          } else {
+            handleBlogOk();
+          }
+        },
+        (error) => {}
+      );
+    }
+  };
 
   return (
     <Layout2>
@@ -337,16 +401,31 @@ const Content: NextPage = () => {
             borderColor: "gray",
           }}
           tabBarExtraContent={
-            <Button
-              type="primary"
-              onClick={() => {
-                onCreateDraftCourse();
-              }}
-              className={styles.add_user_btn}
-            >
-              <span>Add Course</span>
-              {SvgIcons.arrowRight}
-            </Button>
+            <>
+              {isBlog ? (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    onCreateDraftBlog();
+                  }}
+                  className={styles.add_user_btn}
+                >
+                  <span>Add Blog</span>
+                  {SvgIcons.arrowRight}
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    onCreateDraftCourse();
+                  }}
+                  className={styles.add_user_btn}
+                >
+                  <span>Add Course</span>
+                  {SvgIcons.arrowRight}
+                </Button>
+              )}
+            </>
           }
           defaultActiveKey="1"
           items={items}

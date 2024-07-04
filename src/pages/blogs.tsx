@@ -8,11 +8,24 @@ import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
 import { useMediaQuery } from "react-responsive";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import { Card, Flex, Space } from "antd";
+import Image from "next/image";
+import prisma from "@/lib/prisma";
+import styles from "@/styles/Blog.module.scss";
+import Link from "next/link";
 interface IProps {
   user: User;
+  blogData: {
+    title: string;
+    id: string;
+    banner: string;
+    authorName: string;
+    authorImage: string;
+    slug: string;
+  }[];
 }
 
-const BlogPage: FC<IProps> = ({ user }) => {
+const BlogPage: FC<IProps> = ({ user, blogData }) => {
   const { dispatch, globalState } = useAppContext();
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
 
@@ -47,26 +60,71 @@ const BlogPage: FC<IProps> = ({ user }) => {
       user={user}
       heroSection={<HeroBlog title="Blog" description="Our engineering experience, explained in detail" />}
     >
-      <div
-        style={{
-          height: 400,
-          textAlign: "center",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: globalState.theme === "dark" ? "#283040" : "#fff",
-          color: globalState.theme === "dark" ? "#fff" : "#000",
-        }}
-      >
-        <p
+      {blogData.length === 0 ? (
+        <div
           style={{
-            maxWidth: isMobile ? 300 : 400,
-            lineHeight: 1.5,
+            height: 400,
+            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: globalState.theme === "dark" ? "#283040" : "#fff",
+            color: globalState.theme === "dark" ? "#fff" : "#000",
           }}
         >
-          There are no blogs currently. Visit here later again
-        </p>
-      </div>
+          <p
+            style={{
+              maxWidth: isMobile ? 300 : 400,
+              lineHeight: 1.5,
+            }}
+          >
+            There are no blogs currently. Visit here later again
+          </p>
+        </div>
+      ) : (
+        <div className={styles.blogListPageWrapper}>
+          <div className={styles.primaryBlog}>
+            {blogData.slice(0, 2).map((blog, i) => {
+              return (
+                <Link href={`/blogs/${blog.slug}`} key={i} onClick={() => {}} className={styles.blogCard}>
+                  <Image src={blog.banner} alt="blog-img" height={250} width={500} />
+                  <div>
+                    <Flex className={styles.authorInfo} align="center" gap={10}>
+                      <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
+                      <Space direction="vertical" size={5}>
+                        <span>A blog by</span>
+                        <div>{blog.authorName}</div>
+                      </Space>
+                    </Flex>
+                    <h1>{blog.title}</h1>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+          <div>
+            <div className={styles.secondaryBlog}>
+              {blogData.slice(2).map((blog, i) => {
+                return (
+                  <Link href={`/blogs/${blog.slug}`} key={i} onClick={() => {}} className={styles.blogCard}>
+                    <Image src={blog.banner} alt="blog-img" height={175} width={350} />
+                    <div className={styles.infoWrapper}>
+                      <Flex className={styles.authorInfo} align="center" gap={10}>
+                        <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
+                        <Space direction="vertical" size={5}>
+                          <span>A blog by</span>
+                          <div>{blog.authorName}</div>
+                        </Space>
+                      </Flex>
+                      <h2>{blog.title}</h2>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </MarketingLayout>
   );
 };
@@ -75,9 +133,59 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   let cookieName = getCookieName();
 
-  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+  const blog = await prisma.blog.findMany({
+    where: {
+      state: "ACTIVE",
+    },
+    select: {
+      user: {
+        select: {
+          image: true,
+          name: true,
+        },
+      },
+      content: true,
+      title: true,
+      id: true,
+      banner: true,
+      slug: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-  return { props: { user } };
+  const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
+  if (blog.length > 0) {
+    return {
+      props: {
+        user,
+
+        // description: blog.content.content[0].content[0].text,
+
+        blogData: blog.map((b) => {
+          return {
+            title: b.title,
+            id: b.id,
+            banner: b.banner,
+            authorName: b.user.name,
+            authorImage: b.user.image,
+            slug: b.slug,
+          };
+        }),
+      },
+    };
+  } else {
+    return {
+      props: {
+        user,
+
+        // description: blog.content.content[0].content[0].text,
+
+        blogData: [],
+      },
+    };
+  }
 };
 
 export default BlogPage;

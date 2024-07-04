@@ -260,7 +260,7 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
             accordion={false}
             items={
               items &&
-              items.map((item, i) => {
+              items.map((item) => {
                 return {
                   key: item.key,
                   label: item.label,

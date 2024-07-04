@@ -3,7 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["torqbit-dev.b-cdn.net", "lh3.googleusercontent.com"],
+    domains: ["torqbit-dev.b-cdn.net", "lh3.googleusercontent.com", "iframe.mediadelivery.net"],
   },
 
   productionBrowserSourceMaps: false,
