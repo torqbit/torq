@@ -1,0 +1,43 @@
+import prisma from "@/lib/prisma";
+import { NextApiResponse, NextApiRequest } from "next";
+import { errorHandler } from "@/lib/api-middlewares/errorHandler";
+import { withMethods } from "@/lib/api-middlewares/with-method";
+import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
+import { createSlug, getCookieName } from "@/lib/utils";
+import { getToken } from "next-auth/jwt";
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    let cookieName = getCookieName();
+
+    const token = await getToken({
+      req,
+      secret: process.env.NEXT_PUBLIC_SECRET,
+      cookieName,
+    });
+    const body = await req.body;
+    // const { title, content, state, banner } = body;
+    // console.log(content, "c");
+    // const slug = createSlug(title);
+
+    const createBlog = await prisma.blog.create({
+      data: {
+        authorId: String(token?.id),
+        state: "DRAFT",
+        banner: "",
+        slug: "",
+        content: "",
+        title: "Untitled",
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return res.status(200).json({ success: true, message: "Blog has been created", blog: createBlog });
+  } catch (error) {
+    return errorHandler(error, res);
+  }
+};
+
+export default withMethods(["POST"], withUserAuthorized(handler));

@@ -47,6 +47,7 @@ model User {
   courseCertificate    CourseCertificates[]
   CourseProgress       CourseProgress[]
   conversation         Conversation[]
+  blogs                Blog[]
 }
 
 //****** User Schema End ******//
@@ -397,4 +398,19 @@ model CourseNotification {
 
   @@unique([email, courseId])
   @@index([email])
+}
+
+model Blog {
+  id        String    @id @unique @default(cuid())
+  authorId  String
+  title     String
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  content   Json
+  banner    String
+  state     StateType
+  user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
 }

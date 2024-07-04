@@ -30,6 +30,13 @@ export const getFetch = async (path: string) => {
 
   return res;
 };
+export const getDelete = async (path: string) => {
+  const res = await fetch(path, {
+    method: "DELETE",
+  });
+
+  return res;
+};
 
 export interface IResponse {
   updateProgram: {
