@@ -13,11 +13,12 @@ import { useMediaQuery } from "react-responsive";
 import styles from "@/styles/Blog.module.scss";
 import { Flex, Space } from "antd";
 import Image from "next/image";
-import Tiptap from "@/components/TipTapEditor/TipTapEditor";
+
 import { UserOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import appConstant from "@/services/appConstant";
 import { truncateString } from "@/services/helper";
+import TextEditor from "@/components/Editor/Editor";
 
 interface IProps {
   user: User;
@@ -97,7 +98,7 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
                 <div>{blogData.authorName}</div>
               </Space>
             </Flex>
-            <Tiptap
+            <TextEditor
               contentData={htmlData}
               currentContentData={{} as JSONContent}
               setContent={() => {}}

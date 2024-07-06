@@ -5,7 +5,7 @@ import { Editor, EditorProvider, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 
-const TiptapEditor: React.FC<{
+const TextEditor: React.FC<{
   contentData: HTMLElement;
   setContent: (content: JSONContent) => void;
   isEditable: boolean;
@@ -52,4 +52,4 @@ const TiptapEditor: React.FC<{
   }
 };
 
-export default TiptapEditor;
+export default TextEditor;

@@ -7,11 +7,12 @@ import { LoadingOutlined } from "@ant-design/icons";
 import SvgIcons from "@/components/SvgIcons";
 import { postWithFile } from "@/services/request";
 import { createSlug } from "@/lib/utils";
-import Tiptap from "@/components/TipTapEditor/TipTapEditor";
+
 import { JSONContent } from "@tiptap/react";
 import BlogService from "@/services/BlogService";
 import { useRouter } from "next/router";
 import { StateType } from "@prisma/client";
+import TextEditor from "@/components/Editor/Editor";
 
 const BlogForm: FC<{
   htmlData: HTMLElement;
@@ -214,7 +215,7 @@ const BlogForm: FC<{
           </div>
         </div>
         <div className={styles.editorContainer}>
-          <Tiptap
+          <TextEditor
             contentData={htmlData}
             currentContentData={currentContentData as JSONContent}
             setContent={setCurrentContentData}

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import BlogService, { latestBlogs } from "@/services/BlogService";
 import appConstant from "@/services/appConstant";
 import { StateType } from "@prisma/client";
-import DateFormater from "@/components/Marketing/Updates/DateFormater";
+
 import { getCreatedDate } from "@/services/helper";
 
 const BlogList: FC<{ contentType: string }> = ({ contentType }) => {

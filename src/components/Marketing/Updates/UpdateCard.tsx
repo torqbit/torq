@@ -4,7 +4,7 @@ import { FC, ReactNode } from "react";
 import styles from "@/styles/Update.module.scss";
 import Image from "next/image";
 import { useMediaQuery } from "react-responsive";
-import DateFormater from "./DateFormater";
+import { getCreatedDate } from "@/services/helper";
 
 const UpdateCard: FC<{
   date: string;
@@ -17,15 +17,13 @@ const UpdateCard: FC<{
   slug: string;
 }> = ({ date, title, img, description, href, link, slug }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
-
+  const createdDate = getCreatedDate(new Date(date).getTime());
   return (
     <section className={styles.updateCardWrapper}>
       <div>
         <div className="   md:flex-row md:gap-[175px] lg:px-0  lg:pt-20 ">
           <div>
-            <Link href={`/updates/${slug}`}>
-              <DateFormater dateString={date} />
-            </Link>
+            <Link href={`/updates/${slug}`}>{createdDate}</Link>
           </div>
 
           <div>
