@@ -13,7 +13,6 @@ const TextEditor: React.FC<{
   contentType: string;
 }> = ({ contentData, setContent, isEditable, contentType }) => {
   const editor = useRef<Editor | null>(null);
-  console.log(contentType, "t");
 
   if (!editor) {
     return;

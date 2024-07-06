@@ -17,7 +17,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     const body = await req.body;
     const { title, banner, state, content, blogId } = body;
-    console.log(body);
 
     const slug = title && createSlug(title);
     const updateObj: any = {};
@@ -39,15 +38,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    console.log(updateBlog);
-
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: ` Blog has been ${updateBlog.state === "ACTIVE" ? "published" : "saved as draft"}`,
-        blog: updateBlog,
-      });
+    return res.status(200).json({
+      success: true,
+      message: ` Blog has been ${updateBlog.state === "ACTIVE" ? "published" : "saved as draft"}`,
+      blog: updateBlog,
+    });
   } catch (error) {
     console.log(error);
     return errorHandler(error, res);

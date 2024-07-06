@@ -40,7 +40,6 @@ const BlogForm: FC<{
 
   const uploadFile = async (file: any, title: string) => {
     if (file) {
-      console.log("hit");
       setBlogBannerUploading(true);
       const name = title.replace(/\s+/g, "-");
       const formData = new FormData();

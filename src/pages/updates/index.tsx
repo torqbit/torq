@@ -129,7 +129,6 @@ const updatePage: FC<IProps> = ({ user, updateData }) => {
         // </div>
         <div className={styles.updateListPageWrapper}>
           {updateData.map((data, i) => {
-            console.log(data);
             return (
               <div key={i}>
                 <UpdateCard
