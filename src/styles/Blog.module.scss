@@ -81,6 +81,15 @@
   max-width: 800px;
   border: none;
   outline: none;
+  p {
+    color: var(--font-secondary);
+  }
+  ul,
+  ol {
+    li {
+      color: var(--font-secondary);
+    }
+  }
 }
 
 .codeBlock {
