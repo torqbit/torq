@@ -68,3 +68,7 @@ export const daysRemaining = (date: string) => {
 export const createCourseExpiry = (time: number) => {
   return moment().add(time, "y").format("DD-MM-YYYY,h:mm:ss");
 };
+
+export const getCreatedDate = (time: number) => {
+  return moment(time).format("D MMMM YYYY");
+};

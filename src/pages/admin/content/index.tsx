@@ -169,7 +169,7 @@ const Content: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>(false);
-  const [isBlog, setBlog] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>("Add Course");
 
   const [coursesAuthored, setCoursesAuthored] = useState<{
     fetchCourses: boolean;
@@ -187,9 +187,11 @@ const Content: NextPage = () => {
   };
   const onChange = (key: string) => {
     if (key === "2") {
-      setBlog(true);
+      setActiveTab("Add Blog");
+    } else if (key === "3") {
+      setActiveTab("Add Updates");
     } else {
-      setBlog(false);
+      setActiveTab("Add Course");
     }
   };
   const onCourseDelete = (courseId: number) => {
@@ -284,7 +286,12 @@ const Content: NextPage = () => {
     {
       key: "2",
       label: "Blogs",
-      children: <BlogList />,
+      children: <BlogList type="BLOG" />,
+    },
+    {
+      key: "3",
+      label: "Updates",
+      children: <BlogList type="UPDATE" />,
     },
   ];
 
@@ -310,10 +317,11 @@ const Content: NextPage = () => {
     );
   };
 
-  const handleBlogOk = () => {
+  const handleBlogOk = (type: string) => {
     setIsModalOpen(false);
 
     BlogService.createBlog(
+      type,
       (result) => {
         router.push(`/admin/content/blog/${result.blog.id}`);
       },
@@ -354,7 +362,7 @@ const Content: NextPage = () => {
       );
     }
   };
-  const onCreateDraftBlog = () => {
+  const onCreateDraftBlog = (type: string) => {
     showModal();
     if (router.query.blogId) {
       router.push(`/admin/content/blog/${router.query.blogId}`);
@@ -366,21 +374,21 @@ const Content: NextPage = () => {
               title: "Choose from the below options?",
               content: (
                 <>
-                  <p>You currently have unsaved changes that you had made while creating the blog.</p>
+                  <p>You currently have unsaved changes that you had made while creating the {type.toLowerCase()}.</p>
                 </>
               ),
               footer: (
                 <Space>
                   <Button type="primary" onClick={() => previousDraftBlog(result.blog.id)}>
-                    Previous draft blog
+                    Previous draft {type.toLowerCase()}
                   </Button>
                   or
-                  <Button onClick={handleBlogOk}>Create a new blog</Button>
+                  <Button onClick={() => handleBlogOk(type)}>Create a new {type.toLowerCase()}</Button>
                 </Space>
               ),
             });
           } else {
-            handleBlogOk();
+            handleBlogOk(type);
           }
         },
         (error) => {}
@@ -391,7 +399,6 @@ const Content: NextPage = () => {
   return (
     <Layout2>
       {contextMessageHolder}
-
       <section className={styles.dashboard_content}>
         <h2>Hello {user?.user?.name}</h2>
         <h3>Content</h3>
@@ -402,29 +409,24 @@ const Content: NextPage = () => {
           }}
           tabBarExtraContent={
             <>
-              {isBlog ? (
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    onCreateDraftBlog();
-                  }}
-                  className={styles.add_user_btn}
-                >
-                  <span>Add Blog</span>
-                  {SvgIcons.arrowRight}
-                </Button>
-              ) : (
-                <Button
-                  type="primary"
-                  onClick={() => {
+              <Button
+                type="primary"
+                onClick={() => {
+                  if (activeTab === "Add Course") {
                     onCreateDraftCourse();
-                  }}
-                  className={styles.add_user_btn}
-                >
-                  <span>Add Course</span>
-                  {SvgIcons.arrowRight}
-                </Button>
-              )}
+                  }
+                  if (activeTab === "Add Blog") {
+                    onCreateDraftBlog("BLOG");
+                  }
+                  if (activeTab === "Add Updates") {
+                    onCreateDraftBlog("UPDATE");
+                  }
+                }}
+                className={styles.add_user_btn}
+              >
+                <span>{activeTab}</span>
+                {SvgIcons.arrowRight}
+              </Button>
             </>
           }
           defaultActiveKey="1"

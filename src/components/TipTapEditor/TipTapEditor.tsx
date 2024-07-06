@@ -10,7 +10,8 @@ const TiptapEditor: React.FC<{
   setContent: (content: JSONContent) => void;
   isEditable: boolean;
   currentContentData: JSONContent;
-}> = ({ contentData, setContent, isEditable }) => {
+  type: string;
+}> = ({ contentData, setContent, isEditable, type }) => {
   const editor = useRef<Editor | null>(null);
 
   if (!editor) {
@@ -28,7 +29,7 @@ const TiptapEditor: React.FC<{
               },
             }),
             Placeholder.configure({
-              placeholder: "Start writing your blog",
+              placeholder: `Start writing your ${type.toLowerCase()} `,
               emptyEditorClass: Styles.emptyPlaceholder,
             }),
           ]}

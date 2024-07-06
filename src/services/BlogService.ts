@@ -24,8 +24,8 @@ type FailedApiResponse = {
   error: string;
 };
 class BlogService {
-  createBlog = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    postFetch({}, `/api/v1/admin/blog/create`).then((result) => {
+  createBlog = (type: string, onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
+    postFetch({ type }, `/api/v1/admin/blog/create`).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
           const failedResponse = r as FailedApiResponse;
@@ -109,6 +109,7 @@ class BlogService {
     });
   };
   getLatestBlogs = (
+    type: string,
     offSet: number,
     limit: number,
     filter: boolean,
@@ -117,8 +118,8 @@ class BlogService {
   ) => {
     getFetch(
       filter
-        ? `/api/v1/admin/blog/latest-blog?offset=${offSet}&limit=${limit}&filter=${filter}`
-        : `/api/v1/admin/blog/latest-blogs`
+        ? `/api/v1/admin/blog/latest-blog?offset=${offSet}&limit=${limit}&filter=${filter}&type=${type}`
+        : `/api/v1/admin/blog/latest-blogs?type=${type}`
     ).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {

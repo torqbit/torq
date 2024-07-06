@@ -36,6 +36,7 @@
     "antd-img-crop": "^4.18.0",
     "aos": "^3.0.0-beta.6",
     "canvas": "^2.11.2",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.3.1",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",

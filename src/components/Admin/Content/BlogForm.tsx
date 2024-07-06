@@ -13,11 +13,12 @@ import BlogService from "@/services/BlogService";
 import { useRouter } from "next/router";
 import { StateType } from "@prisma/client";
 
-const BlogForm: FC<{ htmlData: HTMLElement; bannerImage: string; title: string; state: StateType }> = ({
+const BlogForm: FC<{ htmlData: HTMLElement; bannerImage: string; title: string; state: StateType; type: string }> = ({
   htmlData,
   title,
   bannerImage,
   state,
+  type,
 }) => {
   const { data: user } = useSession();
   const [blogBanner, setBlogBanner] = useState<string>(bannerImage);
@@ -218,6 +219,7 @@ const BlogForm: FC<{ htmlData: HTMLElement; bannerImage: string; title: string; 
             currentContentData={currentContentData as JSONContent}
             setContent={setCurrentContentData}
             isEditable={true}
+            type={type}
           />
         </div>
       </Form>

@@ -409,6 +409,7 @@ model Blog {
   updatedAt DateTime  @default(now())
   content   Json
   banner    String
+  type      String?
   state     StateType
   user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 

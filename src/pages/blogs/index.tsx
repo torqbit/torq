@@ -135,6 +135,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   const blog = await prisma.blog.findMany({
     where: {
+      type: "BLOG",
       state: "ACTIVE",
     },
     select: {
@@ -160,9 +161,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       props: {
         user,
-
-        // description: blog.content.content[0].content[0].text,
-
         blogData: blog.map((b) => {
           return {
             title: b.title,
@@ -179,9 +177,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       props: {
         user,
-
-        // description: blog.content.content[0].content[0].text,
-
         blogData: [],
       },
     };

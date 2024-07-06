@@ -1,0 +1,124 @@
+.updateCardWrapper {
+  background-color: var(--bg-primary);
+  border-top: 2px solid var(--border-color);
+  > div:first-child {
+    max-width: 1000px;
+    margin: 0 auto;
+    > div:first-child {
+      margin: 0 40px;
+      display: flex;
+      align-items: flex-start;
+      img {
+        width: 500px;
+        height: 250px;
+        border-radius: 8px;
+      }
+      gap: 40px;
+      padding: 10px 20px;
+      > div:first-child {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 40px;
+        color: var(--font-secondary);
+        position: sticky;
+        height: 100px;
+        top: 0;
+        width: 240px;
+        a {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-top: 20px;
+          &:hover {
+            color: var(--font-primary);
+            font-size: 18px;
+          }
+        }
+      }
+      > div:last-child {
+        overflow-y: auto;
+        h2 {
+          margin: 0;
+          padding-bottom: 28px;
+          padding-top: 0;
+          max-width: 550px;
+        }
+        p {
+          max-width: 550px;
+          color: var(--font-secondary);
+        }
+        img {
+          padding-bottom: 24px;
+        }
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          color: var(--font-secondary);
+          padding-top: 20px;
+          &:hover {
+            color: var(--font-primary);
+          }
+          span {
+            display: flex;
+            gap: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .updateCardWrapper {
+    background-color: var(--bg-primary);
+    > div:first-child {
+      max-width: 1000px;
+      margin: 0 auto;
+      > div:first-child {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        img {
+          width: 350px;
+          height: 175px;
+          border-radius: 8px;
+        }
+        > div:first-child {
+          display: none;
+        }
+        > div:last-child {
+          overflow-y: auto;
+          h2 {
+            margin: 0;
+            padding-bottom: 28px;
+            padding-top: 0;
+            max-width: 550px;
+          }
+          p {
+            max-width: 550px;
+            color: var(--font-secondary);
+          }
+          img {
+            padding-bottom: 24px;
+          }
+          a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--font-secondary);
+            padding-top: 20px;
+            &:hover {
+              color: var(--font-primary);
+            }
+            span {
+              display: flex;
+              gap: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

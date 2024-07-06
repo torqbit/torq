@@ -6,8 +6,10 @@ import { useRouter } from "next/router";
 import BlogService, { latestBlogs } from "@/services/BlogService";
 import appConstant from "@/services/appConstant";
 import { StateType } from "@prisma/client";
+import DateFormater from "@/components/Marketing/Updates/DateFormater";
+import { getCreatedDate } from "@/services/helper";
 
-const BlogList: FC<{}> = () => {
+const BlogList: FC<{ type: string }> = ({ type }) => {
   const router = useRouter();
   const [modal, contextHolder] = Modal.useModal();
   const [blogData, setBlogData] = useState<latestBlogs[]>();
@@ -63,18 +65,16 @@ const BlogList: FC<{}> = () => {
       key: "state",
     },
     {
-      title: "Type",
-      align: "center",
-
-      dataIndex: "difficulty",
-      key: "difficulty",
+      title: "DATE",
+      dataIndex: "date",
+      key: "date",
     },
 
     {
       title: "ACTIONS",
       align: "center",
       dataIndex: "actions",
-      render: (_: any, courseInfo: any) => (
+      render: (_: any, blogInfo: any) => (
         <>
           <Dropdown
             menu={{
@@ -83,17 +83,19 @@ const BlogList: FC<{}> = () => {
                   key: "1",
                   label: "Edit",
                   onClick: () => {
-                    router.push(`/admin/content/blog/${courseInfo?.id}`);
+                    type === "BLOG"
+                      ? router.push(`/admin/content/blog/${blogInfo?.id}`)
+                      : router.push(`/admin/content/update/${blogInfo?.id}`);
                   },
                 },
                 {
                   key: "2",
-                  label: courseInfo.state == "DRAFT" ? "Publish" : "Move to Draft",
+                  label: blogInfo.state == "DRAFT" ? "Publish" : "Move to Draft",
                   onClick: () => {
-                    if (courseInfo.name === "Untitled") {
+                    if (blogInfo.name === "Untitled") {
                       messageApi.warning("Blog is not ready to publish");
                     } else {
-                      handleBlogStatusUpdate(String(courseInfo.id), courseInfo.state == "DRAFT" ? "ACTIVE" : "DRAFT");
+                      handleBlogStatusUpdate(String(blogInfo.id), blogInfo.state == "DRAFT" ? "ACTIVE" : "DRAFT");
                     }
                   },
                 },
@@ -107,7 +109,7 @@ const BlogList: FC<{}> = () => {
                       okText: "Yes",
                       cancelText: "No",
                       onOk: () => {
-                        handleBlogDelete(String(courseInfo.id));
+                        handleBlogDelete(String(blogInfo.id));
                       },
                     });
                   },
@@ -129,11 +131,11 @@ const BlogList: FC<{}> = () => {
     setLoading(true);
 
     BlogService.getLatestBlogs(
+      type,
       5,
       appConstant.defaultPageSize,
       false,
       (result) => {
-        console.log(result, "r");
         setBlogData(result.latestBlogs);
         setLoading(false);
       },
@@ -150,7 +152,7 @@ const BlogList: FC<{}> = () => {
       author: blog.user?.name,
       state: blog.state,
       id: blog.id,
-      difficulty: "N/A",
+      date: getCreatedDate(new Date(blog.createdAt).getTime()),
     };
   });
 
