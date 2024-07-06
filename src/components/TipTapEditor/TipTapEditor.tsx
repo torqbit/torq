@@ -10,8 +10,8 @@ const TiptapEditor: React.FC<{
   setContent: (content: JSONContent) => void;
   isEditable: boolean;
   currentContentData: JSONContent;
-  type: string;
-}> = ({ contentData, setContent, isEditable, type }) => {
+  contentType: string;
+}> = ({ contentData, setContent, isEditable, contentType }) => {
   const editor = useRef<Editor | null>(null);
 
   if (!editor) {
@@ -29,7 +29,7 @@ const TiptapEditor: React.FC<{
               },
             }),
             Placeholder.configure({
-              placeholder: `Start writing your ${type.toLowerCase()} `,
+              placeholder: `Start writing your ${contentType.toLowerCase()} `,
               emptyEditorClass: Styles.emptyPlaceholder,
             }),
           ]}

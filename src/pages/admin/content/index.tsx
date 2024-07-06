@@ -286,12 +286,12 @@ const Content: NextPage = () => {
     {
       key: "2",
       label: "Blogs",
-      children: <BlogList type="BLOG" />,
+      children: <BlogList contentType="BLOG" />,
     },
     {
       key: "3",
       label: "Updates",
-      children: <BlogList type="UPDATE" />,
+      children: <BlogList contentType="UPDATE" />,
     },
   ];
 
@@ -317,11 +317,11 @@ const Content: NextPage = () => {
     );
   };
 
-  const handleBlogOk = (type: string) => {
+  const handleBlogOk = (contentType: string) => {
     setIsModalOpen(false);
 
     BlogService.createBlog(
-      type,
+      contentType,
       (result) => {
         router.push(`/admin/content/blog/${result.blog.id}`);
       },
@@ -362,33 +362,36 @@ const Content: NextPage = () => {
       );
     }
   };
-  const onCreateDraftBlog = (type: string) => {
+  const onCreateDraftBlog = (contentType: string) => {
     showModal();
     if (router.query.blogId) {
       router.push(`/admin/content/blog/${router.query.blogId}`);
     } else {
       BlogService.getLatestDraftBlog(
+        contentType,
         (result) => {
           if (result.blog) {
             modal.confirm({
               title: "Choose from the below options?",
               content: (
                 <>
-                  <p>You currently have unsaved changes that you had made while creating the {type.toLowerCase()}.</p>
+                  <p>
+                    You currently have unsaved changes that you had made while creating the {contentType.toLowerCase()}.
+                  </p>
                 </>
               ),
               footer: (
                 <Space>
                   <Button type="primary" onClick={() => previousDraftBlog(result.blog.id)}>
-                    Previous draft {type.toLowerCase()}
+                    Previous draft {contentType.toLowerCase()}
                   </Button>
                   or
-                  <Button onClick={() => handleBlogOk(type)}>Create a new {type.toLowerCase()}</Button>
+                  <Button onClick={() => handleBlogOk(contentType)}>Create a new {contentType.toLowerCase()}</Button>
                 </Space>
               ),
             });
           } else {
-            handleBlogOk(type);
+            handleBlogOk(contentType);
           }
         },
         (error) => {}

@@ -9,7 +9,7 @@ import { StateType } from "@prisma/client";
 import DateFormater from "@/components/Marketing/Updates/DateFormater";
 import { getCreatedDate } from "@/services/helper";
 
-const BlogList: FC<{ type: string }> = ({ type }) => {
+const BlogList: FC<{ contentType: string }> = ({ contentType }) => {
   const router = useRouter();
   const [modal, contextHolder] = Modal.useModal();
   const [blogData, setBlogData] = useState<latestBlogs[]>();
@@ -83,7 +83,7 @@ const BlogList: FC<{ type: string }> = ({ type }) => {
                   key: "1",
                   label: "Edit",
                   onClick: () => {
-                    type === "BLOG"
+                    contentType === "BLOG"
                       ? router.push(`/admin/content/blog/${blogInfo?.id}`)
                       : router.push(`/admin/content/update/${blogInfo?.id}`);
                   },
@@ -131,7 +131,7 @@ const BlogList: FC<{ type: string }> = ({ type }) => {
     setLoading(true);
 
     BlogService.getLatestBlogs(
-      type,
+      contentType,
       5,
       appConstant.defaultPageSize,
       false,

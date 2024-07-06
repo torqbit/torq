@@ -135,7 +135,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   const blog = await prisma.blog.findMany({
     where: {
-      type: "BLOG",
+      contentType: "BLOG",
       state: "ACTIVE",
     },
     select: {

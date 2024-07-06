@@ -12,14 +12,14 @@ interface IProps {
   bannerImage: string;
   title: string;
   state: StateType;
-  type: string;
+  contentType: string;
 }
 
-const BlogFormPage: FC<IProps> = ({ htmlData, bannerImage, title, state, type }) => {
+const BlogFormPage: FC<IProps> = ({ htmlData, bannerImage, title, state, contentType }) => {
   return (
     <>
       <Layout2>
-        <BlogForm type={type} htmlData={htmlData} bannerImage={bannerImage} title={title} state={state} />
+        <BlogForm contentType={contentType} htmlData={htmlData} bannerImage={bannerImage} title={title} state={state} />
       </Layout2>
     </>
   );
@@ -28,7 +28,7 @@ const BlogFormPage: FC<IProps> = ({ htmlData, bannerImage, title, state, type })
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const params = ctx?.params;
 
-  const blogContentData = await prisma.blog.findUnique({
+  const contentData = await prisma.blog.findUnique({
     where: {
       id: String(params?.blogId),
     },
@@ -37,20 +37,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       state: true,
       content: true,
       title: true,
-      type: true,
+      contentType: true,
     },
   });
-  if (blogContentData) {
-    const jsonValue = blogContentData?.content;
-    const htmlData = blogContentData && blogContentData.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
+  if (contentData) {
+    const jsonValue = contentData?.content;
+    const htmlData = contentData && contentData.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
 
     return {
       props: {
         htmlData,
-        bannerImage: blogContentData?.banner,
-        title: blogContentData?.title,
-        state: blogContentData.state,
-        type: blogContentData.type,
+        bannerImage: contentData?.banner,
+        title: contentData?.title,
+        state: contentData.state,
+        contentType: contentData.contentType,
       },
     };
   } else {

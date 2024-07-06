@@ -32,7 +32,7 @@ interface IProps {
     authorName: string;
     authorImage: string;
     slug: string;
-    type: string;
+    contentType: string;
   };
 }
 
@@ -102,7 +102,7 @@ const BlogPage: FC<IProps> = ({ user, htmlData, updateData, description, current
               currentContentData={{} as JSONContent}
               setContent={() => {}}
               isEditable={false}
-              type={updateData.type}
+              contentType={updateData.contentType}
             />
           </Flex>
         </section>
@@ -156,7 +156,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       id: true,
       banner: true,
       slug: true,
-      type: true,
+      contentType: true,
     },
   })) as any;
 
@@ -179,7 +179,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           authorName: update?.user.name,
           authorImage: update?.user.image,
           slug: update.slug,
-          type: update.type,
+          contentType: update.contentType,
         },
       },
     };

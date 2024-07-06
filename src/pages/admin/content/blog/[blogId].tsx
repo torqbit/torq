@@ -12,14 +12,14 @@ interface IProps {
   bannerImage: string;
   title: string;
   state: StateType;
-  type: string;
+  contentType: string;
 }
 
-const BlogFormPage: FC<IProps> = ({ htmlData, bannerImage, title, state, type }) => {
+const BlogFormPage: FC<IProps> = ({ htmlData, bannerImage, title, state, contentType }) => {
   return (
     <>
       <Layout2>
-        <BlogForm type={type} htmlData={htmlData} bannerImage={bannerImage} title={title} state={state} />
+        <BlogForm contentType={contentType} htmlData={htmlData} bannerImage={bannerImage} title={title} state={state} />
       </Layout2>
     </>
   );
@@ -37,7 +37,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       state: true,
       content: true,
       title: true,
-      type: true,
+      contentType: true,
     },
   });
   if (blogContentData) {
@@ -50,7 +50,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         bannerImage: blogContentData?.banner,
         title: blogContentData?.title,
         state: blogContentData.state,
-        type: blogContentData.type,
+        contentType: blogContentData.contentType,
       },
     };
   } else {

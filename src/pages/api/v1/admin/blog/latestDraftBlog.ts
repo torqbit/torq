@@ -16,12 +16,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-
+    const { contentType } = req.query;
     const authorId = token?.id;
     const allBlog = await prisma.blog.findMany({
       orderBy: [{ createdAt: "asc" }],
       where: {
         authorId: authorId,
+        contentType: String(contentType),
         state: "DRAFT",
         // state: state as StateType,
       },
