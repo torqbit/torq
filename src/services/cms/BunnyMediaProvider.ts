@@ -140,7 +140,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
 
   trackVideo(videoInfo: VideoInfo, onCompletion: (videoLen: number) => Promise<string>): Promise<string> {
     return this.tryNTimes(
-      60,
+      120,
       5,
       () => {
         return fetch(this.getVideoUrl(videoInfo.videoId, this.libraryId), this.getVideoOption(this.accessKey));
