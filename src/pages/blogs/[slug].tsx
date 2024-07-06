@@ -65,7 +65,47 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
     onCheckTheme();
   }, []);
   return (
-    <MarketingLayout user={user}>
+    <MarketingLayout
+      user={user}
+      heroSection={
+        <section className={styles.blogPageWrapper}>
+          <Flex vertical gap={20}>
+            <h1>{blogData.title.toUpperCase()}</h1>
+            <Image
+              src={blogData.banner}
+              height={isMobile ? 175 : 400}
+              width={isMobile ? 350 : 800}
+              alt={"blog-banner"}
+            />
+            <Flex align="center" gap={10} className={styles.authorInfo}>
+              {blogData.authorImage ? (
+                <Image
+                  src={blogData.authorImage}
+                  alt=""
+                  height={isMobile ? 40 : 50}
+                  width={isMobile ? 40 : 50}
+                  loading="lazy"
+                />
+              ) : (
+                <div className={styles.userOutlineContainer}>
+                  <UserOutlined height={isMobile ? 40 : 50} width={isMobile ? 40 : 50} />
+                </div>
+              )}
+              <Space direction="vertical" size={"small"}>
+                <span>A Blog by</span>
+                <div>{blogData.authorName}</div>
+              </Space>
+            </Flex>
+            <Tiptap
+              contentData={htmlData}
+              currentContentData={{} as JSONContent}
+              setContent={() => {}}
+              isEditable={false}
+            />
+          </Flex>
+        </section>
+      }
+    >
       <Head>
         <title>
           {appConstant.platformName} | {blogData.title}
@@ -86,31 +126,6 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={blogData.banner} />
       </Head>
-      <section className={styles.blogPageWrapper}>
-        <Flex vertical gap={20}>
-          <h1>{blogData.title.toUpperCase()}</h1>
-          <Image src={blogData.banner} height={400} width={800} alt={"blog-banner"} />
-          <Flex align="center" gap={10} className={styles.authorInfo}>
-            {blogData.authorImage ? (
-              <Image src={blogData.authorImage} alt="" height={50} width={50} loading="lazy" />
-            ) : (
-              <div className={styles.userOutlineContainer}>
-                <UserOutlined height={50} width={50} />
-              </div>
-            )}
-            <Space direction="vertical" size={"small"}>
-              <span>A Blog by</span>
-              <div>{blogData.authorName}</div>
-            </Space>
-          </Flex>
-          <Tiptap
-            contentData={htmlData}
-            currentContentData={{} as JSONContent}
-            setContent={() => {}}
-            isEditable={false}
-          />
-        </Flex>
-      </section>
     </MarketingLayout>
   );
 };

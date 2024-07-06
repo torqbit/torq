@@ -275,7 +275,6 @@
         border-radius: 8px;
         background-color: var(--bg-primary);
         font-size: 24px;
-
       }
       span {
         color: var(--font-secondary);
@@ -510,7 +509,8 @@
 }
 
 @media only screen and (max-width: 415px) {
-  .sideNaveContainer {
+  .sideNaveContainer,
+  .platformNameLogo {
     display: unset;
   }
 
