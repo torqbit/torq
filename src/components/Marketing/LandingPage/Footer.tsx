@@ -29,19 +29,19 @@ const Footer = () => {
         {
           arialLabel: "link for discord page",
 
-          href: "#",
+          href: "https://discord.gg/NqP35bn2",
           label: "Discord",
         },
         {
           arialLabel: "link for Github page",
 
-          href: "#",
+          href: "https://github.com/torqbit",
           label: "Github",
         },
         {
           arialLabel: "link for youtube ",
 
-          href: "#",
+          href: "https://www.youtube.com/@torqbit",
           label: "Youtube",
         },
       ],
