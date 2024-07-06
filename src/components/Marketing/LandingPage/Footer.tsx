@@ -29,7 +29,7 @@ const Footer = () => {
         {
           arialLabel: "link for discord page",
 
-          href: "https://discord.gg/NqP35bn2",
+          href: "https://discord.gg/NserMXcx",
           label: "Discord",
         },
         {
@@ -86,7 +86,7 @@ const Footer = () => {
       arialLabel: "link to discord",
 
       icon: SvgIcons.discord,
-      href: "https://discord.gg/NqP35bn2",
+      href: "https://discord.gg/NserMXcx",
     },
     {
       arialLabel: "link to github",
