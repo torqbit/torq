@@ -72,7 +72,8 @@
 
 @media only screen and (max-width: 415px) {
   .updateCardWrapper {
-    background-color: var(--bg-primary);
+    margin: 20px 10px;
+    border-radius: 8px;
     > div:first-child {
       max-width: 1000px;
       margin: 0 auto;

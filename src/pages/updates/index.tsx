@@ -183,7 +183,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       props: {
         user,
-        blogData: update.map((b: any) => {
+        updateData: update.map((b: any) => {
           return {
             title: b.title,
             description: b.content.content[0].content[0].text,
