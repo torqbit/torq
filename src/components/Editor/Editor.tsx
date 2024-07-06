@@ -5,12 +5,13 @@ import { Editor, EditorProvider, JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 
-const TiptapEditor: React.FC<{
+const TextEditor: React.FC<{
   contentData: HTMLElement;
   setContent: (content: JSONContent) => void;
   isEditable: boolean;
   currentContentData: JSONContent;
-}> = ({ contentData, setContent, isEditable }) => {
+  contentType: string;
+}> = ({ contentData, setContent, isEditable, contentType }) => {
   const editor = useRef<Editor | null>(null);
 
   if (!editor) {
@@ -28,7 +29,7 @@ const TiptapEditor: React.FC<{
               },
             }),
             Placeholder.configure({
-              placeholder: "Start writing your blog",
+              placeholder: `Start writing your ${contentType.toLowerCase()} `,
               emptyEditorClass: Styles.emptyPlaceholder,
             }),
           ]}
@@ -50,4 +51,4 @@ const TiptapEditor: React.FC<{
   }
 };
 
-export default TiptapEditor;
+export default TextEditor;

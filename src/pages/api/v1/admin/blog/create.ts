@@ -16,9 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
     const body = await req.body;
-    // const { title, content, state, banner } = body;
-    // console.log(content, "c");
-    // const slug = createSlug(title);
+    const { contentType } = body;
 
     const createBlog = await prisma.blog.create({
       data: {
@@ -28,6 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         slug: "",
         content: "",
         title: "Untitled",
+        contentType: String(contentType),
       },
       select: {
         id: true,

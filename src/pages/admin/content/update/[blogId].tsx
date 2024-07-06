@@ -28,7 +28,7 @@ const BlogFormPage: FC<IProps> = ({ htmlData, bannerImage, title, state, content
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const params = ctx?.params;
 
-  const blogContentData = await prisma.blog.findUnique({
+  const contentData = await prisma.blog.findUnique({
     where: {
       id: String(params?.blogId),
     },
@@ -40,17 +40,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       contentType: true,
     },
   });
-  if (blogContentData) {
-    const jsonValue = blogContentData?.content;
-    const htmlData = blogContentData && blogContentData.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
+  if (contentData) {
+    const jsonValue = contentData?.content;
+    const htmlData = contentData && contentData.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
 
     return {
       props: {
         htmlData,
-        bannerImage: blogContentData?.banner,
-        title: blogContentData?.title,
-        state: blogContentData.state,
-        contentType: blogContentData.contentType,
+        bannerImage: contentData?.banner,
+        title: contentData?.title,
+        state: contentData.state,
+        contentType: contentData.contentType,
       },
     };
   } else {

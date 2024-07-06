@@ -8,7 +8,7 @@ import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
 import { useMediaQuery } from "react-responsive";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
-import { Card, Flex, Space } from "antd";
+import { Flex, Space } from "antd";
 import Image from "next/image";
 import prisma from "@/lib/prisma";
 import styles from "@/styles/Blog.module.scss";
@@ -87,12 +87,12 @@ const BlogPage: FC<IProps> = ({ user, blogData }) => {
             {blogData.slice(0, 2).map((blog, i) => {
               return (
                 <Link href={`/blogs/${blog.slug}`} key={i} onClick={() => {}} className={styles.blogCard}>
-                  <Image src={blog.banner} alt="blog-img" height={250} width={500} />
+                  <Image src={blog.banner} alt="blog-img" height={isMobile ? 175 : 250} width={isMobile ? 350 : 500} />
                   <div>
                     <Flex className={styles.authorInfo} align="center" gap={10}>
                       <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
                       <Space direction="vertical" size={5}>
-                        <span>A blog by</span>
+                        <span>A blog by a</span>
                         <div>{blog.authorName}</div>
                       </Space>
                     </Flex>
@@ -135,6 +135,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   const blog = await prisma.blog.findMany({
     where: {
+      contentType: "BLOG",
       state: "ACTIVE",
     },
     select: {
@@ -160,9 +161,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       props: {
         user,
-
-        // description: blog.content.content[0].content[0].text,
-
         blogData: blog.map((b) => {
           return {
             title: b.title,
@@ -179,9 +177,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     return {
       props: {
         user,
-
-        // description: blog.content.content[0].content[0].text,
-
         blogData: [],
       },
     };

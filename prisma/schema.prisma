@@ -401,16 +401,17 @@ model CourseNotification {
 }
 
 model Blog {
-  id        String    @id @unique @default(cuid())
-  authorId  String
-  title     String
-  slug      String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  content   Json
-  banner    String
-  state     StateType
-  user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id          String    @id @unique @default(cuid())
+  authorId    String
+  title       String
+  slug        String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  content     Json
+  banner      String
+  contentType String?
+  state       StateType
+  user        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([authorId])
 }

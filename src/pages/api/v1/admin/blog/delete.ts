@@ -29,8 +29,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    console.log(isBlogExist);
-
     if (isBlogExist) {
       await prisma.blog.delete({
         where: {

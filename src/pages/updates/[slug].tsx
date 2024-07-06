@@ -26,7 +26,7 @@ interface IProps {
   description: string;
   currentUrl: string;
   hostName: string;
-  blogData: {
+  updateData: {
     title: string;
     id: string;
     banner: string;
@@ -37,7 +37,7 @@ interface IProps {
   };
 }
 
-const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUrl, hostName }) => {
+const BlogPage: FC<IProps> = ({ user, htmlData, updateData, description, currentUrl, hostName }) => {
   const { dispatch } = useAppContext();
   const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
 
@@ -72,17 +72,17 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
       heroSection={
         <section className={styles.blogPageWrapper}>
           <Flex vertical gap={20}>
-            <h1>{blogData.title.toUpperCase()}</h1>
+            <h1>{updateData.title.toUpperCase()}</h1>
             <Image
-              src={blogData.banner}
+              src={updateData.banner}
               height={isMobile ? 175 : 400}
               width={isMobile ? 350 : 800}
               alt={"blog-banner"}
             />
             <Flex align="center" gap={10} className={styles.authorInfo}>
-              {blogData.authorImage ? (
+              {updateData.authorImage ? (
                 <Image
-                  src={blogData.authorImage}
+                  src={updateData.authorImage}
                   alt=""
                   height={isMobile ? 40 : 50}
                   width={isMobile ? 40 : 50}
@@ -95,7 +95,7 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
               )}
               <Space direction="vertical" size={"small"}>
                 <span>A Blog by</span>
-                <div>{blogData.authorName}</div>
+                <div>{updateData.authorName}</div>
               </Space>
             </Flex>
             <TextEditor
@@ -103,7 +103,7 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
               currentContentData={{} as JSONContent}
               setContent={() => {}}
               isEditable={false}
-              contentType={blogData.contentType}
+              contentType={updateData.contentType}
             />
           </Flex>
         </section>
@@ -111,23 +111,23 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
     >
       <Head>
         <title>
-          {appConstant.platformName} | {blogData.title}
+          {appConstant.platformName} | {updateData.title}
         </title>
         <meta name="description" content={truncateString(description)} />
         <link rel="icon" href="/favicon.ico" />
 
         {<meta property="og:url" content={currentUrl} />}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={blogData.title} />
+        <meta property="og:title" content={updateData.title} />
         <meta property="og:description" content={description} />
-        <meta property="og:image" content={blogData.banner} />
+        <meta property="og:image" content={updateData.banner} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:domain" content={hostName} />
         <meta property="twitter:url" content={currentUrl} />
-        <meta name="twitter:title" content={blogData.title} />
+        <meta name="twitter:title" content={updateData.title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={blogData.banner} />
+        <meta name="twitter:image" content={updateData.banner} />
       </Head>
     </MarketingLayout>
   );
@@ -140,7 +140,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const protocol = req.headers["x-forwarded-proto"] || "http"; // Detect protocol
   const host = req.headers["x-forwarded-host"] || req.headers.host; // Detect host
   const currentUrl = `${protocol}://${host}${req.url}`; // Construct full URL
-  const blog = (await prisma.blog.findUnique({
+  const update = (await prisma.blog.findUnique({
     where: {
       slug: String(params?.slug),
       state: "ACTIVE",
@@ -162,25 +162,25 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   })) as any;
 
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
-  if (blog) {
-    const jsonValue = blog?.content;
-    const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
+  if (update) {
+    const jsonValue = update?.content;
+    const htmlData = update && update.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
 
     return {
       props: {
         user,
         htmlData: htmlData,
-        description: blog.content.content[0].content[0].text,
+        description: update.content.content[0].content[0].text,
         currentUrl,
         hostName: `${host}`,
-        blogData: {
-          title: blog?.title,
-          id: blog?.id,
-          banner: blog?.banner,
-          authorName: blog?.user.name,
-          authorImage: blog?.user.image,
-          slug: blog.slug,
-          contentType: blog.contentType,
+        updateData: {
+          title: update?.title,
+          id: update?.id,
+          banner: update?.banner,
+          authorName: update?.user.name,
+          authorImage: update?.user.image,
+          slug: update.slug,
+          contentType: update.contentType,
         },
       },
     };

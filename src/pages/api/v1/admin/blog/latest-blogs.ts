@@ -6,7 +6,7 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { offSet, limit, filter } = req.query;
+    const { offSet, limit, filter, contentType } = req.query;
     if (filter) {
       const latestBlogs = await prisma.blog.findMany({
         take: Number(limit),
@@ -23,12 +23,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       if (latestBlogs) {
-        return res.status(200).json({ success: true, latestBlogs });
+        return res
+          .status(200)
+          .json({ success: true, latestBlogs: latestBlogs.filter((b) => b.contentType === contentType) });
       } else {
         return res.status(400).json({ success: false, error: "No Blog found" });
       }
     } else {
       const latestBlogs = await prisma.blog.findMany({
+        where: {
+          contentType: String(contentType),
+        },
         orderBy: {
           createdAt: "desc",
         },

@@ -7,18 +7,20 @@ import { LoadingOutlined } from "@ant-design/icons";
 import SvgIcons from "@/components/SvgIcons";
 import { postWithFile } from "@/services/request";
 import { createSlug } from "@/lib/utils";
-import Tiptap from "@/components/TipTapEditor/TipTapEditor";
+
 import { JSONContent } from "@tiptap/react";
 import BlogService from "@/services/BlogService";
 import { useRouter } from "next/router";
 import { StateType } from "@prisma/client";
+import TextEditor from "@/components/Editor/Editor";
 
-const BlogForm: FC<{ htmlData: HTMLElement; bannerImage: string; title: string; state: StateType }> = ({
-  htmlData,
-  title,
-  bannerImage,
-  state,
-}) => {
+const BlogForm: FC<{
+  htmlData: HTMLElement;
+  bannerImage: string;
+  title: string;
+  state: StateType;
+  contentType: string;
+}> = ({ htmlData, title, bannerImage, state, contentType }) => {
   const { data: user } = useSession();
   const [blogBanner, setBlogBanner] = useState<string>(bannerImage);
   const [blogTitle, setBlogTitle] = useState<string>(title);
@@ -38,7 +40,6 @@ const BlogForm: FC<{ htmlData: HTMLElement; bannerImage: string; title: string; 
 
   const uploadFile = async (file: any, title: string) => {
     if (file) {
-      console.log("hit");
       setBlogBannerUploading(true);
       const name = title.replace(/\s+/g, "-");
       const formData = new FormData();
@@ -213,11 +214,12 @@ const BlogForm: FC<{ htmlData: HTMLElement; bannerImage: string; title: string; 
           </div>
         </div>
         <div className={styles.editorContainer}>
-          <Tiptap
+          <TextEditor
             contentData={htmlData}
             currentContentData={currentContentData as JSONContent}
             setContent={setCurrentContentData}
             isEditable={true}
+            contentType={contentType}
           />
         </div>
       </Form>
