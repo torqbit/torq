@@ -110,6 +110,11 @@
         font-size: 14px;
         margin-bottom: 20px;
         color: var(--font-secondary);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
       }
 
       .card_footer {

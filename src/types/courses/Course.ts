@@ -26,6 +26,7 @@ export interface VideoLesson {
   lessonId: number;
   videoUrl: string;
   videoDuration: number;
+  description: string;
   isWatched: boolean;
   title: string;
 }

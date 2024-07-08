@@ -123,39 +123,26 @@ const Preview: FC<{
               src={videoUrl}
             ></iframe>
           }
-          <div className={styles.video_player_info}>
-            <Space direction="vertical">
-              <h2>{courseDetail?.course.name}</h2>
-              <p>{courseDetail?.course.description}</p>
-            </Space>
+        </div>
+        <div className={styles.course__info}>
+          <Space direction="vertical">
+            <h2>{courseDetail?.course.name}</h2>
+            <p>{courseDetail?.course.description}</p>
+          </Space>
 
-            {enrolled ? (
-              <>
-                {isCourseCompleted ? (
-                  <Flex align="center" gap={10}>
-                    <Button onClick={onViewCertificate}>View Certificate</Button>
+          {enrolled ? (
+            <>
+              {isCourseCompleted ? (
+                <Flex align="center" gap={10}>
+                  <Button onClick={onViewCertificate}>View Certificate</Button>
 
-                    <Link
-                      href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}
-                    >
-                      <Button type="primary">Rewatch</Button>
-                    </Link>
-                  </Flex>
-                ) : (
-                  <Button
-                    className={styles.save_btn}
-                    type="primary"
-                    onClick={() => {
-                      !addContentPreview && onEnrollCourse && onEnrollCourse();
-                    }}
+                  <Link
+                    href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}
                   >
-                    {!isCourseStarted ? "Start Course" : "Resume"}
-                    {SvgIcons.arrowRight}
-                  </Button>
-                )}
-              </>
-            ) : (
-              <>
+                    <Button type="primary">Rewatch</Button>
+                  </Link>
+                </Flex>
+              ) : (
                 <Button
                   className={styles.save_btn}
                   type="primary"
@@ -163,12 +150,25 @@ const Preview: FC<{
                     !addContentPreview && onEnrollCourse && onEnrollCourse();
                   }}
                 >
-                  Enroll Course
+                  {!isCourseStarted ? "Start Course" : "Resume"}
                   {SvgIcons.arrowRight}
                 </Button>
-              </>
-            )}
-          </div>
+              )}
+            </>
+          ) : (
+            <>
+              <Button
+                className={styles.save_btn}
+                type="primary"
+                onClick={() => {
+                  !addContentPreview && onEnrollCourse && onEnrollCourse();
+                }}
+              >
+                Enroll Course
+                {SvgIcons.arrowRight}
+              </Button>
+            </>
+          )}
         </div>
 
         <h2>Table of Contents</h2>

@@ -24,15 +24,13 @@
     position: relative;
   }
 
-  .video_player_info {
-    position: absolute;
-    bottom: 0;
-    background-image: linear-gradient(to bottom, rgba(4, 0, 0, 0.2), rgba(4, 0, 0, 2), rgba(0, 0, 0, 5));
-
+  .course__info {
     width: 800px;
-    h2 {
-      color: #fff;
-    }
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
     p {
       color: var(--font-secondary);
     }
@@ -41,16 +39,13 @@
       margin: 0;
       padding: 0;
 
-      max-width: 400px;
+      max-width: 600px;
     }
 
     p {
       color: var(--font-secondary);
     }
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
     .save_btn {
       display: flex;
       align-items: center;
@@ -65,9 +60,7 @@
 
     .resContainer {
       height: 35px;
-
       border-bottom: 1px solid var(--border-color);
-
       padding: 5px 0px;
       padding-left: 20px;
     }
