@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import React from "react";
-import styles from "@/styles/MarketingHero.module.scss";
+import styles from "@/styles/Marketing/MarketingHero.module.scss";
 import Head from "next/head";
 import { useAppContext } from "../ContextApi/AppContext";
 import { ConfigProvider, Flex } from "antd";

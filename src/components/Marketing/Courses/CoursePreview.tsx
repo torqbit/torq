@@ -1,6 +1,7 @@
 import SvgIcons from "@/components/SvgIcons";
 import { convertSecToHourandMin } from "@/pages/admin/content";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Marketing/CoursePreview/CoursePreview.module.scss";
+
 import { Button, Collapse, Divider, Flex, Input, Space, Tag, message } from "antd";
 import { FC, ReactNode, useEffect, useState } from "react";
 import MarketingSvgIcons from "../MarketingSvgIcons";

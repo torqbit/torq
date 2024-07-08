@@ -1,18 +1,15 @@
 import React, { FC } from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { Theme, User } from "@prisma/client";
-import { GetServerSidePropsContext, NextPage } from "next";
+import { GetServerSidePropsContext } from "next";
 import { useEffect } from "react";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
 import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
 import { useMediaQuery } from "react-responsive";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
-import { Divider, Flex, Space } from "antd";
-import Image from "next/image";
 import prisma from "@/lib/prisma";
-import styles from "@/styles/Blog.module.scss";
-import Link from "next/link";
+import styles from "@/styles/Marketing/Blog/Blog.module.scss";
 import UpdateCard from "@/components/Marketing/Updates/UpdateCard";
 interface IProps {
   user: User;

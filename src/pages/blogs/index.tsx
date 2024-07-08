@@ -11,7 +11,8 @@ import { getToken } from "next-auth/jwt";
 import { Flex, Space } from "antd";
 import Image from "next/image";
 import prisma from "@/lib/prisma";
-import styles from "@/styles/Blog.module.scss";
+import styles from "@/styles/Marketing/Blog/Blog.module.scss";
+
 import Link from "next/link";
 interface IProps {
   user: User;
@@ -103,7 +104,13 @@ const BlogPage: FC<IProps> = ({ user, blogData }) => {
             })}
           </div>
           <div>
-            <div className={styles.secondaryBlog}>
+            <div
+              className={
+                blogData.slice(2).length > 2
+                  ? styles.secondaryBlog
+                  : `${blogData.slice(2).length === 1 ? styles.singleSecondaryBlog : styles.doubleSecondaryBlog}`
+              }
+            >
               {blogData.slice(2).map((blog, i) => {
                 return (
                   <Link href={`/blogs/${blog.slug}`} key={i} onClick={() => {}} className={styles.blogCard}>

@@ -6,7 +6,8 @@ import { Avatar, Badge, Button, Divider, Flex, Input, message } from "antd";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Conversation.module.scss";
+
 import ConversationCard from "@/components/Conversation/ConversationCard";
 import SvgIcons from "@/components/SvgIcons";
 import { IConversationData } from "../api/v1/conversation/list";

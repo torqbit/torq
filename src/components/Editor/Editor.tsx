@@ -1,4 +1,4 @@
-import Styles from "@/styles/Blog.module.scss";
+import Styles from "@/styles/Marketing/Blog/Blog.module.scss";
 
 import React, { useRef } from "react";
 import { Editor, EditorProvider, JSONContent } from "@tiptap/react";
