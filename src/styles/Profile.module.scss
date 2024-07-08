@@ -3,7 +3,7 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    gap: 0 80px;
+    gap: 0 40px;
   }
 
   .left_content {
@@ -34,10 +34,14 @@
 }
 
 .upload__thumbnail {
-  margin-top: 20px;
+  > div:first-child {
+    height: 150px !important;
+    width: 150px !important;
+    border-radius: 50% !important;
+  }
   & > div {
-    height: 150px;
-    width: 150px;
+    height: 200px;
+    width: 200px;
     position: relative;
   }
   right: 50%;

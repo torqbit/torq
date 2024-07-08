@@ -9,7 +9,7 @@ import { NextPage } from "next";
 import { Session } from "next-auth";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { useAppContext } from "@/components/ContextApi/AppContext";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, UserOutlined } from "@ant-design/icons";
 import SvgIcons from "@/components/SvgIcons";
 import ImgCrop from "antd-img-crop";
 
@@ -31,7 +31,7 @@ const ProfileSetting: FC<{
       formData.append("title", name);
       formData.append("dir", "/user/profile/");
 
-      userProfile && formData.append("existingFilePath", userProfile);
+      userProfile && userProfile !== "NULL" && formData.append("existingFilePath", userProfile);
 
       const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
       if (!postRes.ok) {
@@ -76,14 +76,14 @@ const ProfileSetting: FC<{
                     }}
                     // onChange={handleChange}
                   >
-                    {userProfile ? (
+                    {userProfile !== "NULL" ? (
                       <>
                         <img
                           style={{ borderRadius: "50%", objectFit: "cover", width: 150, height: 150 }}
                           src={userProfile ? userProfile : String(user.user?.image)}
                         />
 
-                        <Tooltip title="Upload course thumbnail">
+                        <Tooltip title="Upload Profile image">
                           <div className={styles.camera_btn_img}>
                             {userProfileUploading && userProfile ? <LoadingOutlined /> : SvgIcons.camera}
                           </div>
@@ -96,9 +96,9 @@ const ProfileSetting: FC<{
                         style={{ border: 0, background: "none", width: 150, height: 150 }}
                         type="button"
                       >
-                        {userProfileUploading ? <LoadingOutlined /> : SvgIcons.uploadIcon}
+                        {userProfileUploading ? <LoadingOutlined /> : SvgIcons.camera}
                         {!userProfileUploading ? (
-                          <div style={{ marginTop: 8 }}>Upload Image</div>
+                          <div>Upload Image</div>
                         ) : (
                           <div style={{ color: "#000" }}>{userProfileUploading && "Uploading"}</div>
                         )}
