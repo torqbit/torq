@@ -166,7 +166,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         await saveToDir(fullName, sourcePath);
         // lesson videos
-        const totalFile = fs.readdirSync(`${process.env.MEDIA_UPLOAD_PATH}`);
+        const totalFile = fs.readdirSync(`${process.env.MEDIA_UPLOAD_PATH}`).filter((file) => file.startsWith(name));
 
         if (totalFile.length === totalChunks) {
           const mergedFinalFilePath = path.join(
