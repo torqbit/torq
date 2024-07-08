@@ -329,43 +329,100 @@ const AddCourseForm: FC = () => {
     );
   };
 
+  // const onUploadVideo = async (file: RcFile, title: string, resourceId: number) => {
+  //   setResourceVideoUploading(true);
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("title", title);
+  //   formData.append("objectId", resourceId.toString());
+  //   formData.append("objectType", "lesson");
+
+  //   const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
+  //   if (!postRes.ok) {
+  //     setResourceVideoUploading(false);
+  //   }
+  //   const res = (await postRes.json()) as VideoAPIResponse;
+  //   if (res.success) {
+  //     setVideoLesson({
+  //       ...videoLesson,
+  //       video: {
+  //         id: 0,
+  //         providerVideoId: res.video.videoId,
+  //         videoUrl: res.video.videoUrl,
+  //         thumbnail: res.video.thumbnail,
+  //         resourceId: currResId || 0,
+  //         state: res.video.state,
+  //         mediaProvider: res.video.mediaProviderName,
+  //         videoDuration: res.video.videoDuration,
+  //       },
+  //     });
+  //     setCheckVideoState(true);
+  //     setUploadResUrl({
+  //       videoId: String(res.video.videoId),
+  //       videoUrl: res.video.videoUrl,
+  //       thumbnail: res.video.thumbnail,
+  //       state: res.video.state,
+  //       mediaProvider: res.video.mediaProviderName,
+  //       videoDuration: res.video.videoDuration,
+  //     });
+  //     setResourceVideoUploading(false);
+  //   }
+  // };
+
   const onUploadVideo = async (file: RcFile, title: string, resourceId: number) => {
     setResourceVideoUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("title", title);
-    formData.append("objectId", resourceId.toString());
-    formData.append("objectType", "lesson");
 
-    const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
-    if (!postRes.ok) {
-      setResourceVideoUploading(false);
-    }
-    const res = (await postRes.json()) as VideoAPIResponse;
-    if (res.success) {
-      setVideoLesson({
-        ...videoLesson,
-        video: {
-          id: 0,
-          providerVideoId: res.video.videoId,
+    const chunkSize = 1024 * 1024; // 1MB chunks (adjust as needed)
+    const totalChunks = Math.ceil(file.size / chunkSize);
+    let start = 0;
+    let end = chunkSize;
+
+    console.log(chunkSize, "s");
+    console.log(totalChunks, "t");
+
+    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+      const chunk = file.slice(start, end);
+      const formData = new FormData();
+      formData.append("file", chunk, file.name);
+      formData.append("chunkIndex", String(chunkIndex));
+      formData.append("totalChunks", String(totalChunks));
+      formData.append("title", title);
+      formData.append("objectId", resourceId.toString());
+      formData.append("objectType", "lesson");
+
+      const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
+      start = end;
+      end = start + chunkSize;
+      if (!postRes.ok) {
+        setResourceVideoUploading(false);
+      }
+      const res = (await postRes.json()) as VideoAPIResponse;
+
+      if (res.success) {
+        setVideoLesson({
+          ...videoLesson,
+          video: {
+            id: 0,
+            providerVideoId: res.video.videoId,
+            videoUrl: res.video.videoUrl,
+            thumbnail: res.video.thumbnail,
+            resourceId: currResId || 0,
+            state: res.video.state,
+            mediaProvider: res.video.mediaProviderName,
+            videoDuration: res.video.videoDuration,
+          },
+        });
+        setCheckVideoState(true);
+        setUploadResUrl({
+          videoId: String(res.video.videoId),
           videoUrl: res.video.videoUrl,
           thumbnail: res.video.thumbnail,
-          resourceId: currResId || 0,
           state: res.video.state,
           mediaProvider: res.video.mediaProviderName,
           videoDuration: res.video.videoDuration,
-        },
-      });
-      setCheckVideoState(true);
-      setUploadResUrl({
-        videoId: String(res.video.videoId),
-        videoUrl: res.video.videoUrl,
-        thumbnail: res.video.thumbnail,
-        state: res.video.state,
-        mediaProvider: res.video.mediaProviderName,
-        videoDuration: res.video.videoDuration,
-      });
-      setResourceVideoUploading(false);
+        });
+        setResourceVideoUploading(false);
+      }
     }
   };
 

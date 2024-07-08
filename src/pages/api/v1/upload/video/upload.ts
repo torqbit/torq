@@ -52,21 +52,62 @@ export const saveToDir = async (fullName: string, sourcePath: string) => {
   return destinationPath;
 };
 
+async function mergeChunks(
+  fileName: string,
+  totalChunks: number,
+
+  extention: string,
+
+  filePath: string
+) {
+  if (!process.env.MEDIA_UPLOAD_PATH) {
+    throw new Error(" Environment variable MEDIA_UPLOAD_PATH is not set.");
+  }
+  const isDirExist = fs.existsSync(String(process.env.MEDIA_UPLOAD_PATH));
+
+  if (!isDirExist) {
+    throw new Error("Local directory for uploading media does not exist");
+  }
+
+  const outFile = fs.createWriteStream(filePath);
+
+  for (let i = 0; i < totalChunks; i++) {
+    const chunkFilePath = path.join(process.env.MEDIA_UPLOAD_PATH, `${fileName}.part${i}.${extention}`);
+
+    const partStream = fs.createReadStream(chunkFilePath);
+
+    await new Promise<void>((resolve, reject) => {
+      partStream.pipe(outFile, { end: false });
+      partStream.on("end", () => {
+        fs.unlink(chunkFilePath, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    });
+  }
+
+  outFile.end();
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { fields, files } = (await readFieldWithFile(req)) as any;
     if (files.file) {
-      let path: string = "";
       const name = fields.title[0].replaceAll(" ", "_");
       const objectId = Number(fields.objectId[0]);
+
       const objectType = fields.objectType[0] as UploadVideoObjectType;
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
-      const fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
+      let fullName = ``;
+
       let needDeletion = false;
       let videoProviderId: string | undefined | null;
       if (objectType == "course") {
+        fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
+
         const trailerVideo = await prisma?.course.findUnique({
           where: {
             courseId: objectId,
@@ -77,7 +118,41 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
         videoProviderId = trailerVideo?.tvProviderId;
         needDeletion = typeof trailerVideo !== undefined || trailerVideo != null;
+
+        const localPath = await saveToDir(fullName, sourcePath);
+        const fileBuffer = await fs.promises.readFile(localPath);
+        const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+          where: {
+            service_type: "media",
+          },
+        });
+        if (serviceProviderResponse) {
+          const serviceProvider = cms.getServiceProvider(
+            serviceProviderResponse?.provider_name,
+            serviceProviderResponse?.providerDetail
+          );
+          if (needDeletion && videoProviderId) {
+            const deletionResponse = await cms.deleteVideo(videoProviderId, objectId, objectType, serviceProvider);
+            if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
+              throw new Error(`Unable to delete the video due to : ${deletionResponse.message}`);
+            }
+          }
+          const uploadResponse = await cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
+          if (localPath != "") {
+            console.log(`deleting the file - ${localPath}`);
+            fs.unlinkSync(localPath);
+          } else {
+            console.log(`unable to delete video : ${localPath} . response ${uploadResponse?.statusCode}`);
+          }
+
+          return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
+        } else {
+          throw new Error("No Media Provder has been configured");
+        }
       } else if (objectType == "lesson") {
+        const chunkIndex = Number(fields.chunkIndex[0]);
+        const totalChunks = Number(fields.totalChunks[0]);
+        fullName = `${name}.part${chunkIndex}.${extension}`;
         const videoLesson = await prisma?.video.findUnique({
           where: {
             resourceId: objectId,
@@ -88,36 +163,52 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         });
         videoProviderId = videoLesson?.providerVideoId;
         needDeletion = typeof videoLesson !== undefined || videoLesson != null;
-      }
-      const localPath = await saveToDir(fullName, sourcePath);
-      const fileBuffer = await fs.promises.readFile(localPath);
-      const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
-        where: {
-          service_type: "media",
-        },
-      });
-      if (serviceProviderResponse) {
-        const serviceProvider = cms.getServiceProvider(
-          serviceProviderResponse?.provider_name,
-          serviceProviderResponse?.providerDetail
-        );
-        if (needDeletion && videoProviderId) {
-          const deletionResponse = await cms.deleteVideo(videoProviderId, objectId, objectType, serviceProvider);
-          if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
-            throw new Error(`Unable to delete the video due to : ${deletionResponse.message}`);
+
+        await saveToDir(fullName, sourcePath);
+        // lesson videos
+        const totalFile = fs.readdirSync(`${process.env.MEDIA_UPLOAD_PATH}`);
+
+        if (totalFile.length === totalChunks) {
+          const mergedFinalFilePath = path.join(
+            String(process.env.MEDIA_UPLOAD_PATH),
+            `${name}.${currentTime}.${extension}`
+          );
+          await mergeChunks(name, totalChunks, extension, mergedFinalFilePath);
+
+          const fileBuffer = await fs.promises.readFile(mergedFinalFilePath);
+
+          const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+            where: {
+              service_type: "media",
+            },
+          });
+          if (serviceProviderResponse) {
+            const serviceProvider = cms.getServiceProvider(
+              serviceProviderResponse?.provider_name,
+              serviceProviderResponse?.providerDetail
+            );
+            if (needDeletion && videoProviderId) {
+              const deletionResponse = await cms.deleteVideo(videoProviderId, objectId, objectType, serviceProvider);
+              if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
+                throw new Error(`Unable to delete the video due to : ${deletionResponse.message}`);
+              }
+            }
+            const uploadResponse = await cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
+            if (mergedFinalFilePath != "") {
+              console.log(`deleting the file - ${mergedFinalFilePath}`);
+              fs.unlinkSync(mergedFinalFilePath);
+            } else {
+              console.log(`unable to delete video : ${mergedFinalFilePath} . response ${uploadResponse?.statusCode}`);
+            }
+            return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
+          } else {
+            throw new Error("No Media Provder has been configured");
           }
         }
-        const uploadResponse = await cms.uploadVideo(fullName, fileBuffer, serviceProvider, objectId, objectType);
-        if (localPath != "") {
-          console.log(`deleting the file - ${localPath}`);
-          fs.unlinkSync(localPath);
-        } else {
-          console.log(`unable to delete video : ${localPath} . response ${uploadResponse?.statusCode}`);
-        }
 
-        return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
-      } else {
-        throw new Error("No Media Provder has been configured");
+        if (totalFile.length < totalChunks) {
+          res.status(200).json({ success: false, message: "uploading" });
+        }
       }
     }
 
