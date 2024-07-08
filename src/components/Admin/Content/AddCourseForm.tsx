@@ -329,46 +329,6 @@ const AddCourseForm: FC = () => {
     );
   };
 
-  // const onUploadVideo = async (file: RcFile, title: string, resourceId: number) => {
-  //   setResourceVideoUploading(true);
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-  //   formData.append("title", title);
-  //   formData.append("objectId", resourceId.toString());
-  //   formData.append("objectType", "lesson");
-
-  //   const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
-  //   if (!postRes.ok) {
-  //     setResourceVideoUploading(false);
-  //   }
-  //   const res = (await postRes.json()) as VideoAPIResponse;
-  //   if (res.success) {
-  //     setVideoLesson({
-  //       ...videoLesson,
-  //       video: {
-  //         id: 0,
-  //         providerVideoId: res.video.videoId,
-  //         videoUrl: res.video.videoUrl,
-  //         thumbnail: res.video.thumbnail,
-  //         resourceId: currResId || 0,
-  //         state: res.video.state,
-  //         mediaProvider: res.video.mediaProviderName,
-  //         videoDuration: res.video.videoDuration,
-  //       },
-  //     });
-  //     setCheckVideoState(true);
-  //     setUploadResUrl({
-  //       videoId: String(res.video.videoId),
-  //       videoUrl: res.video.videoUrl,
-  //       thumbnail: res.video.thumbnail,
-  //       state: res.video.state,
-  //       mediaProvider: res.video.mediaProviderName,
-  //       videoDuration: res.video.videoDuration,
-  //     });
-  //     setResourceVideoUploading(false);
-  //   }
-  // };
-
   const onUploadVideo = async (file: RcFile, title: string, resourceId: number) => {
     setResourceVideoUploading(true);
 
