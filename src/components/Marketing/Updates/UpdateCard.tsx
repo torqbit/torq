@@ -1,7 +1,7 @@
 import SvgIcons from "@/components/SvgIcons";
 import Link from "next/link";
 import { FC, ReactNode } from "react";
-import styles from "@/styles/Update.module.scss";
+import styles from "@/styles/Marketing/Updates/Updates.module.scss";
 import Image from "next/image";
 import { useMediaQuery } from "react-responsive";
 import { getCreatedDate } from "@/services/helper";

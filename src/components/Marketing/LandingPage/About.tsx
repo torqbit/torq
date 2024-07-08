@@ -1,7 +1,7 @@
 import appConstant from "@/services/appConstant";
 import MarketingSvgIcons from "../MarketingSvgIcons";
 import { Button, Card } from "antd";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Marketing/About.module.scss";
 
 const About = () => {
   const cardDetail = [

@@ -1,5 +1,6 @@
 import { FC } from "react";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Marketing/PageHero.module.scss";
+
 import SvgComponent from "../LandingPage/HeroWave";
 
 const DefaulttHero: FC<{ title: string; description: string }> = ({ title, description }) => {

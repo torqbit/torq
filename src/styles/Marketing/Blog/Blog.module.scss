@@ -184,7 +184,9 @@ p.emptyPlaceholder:first-child::before {
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
   }
-  .secondaryBlog {
+  .secondaryBlog,
+  .singleSecondaryBlog,
+  .doubleSecondaryBlog {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 40px;
@@ -197,6 +199,12 @@ p.emptyPlaceholder:first-child::before {
         }
       }
     }
+  }
+  .singleSecondaryBlog {
+    grid-template-columns: 1fr;
+  }
+  .doubleSecondaryBlog {
+    grid-template-columns: 2fr;
   }
 }
 
@@ -242,7 +250,9 @@ p.emptyPlaceholder:first-child::before {
       grid-template-columns: repeat(1, 1fr);
       gap: 20px;
     }
-    .secondaryBlog {
+    .secondaryBlog,
+    .singleSecondaryBlog,
+    .doubleSecondaryBlog {
       grid-template-columns: repeat(1, 1fr);
       gap: 20px;
       .blogCard {

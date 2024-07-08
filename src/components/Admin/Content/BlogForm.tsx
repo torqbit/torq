@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { FC, useEffect, useState } from "react";
-import styles from "@/styles/Blog.module.scss";
+import styles from "@/styles/Marketing/Blog/Blog.module.scss";
 import { Button, Dropdown, Flex, Form, Input, Popconfirm, Tooltip, Upload, UploadProps, message } from "antd";
 import ImgCrop from "antd-img-crop";
 import { LoadingOutlined } from "@ant-design/icons";

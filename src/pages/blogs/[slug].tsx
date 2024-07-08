@@ -10,7 +10,8 @@ import { generateHTML } from "@tiptap/html";
 import { FC, useEffect } from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { useMediaQuery } from "react-responsive";
-import styles from "@/styles/Blog.module.scss";
+import styles from "@/styles/Marketing/Blog/Blog.module.scss";
+
 import { Flex, Space } from "antd";
 import Image from "next/image";
 

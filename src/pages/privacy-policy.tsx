@@ -4,11 +4,12 @@ import { Theme, User } from "@prisma/client";
 import { GetServerSidePropsContext, NextPage } from "next";
 import { useEffect } from "react";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
-import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
+
 import { useMediaQuery } from "react-responsive";
 import appConstant from "@/services/appConstant";
 import Link from "next/link";
-import AboutTorqbit from "@/components/Marketing/AboutTorqbit";
+import LegalAgreement from "@/components/Marketing/LegalAgreement";
+
 import DefaulttHero from "@/components/Marketing/Blog/DefaultHero";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
@@ -133,7 +134,7 @@ const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
         />
       }
     >
-      <AboutTorqbit
+      <LegalAgreement
         content={privacyPoliciesList}
         isMobile={isMobile}
         titleDescription={

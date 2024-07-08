@@ -1,5 +1,6 @@
 import { Flex, Space } from "antd";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Marketing/LegalAgreement/LegalAgreement.module.scss";
+
 import { FC, ReactNode } from "react";
 
 interface IProps {
@@ -8,7 +9,7 @@ interface IProps {
   titleDescription?: ReactNode;
 }
 
-const AboutTorqbit: FC<IProps> = ({ content, titleDescription, isMobile }) => {
+const LegalAgreement: FC<IProps> = ({ content, titleDescription, isMobile }) => {
   return (
     <div className={titleDescription ? styles.privacyPolicyWrapper : styles.termAndCondionWrapper}>
       <div className={styles.termAndCondionContent}>
@@ -44,4 +45,4 @@ const AboutTorqbit: FC<IProps> = ({ content, titleDescription, isMobile }) => {
     </div>
   );
 };
-export default AboutTorqbit;
+export default LegalAgreement;

@@ -1,5 +1,6 @@
 import appConstant from "@/services/appConstant";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Marketing/Footer.module.scss";
+
 import { Flex } from "antd";
 import Link from "next/link";
 import Image from "next/image";

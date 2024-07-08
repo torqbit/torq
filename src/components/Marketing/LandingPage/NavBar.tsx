@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styles from "@/styles/NavBar.module.scss";
+import styles from "@/styles/Marketing/NavBar.module.scss";
 import Image from "next/image";
 import { Button, Dropdown, Flex, MenuProps, Tooltip } from "antd";
 import appConstant from "@/services/appConstant";

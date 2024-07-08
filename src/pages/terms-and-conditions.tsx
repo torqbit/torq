@@ -4,14 +4,14 @@ import { Theme, User } from "@prisma/client";
 import { GetServerSidePropsContext, NextPage } from "next";
 import { useEffect } from "react";
 import MarketingLayout from "@/components/Layouts/MarketingLayout";
-import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
 import { useMediaQuery } from "react-responsive";
 import appConstant from "@/services/appConstant";
 import Link from "next/link";
-import AboutTorqbit from "@/components/Marketing/AboutTorqbit";
+
 import DefaulttHero from "@/components/Marketing/Blog/DefaultHero";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import LegalAgreement from "@/components/Marketing/LegalAgreement";
 
 const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
   const { dispatch } = useAppContext();
@@ -328,7 +328,7 @@ Violate These Terms Or ${appConstant.platformName}'s Then-Current Policies And O
         />
       }
     >
-      <AboutTorqbit content={termAndCondionList} isMobile={isMobile} />
+      <LegalAgreement content={termAndCondionList} isMobile={isMobile} />
     </MarketingLayout>
   );
 };
