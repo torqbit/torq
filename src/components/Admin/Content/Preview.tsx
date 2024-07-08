@@ -50,26 +50,30 @@ const Preview: FC<{
   const items = courseDetail?.lessons.map((content, i) => {
     let totalTime = 0;
     content.lessons.forEach((data) => {
-      totalTime = totalTime + data.videoDuration;
+      if (data) {
+        totalTime = totalTime + data.videoDuration;
+      }
     });
     const duration = convertSecToHourandMin(totalTime);
     return {
       key: `${i + 1}`,
       label: <Label title={content.chapterName} icon={SvgIcons.folder} time={duration} keyValue={`${i + 1}`} />,
       children: content.lessons.map((res: VideoLesson, i: any) => {
-        const duration = convertSecToHourandMin(res.videoDuration);
-        return (
-          <div className={styles.resContainer}>
-            <Label
-              title={res.title}
-              icon={SvgIcons.playBtn}
-              time={duration}
-              isCompleted={res.isWatched}
-              resourceId={res.videoId}
-              keyValue={`${i + 1}`}
-            />
-          </div>
-        );
+        if (res) {
+          const duration = convertSecToHourandMin(res.videoDuration);
+          return (
+            <div className={styles.resContainer}>
+              <Label
+                title={res.title}
+                icon={SvgIcons.playBtn}
+                time={duration}
+                isCompleted={res.isWatched}
+                resourceId={res.videoId}
+                keyValue={`${i + 1}`}
+              />
+            </div>
+          );
+        }
       }),
       showArrow: false,
     };

@@ -129,6 +129,15 @@ p.emptyPlaceholder:first-child::before {
     }
 
     color: var(--font-primary);
+    .userOutlineContainer {
+      background-color: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+    }
     span {
       color: var(--font-secondary);
     }
