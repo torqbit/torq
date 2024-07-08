@@ -555,14 +555,25 @@ const AddCourseForm: FC = () => {
                   chapterSeq: c.sequenceId,
                   chapterName: c.name,
                   lessons: c.resource.map((r) => {
-                    return {
-                      videoId: r.video.id,
-                      lessonId: r.resourceId,
-                      videoUrl: r.video.videoUrl,
-                      videoDuration: r.video.videoDuration,
-                      isWatched: false,
-                      title: r.name,
-                    };
+                    if (r.video) {
+                      return {
+                        videoId: r.video.id,
+                        lessonId: r.resourceId,
+                        videoUrl: r.video.videoUrl,
+                        videoDuration: r.video.videoDuration,
+                        isWatched: false,
+                        title: r.name,
+                      };
+                    } else {
+                      return {
+                        videoId: 0,
+                        lessonId: r.resourceId,
+                        videoUrl: "",
+                        videoDuration: 0,
+                        isWatched: false,
+                        title: r.name,
+                      };
+                    }
                   }),
                 };
               }),
