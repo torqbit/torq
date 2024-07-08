@@ -332,7 +332,7 @@ const AddCourseForm: FC = () => {
   const onUploadVideo = async (file: RcFile, title: string, resourceId: number) => {
     setResourceVideoUploading(true);
 
-    const chunkSize = 5 * 1024 * 1024; // 1MB chunks (adjust as needed)
+    const chunkSize = 2 * 1024 * 1024; // 1MB chunks (adjust as needed)
     const totalChunks = Math.ceil(file.size / chunkSize);
     let start = 0;
     let end = chunkSize;
