@@ -564,15 +564,6 @@ const AddCourseForm: FC = () => {
                         isWatched: false,
                         title: r.name,
                       };
-                    } else {
-                      return {
-                        videoId: 0,
-                        lessonId: r.resourceId,
-                        videoUrl: "",
-                        videoDuration: 0,
-                        isWatched: false,
-                        title: r.name,
-                      };
                     }
                   }),
                 };
