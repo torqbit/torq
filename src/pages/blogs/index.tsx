@@ -14,6 +14,7 @@ import prisma from "@/lib/prisma";
 import styles from "@/styles/Marketing/Blog/Blog.module.scss";
 
 import Link from "next/link";
+import { UserOutlined } from "@ant-design/icons";
 interface IProps {
   user: User;
   blogData: {
@@ -91,7 +92,15 @@ const BlogPage: FC<IProps> = ({ user, blogData }) => {
                   <Image src={blog.banner} alt="blog-img" height={isMobile ? 175 : 250} width={isMobile ? 350 : 500} />
                   <div>
                     <Flex className={styles.authorInfo} align="center" gap={10}>
-                      <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
+                      {blog.authorImage ? (
+                        <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
+                      ) : (
+                        <div className={styles.userOutlineImage}>
+                          <i>
+                            <UserOutlined style={{ fontSize: 20 }} />
+                          </i>
+                        </div>
+                      )}
                       <Space direction="vertical" size={5}>
                         <span>A blog by a</span>
                         <div>{blog.authorName}</div>
@@ -117,9 +126,15 @@ const BlogPage: FC<IProps> = ({ user, blogData }) => {
                     <Image src={blog.banner} alt="blog-img" height={175} width={350} />
                     <div className={styles.infoWrapper}>
                       <Flex className={styles.authorInfo} align="center" gap={10}>
-                        <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
+                        {blog.authorImage ? (
+                          <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
+                        ) : (
+                          <div className={styles.userOutlineImage}>
+                            <UserOutlined style={{ fontSize: 24 }} height={40} width={40} />
+                          </div>
+                        )}
                         <Space direction="vertical" size={5}>
-                          <span>A blog by</span>
+                          <span>A blog by a</span>
                           <div>{blog.authorName}</div>
                         </Space>
                       </Flex>

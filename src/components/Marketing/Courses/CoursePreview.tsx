@@ -2,7 +2,7 @@ import SvgIcons from "@/components/SvgIcons";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import styles from "@/styles/Marketing/CoursePreview/CoursePreview.module.scss";
 
-import { Button, Collapse, Divider, Flex, Input, Space, Tag, message } from "antd";
+import { Button, Collapse, Divider, Flex, Form, Input, Space, Tag, message } from "antd";
 import { FC, ReactNode, useEffect, useState } from "react";
 import MarketingSvgIcons from "../MarketingSvgIcons";
 import { ICoursePageDetail } from "@/types/courses/Course";
@@ -41,6 +41,7 @@ const Label: FC<{
 const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ courseDetails, user }) => {
   const [notificationLoading, setNotificationLoading] = useState<boolean>(false);
   const [isNotified, setNotified] = useState<boolean>(false);
+  const [form] = Form.useForm();
 
   const [email, setEmail] = useState<string>("");
   const courseListDetail = {
@@ -230,21 +231,23 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
                   <Button type="primary">Enroll for free</Button>
                 </Link>
               ) : (
-                <Flex vertical className={styles.buttonWrapper} gap={10}>
-                  {!user && (
-                    <Input type="email" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
-                  )}
-                  <Button
-                    loading={notificationLoading}
-                    disabled={isNotified}
-                    onClick={() => {
-                      user ? onCreateNotification(true, String(user.email)) : onCreateNotification(false, email);
-                    }}
-                    type="primary"
-                  >
-                    Notify on launch
-                  </Button>
-                </Flex>
+                <Form
+                  form={form}
+                  onFinish={() => {
+                    user ? onCreateNotification(true, String(user.email)) : onCreateNotification(false, email);
+                  }}
+                >
+                  <Flex vertical className={styles.buttonWrapper} gap={10}>
+                    {!user && (
+                      <Form.Item name={"email"} noStyle rules={[{ required: true, message: "Enter your email" }]}>
+                        <Input type="email" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} />
+                      </Form.Item>
+                    )}
+                    <Button loading={notificationLoading} disabled={isNotified} htmlType="submit" type="primary">
+                      Notify on launch
+                    </Button>
+                  </Flex>
+                </Form>
               )}
             </div>
           </div>
