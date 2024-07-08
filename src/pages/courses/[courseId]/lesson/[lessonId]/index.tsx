@@ -275,7 +275,7 @@ const LessonPage: NextPage = () => {
     {
       key: "1",
       label: "About",
-      children: courseDetail?.description,
+      children: currentLesson?.lesson?.description,
     },
     {
       key: "QA",

@@ -201,7 +201,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   useEffect(() => {
     if (user) {
       getLatestNotificationCount();
-      getAllConversation();
       onChangeSelectedBar();
       const userSession = user.user as UserSession;
 
@@ -240,63 +239,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
             <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
               <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
             </Layout>
-
-            {/**
-             * Conversation popup
-             */}
-
-            {/* <Popover
-              className="chat__popup"
-              placement="topRight"
-              title={<div className={styles.popconfirm_title}>Chat with us</div>}
-              trigger={"click"}
-              content={
-                <>
-                  <Scrollbars style={{ height: "calc(500px)", width: "400px" }}>
-                    <div className={styles.contentWrapper}>
-                      {conversationList?.map((list, i) => {
-                        return (
-                          <ConversationCard
-                            name={list?.name}
-                            image={list?.image}
-                            comment={list?.comments}
-                            user={String(user?.id)}
-                            commentUser={list?.authorId}
-                            key={i}
-                            contentWidth={"230px"}
-                          />
-                        );
-                      })}
-                    </div>
-                  </Scrollbars>
-                  <Flex align="center" className={styles.commentInputWrapper}>
-                    {" "}
-                    <Input
-                      placeholder="Add comment"
-                      style={{ padding: "0px 10px" }}
-                      suffix={
-                        <button className={styles.postBtn} onClick={() => onPost()}>
-                          <i>{SvgIcons.send}</i>
-                        </button>
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && e.shiftKey) {
-                          // onEdit(id, editComment);
-                        }
-                      }}
-                      value={comment}
-                      className={styles.add_conversation_input}
-                      onChange={(e) => {
-                        setComment(e.target.value);
-                      }}
-                    />
-                  </Flex>
-                </>
-              }
-              onOpenChange={() => setChatWindow(!chatWindow)}
-            >
-              <Button type="primary">{chatWindow ? <i>{SvgIcons.xMark}</i> : <i>{SvgIcons.chat}</i>}</Button>
-            </Popover> */}
           </Layout>
         </ConfigProvider>
       )}

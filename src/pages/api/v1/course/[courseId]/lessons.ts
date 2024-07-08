@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       resultRows = await prisma.$queryRaw<
         any[]
       >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,
-        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
+        re.description as lessonDescription, vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
         ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
         INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
         INNER JOIN Chapter as ch ON co.courseId = ch.courseId
@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       resultRows = await prisma.$queryRaw<
         any[]
       >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,
-        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
+        re.description as lessonDescription, vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
         ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
         INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
         INNER JOIN Chapter as ch ON co.courseId = ch.courseId
@@ -77,6 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           videoId: r.videoId,
           title: r.lessonName,
           videoDuration: r.videoDuration,
+          description: r.lessonDescription,
           lessonId: r.resourceId,
           videoUrl: r.videoUrl,
           isWatched: r.watchedRes != null,
@@ -90,6 +91,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               videoId: r.videoId,
               title: r.lessonName,
               videoDuration: r.videoDuration,
+              description: r.lessonDescription,
               lessonId: r.resourceId,
               videoUrl: r.videoUrl,
               isWatched: r.watchedRes != null,
