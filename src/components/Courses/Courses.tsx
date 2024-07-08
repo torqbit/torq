@@ -65,7 +65,9 @@ const Courses: FC<{
               let totalDuration = 0;
               course.chapters.forEach((chap: any) => {
                 chap.resource.forEach((r: any) => {
-                  totalDuration = totalDuration + r.video?.videoDuration;
+                  if (r.video) {
+                    totalDuration = totalDuration + r.video?.videoDuration;
+                  }
                 });
               });
               let duration = convertSecToHourandMin(totalDuration);
