@@ -127,6 +127,7 @@ p.emptyPlaceholder:first-child::before {
     img {
       border-radius: 50%;
     }
+
     color: var(--font-primary);
     span {
       color: var(--font-secondary);
@@ -172,6 +173,15 @@ p.emptyPlaceholder:first-child::before {
     margin: 10px 0px;
     color: var(--font-primary);
     font-size: 12px;
+    .userOutlineImage {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-secondary);
+    }
     span {
       color: var(--font-secondary);
     }
@@ -204,7 +214,7 @@ p.emptyPlaceholder:first-child::before {
     grid-template-columns: 1fr;
   }
   .doubleSecondaryBlog {
-    grid-template-columns: 2fr;
+    grid-template-columns: 1fr 1fr;
   }
 }
 
