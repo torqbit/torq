@@ -217,7 +217,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   async deleteFile(filePath: string): Promise<BasicAPIResponse> {
     const parseUrl = filePath && url.parse(filePath);
     const existingPath = parseUrl && parseUrl.pathname;
-    if (parseUrl && parseUrl.host === "torqbit-dev.b-cdn.net") {
+    if (parseUrl && parseUrl.host === this.connectedCDNHostname) {
       const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${existingPath}`;
       const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
       if (response.ok) {
