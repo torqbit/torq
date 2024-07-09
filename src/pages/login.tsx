@@ -9,6 +9,7 @@ import { getToken } from "next-auth/jwt";
 import appConstant from "@/services/appConstant";
 import { getCookieName } from "@/lib/utils";
 import { LoadingOutlined } from "@ant-design/icons";
+import Image from "next/image";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -42,19 +43,16 @@ const LoginPage: NextPage = () => {
 
   return (
     <div className={styles.login_page_wrapper}>
-      <div className={styles.login_img}>
-        <img src="/img/login-screen.png" alt="Login image" />
-        <h3>Learn to Lead</h3>
-        <p>Transform into the most competitive individual who drives changes for the betterment.</p>
-      </div>
       <div className={styles.social_login_container}>
-        <img src="/icon/torq.svg" alt="" />
-        <h3>Login to Torq</h3>
+        <Image src={"/icon/torqbit.png"} height={60} width={60} alt={"logo"} />
+        <h3>Login to {appConstant.platformName}</h3>
 
         <Button
           onClick={() => {
             setGoogleLoading(true);
-            signIn("google");
+            signIn("google", {
+              callbackUrl: router.query.redirect ? `/${router.query.redirect}` : "/dashboard",
+            });
           }}
           icon={<img src="./img/google.svg" width={25} />}
           type="default"
@@ -64,9 +62,12 @@ const LoginPage: NextPage = () => {
           Login with Google
         </Button>
         <Button
+          style={{ backgroundColor: "#000" }}
           onClick={() => {
             setGitHubLoading(true);
-            signIn("github");
+            signIn("github", {
+              callbackUrl: router.query.redirect ? `/${router.query.redirect}` : "/dashboard",
+            });
           }}
           loading={gitHubLoading}
           icon={<img src="./icon/github.png" width={35} />}
