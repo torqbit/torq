@@ -1,5 +1,5 @@
 import appConstant from "@/services/appConstant";
-import styles from "@/styles/Marketing/Footer.module.scss";
+import styles from "@/styles/Marketing/LandingPage/LandingPage.module.scss";
 
 import { Flex } from "antd";
 import Link from "next/link";

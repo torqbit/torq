@@ -73,7 +73,7 @@ const BlogPage: FC<IProps> = ({ user, htmlData, updateData, description, current
       heroSection={
         <section className={styles.blogPageWrapper}>
           <Flex vertical gap={20}>
-            <h1>{updateData.title.toUpperCase()}</h1>
+            <h1>{updateData.title}</h1>
             <Image
               src={updateData.banner}
               height={isMobile ? 175 : 400}

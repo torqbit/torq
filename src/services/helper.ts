@@ -70,5 +70,5 @@ export const createCourseExpiry = (time: number) => {
 };
 
 export const getCreatedDate = (time: number) => {
-  return moment(time).format("D MMMM YYYY");
+  return moment(time).format("MMMM  D  YYYY");
 };

@@ -9,7 +9,7 @@ import { useMediaQuery } from "react-responsive";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
 import prisma from "@/lib/prisma";
-import styles from "@/styles/Marketing/Blog/Blog.module.scss";
+import styles from "@/styles/Marketing/Updates/Updates.module.scss";
 import UpdateCard from "@/components/Marketing/Updates/UpdateCard";
 interface IProps {
   user: User;
@@ -82,48 +82,6 @@ const updatePage: FC<IProps> = ({ user, updateData }) => {
           </p>
         </div>
       ) : (
-        // <div className={styles.blogListPageWrapper}>
-        //   <div className={styles.primaryBlog}>
-        //     {blogData.slice(0, 2).map((blog, i) => {
-        //       return (
-        //         <Link href={`/blogs/${blog.slug}`} key={i} onClick={() => {}} className={styles.blogCard}>
-        //           <Image src={blog.banner} alt="blog-img" height={isMobile ? 175 : 250} width={isMobile ? 350 : 500} />
-        //           <div>
-        //             <Flex className={styles.authorInfo} align="center" gap={10}>
-        //               <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
-        //               <Space direction="vertical" size={5}>
-        //                 <span>A blog by a</span>
-        //                 <div>{blog.authorName}</div>
-        //               </Space>
-        //             </Flex>
-        //             <h1>{blog.title}</h1>
-        //           </div>
-        //         </Link>
-        //       );
-        //     })}
-        //   </div>
-        //   <div>
-        //     <div className={styles.secondaryBlog}>
-        //       {blogData.slice(2).map((blog, i) => {
-        //         return (
-        //           <Link href={`/blogs/${blog.slug}`} key={i} onClick={() => {}} className={styles.blogCard}>
-        //             <Image src={blog.banner} alt="blog-img" height={175} width={350} />
-        //             <div className={styles.infoWrapper}>
-        //               <Flex className={styles.authorInfo} align="center" gap={10}>
-        //                 <Image src={blog.authorImage} alt="blog-img" height={40} width={40} />
-        //                 <Space direction="vertical" size={5}>
-        //                   <span>A blog by</span>
-        //                   <div>{blog.authorName}</div>
-        //                 </Space>
-        //               </Flex>
-        //               <h2>{blog.title}</h2>
-        //             </div>
-        //           </Link>
-        //         );
-        //       })}
-        //     </div>
-        //   </div>
-        // </div>
         <div className={styles.updateListPageWrapper}>
           {updateData.map((data, i) => {
             return (

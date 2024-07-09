@@ -250,10 +250,11 @@ p.emptyPlaceholder:first-child::before {
 
     gap: 20px;
     .blogCard {
-      width: 350px;
+      // margin: 0px 20px;
+      width: 85vw;
       > img {
-        width: 350px;
-        height: 175px;
+        width: 85vw;
+        height: auto;
       }
       &:hover {
         transform: scale(1);

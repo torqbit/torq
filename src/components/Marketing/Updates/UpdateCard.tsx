@@ -21,12 +21,13 @@ const UpdateCard: FC<{
   return (
     <section className={styles.updateCardWrapper}>
       <div>
-        <div className="   md:flex-row md:gap-[175px] lg:px-0  lg:pt-20 ">
+        <div>
           <div>
             <Link href={`/updates/${slug}`}>{createdDate}</Link>
           </div>
 
           <div>
+            <div>{createdDate}</div>
             <Link href={`/updates/${slug}`}>
               <h2>{title}</h2>
             </Link>

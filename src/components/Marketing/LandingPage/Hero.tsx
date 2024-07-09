@@ -1,6 +1,6 @@
 import { FC } from "react";
 
-import styles from "@/styles/Marketing/MarketingHero.module.scss";
+import styles from "@/styles/Marketing/LandingPage/LandingPage.module.scss";
 import { Button } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import SvgComponent from "./HeroWave";

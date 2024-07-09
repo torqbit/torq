@@ -30,14 +30,13 @@
           align-items: center;
           gap: 10px;
           margin-top: 20px;
-          &:hover {
-            color: var(--font-primary);
-            font-size: 18px;
-          }
         }
       }
       > div:last-child {
         overflow-y: auto;
+        > div:first-child {
+          display: none;
+        }
         h2 {
           margin: 0;
           padding-bottom: 28px;
@@ -71,26 +70,42 @@
 }
 
 @media only screen and (max-width: 415px) {
+  .updateListPageWrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0px;
+    place-items: center;
+    > div {
+      width: 90vw;
+    }
+  }
   .updateCardWrapper {
     margin: 20px 10px;
     border-radius: 8px;
+    box-shadow: var(--hd-box-shadow);
+
     > div:first-child {
-      max-width: 1000px;
+      max-width: 400px;
       margin: 0 auto;
       > div:first-child {
         flex-direction: column;
         align-items: center;
         gap: 40px;
         img {
-          width: 350px;
-          height: 175px;
-          border-radius: 8px;
+          aspect-ratio: 2/1;
+          width: 80vw;
+          height: auto;
+          border-radius: 0px;
         }
         > div:first-child {
           display: none;
         }
         > div:last-child {
           overflow-y: auto;
+          > div:first-child {
+            display: block;
+            color: var(--font-secondary);
+          }
           h2 {
             margin: 0;
             padding-bottom: 28px;

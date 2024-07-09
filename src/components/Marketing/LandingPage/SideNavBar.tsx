@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 
-import styles from "@/styles/Marketing/NavBar.module.scss";
+import styles from "@/styles/Marketing/LandingPage/LandingPage.module.scss";
 
 import Link from "next/link";
 import Image from "next/image";
