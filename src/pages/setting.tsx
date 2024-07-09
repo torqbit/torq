@@ -30,8 +30,7 @@ const ProfileSetting: FC<{
       formData.append("file", file);
       formData.append("title", name);
       formData.append("dir", "/user/profile/");
-
-      userProfile && userProfile !== "NULL" && formData.append("existingFilePath", userProfile);
+      formData.append("existingFilePath", userProfile);
 
       const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
       if (!postRes.ok) {
