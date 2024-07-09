@@ -102,7 +102,7 @@ const BlogPage: FC<IProps> = ({ user, blogData }) => {
                         </div>
                       )}
                       <Space direction="vertical" size={5}>
-                        <span>A blog by a</span>
+                        <span>A blog by </span>
                         <div>{blog.authorName}</div>
                       </Space>
                     </Flex>

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styles from "@/styles/Marketing/CourseCategory.module.scss";
+import styles from "@/styles/Marketing/LandingPage/LandingPage.module.scss";
 import { Card, Flex, Tag } from "antd";
 import Image from "next/image";
 

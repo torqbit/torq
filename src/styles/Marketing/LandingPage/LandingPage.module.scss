@@ -1,0 +1,572 @@
+//NavBar
+
+.navBarContainer {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  z-index: 1;
+  nav {
+    margin: 20px 0px;
+    background-color: var(--bg-primary);
+    height: 50px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 15px;
+    box-shadow: var(--box-shadow);
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      color: var(--font-primary);
+      font-size: 20px;
+    }
+    ul {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin: 0;
+      li {
+        font-size: 16px;
+        color: var(--font-secondary);
+        &:hover {
+          color: var(--font-primary);
+        }
+        list-style: none;
+        cursor: pointer;
+      }
+    }
+    .switchBtn {
+      height: 30px;
+      width: 30px;
+      background-color: var(--bg-secondary);
+      border-color: var(--bg-secondary);
+      color: var(--font-primary);
+    }
+
+    button {
+      border-radius: 30px;
+      width: 150px;
+    }
+  }
+}
+
+.sideNaveContainer {
+  display: none;
+}
+.platformNameLogo {
+  display: none;
+}
+
+// Hero
+
+.heroWrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+
+  .heroWave {
+    stroke: var(--wave-color);
+  }
+
+  .heroContentContainer {
+    position: relative;
+    z-index: 1;
+    width: 700px;
+    margin: 0 auto;
+
+    height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h1 {
+      font-size: 72px;
+      font-weight: 900;
+      text-align: center;
+    }
+    p {
+      color: var(--font-secondary);
+      text-align: center;
+
+      font-size: 16px;
+      line-height: 1.4;
+      margin-bottom: 40px;
+    }
+    button {
+      width: 323px;
+      height: 50px;
+    }
+  }
+
+  .heroWaveIcon {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .dotPatternIcon {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+  }
+}
+
+.hamburger {
+  display: none;
+}
+.platformNameLogo {
+  display: none;
+}
+
+// Course Category
+
+.course__category {
+  margin: 100px 0;
+  position: relative;
+  overflow: hidden;
+
+  i {
+    position: absolute;
+    top: -50px;
+    width: 600px;
+    height: 700px;
+  }
+
+  & > div {
+    display: flex;
+    gap: 40px;
+  }
+
+  .rtl {
+    flex-direction: row-reverse;
+  }
+
+  .category__detail {
+    position: relative;
+    z-index: 1;
+    width: 540px;
+    .cardWrapper {
+      width: 250px;
+    }
+    h1 {
+      font-size: 72px;
+      background: -webkit-linear-gradient(#eee, #333);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: var(--font-secondary);
+    }
+
+    & > div {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      row-gap: 20px;
+      p {
+        color: var(--font-primary);
+      }
+      > div {
+        background-color: var(--bg-primary);
+        .tags {
+          background-color: var(--bg-tag);
+          color: var(--font-tag);
+        }
+      }
+    }
+
+    .course__title {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+// About
+
+.aboutContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 40px;
+  }
+  .cardWrapper {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    .card {
+      border-radius: 15px;
+      box-shadow: var(--hd-box-shadow);
+      background-color: var(--mktg-card-bg);
+
+      max-width: 300px;
+      height: 350px;
+      .icon {
+        height: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0px;
+      }
+      .content {
+        height: 50%;
+        padding: 10px 20px;
+        background-color: var(--bg-primary);
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        h2 {
+          color: var(--font-primary);
+          font-size: 20px;
+        }
+        p {
+          color: var(--font-secondary);
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  .paceYourLearning {
+    width: 960px;
+    border-radius: 15px;
+    box-shadow: var(--hd-box-shadow);
+    background-color: var(--bg-primary);
+    margin: 40px 0px;
+    display: flex;
+
+    > div:first-child {
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 300px;
+      height: 200px;
+      background-color: var(--mktg-card-bg);
+    }
+    > div:last-child {
+      padding: 20px;
+      h4 {
+        color: var(--font-primary);
+        font-size: 20px;
+      }
+      p {
+        color: var(--font-secondary);
+        max-width: 400px;
+        line-height: 1.5;
+      }
+      button {
+        width: 300px;
+      }
+    }
+  }
+}
+
+// Footer
+
+.footerContainer {
+  background-color: #000;
+  color: #fff;
+  padding: 40px 0px;
+  display: flex;
+  justify-content: center;
+  footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 120px;
+    align-items: flex-start;
+    h1 {
+      color: #fff;
+    }
+    > div:first-child {
+      display: flex;
+      flex-direction: column;
+      .socialIcons {
+        margin-top: 50px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+    }
+    .linkWrapper {
+      display: flex;
+      gap: 120px;
+      .linkList {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        .title {
+          margin-top: 5px;
+          font-size: 16px;
+        }
+        ul {
+          margin: 0;
+          padding: 0;
+          li {
+            list-style: none;
+            padding-top: 10px;
+            color: var(--font-footer);
+            cursor: pointer;
+            &:hover {
+              color: var(--hover-text);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  // NavBar
+  .sideNaveContainer,
+  .platformNameLogo {
+    display: unset;
+  }
+
+  .drawerHeader {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 20px;
+    .drawerTitle,
+    .childrenDrawerTitle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .childrenDrawerTitle {
+      margin: 0;
+      height: 40px;
+      font-size: 20px;
+    }
+  }
+  .coursesListWrapper {
+    ul,
+    li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .coursesLabel {
+      font-size: 18px;
+      color: var(--font-primary);
+      padding: 10px 0px;
+    }
+    .childrenWrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      li {
+        display: flex;
+        align-items: center;
+        padding: 5px 10px;
+
+        border-radius: 8px;
+        width: 100%;
+
+        color: var(--font-secondary);
+      }
+    }
+  }
+
+  .menuDrawer > a {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    font-size: 25px;
+    padding: 20px 0px;
+    color: var(--font-secondary);
+    .menuTitle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      i {
+        margin-top: 5px;
+      }
+    }
+  }
+  .navBarContainer {
+    display: none;
+  }
+
+  // Hero
+
+  .heroWrapper {
+    .heroContentContainer {
+      width: 350px;
+      max-height: 500px;
+      h1 {
+        font-size: 35px;
+      }
+
+      button {
+        max-width: 200px;
+      }
+    }
+
+    .heroWaveIcon {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .dotPatternIcon {
+      display: none;
+    }
+  }
+  .hamburger {
+    display: unset;
+    color: var(--font-primary);
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+  }
+  .platformNameLogo {
+    display: unset;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 2;
+    color: var(--font-primary);
+  }
+
+  // Course Catgory
+
+  .course__category {
+    i {
+      height: 600px;
+      width: 400px;
+      overflow: hidden;
+    }
+    .rtl {
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    & > div {
+      flex-direction: column;
+
+      img {
+        height: 250px;
+        width: auto;
+      }
+    }
+    .category__detail {
+      width: 100%;
+      padding: 10px;
+
+      .cardWrapper {
+        width: 160px;
+      }
+
+      h1 {
+        font-size: 40px;
+        max-width: 250px;
+      }
+      p {
+        line-height: 1.5;
+
+        max-width: 300px;
+      }
+      & > div {
+        grid-template-columns: 1fr 1fr;
+        place-items: center;
+        width: 100%;
+
+        p {
+          color: var(--font-primary);
+        }
+        > div {
+          background-color: var(--bg-primary);
+          .tagWrapper {
+            line-height: 2;
+            .tags {
+              background-color: var(--bg-tag);
+              color: var(--font-tag);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // About
+
+  .aboutContainer {
+    .cardWrapper {
+      flex-direction: column;
+    }
+    .paceYourLearning {
+      width: 300px;
+      flex-direction: column;
+      height: 400px;
+      > div:first-child {
+        border-top-right-radius: 15px;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+        width: 100%;
+      }
+      > div:last-child {
+        .buttonWrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        button {
+          width: 200px;
+        }
+      }
+    }
+  }
+
+  // Footer
+
+  .footerContainer {
+    footer {
+      gap: 40px;
+
+      flex-direction: column-reverse;
+
+      > div:first-child {
+        flex-direction: row;
+        align-items: center;
+        gap: 60px;
+
+        .socialIcons {
+          margin: 0;
+        }
+      }
+      .linkWrapper {
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+
+        flex-direction: column;
+
+        gap: 40px;
+
+        .linkList {
+          flex-direction: column;
+          .title {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+  }
+}
