@@ -621,9 +621,9 @@ const AddCourseForm: FC = () => {
       }, 1000 * 5); // in milliseconds
     }
     if (intervalId && uploadVideo && uploadVideo.state == "READY") {
-      clearInterval(intervalId);
+      clearInterval(Number(intervalId));
     }
-    return () => intervalId && clearInterval(intervalId);
+    return () => intervalId && clearInterval(Number(intervalId));
   }, [checkVideoState]);
 
   useEffect(() => {

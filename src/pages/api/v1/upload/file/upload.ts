@@ -1,12 +1,9 @@
 import { NextApiResponse, NextApiRequest } from "next";
-
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
-
 import fs from "fs";
 import { readFieldWithFile, saveToDir } from "../video/upload";
 import { ContentManagementService } from "@/services/cms/ContentManagementService";
-import url from "url";
 import prisma from "@/lib/prisma";
 
 export const config = {
@@ -37,12 +34,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const bannerPath = `${dir}${fullName}`;
 
-      const parseUrl = fields.existingFilePath && url.parse(fields.existingFilePath[0]);
-      const existingFilePath = parseUrl && parseUrl.pathname;
-
       const localPath = await saveToDir(fullName, sourcePath);
 
       const fileBuffer = await fs.promises.readFile(localPath);
+
       const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
         where: {
           service_type: "media",
@@ -53,12 +48,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           serviceProviderResponse?.provider_name,
           serviceProviderResponse?.providerDetail
         );
-        if (existingFilePath) {
-          const deletionResponse = await cms.deleteFile(`${existingFilePath}`, serviceProvider);
-          if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
-            throw new Error(`Unable to delete the file due to : ${deletionResponse.message}`);
-          }
+
+        const deletionResponse = await cms.deleteFile(`${fields.existingFilePath[0]}`, serviceProvider);
+        if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
+          throw new Error(`Unable to delete the file due to : ${deletionResponse.message}`);
         }
+
         const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
         if (localPath != "") {
           fs.unlinkSync(localPath);

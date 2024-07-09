@@ -1,6 +1,8 @@
 import { VideoState } from "@prisma/client";
 import { ContentServiceProvider } from "./ContentManagementService";
 import { BasicAPIResponse, FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
+import url from "url";
+
 export type GetVideo = {
   guid: string;
   libraryId: number;
@@ -213,20 +215,30 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   }
 
   async deleteFile(filePath: string): Promise<BasicAPIResponse> {
-    const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${filePath}`;
-    const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
-    if (response.ok) {
-      return {
-        statusCode: response.status,
-        message: response.statusText,
-        success: true,
-      } as BasicAPIResponse;
+    const parseUrl = filePath && url.parse(filePath);
+    const existingPath = parseUrl && parseUrl.pathname;
+    if (parseUrl && parseUrl.host === this.connectedCDNHostname) {
+      const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${existingPath}`;
+      const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
+      if (response.ok) {
+        return {
+          statusCode: response.status,
+          message: response.statusText,
+          success: true,
+        } as BasicAPIResponse;
+      } else {
+        return {
+          statusCode: response.status,
+          message: response.statusText,
+          success: false,
+        };
+      }
     } else {
       return {
-        statusCode: response.status,
-        message: response.statusText,
-        success: false,
-      };
+        statusCode: 200,
+        message: "Ignoring the delete operation as image is not stored in this storage provider",
+        success: true,
+      } as BasicAPIResponse;
     }
   }
 }
