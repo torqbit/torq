@@ -236,7 +236,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     } else {
       return {
         statusCode: 200,
-        message: "",
+        message: "Ignoring the delete operation as image is not stored in this storage provider",
         success: true,
       } as BasicAPIResponse;
     }
