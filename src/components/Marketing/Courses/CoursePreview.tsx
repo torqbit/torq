@@ -227,7 +227,12 @@ const CoursePreview: FC<{ courseDetails: ICoursePageDetail; user: User }> = ({ c
               </div>
               <Divider />
               {courseDetails.state === "ACTIVE" ? (
-                <Link href={user ? `/courses/${courseDetails.courseId}` : `/login`} className={styles.buttonWrapper}>
+                <Link
+                  href={
+                    user ? `/courses/${courseDetails.courseId}` : `/login?redirect=courses/${courseDetails.courseId}`
+                  }
+                  className={styles.buttonWrapper}
+                >
                   <Button type="primary">Enroll for free</Button>
                 </Link>
               ) : (
