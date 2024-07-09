@@ -33,14 +33,17 @@ const ProfileSetting: FC<{
       formData.append("existingFilePath", userProfile);
 
       const postRes = await postWithFile(formData, `/api/v1/upload/file/upload`);
+      console.log(postRes, "post");
       if (!postRes.ok) {
-        throw new Error("Failed to upload file");
+        message.error(postRes.statusText);
       }
       const res = await postRes.json();
 
       if (res.success) {
         setUserProfile(res.fileCDNPath);
         setuserProfileUploading(false);
+      } else {
+        message.error(res.error);
       }
     }
   };
