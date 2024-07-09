@@ -30,14 +30,13 @@
           align-items: center;
           gap: 10px;
           margin-top: 20px;
-          &:hover {
-            color: var(--font-primary);
-            font-size: 18px;
-          }
         }
       }
       > div:last-child {
         overflow-y: auto;
+        > div:first-child {
+          display: none;
+        }
         h2 {
           margin: 0;
           padding-bottom: 28px;
@@ -93,15 +92,20 @@
         align-items: center;
         gap: 40px;
         img {
+          aspect-ratio: 2/1;
           width: 80vw;
-          height: 40vw;
-          border-radius: 8px;
+          height: auto;
+          border-radius: 0px;
         }
         > div:first-child {
           display: none;
         }
         > div:last-child {
           overflow-y: auto;
+          > div:first-child {
+            display: block;
+            color: var(--font-secondary);
+          }
           h2 {
             margin: 0;
             padding-bottom: 28px;
@@ -114,7 +118,6 @@
           }
           img {
             padding-bottom: 24px;
-            border-radius: 8px;
           }
           a {
             display: flex;
