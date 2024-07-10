@@ -1,6 +1,21 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-import { Avatar, Button, Dropdown, Flex, Layout, Menu, MenuProps, Modal, Space, Tooltip } from "antd";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Flex,
+  Form,
+  Input,
+  Layout,
+  Menu,
+  MenuProps,
+  message,
+  Modal,
+  Popover,
+  Space,
+  Tooltip,
+} from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -19,6 +34,17 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
 
+  const [form] = Form.useForm();
+  const [feedback, setfeedback] = useState<{
+    laoding: boolean;
+    mailSent: boolean;
+    chat: boolean;
+  }>({
+    laoding: false,
+    mailSent: false,
+    chat: false,
+  });
+
   const [modal, contextWrapper] = Modal.useModal();
 
   const updateTheme = async (theme: Theme) => {
@@ -36,6 +62,64 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
       update({ theme: theme });
     }
   };
+  const onPostFeedback = async () => {
+    setfeedback({ ...feedback, laoding: true });
+    const sendMail = await postFetch({ feedback: form.getFieldsValue().feedback }, "/api/v1/conversation/send-mail");
+    const res = await sendMail.json();
+
+    if (res.success) {
+      setfeedback({ ...feedback, laoding: false, mailSent: true });
+    } else {
+      message.error(res.error);
+      setfeedback({ ...feedback, laoding: false, mailSent: false });
+    }
+  };
+
+  const chatWindow = (
+    <div>
+      <Popover
+        placement="topRight"
+        title={<div className={styles.feedback_title}>Feedback</div>}
+        trigger={"click"}
+        content={
+          <>
+            {feedback.mailSent ? (
+              <div className={styles.feedbackSentMessage}>
+                <i>{SvgIcons.check}</i>
+                <p>Your feedback has been received!</p>
+              </div>
+            ) : (
+              <Form form={form} onFinish={onPostFeedback} className={styles.feedbackForm}>
+                <Form.Item noStyle name={"feedback"} rules={[{ required: true, message: "Please Enter feedback" }]}>
+                  <Input.TextArea rows={4} placeholder="Your feedback..." />
+                </Form.Item>
+                <Flex align="center" justify="right">
+                  <Button loading={feedback.laoding} htmlType="submit" type="primary">
+                    Send
+                  </Button>
+                </Flex>
+              </Form>
+            )}
+          </>
+        }
+        open={feedback.chat}
+        onOpenChange={() => {
+          if (!feedback.laoding) {
+            if (feedback.chat) {
+              form.resetFields();
+            }
+            setfeedback({ ...feedback, chat: !feedback.chat, mailSent: false });
+          }
+        }}
+      >
+        {
+          <i style={{ stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666", cursor: "pointer" }}>
+            {SvgIcons.chat}
+          </i>
+        }
+      </Popover>
+    </div>
+  );
 
   return (
     <Sider
@@ -65,19 +149,6 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               </Flex>
             )}
           </Link>
-          {!collapsed && (
-            <Tooltip title={`Switch to ${globalState.session?.theme == "dark" ? "light" : "dark"} mode`}>
-              <Button
-                type="default"
-                shape="circle"
-                onClick={() => {
-                  const newTheme: Theme = globalState.session?.theme == "dark" ? "light" : "dark";
-                  updateTheme(newTheme);
-                }}
-                icon={globalState.session?.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
-              />
-            </Tooltip>
-          )}
         </div>
 
         <Menu
@@ -89,45 +160,80 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
           items={menu}
         />
       </div>
-      <Space
-        direction={collapsed ? "vertical" : "horizontal"}
-        align={collapsed ? "center" : "start"}
-        className={styles.user_profile}
-      >
-        <Space>
-          <Avatar src={user?.user?.image} icon={<UserOutlined />} />
+      <div>
+        {!collapsed && (
+          <Flex align="center" justify="space-between" className={styles.actionsWrapper}>
+            <Tooltip
+              className={styles.actionTooltip}
+              title={`Switch to ${globalState.session?.theme == "dark" ? "light" : "dark"} mode`}
+            >
+              <Button
+                type="default"
+                shape="circle"
+                onClick={() => {
+                  const newTheme: Theme = globalState.session?.theme == "dark" ? "light" : "dark";
+                  updateTheme(newTheme);
+                }}
+                icon={globalState.session?.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
+              />
+            </Tooltip>
+            <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
+              {chatWindow}
+            </Tooltip>
+            <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
+              <i
+                style={{
+                  fill: "none",
+                  stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666",
+                  cursor: "pointer",
+                }}
+              >
+                {SvgIcons.discord}
+              </i>
+            </Tooltip>
+          </Flex>
+        )}
+
+        <Space
+          direction={collapsed ? "vertical" : "horizontal"}
+          align={collapsed ? "center" : "start"}
+          className={styles.user_profile}
+        >
+          <Space>
+            <Avatar src={user?.user?.image} icon={<UserOutlined />} />
+            {!collapsed && (
+              <div>
+                <h4>{user?.user?.name}</h4>
+                <h5>{user?.user?.email}</h5>
+              </div>
+            )}
+          </Space>
           {!collapsed && (
-            <div>
-              <h4>{user?.user?.name}</h4>
-              <h5>{user?.user?.email}</h5>
-            </div>
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: "0",
+                    label: <Link href={`/setting`}>Setting</Link>,
+                  },
+                  {
+                    key: "1",
+                    label: "Logout",
+                    onClick: () => {
+                      signOut();
+                    },
+                  },
+                ],
+              }}
+              trigger={["click"]}
+              placement="bottomRight"
+              arrow={{ pointAtCenter: true }}
+            >
+              <div className={styles.sidebar_dropdown_icon}> {SvgIcons.threeDots}</div>
+            </Dropdown>
           )}
         </Space>
-        {!collapsed && (
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  key: "0",
-                  label: <Link href={`/setting`}>Setting</Link>,
-                },
-                {
-                  key: "1",
-                  label: "Logout",
-                  onClick: () => {
-                    signOut();
-                  },
-                },
-              ],
-            }}
-            trigger={["click"]}
-            placement="bottomRight"
-            arrow={{ pointAtCenter: true }}
-          >
-            <div className={styles.sidebar_dropdown_icon}> {SvgIcons.threeDots}</div>
-          </Dropdown>
-        )}
-      </Space>
+      </div>
     </Sider>
   );
 };

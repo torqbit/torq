@@ -73,4 +73,37 @@
   .sidebar_dropdown_icon {
     color: var(--font-secondary);
   }
+  .actionIcons {
+    cursor: pointer;
+  }
+  .actionsWrapper {
+    padding: 8px 15px;
+    button {
+      border: none;
+    }
+    .actionTooltip {
+      background-color: var(--bg-primary);
+    }
+  }
+}
+
+.feedback_title {
+  min-width: 300px;
+  color: var(--font-primary);
+
+  padding: 5px 10px;
+  margin: -10px;
+}
+.feedbackForm {
+  padding-top: 10px;
+  button {
+    margin-top: 10px;
+  }
+}
+.feedbackSentMessage {
+  p {
+    font-size: 14px;
+  }
+
+  text-align: center;
 }

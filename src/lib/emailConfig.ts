@@ -19,6 +19,11 @@ export interface ICompletionEmailConfig {
   courseName: string;
 }
 
+export interface IFeedBackConfig {
+  feedback: string;
+  name: string;
+  email: string;
+}
 export interface IEmailResponse {
   success: boolean;
   message?: string;

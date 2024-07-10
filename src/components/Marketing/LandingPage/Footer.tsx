@@ -116,7 +116,7 @@ const Footer = () => {
             {socialLinks.map((link, i) => {
               return (
                 <Link key={i} href={link.href} aria-label={link.arialLabel}>
-                  {link.icon}
+                  <i> {link.icon}</i>
                 </Link>
               );
             })}
