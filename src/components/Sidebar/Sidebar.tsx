@@ -113,15 +113,17 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               <Feedback />
             </Tooltip>
             <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
-              <i
-                style={{
-                  fill: "none",
-                  stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666",
-                  cursor: "pointer",
-                }}
-              >
-                {SvgIcons.discord}
-              </i>
+              <Link href={"https://discord.gg/NserMXcx"}>
+                <i
+                  style={{
+                    fill: "none",
+                    stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666",
+                    cursor: "pointer",
+                  }}
+                >
+                  {SvgIcons.discord}
+                </i>
+              </Link>
             </Tooltip>
           </Flex>
         )}
