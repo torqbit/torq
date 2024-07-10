@@ -26,6 +26,7 @@ import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { Theme } from "@prisma/client";
 import { postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
+import Feedback from "../Feedback/Feedback";
 
 const { Sider } = Layout;
 
@@ -33,17 +34,6 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
   const [collapsed, setCollapsed] = React.useState(false);
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
-
-  const [form] = Form.useForm();
-  const [feedback, setfeedback] = useState<{
-    laoding: boolean;
-    mailSent: boolean;
-    chat: boolean;
-  }>({
-    laoding: false,
-    mailSent: false,
-    chat: false,
-  });
 
   const [modal, contextWrapper] = Modal.useModal();
 
@@ -62,64 +52,6 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
       update({ theme: theme });
     }
   };
-  const onPostFeedback = async () => {
-    setfeedback({ ...feedback, laoding: true });
-    const sendMail = await postFetch({ feedback: form.getFieldsValue().feedback }, "/api/v1/conversation/send-mail");
-    const res = await sendMail.json();
-
-    if (res.success) {
-      setfeedback({ ...feedback, laoding: false, mailSent: true });
-    } else {
-      message.error(res.error);
-      setfeedback({ ...feedback, laoding: false, mailSent: false });
-    }
-  };
-
-  const feedbackWindow = (
-    <div>
-      <Popover
-        placement="topRight"
-        title={<div className={styles.feedback_title}>Feedback</div>}
-        trigger={"click"}
-        content={
-          <>
-            {feedback.mailSent ? (
-              <div className={styles.feedbackSentMessage}>
-                <i>{SvgIcons.check}</i>
-                <p>Your feedback has been received!</p>
-              </div>
-            ) : (
-              <Form form={form} onFinish={onPostFeedback} className={styles.feedbackForm}>
-                <Form.Item noStyle name={"feedback"} rules={[{ required: true, message: "Please Enter feedback" }]}>
-                  <Input.TextArea rows={4} placeholder="Your feedback..." />
-                </Form.Item>
-                <Flex align="center" justify="right">
-                  <Button loading={feedback.laoding} htmlType="submit" type="primary">
-                    Send
-                  </Button>
-                </Flex>
-              </Form>
-            )}
-          </>
-        }
-        open={feedback.chat}
-        onOpenChange={() => {
-          if (!feedback.laoding) {
-            if (feedback.chat) {
-              form.resetFields();
-            }
-            setfeedback({ ...feedback, chat: !feedback.chat, mailSent: false });
-          }
-        }}
-      >
-        {
-          <i style={{ stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666", cursor: "pointer" }}>
-            {SvgIcons.chat}
-          </i>
-        }
-      </Popover>
-    </div>
-  );
 
   return (
     <Sider
@@ -178,7 +110,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               />
             </Tooltip>
             <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
-              {feedbackWindow}
+              <Feedback />
             </Tooltip>
             <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
               <i
