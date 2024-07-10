@@ -113,57 +113,57 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               <Feedback />
             </Tooltip>
             <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
-              <i
-                style={{
-                  fill: "none",
-                  stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666",
-                  cursor: "pointer",
-                }}
-              >
-                {SvgIcons.discord}
-              </i>
+              <Link href={"https://discord.gg/NserMXcx"}>
+                <i
+                  style={{
+                    fill: "none",
+                    stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666",
+                    cursor: "pointer",
+                  }}
+                >
+                  {SvgIcons.discord}
+                </i>
+              </Link>
             </Tooltip>
           </Flex>
         )}
 
         <Space
           direction={collapsed ? "vertical" : "horizontal"}
+          style={{ cursor: "pointer" }}
           align={collapsed ? "center" : "start"}
           className={styles.user_profile}
         >
-          <Space>
-            <Avatar src={user?.user?.image} icon={<UserOutlined />} />
-            {!collapsed && (
-              <div>
-                <h4>{user?.user?.name}</h4>
-                <h5>{user?.user?.email}</h5>
-              </div>
-            )}
-          </Space>
-          {!collapsed && (
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: "0",
-                    label: <Link href={`/setting`}>Setting</Link>,
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "0",
+                  label: <Link href={`/setting`}>Setting</Link>,
+                },
+                {
+                  key: "1",
+                  label: "Logout",
+                  onClick: () => {
+                    signOut();
                   },
-                  {
-                    key: "1",
-                    label: "Logout",
-                    onClick: () => {
-                      signOut();
-                    },
-                  },
-                ],
-              }}
-              trigger={["click"]}
-              placement="bottomRight"
-              arrow={{ pointAtCenter: true }}
-            >
-              <div className={styles.sidebar_dropdown_icon}> {SvgIcons.threeDots}</div>
-            </Dropdown>
-          )}
+                },
+              ],
+            }}
+            trigger={["click"]}
+            placement="topLeft"
+            arrow={{ pointAtCenter: true }}
+          >
+            <Space>
+              <Avatar src={user?.user?.image} icon={<UserOutlined />} />
+              {!collapsed && (
+                <div>
+                  <h4>{user?.user?.name}</h4>
+                  <h5>{user?.user?.email}</h5>
+                </div>
+              )}
+            </Space>
+          </Dropdown>
         </Space>
       </div>
     </Sider>

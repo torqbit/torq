@@ -1,5 +1,5 @@
 import { postFetch } from "@/services/request";
-import { Button, Flex, Form, Input, message, Popover } from "antd";
+import { Button, Flex, Form, Input, message, Popover, Tooltip } from "antd";
 import { useState } from "react";
 import styles from "@/styles/Sidebar.module.scss";
 import SvgIcons from "../SvgIcons";
@@ -31,49 +31,51 @@ const Feedback = () => {
     }
   };
   return (
-    <div>
-      <Popover
-        placement="topRight"
-        title={<div className={styles.feedback_title}>Feedback</div>}
-        trigger={"click"}
-        content={
-          <>
-            {feedback.mailSent ? (
-              <div className={styles.feedbackSentMessage}>
-                <i>{SvgIcons.check}</i>
-                <p>Your feedback has been received!</p>
-              </div>
-            ) : (
-              <Form form={form} onFinish={onPostFeedback} className={styles.feedbackForm}>
-                <Form.Item noStyle name={"feedback"} rules={[{ required: true, message: "Please Enter feedback" }]}>
-                  <Input.TextArea rows={4} placeholder="Your feedback..." />
-                </Form.Item>
-                <Flex align="center" justify="right">
-                  <Button loading={feedback.laoding} htmlType="submit" type="primary">
-                    Send
-                  </Button>
-                </Flex>
-              </Form>
-            )}
-          </>
-        }
-        open={feedback.chat}
-        onOpenChange={() => {
-          if (!feedback.laoding) {
-            if (feedback.chat) {
-              form.resetFields();
-            }
-            setfeedback({ ...feedback, chat: !feedback.chat, mailSent: false });
+    <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
+      <div>
+        <Popover
+          placement="topRight"
+          title={<div className={styles.feedback_title}>Feedback</div>}
+          trigger={"click"}
+          content={
+            <>
+              {feedback.mailSent ? (
+                <div className={styles.feedbackSentMessage}>
+                  <i>{SvgIcons.check}</i>
+                  <p>Your feedback has been received!</p>
+                </div>
+              ) : (
+                <Form form={form} onFinish={onPostFeedback} className={styles.feedbackForm}>
+                  <Form.Item noStyle name={"feedback"} rules={[{ required: true, message: "Please Enter feedback" }]}>
+                    <Input.TextArea rows={4} placeholder="Your feedback..." />
+                  </Form.Item>
+                  <Flex align="center" justify="right">
+                    <Button loading={feedback.laoding} htmlType="submit" type="primary">
+                      Send
+                    </Button>
+                  </Flex>
+                </Form>
+              )}
+            </>
           }
-        }}
-      >
-        {
-          <i style={{ stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666", cursor: "pointer" }}>
-            {SvgIcons.chat}
-          </i>
-        }
-      </Popover>
-    </div>
+          open={feedback.chat}
+          onOpenChange={() => {
+            if (!feedback.laoding) {
+              if (feedback.chat) {
+                form.resetFields();
+              }
+              setfeedback({ ...feedback, chat: !feedback.chat, mailSent: false });
+            }
+          }}
+        >
+          {
+            <i style={{ stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666", cursor: "pointer" }}>
+              {SvgIcons.chat}
+            </i>
+          }
+        </Popover>
+      </div>
+    </Tooltip>
   );
 };
 
