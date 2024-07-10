@@ -1,6 +1,21 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
-import { Avatar, Button, Dropdown, Flex, Layout, Menu, MenuProps, Modal, Space, Tooltip } from "antd";
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Flex,
+  Form,
+  Input,
+  Layout,
+  Menu,
+  MenuProps,
+  message,
+  Modal,
+  Popover,
+  Space,
+  Tooltip,
+} from "antd";
 
 import { DashOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -11,6 +26,7 @@ import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { Theme } from "@prisma/client";
 import { postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
+import Feedback from "../Feedback/Feedback";
 
 const { Sider } = Layout;
 
@@ -65,19 +81,6 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               </Flex>
             )}
           </Link>
-          {!collapsed && (
-            <Tooltip title={`Switch to ${globalState.session?.theme == "dark" ? "light" : "dark"} mode`}>
-              <Button
-                type="default"
-                shape="circle"
-                onClick={() => {
-                  const newTheme: Theme = globalState.session?.theme == "dark" ? "light" : "dark";
-                  updateTheme(newTheme);
-                }}
-                icon={globalState.session?.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
-              />
-            </Tooltip>
-          )}
         </div>
 
         <Menu
@@ -89,45 +92,80 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
           items={menu}
         />
       </div>
-      <Space
-        direction={collapsed ? "vertical" : "horizontal"}
-        align={collapsed ? "center" : "start"}
-        className={styles.user_profile}
-      >
-        <Space>
-          <Avatar src={user?.user?.image} icon={<UserOutlined />} />
+      <div>
+        {!collapsed && (
+          <Flex align="center" justify="space-between" className={styles.actionsWrapper}>
+            <Tooltip
+              className={styles.actionTooltip}
+              title={`Switch to ${globalState.session?.theme == "dark" ? "light" : "dark"} mode`}
+            >
+              <Button
+                type="default"
+                shape="circle"
+                onClick={() => {
+                  const newTheme: Theme = globalState.session?.theme == "dark" ? "light" : "dark";
+                  updateTheme(newTheme);
+                }}
+                icon={globalState.session?.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
+              />
+            </Tooltip>
+            <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
+              <Feedback />
+            </Tooltip>
+            <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
+              <i
+                style={{
+                  fill: "none",
+                  stroke: globalState.session?.theme == "dark" ? "#939db8" : "#666",
+                  cursor: "pointer",
+                }}
+              >
+                {SvgIcons.discord}
+              </i>
+            </Tooltip>
+          </Flex>
+        )}
+
+        <Space
+          direction={collapsed ? "vertical" : "horizontal"}
+          align={collapsed ? "center" : "start"}
+          className={styles.user_profile}
+        >
+          <Space>
+            <Avatar src={user?.user?.image} icon={<UserOutlined />} />
+            {!collapsed && (
+              <div>
+                <h4>{user?.user?.name}</h4>
+                <h5>{user?.user?.email}</h5>
+              </div>
+            )}
+          </Space>
           {!collapsed && (
-            <div>
-              <h4>{user?.user?.name}</h4>
-              <h5>{user?.user?.email}</h5>
-            </div>
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: "0",
+                    label: <Link href={`/setting`}>Setting</Link>,
+                  },
+                  {
+                    key: "1",
+                    label: "Logout",
+                    onClick: () => {
+                      signOut();
+                    },
+                  },
+                ],
+              }}
+              trigger={["click"]}
+              placement="bottomRight"
+              arrow={{ pointAtCenter: true }}
+            >
+              <div className={styles.sidebar_dropdown_icon}> {SvgIcons.threeDots}</div>
+            </Dropdown>
           )}
         </Space>
-        {!collapsed && (
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  key: "0",
-                  label: <Link href={`/setting`}>Setting</Link>,
-                },
-                {
-                  key: "1",
-                  label: "Logout",
-                  onClick: () => {
-                    signOut();
-                  },
-                },
-              ],
-            }}
-            trigger={["click"]}
-            placement="bottomRight"
-            arrow={{ pointAtCenter: true }}
-          >
-            <div className={styles.sidebar_dropdown_icon}> {SvgIcons.threeDots}</div>
-          </Dropdown>
-        )}
-      </Space>
+      </div>
     </Sider>
   );
 };

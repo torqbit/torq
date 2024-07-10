@@ -195,7 +195,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         }, 5000);
       }
     }
-    return () => intervalId && clearInterval(intervalId);
+    return () => intervalId && clearInterval(Number(intervalId));
   });
 
   useEffect(() => {

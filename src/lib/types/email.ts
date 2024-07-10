@@ -1,1 +1,1 @@
-export type IEmailEventType = "NEW_USER" | "COURSE_ENROLMENT" | "COURSE_COMPLETION";
+export type IEmailEventType = "NEW_USER" | "COURSE_ENROLMENT" | "COURSE_COMPLETION" | "FEEDBACK";

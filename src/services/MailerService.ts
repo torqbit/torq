@@ -4,7 +4,13 @@ import WelcomeEmailPage from "@/components/Email/WelcomeEmail";
 import nodemailer from "nodemailer";
 import { CourseEnrolmentEmail } from "@/components/Email/CourseRegistrationEmail";
 import CourseCompletionEmail from "@/components/Email/CourseCompletionEmail";
-import { ICompletionEmailConfig, IEmailResponse, IEnrolmentEmailConfig, IWelcomeEmailConfig } from "@/lib/emailConfig";
+import {
+  ICompletionEmailConfig,
+  IEmailResponse,
+  IEnrolmentEmailConfig,
+  IFeedBackConfig,
+  IWelcomeEmailConfig,
+} from "@/lib/emailConfig";
 export const getEmailErrorMessage = (response: string) => {
   let errResponse;
   if (response === "CONN") {
@@ -39,6 +45,8 @@ class MailerService {
         return this.sendEnrolmentMail(config as IEnrolmentEmailConfig);
       case "COURSE_COMPLETION":
         return this.sendCompletionMail(config as ICompletionEmailConfig);
+      case "FEEDBACK":
+        return this.sendFeedBackMail(config as IFeedBackConfig);
       default:
         throw new Error("something went wrong");
     }
@@ -89,6 +97,20 @@ class MailerService {
         from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
         subject: `Congratulations on Completing ${config.courseName}`,
         html: htmlString,
+      });
+      return { success: true, message: "Email sent successfully" };
+    } catch (error: any) {
+      return { success: false, error: `Error sending email:${getEmailErrorMessage(error.command)}` };
+    }
+  }
+  async sendFeedBackMail(config: IFeedBackConfig) {
+    try {
+      const sendMail = await this.transporter.sendMail({
+        to: process.env.FROM_SMTP_SUPPORT_EMAIL,
+
+        from: `${process.env.NEXT_PUBLIC_PLATFORM_NAME} <${process.env.FROM_SMTP_USER_EMAIL}>`,
+        subject: `Feedback received from ${config.email} `,
+        text: `Hey there, \n \n We have received a feedback from ${config.name} \n \n ${config.feedback}`,
       });
       return { success: true, message: "Email sent successfully" };
     } catch (error: any) {
