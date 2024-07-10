@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       feedback: feedback,
     } as IFeedBackConfig;
 
-    MailerService.sendMail("FEEDBACK", config).then((result) => {
+    await MailerService.sendMail("FEEDBACK", config).then((result) => {
       if (result.error) {
         res.status(400).json({ success: false, error: result.error });
       } else {
