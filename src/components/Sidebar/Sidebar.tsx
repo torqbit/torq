@@ -75,7 +75,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
     }
   };
 
-  const chatWindow = (
+  const feedbackWindow = (
     <div>
       <Popover
         placement="topRight"
@@ -178,7 +178,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
               />
             </Tooltip>
             <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
-              {chatWindow}
+              {feedbackWindow}
             </Tooltip>
             <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
               <i
