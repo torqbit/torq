@@ -24,6 +24,10 @@
     justify-content: space-between;
     padding: 8px 15px;
     background-color: var(--bg-secondary);
+    transition: all 0.5s ease;
+    &:hover {
+      background-color: var(--border-color);
+    }
     h4 {
       color: var(--font-primary);
     }
