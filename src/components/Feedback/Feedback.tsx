@@ -32,10 +32,6 @@ const Feedback = () => {
   };
   return (
     <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
-<<<<<<< HEAD
-=======
-
->>>>>>> 3e1deb31a5af13885ef0c70ccbc564bc1b5b5b6e
       <div>
         <Popover
           placement="topRight"
@@ -69,7 +65,6 @@ const Feedback = () => {
                 form.resetFields();
               }
               setfeedback({ ...feedback, chat: !feedback.chat, mailSent: false });
-
             }
           }}
         >
@@ -78,13 +73,8 @@ const Feedback = () => {
               {SvgIcons.chat}
             </i>
           }
-
         </Popover>
       </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 3e1deb31a5af13885ef0c70ccbc564bc1b5b5b6e
     </Tooltip>
   );
 };
