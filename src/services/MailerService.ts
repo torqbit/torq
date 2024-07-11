@@ -104,8 +104,6 @@ class MailerService {
     }
   }
   async sendFeedBackMail(config: IFeedBackConfig) {
-    console.log(config, "feed back config");
-
     try {
       const sendMail = await this.transporter.sendMail({
         to: process.env.FROM_SMTP_SUPPORT_EMAIL,

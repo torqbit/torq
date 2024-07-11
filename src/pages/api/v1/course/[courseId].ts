@@ -34,12 +34,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let description = "";
     let trailerVidUrl = "";
     let resultRows: any[] = [];
+    let previewMode;
 
     if (alreadyRegisterd && alreadyRegisterd.courseState == "COMPLETED") {
       resultRows = await prisma.$queryRaw<
         any[]
       >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, 
-        co.name as courseName, co.description, co.tvUrl,
+        co.name as courseName, co.description, co.tvUrl,co.previewMode,
         vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
         ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
         INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
@@ -54,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       resultRows = await prisma.$queryRaw<
         any[]
       >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, 
-        co.name as courseName, co.description, co.tvUrl,
+        co.name as courseName, co.description, co.tvUrl,co.previewMode,
         vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
         ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
         INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
@@ -69,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       resultRows = await prisma.$queryRaw<
         any[]
       >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, 
-        co.name as courseName, co.description, co.tvUrl,
+        co.name as courseName, co.description, co.tvUrl,co.previewMode,
         vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
         ch.name as chapterName, NULL as watchedRes FROM Course as co 
         INNER JOIN Chapter as ch ON co.courseId = ch.courseId
@@ -83,6 +84,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       courseName = resultRows[0].courseName;
       description = resultRows[0].description;
       trailerVidUrl = resultRows[0].tvUrl;
+      previewMode = resultRows[0].previewMode;
     }
     resultRows.forEach((r) => {
       if (chapterLessons.find((l) => l.chapterSeq == r.chapterSeq)) {
@@ -113,7 +115,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       success: true,
       statusCode: 200,
       message: "Fetched course lessons",
-      course: { name: courseName, description: description, courseTrailer: trailerVidUrl },
+      course: { name: courseName, description: description, courseTrailer: trailerVidUrl, previewMode },
       lessons: chapterLessons,
     });
   } catch (error) {

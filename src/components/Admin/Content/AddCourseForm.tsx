@@ -93,6 +93,7 @@ const AddCourseForm: FC = () => {
 
   const onSubmit = () => {
     setSettingloading(true);
+
     let course = {
       name: form.getFieldsValue().course_name || courseData?.name,
       expiryInDays: Number(courseData?.expiryInDays),
@@ -100,6 +101,7 @@ const AddCourseForm: FC = () => {
       courseId: Number(router.query.id),
       difficultyLevel: courseData.difficultyLevel,
       certificateTemplate: courseData.certificateTemplate,
+      previewMode: form.getFieldsValue().previewMode ? form.getFieldsValue().previewMode : false,
     };
     ProgramService.updateCourse(
       course,
@@ -336,9 +338,6 @@ const AddCourseForm: FC = () => {
     const totalChunks = Math.ceil(file.size / chunkSize);
     let start = 0;
     let end = chunkSize;
-
-    console.log(chunkSize, "s");
-    console.log(totalChunks, "t");
 
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
       const chunk = file.slice(start, end);
@@ -649,6 +648,8 @@ const AddCourseForm: FC = () => {
           form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
           form.setFieldValue("course_difficulty", result.courseDetails.difficultyLevel);
           form.setFieldValue("certificate_template", result.courseDetails.certificateTemplate);
+          form.setFieldValue("previewMode", result.courseDetails.previewMode);
+
           if (result.courseDetails.chapters.length > 0 || result.courseDetails.videoUrl) {
             setTabActive(true);
           }
