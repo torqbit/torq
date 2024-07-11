@@ -337,9 +337,6 @@ const AddCourseForm: FC = () => {
     let start = 0;
     let end = chunkSize;
 
-    console.log(chunkSize, "s");
-    console.log(totalChunks, "t");
-
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
       const chunk = file.slice(start, end);
       const formData = new FormData();

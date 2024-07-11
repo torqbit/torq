@@ -162,40 +162,39 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       contentType: true,
     },
   })) as any;
-  console.log(blog.content, "content");
 
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
-  // if (blog) {
-  //   const jsonValue = blog?.content;
-  //   console.log(jsonValue, "json");
-  //   const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
+  if (blog) {
+    const jsonValue = blog?.content;
+    console.log(jsonValue, "json");
+    const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
 
-  //   return {
-  //     props: {
-  //       user,
-  //       htmlData: htmlData,
-  //       description: blog.content.content[0].content[0].text,
-  //       currentUrl,
-  //       hostName: `${host}`,
-  //       blogData: {
-  //         title: blog?.title,
-  //         id: blog?.id,
-  //         banner: blog?.banner,
-  //         authorName: blog?.user.name,
-  //         authorImage: blog?.user.image,
-  //         slug: blog.slug,
-  //         contentType: blog.contentType,
-  //       },
-  //     },
-  //   };
-  // } else {
-  //   return {
-  //     redirect: {
-  //       permanent: false,
+    return {
+      props: {
+        user,
+        htmlData: htmlData,
+        description: blog.content.content[0].content[0].text,
+        currentUrl,
+        hostName: `${host}`,
+        blogData: {
+          title: blog?.title,
+          id: blog?.id,
+          banner: blog?.banner,
+          authorName: blog?.user.name,
+          authorImage: blog?.user.image,
+          slug: blog.slug,
+          contentType: blog.contentType,
+        },
+      },
+    };
+  } else {
+    return {
+      redirect: {
+        permanent: false,
 
-  //       destination: "/blogs",
-  //     },
-  //   };
-  // }
+        destination: "/blogs",
+      },
+    };
+  }
 };
 export default BlogPage;
