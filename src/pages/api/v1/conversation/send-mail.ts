@@ -24,6 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
+
     const body = await req.body;
     const { feedback } = body;
     let config = {
@@ -34,9 +35,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     await MailerService.sendMail("FEEDBACK", config).then((result) => {
       if (result.error) {
-        res.status(400).json({ success: false, error: result.error });
+        res.status(400).json({ success: false, error: result.error, token });
       } else {
-        res.status(200).json({ success: true, message: "Mail has been sent to admin" });
+        res.status(200).json({ success: true, message: "Mail has been sent to admin", token });
       }
     });
   } catch (err) {
