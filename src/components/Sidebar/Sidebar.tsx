@@ -109,9 +109,9 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
                 icon={globalState.session?.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
               />
             </Tooltip>
-            <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
-              <Feedback />
-            </Tooltip>
+
+            <Feedback />
+
             <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
               <i
                 style={{

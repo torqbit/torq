@@ -7,6 +7,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { JSONContent } from "@tiptap/react";
 import { FC } from "react";
 import { StateType } from "@prisma/client";
+import UploadImage from "@/components/Editor/Extension/UploadExtension";
 interface IProps {
   htmlData: HTMLElement;
   bannerImage: string;
@@ -42,7 +43,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   });
   if (blogContentData) {
     const jsonValue = blogContentData?.content;
-    const htmlData = blogContentData && blogContentData.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
+    const htmlData =
+      blogContentData && blogContentData.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
 
     return {
       props: {

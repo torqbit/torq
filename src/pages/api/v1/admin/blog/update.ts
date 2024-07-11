@@ -25,6 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (content) updateObj.content = content;
     if (banner) updateObj.banner = banner;
     if (state) updateObj.state = state;
+    console.log(updateObj, "up");
 
     const updateBlog = await prisma.blog.update({
       where: {

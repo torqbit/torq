@@ -81,6 +81,7 @@
   max-width: 800px;
   border: none;
   outline: none;
+  padding-bottom: 20px;
   p {
     color: var(--font-secondary);
   }
@@ -140,6 +141,30 @@ p.emptyPlaceholder:first-child::before {
     }
     span {
       color: var(--font-secondary);
+    }
+  }
+}
+
+.uploadedImage {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+
+  max-width: 800px;
+  margin-bottom: 40px;
+}
+.floatingMenu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .floatButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    i {
+      fill: var(--font-secondary);
     }
   }
 }
@@ -285,5 +310,8 @@ p.emptyPlaceholder:first-child::before {
         }
       }
     }
+  }
+  .uploadedImage {
+    max-width: 300px;
   }
 }

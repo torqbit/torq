@@ -1,5 +1,5 @@
 import { postFetch } from "@/services/request";
-import { Button, Flex, Form, Input, message, Popover } from "antd";
+import { Button, Flex, Form, Input, message, Popover, Tooltip } from "antd";
 import { useState } from "react";
 import styles from "@/styles/Sidebar.module.scss";
 import SvgIcons from "../SvgIcons";
@@ -31,7 +31,8 @@ const Feedback = () => {
     }
   };
   return (
-    <div>
+    <Tooltip className={styles.actionTooltip} title={"Send a feedback"}>
+      {" "}
       <Popover
         placement="topRight"
         title={<div className={styles.feedback_title}>Feedback</div>}
@@ -73,7 +74,7 @@ const Feedback = () => {
           </i>
         }
       </Popover>
-    </div>
+    </Tooltip>
   );
 };
 
