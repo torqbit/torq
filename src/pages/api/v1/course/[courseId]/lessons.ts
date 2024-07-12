@@ -5,6 +5,7 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import { $Enums } from "@prisma/client";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -48,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         INNER JOIN Resource as re ON ch.chapterId = re.chapterId
         INNER JOIN Video as vi ON re.resourceId = vi.resourceId
         INNER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
-        WHERE cr.studentId = ${token?.id}
+        WHERE cr.studentId = ${token?.id} AND  re.state = ${$Enums.StateType.ACTIVE} 
         AND co.courseId = ${courseId}
         ORDER BY chapterSeq, resourceSeq`;
     } else {
@@ -63,7 +64,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         INNER JOIN Video as vi ON re.resourceId = vi.resourceId
         LEFT OUTER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
         WHERE cr.studentId = ${token?.id}
-        AND co.courseId = ${courseId}
+        AND co.courseId = ${courseId} AND
+        re.state = ${$Enums.StateType.ACTIVE} 
         ORDER BY chapterSeq, resourceSeq`;
     }
     if (resultRows.length > 0) {

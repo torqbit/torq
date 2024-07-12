@@ -5,6 +5,7 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import { $Enums } from "@prisma/client";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let cookieName = getCookieName();
@@ -49,7 +50,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         INNER JOIN Video as vi ON re.resourceId = vi.resourceId
         INNER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
         WHERE cr.studentId = ${token?.id}
-        AND co.courseId = ${courseId}
+        AND co.courseId = ${courseId} AND ch.state = ${$Enums.StateType.ACTIVE} AND re.state = ${$Enums.StateType.ACTIVE}
         ORDER BY chapterSeq, resourceSeq`;
     } else if (alreadyRegisterd && alreadyRegisterd.courseState == "ENROLLED") {
       resultRows = await prisma.$queryRaw<
@@ -64,7 +65,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         INNER JOIN Video as vi ON re.resourceId = vi.resourceId
         LEFT OUTER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
         WHERE cr.studentId = ${token?.id}
-        AND co.courseId = ${courseId}
+        AND co.courseId = ${courseId} AND ch.state = ${$Enums.StateType.ACTIVE} AND re.state = ${$Enums.StateType.ACTIVE}
         ORDER BY chapterSeq, resourceSeq`;
     } else {
       resultRows = await prisma.$queryRaw<
@@ -76,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         INNER JOIN Chapter as ch ON co.courseId = ch.courseId
         INNER JOIN Resource as re ON ch.chapterId = re.chapterId
         INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-        WHERE co.courseId = ${courseId}
+        WHERE co.courseId = ${courseId} AND ch.state = ${$Enums.StateType.ACTIVE} AND re.state = ${$Enums.StateType.ACTIVE}
         ORDER BY chapterSeq, resourceSeq`;
     }
 
