@@ -339,6 +339,14 @@
     display: unset;
   }
 
+  .switchBtn {
+    height: 30px;
+    width: 30px;
+    background-color: var(--bg-secondary);
+    border: none;
+    color: var(--font-primary);
+  }
+
   .drawerHeader {
     background-color: var(--bg-secondary);
     border-bottom: 1px solid var(--border-color);
