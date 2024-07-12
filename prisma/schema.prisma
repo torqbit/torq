@@ -124,10 +124,10 @@ enum courseDifficultyType {
 }
 
 model Course {
-  courseId            Int                   @id @default(autoincrement())
+  courseId            Int         @id @default(autoincrement())
   name                String
-  about               String                @db.Text()
-  description         String                @db.Text()
+  about               String      @db.Text()
+  description         String      @db.Text()
   slug                String?
   tvProviderId        String?
   tvProviderName      String?
@@ -138,22 +138,24 @@ model Course {
   icon                String?
   authorId            String
   skills              Json?
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @default(now())
-  courseType          CourseType            @default(FREE)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @default(now())
+  courseType          CourseType  @default(FREE)
   certificateTemplate String?
-  isActive            Boolean               @default(true)
-  coursePrice         Float?                @default(0)
+  isActive            Boolean     @default(true)
+  coursePrice         Float?      @default(0)
   sequenceId          Int?
-  expiryInDays        Int                   @default(365)
-  difficultyLevel     courseDifficultyType?
-  durationInMonths    Int                   @default(12)
-  user                User                  @relation(name: "userCourse", fields: [authorId], references: [id])
-  totalResources      Int                   @default(0)
-  state               StateType             @default(DRAFT)
-  chapters            Chapter[]
-  CourseRegistraion   CourseRegistration[]
-  courseProgress      CourseProgress[]
+  previewMode         Boolean?
+
+  expiryInDays      Int                   @default(365)
+  difficultyLevel   courseDifficultyType?
+  durationInMonths  Int                   @default(12)
+  user              User                  @relation(name: "userCourse", fields: [authorId], references: [id])
+  totalResources    Int                   @default(0)
+  state             StateType             @default(DRAFT)
+  chapters          Chapter[]
+  CourseRegistraion CourseRegistration[]
+  courseProgress    CourseProgress[]
 
   @@unique([slug])
   @@unique([courseId, name])

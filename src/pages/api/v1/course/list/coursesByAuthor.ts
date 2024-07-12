@@ -15,6 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         thumbnail: true,
         description: true,
         totalResources: true,
+        previewMode: true,
         user: {
           select: {
             name: true,

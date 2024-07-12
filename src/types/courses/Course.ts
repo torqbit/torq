@@ -40,7 +40,7 @@ export interface CourseLessonAPIResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  course: { name: string; description: string; courseTrailer: string };
+  course: { name: string; description: string; courseTrailer: string; previewMode: boolean };
   lessons: CourseLessons[];
 }
 export interface CourseAPIResponse {
@@ -60,6 +60,7 @@ export interface CourseData {
 }
 export interface CourseInfo {
   about: string;
+  previewMode: boolean;
 
   user: {
     name: string;
@@ -156,7 +157,7 @@ export interface ICoursePageDetail {
   thumbnail: string;
   difficultyLevel: string;
   tvUrl: string;
-  thumbnail: string;
+
   chapters: IChapter[];
   user: {
     name: string;

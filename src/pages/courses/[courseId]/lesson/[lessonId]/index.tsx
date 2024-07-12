@@ -84,7 +84,7 @@ const LessonItem: FC<{
 const LessonPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
-  const [courseDetail, setCourseDetails] = useState<{ name: string; description: string }>();
+  const [courseDetail, setCourseDetails] = useState<{ name: string; description: string; previewMode: boolean }>();
   const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([]);
   const [currentLesson, setCurrentLesson] = useState<{
     chapterName?: string;
@@ -101,7 +101,7 @@ const LessonPage: NextPage = () => {
   const [certificateData, setCertificateData] = useState<ICertficateData>();
 
   const onCreateCertificate = () => {
-    setCertificateData({ ...certificateData, loading: true, completed: true } as ICertficateData);
+    setCertificateData({ ...certificateData, loading: !courseDetail?.previewMode, completed: true } as ICertficateData);
     ProgramService.createCertificate(
       Number(router.query.courseId),
       (result) => {
@@ -163,6 +163,7 @@ const LessonPage: NextPage = () => {
       findAndSetCurrentLesson(courseLessons, true);
 
       onCreateCertificate();
+
       console.log("go to certificate page");
     } else {
       let nextLessonId = 0;
@@ -199,7 +200,11 @@ const LessonPage: NextPage = () => {
         (result) => {
           setCourseLessons(result.lessons);
           setLessonLoading(false);
-          setCourseDetails({ name: result.course.name, description: result.course.description });
+          setCourseDetails({
+            name: result.course.name,
+            description: result.course.description,
+            previewMode: result.course.previewMode,
+          });
           findAndSetCurrentLesson(result.lessons, false);
         },
         (error) => {
@@ -363,27 +368,41 @@ const LessonPage: NextPage = () => {
             ) : (
               <>
                 <div className={styles.certificatePage}>
-                  {certificateData?.loading ? (
+                  {certificateData?.loading && !courseDetail?.previewMode ? (
                     <Space direction="vertical" className={styles.generating_loader}>
                       <SpinLoader className="lesson_loader" />
 
                       <p> Generating Certificate</p>
                     </Space>
                   ) : (
-                    <div className={styles.certificateBtn}>
-                      <h1>You have successfully completed this course</h1>
-                      <Button
-                        type="primary"
-                        onClick={() => {
-                          router.push(
-                            `/courses/${router.query.courseId}/certificate/${certificateData?.certificateId}`
-                          );
-                        }}
-                      >
-                        View Certificate
-                        {SvgIcons.arrowRight}
-                      </Button>
-                    </div>
+                    <>
+                      {courseDetail?.previewMode ? (
+                        <div className={styles.certificateBtn}>
+                          <h1>You have successfully completed this course</h1>
+                          <Link href={"/courses"} type="primary">
+                            <Button type="primary">
+                              Browse Courses
+                              {SvgIcons.arrowRight}
+                            </Button>
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className={styles.certificateBtn}>
+                          <h1>You have successfully completed this course</h1>
+                          <Button
+                            type="primary"
+                            onClick={() => {
+                              router.push(
+                                `/courses/${router.query.courseId}/certificate/${certificateData?.certificateId}`
+                              );
+                            }}
+                          >
+                            View Certificate
+                            {SvgIcons.arrowRight}
+                          </Button>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </>
