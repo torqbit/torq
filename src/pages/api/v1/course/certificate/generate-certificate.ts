@@ -55,7 +55,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
     });
-    if (!course?.previewMode) {
+    if (course) {
       const findExistingCertificate = await prisma.courseCertificates.findFirst({
         where: {
           studentId: String(token?.id),
@@ -70,148 +70,131 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
 
-      if (findProgress === course?.totalResources) {
-        if (findExistingCertificate && findExistingCertificate.imagePath && findExistingCertificate.pdfPath) {
-          return res.status(200).json({
-            info: false,
-            success: true,
-            message: "course successfully fetched",
-            certificateIssueId: findExistingCertificate.id,
-          });
-        } else if (!findExistingCertificate) {
-          const createCertificate = await prisma.courseCertificates.create({
-            data: {
-              courseId: Number(courseId),
-              studentId: String(token?.id),
-            },
-          });
-          const onComplete = async (pdfTempPath: string, imgPath: string) => {
-            const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
-              where: {
-                service_type: "media",
-              },
-            });
-            if (serviceProviderResponse && pdfTempPath && imgPath) {
-              let certificateIssueId;
-              const serviceProvider = cms.getServiceProvider(
-                serviceProviderResponse?.provider_name,
-                serviceProviderResponse?.providerDetail
-              );
-              const pdfBuffer = fs.readFileSync(pdfTempPath);
-
-              const imgBuffer = fs.readFileSync(imgPath as string);
-              let imgName = `${createCertificate.id}.png`;
-              let pdfName = `${createCertificate.id}.pdf`;
-
-              const fileImgPath = path.join(appConstant.certificateDirectory, imgName);
-              const pdfPath = path.join(appConstant.certificateDirectory, pdfName);
-              const fileArray = [
-                {
-                  fileBuffer: imgBuffer,
-                  fullName: imgName,
-                  filePath: fileImgPath,
-                  name: "img",
-                },
-                {
-                  fileBuffer: pdfBuffer,
-                  fullName: pdfName,
-                  filePath: pdfPath,
-                  name: "pdf",
-                },
-              ];
-
-              fileArray.forEach(async (file) => {
-                const response = await cms.uploadFile(
-                  file.fullName,
-                  file.fileBuffer,
-                  file.filePath,
-
-                  serviceProvider
-                );
-
-                let data =
-                  file.name === "img"
-                    ? {
-                        imagePath: response.fileCDNPath,
-                      }
-                    : {
-                        pdfPath: response.fileCDNPath,
-                      };
-
-                const certificateData = await prisma.courseCertificates.update({
-                  where: {
-                    id: createCertificate.id,
-                  },
-
-                  data,
-                });
-                certificateIssueId = certificateData.id;
-              });
-              if (pdfTempPath && imgPath) {
-                fs.unlinkSync(imgPath);
-                fs.unlinkSync(pdfTempPath);
-              }
-
-              await prisma.courseRegistration.update({
-                where: {
-                  studentId_courseId: {
-                    courseId: Number(course?.courseId),
-                    studentId: String(token?.id),
-                  },
-                },
-                data: {
-                  courseState: "COMPLETED",
-                },
-              });
-
-              const configData = {
-                name: token?.name,
-                email: token?.email,
-                courseName: course.name,
-                productName: process.env.NEXT_PUBLIC_PLATFORM_NAME,
-                url: `${process.env.NEXTAUTH_URL}/courses/${course.courseId}/certificate/${createCertificate.id}`,
-              };
-
-              MailerService.sendMail("COURSE_COMPLETION", configData).then((result) => {
-                console.log(result.error);
-              });
-
-              return res.status(200).json({
-                success: true,
-                certificateIssueId: createCertificate.id,
-              });
-            } else {
-              throw new Error("No Media Provder has been configured");
-            }
-          };
-
-          let description = `who has successfully completed the course ${course?.name}, an online course   authored by ${course?.user.name} and offered by Torqbit`;
-
-          generateCertificate(
-            createCertificate.id,
-            description,
-            token?.name as string,
-            course?.user.name as string,
-            String(course?.certificateTemplate),
-            onComplete
-          );
-        }
-      } else {
-        return res.status(400).json({ success: false, error: "first complete the course !" });
-      }
-    } else {
-      await prisma.courseRegistration.update({
-        where: {
-          studentId_courseId: {
-            courseId: Number(course?.courseId),
+      if (findExistingCertificate && findExistingCertificate.imagePath && findExistingCertificate.pdfPath) {
+        return res.status(200).json({
+          info: false,
+          success: true,
+          message: "course successfully fetched",
+          certificateIssueId: findExistingCertificate.id,
+        });
+      } else if (!findExistingCertificate) {
+        const createCertificate = await prisma.courseCertificates.create({
+          data: {
+            courseId: Number(courseId),
             studentId: String(token?.id),
           },
-        },
-        data: {
-          courseState: "COMPLETED",
-        },
-      });
-      return res.status(200).json({ success: true, error: "Course completed successfully !" });
+        });
+        const onComplete = async (pdfTempPath: string, imgPath: string) => {
+          const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
+            where: {
+              service_type: "media",
+            },
+          });
+          if (serviceProviderResponse && pdfTempPath && imgPath) {
+            let certificateIssueId;
+            const serviceProvider = cms.getServiceProvider(
+              serviceProviderResponse?.provider_name,
+              serviceProviderResponse?.providerDetail
+            );
+            const pdfBuffer = fs.readFileSync(pdfTempPath);
+
+            const imgBuffer = fs.readFileSync(imgPath as string);
+            let imgName = `${createCertificate.id}.png`;
+            let pdfName = `${createCertificate.id}.pdf`;
+
+            const fileImgPath = path.join(appConstant.certificateDirectory, imgName);
+            const pdfPath = path.join(appConstant.certificateDirectory, pdfName);
+            const fileArray = [
+              {
+                fileBuffer: imgBuffer,
+                fullName: imgName,
+                filePath: fileImgPath,
+                name: "img",
+              },
+              {
+                fileBuffer: pdfBuffer,
+                fullName: pdfName,
+                filePath: pdfPath,
+                name: "pdf",
+              },
+            ];
+
+            fileArray.forEach(async (file) => {
+              const response = await cms.uploadFile(
+                file.fullName,
+                file.fileBuffer,
+                file.filePath,
+
+                serviceProvider
+              );
+
+              let data =
+                file.name === "img"
+                  ? {
+                      imagePath: response.fileCDNPath,
+                    }
+                  : {
+                      pdfPath: response.fileCDNPath,
+                    };
+
+              const certificateData = await prisma.courseCertificates.update({
+                where: {
+                  id: createCertificate.id,
+                },
+
+                data,
+              });
+              certificateIssueId = certificateData.id;
+            });
+            if (pdfTempPath && imgPath) {
+              fs.unlinkSync(imgPath);
+              fs.unlinkSync(pdfTempPath);
+            }
+
+            await prisma.courseRegistration.update({
+              where: {
+                studentId_courseId: {
+                  courseId: Number(course?.courseId),
+                  studentId: String(token?.id),
+                },
+              },
+              data: {
+                courseState: "COMPLETED",
+              },
+            });
+
+            const configData = {
+              name: token?.name,
+              email: token?.email,
+              courseName: course.name,
+              productName: process.env.NEXT_PUBLIC_PLATFORM_NAME,
+              url: `${process.env.NEXTAUTH_URL}/courses/${course.courseId}/certificate/${createCertificate.id}`,
+            };
+
+            MailerService.sendMail("COURSE_COMPLETION", configData).then((result) => {
+              console.log(result.error);
+            });
+
+            return res.status(200).json({
+              success: true,
+              certificateIssueId: createCertificate.id,
+            });
+          } else {
+            throw new Error("No Media Provder has been configured");
+          }
+        };
+
+        let description = `who has successfully completed the course ${course?.name}, an online course   authored by ${course?.user.name} and offered by Torqbit`;
+
+        generateCertificate(
+          createCertificate.id,
+          description,
+          token?.name as string,
+          course?.user.name as string,
+          String(course?.certificateTemplate),
+          onComplete
+        );
+      }
     }
   } catch (error) {
     return errorHandler(error, res);

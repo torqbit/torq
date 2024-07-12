@@ -162,7 +162,7 @@ const LessonPage: NextPage = () => {
       //go to certificate page
       findAndSetCurrentLesson(courseLessons, true);
 
-      onCreateCertificate();
+      !courseDetail?.previewMode && onCreateCertificate();
 
       console.log("go to certificate page");
     } else {
