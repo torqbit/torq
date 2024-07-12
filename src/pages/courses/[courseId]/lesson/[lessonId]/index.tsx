@@ -101,7 +101,7 @@ const LessonPage: NextPage = () => {
   const [certificateData, setCertificateData] = useState<ICertficateData>();
 
   const onCreateCertificate = () => {
-    setCertificateData({ ...certificateData, loading: true, completed: true } as ICertficateData);
+    setCertificateData({ ...certificateData, loading: !courseDetail?.previewMode, completed: true } as ICertficateData);
     ProgramService.createCertificate(
       Number(router.query.courseId),
       (result) => {
@@ -368,7 +368,7 @@ const LessonPage: NextPage = () => {
             ) : (
               <>
                 <div className={styles.certificatePage}>
-                  {certificateData?.loading ? (
+                  {certificateData?.loading && !courseDetail?.previewMode ? (
                     <Space direction="vertical" className={styles.generating_loader}>
                       <SpinLoader className="lesson_loader" />
 

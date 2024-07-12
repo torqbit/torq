@@ -49,9 +49,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           serviceProviderResponse?.providerDetail
         );
 
-        const deletionResponse = await cms.deleteFile(`${fields.existingFilePath[0]}`, serviceProvider);
-        if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
-          throw new Error(`Unable to delete the file due to : ${deletionResponse.message}`);
+        if (fields.hasOwnProperty("existingFilePath")) {
+          const deletionResponse = await cms.deleteFile(`${fields.existingFilePath[0]}`, serviceProvider);
+          if (!deletionResponse.success && deletionResponse.statusCode !== 404) {
+            throw new Error(`Unable to delete the file due to : ${deletionResponse.message}`);
+          }
         }
 
         const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);

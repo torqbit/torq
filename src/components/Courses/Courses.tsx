@@ -36,10 +36,10 @@ const CourseCard: FC<ICourseCard> = ({
         </div>
         <div className={styles.card_content}>
           <div>
-            <Flex align="center" justify="space-between">
+            <Flex align="center" gap={0}>
               <Tag className={styles.card_difficulty_level}>{difficulty}</Tag>
               {previewMode && (
-                <Tag className={styles.card_difficulty_level} color="gold">
+                <Tag className={styles.card_mode} color="yellow-inverse" style={{ marginLeft: 5 }}>
                   Preview Mode
                 </Tag>
               )}
