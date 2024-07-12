@@ -60,7 +60,7 @@ const updatePage: FC<IProps> = ({ user, updateData }) => {
       user={user}
       heroSection={<HeroBlog title="Updates" description="New changes to our learning platform & courses" />}
     >
-      {updateData.length === 0 ? (
+      {!updateData ? (
         <div
           style={{
             height: 400,
