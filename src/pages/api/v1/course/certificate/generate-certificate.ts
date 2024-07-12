@@ -55,7 +55,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
     });
-    console.log(course, "course");
     if (!course?.previewMode) {
       const findExistingCertificate = await prisma.courseCertificates.findFirst({
         where: {

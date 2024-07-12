@@ -62,7 +62,6 @@ const Courses: FC<{
   allCourses: any[];
 }> = ({ allCourses }) => {
   const { data: user } = useSession();
-  console.log(allCourses);
   return (
     <>
       {allCourses.length ? (
