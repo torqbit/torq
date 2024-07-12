@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
     const body = await req.body;
-    const { name, duration, state, skills, description, thumbnail, sequenceId } = body;
+    const { name, duration, state, skills, description, thumbnail, sequenceId, previewMode } = body;
     const findeTotalCourse = await prisma.course.findMany({
       where: {
         authorId: token?.id,
@@ -33,6 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       skills: skills,
       about: "",
       sequenceId: findeTotalCourse.length + 1,
+      previewMode: true,
     };
 
     const createCourse = await prisma.course.create({

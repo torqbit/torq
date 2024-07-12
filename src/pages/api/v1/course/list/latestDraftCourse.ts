@@ -23,7 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       where: {
         authorId: authorId,
         state: "DRAFT",
-        // state: state as StateType,
       },
     });
     return res.status(200).json({

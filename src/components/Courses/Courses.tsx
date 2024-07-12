@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import styles from "../../styles/Dashboard.module.scss";
 import { useSession } from "next-auth/react";
-import { Tag } from "antd";
+import { Flex, Tag } from "antd";
 
 import Link from "next/link";
 import { convertSecToHourandMin } from "@/pages/admin/content";
@@ -15,6 +15,7 @@ interface ICourseCard {
   courseId: number;
   courseType: string;
   difficulty: string;
+  previewMode: boolean;
 }
 
 const CourseCard: FC<ICourseCard> = ({
@@ -25,6 +26,7 @@ const CourseCard: FC<ICourseCard> = ({
   duration,
   courseType,
   difficulty,
+  previewMode,
 }) => {
   return (
     <Link href={`/courses/${courseId}`}>
@@ -34,7 +36,14 @@ const CourseCard: FC<ICourseCard> = ({
         </div>
         <div className={styles.card_content}>
           <div>
-            <Tag className={styles.card_difficulty_level}>{difficulty}</Tag>
+            <Flex align="center" gap={0}>
+              <Tag className={styles.card_difficulty_level}>{difficulty}</Tag>
+              {previewMode && (
+                <Tag className={styles.card_mode} color="yellow-inverse" style={{ marginLeft: 5 }}>
+                  Preview Mode
+                </Tag>
+              )}
+            </Flex>
 
             <h3 className={styles.card_title}>{courseName}</h3>
             <p className={styles.card_description}>{courseDescription}</p>
@@ -53,7 +62,6 @@ const Courses: FC<{
   allCourses: any[];
 }> = ({ allCourses }) => {
   const { data: user } = useSession();
-
   return (
     <>
       {allCourses.length ? (
@@ -80,6 +88,7 @@ const Courses: FC<{
                   courseId={course.courseId}
                   courseType={course.courseType}
                   difficulty={course.difficultyLevel}
+                  previewMode={course.previewMode}
                 />
               );
             })}

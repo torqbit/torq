@@ -138,8 +138,7 @@ const Preview: FC<{
             <>
               {isCourseCompleted ? (
                 <Flex align="center" gap={10}>
-                  <Button onClick={onViewCertificate}>View Certificate</Button>
-
+                  {!courseDetail?.course.previewMode && <Button onClick={onViewCertificate}>View Certificate</Button>}
                   <Link
                     href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}
                   >
@@ -168,7 +167,7 @@ const Preview: FC<{
                   !addContentPreview && onEnrollCourse && onEnrollCourse();
                 }}
               >
-                Enroll Course
+                {courseDetail?.course.previewMode ? " Preview Course" : " Enroll Course"}
                 {SvgIcons.arrowRight}
               </Button>
             </>

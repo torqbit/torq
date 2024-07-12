@@ -11,12 +11,13 @@ import {
   Select,
   Space,
   Spin,
+  Switch,
   Tooltip,
   Upload,
   UploadProps,
 } from "antd";
 import SvgIcons from "@/components/SvgIcons";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
 import { RcFile } from "antd/es/upload";
 import { ChapterDetail, VideoInfo } from "@/types/courses/Course";
 import ImgCrop from "antd-img-crop";
@@ -182,6 +183,9 @@ const CourseSetting: FC<{
                     );
                   })}
                 </Select>
+              </Form.Item>
+              <Form.Item name={"previewMode"} label={"Preview Mode"}>
+                <Switch value={true} />
               </Form.Item>
             </div>
             <div className={styles.course_thumbnails}>
