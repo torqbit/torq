@@ -66,7 +66,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         AND co.courseId = ${courseId}
         ORDER BY chapterSeq, resourceSeq`;
     }
-    console.log(resultRows[0].previewMode, "this is mode");
     if (resultRows.length > 0) {
       courseName = resultRows[0].courseName;
       description = resultRows[0].description;

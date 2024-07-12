@@ -166,14 +166,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   if (blog) {
     const jsonValue = blog?.content;
-    console.log(jsonValue, "json");
+
     const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
 
     return {
       props: {
         user,
         htmlData: htmlData,
-        description: blog.content.content[0].content[0].text,
+        description: blog.content.content[0].content
+          ? blog.content.content[0].content.filter((c: any) => c.type === "text")[0].text
+          : "",
         currentUrl,
         hostName: `${host}`,
         blogData: {

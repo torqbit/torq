@@ -143,7 +143,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
             );
           })}
         </ul>
-        <Tooltip title={""}>
+        <Tooltip title={"Switch Theme"}>
           <Button
             type="default"
             name="theme button"
