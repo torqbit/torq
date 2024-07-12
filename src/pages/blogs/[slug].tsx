@@ -20,6 +20,7 @@ import Head from "next/head";
 import appConstant from "@/services/appConstant";
 import { truncateString } from "@/services/helper";
 import TextEditor from "@/components/Editor/Editor";
+import UploadImage from "@/components/Editor/Extension/UploadExtension";
 
 interface IProps {
   user: User;
@@ -165,7 +166,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   if (blog) {
     const jsonValue = blog?.content;
-    const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
+    console.log(jsonValue, "json");
+    const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
 
     return {
       props: {

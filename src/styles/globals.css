@@ -620,3 +620,8 @@ a {
 }
 
 /*** TipTap ***/
+
+.gapCursor {
+  color: var(--font-secondary);
+  rotate: 90deg;
+}

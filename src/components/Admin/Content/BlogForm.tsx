@@ -188,7 +188,7 @@ const BlogForm: FC<{
                 {blogBanner ? (
                   <>
                     <img style={{ borderRadius: 4, objectFit: "cover" }} src={blogBanner} />
-                    <Tooltip title="Upload course thumbnail">
+                    <Tooltip title={`Upload ${contentType.toLowerCase()} banner`}>
                       <div className={styles.camera_btn_img}>
                         {blogBannerUploading && blogBanner ? <LoadingOutlined /> : SvgIcons.camera}
                       </div>

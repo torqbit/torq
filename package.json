@@ -24,6 +24,7 @@
     "@react-email/render": "0.0.15",
     "@react-pdf/renderer": "^3.1.14",
     "@tiptap/extension-color": "^2.4.0",
+    "@tiptap/extension-image": "^2.4.0",
     "@tiptap/extension-placeholder": "^2.4.0",
     "@tiptap/extension-text-style": "^2.4.0",
     "@tiptap/html": "^2.4.0",
