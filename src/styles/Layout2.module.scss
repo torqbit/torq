@@ -1,4 +1,5 @@
 .layout2_wrapper {
+  position: relative;
   display: flex;
   height: 100vh;
 
@@ -109,4 +110,57 @@
 }
 .contentWrapper {
   height: 500px;
+}
+
+.responsiveNavContainer {
+  display: none;
+}
+
+@media only screen and (max-width: 415px) {
+  .responsiveNavContainer {
+    background-color: var(--bg-primary);
+    width: 100%;
+    height: 60px;
+    padding: 0px 10px;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .navTitle {
+      font-size: 12px;
+    }
+
+    .selectedNavBar {
+      color: var(--font-primary);
+      width: 60px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      a:hover {
+        color: var(--btn-primary);
+      }
+
+      span {
+        height: 3px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+
+        background-color: var(--btn-primary);
+      }
+    }
+    .navBar {
+      width: 60px;
+
+      color: var(--font-secondary);
+      padding: 10px;
+      span {
+        display: none;
+      }
+    }
+  }
 }
