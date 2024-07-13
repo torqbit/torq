@@ -139,6 +139,9 @@
       align-items: center;
       flex-direction: column;
       position: relative;
+      a:hover {
+        color: var(--btn-primary);
+      }
 
       span {
         height: 3px;
