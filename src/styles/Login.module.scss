@@ -1,4 +1,5 @@
 .login_page_wrapper {
+  background-color: var(--bg-secondary);
   height: 100vh;
   width: 100%;
   display: flex;
@@ -67,29 +68,4 @@
 
 .social_login_container h3 {
   color: var(--font-primary);
-}
-
-@media only screen and (max-width: 415px) {
-  .login_page_wrapper {
-    flex-direction: column;
-    gap: 0;
-    background-color: #0e1326;
-    padding: 20px;
-  }
-
-  .login_img {
-    margin-top: 30px;
-    background-color: #0e1326;
-  }
-
-  .social_login_container {
-    h3 {
-      margin-top: -150px;
-    }
-  }
-
-  .social_login_container .google_btn,
-  .social_login_container .github_btn {
-    width: 280px;
-  }
 }
