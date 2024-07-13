@@ -119,8 +119,9 @@
 @media only screen and (max-width: 415px) {
   .responsiveNavContainer {
     background-color: var(--bg-primary);
-
     width: 100%;
+    height: 60px;
+    padding: 0px 10px;
     position: fixed;
     bottom: 0;
     display: flex;
@@ -129,23 +130,34 @@
     .navTitle {
       font-size: 12px;
     }
+
     .selectedNavBar {
-      position: relative;
       color: var(--font-primary);
+      width: 60px;
       padding: 10px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
 
       span {
         height: 3px;
         position: absolute;
+        top: 0;
         left: 0;
         right: 0;
-        top: 0;
+
         background-color: var(--btn-primary);
       }
     }
     .navBar {
+      width: 60px;
+
       color: var(--font-secondary);
       padding: 10px;
+      span {
+        display: none;
+      }
     }
   }
 }

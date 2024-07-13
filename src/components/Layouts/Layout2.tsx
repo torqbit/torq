@@ -52,7 +52,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     {
       title: "Guide",
       icon: SvgIcons.guides,
-      link: "guide",
+      link: "guides",
     },
     {
       title: "Settings",
@@ -279,17 +279,19 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
             <div className={styles.responsiveNavContainer}>
               {responsiveNav.map((nav, i) => {
                 return (
-                  <Link
+                  <div
                     key={i}
-                    href={`/${nav.link}`}
                     className={globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar}
+                    onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
                   >
-                    <span></span>
-                    <Flex vertical align="center" gap={5} justify="space-between">
-                      <i>{nav.icon}</i>
-                      <div className={styles.navTitle}>{nav.title}</div>
-                    </Flex>
-                  </Link>
+                    <Link key={i} href={`/${nav.link}`}>
+                      <span></span>
+                      <Flex vertical align="center" gap={5} justify="space-between">
+                        <i>{nav.icon}</i>
+                        <div className={styles.navTitle}>{nav.title}</div>
+                      </Flex>
+                    </Link>
+                  </div>
                 );
               })}
             </div>
