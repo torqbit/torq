@@ -15,6 +15,7 @@ export type ISiderMenu =
   | "content"
   | "addCourseForm"
   | "configuration";
+export type IResponsiveNavMenu = "dashboard" | "courses" | "guides" | "setting" | "notification";
 
 // Define your state type
 type AppState = {
@@ -23,12 +24,14 @@ type AppState = {
   session?: UserSession;
   theme?: Theme;
   pageLoading?: boolean;
+  selectedResponsiveMenu?: IResponsiveNavMenu;
 };
 
 // Define your action type
 type AppAction =
   | { type: "SET_UNREAD_NOTIFICATION"; payload: number }
   | { type: "GET_NOTIFICATION"; payload: INotification[] }
+  | { type: "SET_NAVBAR_MENU"; payload: IResponsiveNavMenu }
   | { type: "SET_USER"; payload: UserSession }
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
   | { type: "SWITCH_THEME"; payload: Theme }
@@ -38,6 +41,7 @@ type AppAction =
 const initialState: AppState = {
   selectedSiderMenu: "dashboard",
   pageLoading: true,
+  selectedResponsiveMenu: "dashboard",
 };
 
 // Create the context
@@ -59,6 +63,8 @@ export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
         return { ...currentState, session: action.payload };
       case "SET_SELECTED_SIDER_MENU":
         return { ...currentState, selectedSiderMenu: action.payload };
+      case "SET_NAVBAR_MENU":
+        return { ...currentState, selectedResponsiveMenu: action.payload };
       case "SET_LOADER":
         return { ...currentState, pageLoading: action.payload };
 

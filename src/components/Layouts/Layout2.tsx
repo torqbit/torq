@@ -4,7 +4,7 @@ import styles from "../../styles/Layout2.module.scss";
 import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { useSession } from "next-auth/react";
-import { ISiderMenu, useAppContext } from "../ContextApi/AppContext";
+import { IResponsiveNavMenu, ISiderMenu, useAppContext } from "../ContextApi/AppContext";
 import { Badge, Button, ConfigProvider, Flex, Input, Layout, MenuProps, Popover, message } from "antd";
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
@@ -37,6 +37,34 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   });
 
   const router = useRouter();
+
+  const responsiveNav = [
+    {
+      title: "Dashboard",
+      icon: SvgIcons.dashboard,
+      link: "dashboard",
+    },
+    {
+      title: "Course",
+      icon: SvgIcons.courses,
+      link: "courses",
+    },
+    {
+      title: "Guide",
+      icon: SvgIcons.guides,
+      link: "guides",
+    },
+    {
+      title: "Settings",
+      icon: SvgIcons.setting,
+      link: "setting",
+    },
+    {
+      title: "Notifications",
+      icon: SvgIcons.nottification,
+      link: "notifications",
+    },
+  ];
 
   const authorSiderMenu: MenuProps["items"] = [
     {
@@ -130,6 +158,14 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     }
     dispatch({ type: "SET_SELECTED_SIDER_MENU", payload: selectedMenu as ISiderMenu });
   };
+
+  const onChangeSelectedNavBar = () => {
+    let selectedMenu = router.pathname.split("/")[1];
+    if (selectedMenu == "admin") {
+      selectedMenu = router.pathname.split("/")[2];
+    }
+    dispatch({ type: "SET_NAVBAR_MENU", payload: selectedMenu as IResponsiveNavMenu });
+  };
   let intervalId: NodeJS.Timer | undefined;
 
   const getLatestNotificationCount = () => {
@@ -202,6 +238,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     if (user) {
       getLatestNotificationCount();
       onChangeSelectedBar();
+      onChangeSelectedNavBar();
       const userSession = user.user as UserSession;
 
       dispatch({
@@ -239,6 +276,25 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
             <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
               <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
             </Layout>
+            <div className={styles.responsiveNavContainer}>
+              {responsiveNav.map((nav, i) => {
+                return (
+                  <div
+                    key={i}
+                    className={globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar}
+                    onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
+                  >
+                    <Link key={i} href={`/${nav.link}`}>
+                      <span></span>
+                      <Flex vertical align="center" gap={5} justify="space-between">
+                        <i>{nav.icon}</i>
+                        <div className={styles.navTitle}>{nav.title}</div>
+                      </Flex>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
           </Layout>
         </ConfigProvider>
       )}
