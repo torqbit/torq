@@ -13,6 +13,12 @@
       padding: 10px 15px;
       cursor: pointer;
       transition: all 0.3s ease-in;
+      > div {
+        color: var(--font-primary);
+      }
+      .completed_course {
+        color: var(--font-secondary);
+      }
 
       &:hover {
         box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 10px;
@@ -472,5 +478,23 @@
   }
   .description_text {
     color: var(--font-secondary);
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .dashboard_content {
+    h2 {
+      font-size: 14px;
+    }
+    h3 {
+      font-size: 14px;
+    }
+    .enroll_course_item {
+      display: flex;
+      flex-direction: column;
+      justify-content: left;
+      align-items: flex-start;
+      gap: 10px;
+    }
   }
 }
