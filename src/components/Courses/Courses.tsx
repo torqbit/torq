@@ -40,12 +40,12 @@ const CourseCard: FC<ICourseCard> = ({
               <Tag className={styles.card_difficulty_level}>{difficulty}</Tag>
               {previewMode && (
                 <Tag className={styles.card_mode} color="yellow-inverse" style={{ marginLeft: 5 }}>
-                  Preview Mode
+                  Preview
                 </Tag>
               )}
             </Flex>
 
-            <h3 className={styles.card_title}>{courseName}</h3>
+            <h4 className={styles.card_title}>{courseName}</h4>
             <p className={styles.card_description}>{courseDescription}</p>
           </div>
 

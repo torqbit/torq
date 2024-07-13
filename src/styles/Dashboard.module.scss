@@ -54,6 +54,7 @@
 .course_card_wrapper {
   margin-top: 20px;
   display: flex;
+
   flex-wrap: wrap;
   gap: 20px;
 
@@ -106,14 +107,15 @@
         margin: 10px 15px 10px 15px;
       }
 
-      h3,
+      h4,
       p {
         margin: 0 15px;
         color: var(--font-secondary);
       }
 
-      h3 {
+      h4 {
         margin-bottom: 10px;
+
         color: var(--font-secondary);
       }
 
@@ -482,19 +484,58 @@
 }
 
 @media only screen and (max-width: 415px) {
+  .course_content {
+    padding: 20px;
+  }
+
   .dashboard_content {
-    h2 {
-      font-size: 14px;
-    }
-    h3 {
-      font-size: 14px;
-    }
     .enroll_course_item {
       display: flex;
       flex-direction: column;
       justify-content: left;
       align-items: flex-start;
       gap: 10px;
+    }
+  }
+
+  .course_card_wrapper {
+    .course_card {
+      width: calc(100vw - 40px);
+
+      height: 100px;
+
+      .card_content,
+      .card_img {
+        flex-basis: 30%;
+        img {
+          width: 100px;
+          height: 100px;
+        }
+        .card_footer {
+          margin-left: -10px;
+        }
+        .card_difficulty_level {
+          margin-left: 0px;
+        }
+        .card_mode {
+          margin-left: 0px;
+        }
+
+        h4 {
+          margin: 0;
+          padding: 0;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          width: calc(100vw - 200px);
+          padding: 0px 10px;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          margin-left: -10px;
+        }
+        p {
+          display: none;
+        }
+      }
     }
   }
 }
