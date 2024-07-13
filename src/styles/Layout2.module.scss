@@ -1,4 +1,5 @@
 .layout2_wrapper {
+  position: relative;
   display: flex;
   height: 100vh;
 
@@ -109,4 +110,42 @@
 }
 .contentWrapper {
   height: 500px;
+}
+
+.responsiveNavContainer {
+  display: none;
+}
+
+@media only screen and (max-width: 415px) {
+  .responsiveNavContainer {
+    background-color: var(--bg-primary);
+
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .navTitle {
+      font-size: 12px;
+    }
+    .selectedNavBar {
+      position: relative;
+      color: var(--font-primary);
+      padding: 10px;
+
+      span {
+        height: 3px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: var(--btn-primary);
+      }
+    }
+    .navBar {
+      color: var(--font-secondary);
+      padding: 10px;
+    }
+  }
 }
