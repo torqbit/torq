@@ -14,24 +14,20 @@ export type ICourseCategory = {
   courses: ICourseDisplay[];
 };
 
-export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCategory; index: number; isMobile: boolean }> = ({
-  direction,
-  category,
-  index,
-  isMobile,
-}) => (
-  <section className={`${styles.course__category}  ${index % 2 != 0 ? styles.odd__category : styles.even__category}`}
-    style={{ paddingTop: 100 }}>
+export const CourseCategory: FC<{
+  direction: "ltr" | "rtl";
+  category: ICourseCategory;
+  index: number;
+  isMobile: boolean;
+}> = ({ direction, category, index, isMobile }) => (
+  <section className={`${styles.course__category}  ${index % 2 != 0 ? styles.odd__category : styles.even__category}`}>
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
       <div>
         <span className={styles.tag__stage}>Stage {index}</span>
         <h2>{category.name}</h2>
         <p>{category.description}</p>
       </div>
-      <div
-        className={styles.category__detail}
-      >
-
+      <div className={styles.category__detail}>
         <Flex align="center" justify="center" gap={20}>
           {category.courses.map((co, index) => (
             <Card key={index} bordered={false} className={styles.cardWrapper} size={isMobile ? "small" : "default"}>

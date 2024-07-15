@@ -96,16 +96,14 @@
 .heroWrapper {
   width: 100%;
   position: relative;
-  height: 100vh;
   z-index: 1;
-  background: linear-gradient(120deg, rgba(13, 18, 98, 1) 0%, rgba(242, 124, 101, 1) 100%);
-
+  background: var(--hero-gradient);
 
   .heroContentContainer {
     position: relative;
     width: 700px;
     margin: 0 auto;
-    padding-top: 125px;
+    padding: 200px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -114,14 +112,14 @@
     .preview__tag {
       padding: 10px 15px;
       color: var(--font-primary);
-      background: linear-gradient(#1C1E2F, #1C1E2F) padding-box,
-        linear-gradient(to right, #E05050, #475FE5) border-box;
+      background: var(--tag-preview);
       border-radius: 50em;
       border: 4px solid transparent;
+      margin-bottom: 25px;
     }
 
     del {
-      color: #caa3ae;
+      color: var(--strike);
     }
 
     h1 {
@@ -131,14 +129,13 @@
     }
 
     p {
-      color: #c4c4c4;
+      color: var(--font-secondary);
       text-align: center;
       font-size: 18px;
       line-height: 1.4;
       margin-bottom: 40px;
+      padding: 0 20px;
     }
-
-
 
     button {
       font-size: 16px;
@@ -181,12 +178,11 @@
   width: 100%;
   text-align: center;
 
-  &>img {
+  & > img {
     margin: -200px auto 50px;
     margin-top: -200px;
     z-index: 5;
     position: relative;
-
   }
 }
 
@@ -195,7 +191,6 @@
   padding: 100px 20px;
   position: relative;
   overflow: hidden;
-
 
   .tag__stage {
     padding: 10px 20px;
@@ -211,7 +206,7 @@
     height: 700px;
   }
 
-  &>div {
+  & > div {
     display: flex;
     max-width: 1000px;
     margin: 0 auto;
@@ -220,7 +215,7 @@
 
   h2 {
     font-size: 70px;
-    margin-top: 10px;
+    margin-top: 20px;
     background: -webkit-linear-gradient(120deg, rgb(97, 106, 230) 0%, rgba(242, 124, 101, 1) 100%);
     background-clip: text;
     -webkit-background-clip: text;
@@ -245,9 +240,7 @@
       width: 250px;
     }
 
-
-
-    &>div {
+    & > div {
       display: grid;
       grid-template-columns: 1fr 1fr;
 
@@ -257,7 +250,7 @@
         color: var(--font-primary);
       }
 
-      >div {
+      > div {
         background-color: var(--bg-primary);
 
         .tags {
@@ -278,7 +271,7 @@
 .aboutContainer {
   background-color: var(--segment-bg);
 
-  &>div {
+  & > div {
     margin: 0 auto;
     width: 1000px;
     padding: 100px 20px;
@@ -336,15 +329,14 @@
       }
     }
   }
-
 }
 
 // Get Started
 .get__started {
-  background: linear-gradient(120deg, rgba(13, 18, 98, 1) 0%, rgba(242, 124, 101, 1) 100%);
+  background: var(--hero-gradient);
   margin: 0;
 
-  &>div {
+  & > div {
     margin: 0 auto;
     width: 1000px;
     padding: 100px 20px;
@@ -352,7 +344,7 @@
   }
 
   p {
-    color: #c4c4c4;
+    color: var(--font-secondary);
     max-width: 500px;
     margin: 10px auto 30px auto;
     line-height: 1.4;
@@ -362,7 +354,7 @@
     text-align: center;
     margin-bottom: 20px;
     font-size: 40px;
-    color: #fff;
+    color: var(--font-primary);
   }
 }
 
@@ -386,7 +378,7 @@
       color: #fff;
     }
 
-    >div:first-child {
+    > div:first-child {
       display: flex;
       flex-direction: column;
 
@@ -438,7 +430,6 @@
 }
 
 @media only screen and (max-width: 430px) {
-
   // NavBar
   .sideNaveContainer,
   .platformNameLogo {
@@ -472,8 +463,13 @@
     }
   }
 
-  .coursesListWrapper {
+  .hero__img {
+    & > img {
+      margin: -100px auto 50px;
+    }
+  }
 
+  .coursesListWrapper {
     ul,
     li {
       list-style: none;
@@ -506,7 +502,7 @@
     }
   }
 
-  .menuDrawer>a {
+  .menuDrawer > a {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -536,7 +532,7 @@
   .heroWrapper {
     .heroContentContainer {
       width: 100vw;
-
+      padding: 150px 0;
 
       h1 {
         font-size: 35px;
@@ -579,6 +575,7 @@
   // Course Catgory
 
   .course__category {
+    padding: 50px 20px;
     i {
       height: 600px;
       width: 400px;
@@ -594,7 +591,7 @@
       align-items: flex-end;
     }
 
-    &>div {
+    & > div {
       flex-direction: column;
 
       img {
@@ -622,7 +619,7 @@
         max-width: 300px;
       }
 
-      &>div {
+      & > div {
         grid-template-columns: 1fr 1fr;
         place-items: center;
         width: 100%;
@@ -631,7 +628,7 @@
           color: var(--font-primary);
         }
 
-        >div {
+        > div {
           background-color: var(--bg-primary);
 
           .tagWrapper {
@@ -650,8 +647,7 @@
   // About
 
   .aboutContainer {
-
-    &>div {
+    & > div {
       max-width: 100vw;
     }
 
@@ -661,7 +657,7 @@
   }
 
   .get__started {
-    &>div {
+    & > div {
       max-width: 100vw;
     }
   }
@@ -674,7 +670,7 @@
 
       flex-direction: column-reverse;
 
-      >div:first-child {
+      > div:first-child {
         flex-direction: row;
         align-items: center;
         gap: 60px;
