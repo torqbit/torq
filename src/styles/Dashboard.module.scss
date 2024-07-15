@@ -486,9 +486,14 @@
 @media only screen and (max-width: 415px) {
   .course_content {
     padding: 20px;
+    height: 100%;
+  }
+  .setting_content {
+    padding: 20px;
   }
 
   .dashboard_content {
+    padding: 20px;
     .enroll_course_item {
       display: flex;
       flex-direction: column;
@@ -501,7 +506,7 @@
   .course_card_wrapper {
     .course_card {
       width: calc(100vw - 40px);
-
+      gap: 10px;
       height: 100px;
 
       .card_content,
@@ -510,6 +515,8 @@
         img {
           width: 100px;
           height: 100px;
+          border-top-right-radius: 0px;
+          border-bottom-right-radius: 0px;
         }
         .card_footer {
           margin-left: -10px;

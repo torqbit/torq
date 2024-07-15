@@ -25,9 +25,19 @@
     background-color: var(--bg-primary);
     display: flex;
     flex-direction: column;
+    img {
+      height: 707px;
+      width: 1000px;
+    }
     button {
       margin-top: 20px;
       width: 200px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      i {
+        margin-top: 5px;
+      }
     }
   }
   .about_description {
@@ -36,6 +46,40 @@
 
     span {
       color: var(--ft-color-dull);
+    }
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .certificate_page {
+    padding: 20px;
+
+    .certificate_image {
+      padding: 20px;
+      background-color: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      img {
+        height: calc(55vw);
+        width: calc(100vw - 80px);
+      }
+      button {
+        margin-top: 0px;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .about_description {
+      max-width: 300px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--font-secondary);
+
+      span {
+        color: var(--ft-color-dull);
+      }
     }
   }
 }
