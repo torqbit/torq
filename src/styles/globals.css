@@ -503,6 +503,12 @@ a {
     top: calc(50vh - 28px);
     left: calc(50vw - 28px);
   }
+  .lesson_loader {
+    top: 42%;
+    right: -20px;
+    height: 50px;
+    width: 50px;
+  }
 }
 
 .ant-input-affix-wrapper {
