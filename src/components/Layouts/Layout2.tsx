@@ -265,7 +265,10 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
         <ConfigProvider theme={globalState.session?.theme == "dark" ? darkThemConfig : antThemeConfig}>
           <Head>
             <title>Torq | Learn to lead</title>
+
             <meta name="description" content="Learn, build and solve the problems that matters the most" />
+            <meta property="og:image" content={"https://torqbit-dev.b-cdn.net/website/img/torqbit-landing.png"} />
+
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
