@@ -89,7 +89,8 @@
 
 @media only screen and (max-width: 415px) {
   .user_profile_page {
-    padding: 20px;
+    margin-bottom: 20px;
+
     .content_center {
       flex-direction: column;
       gap: 20px 0;
