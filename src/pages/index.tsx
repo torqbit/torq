@@ -12,13 +12,16 @@ import { GetServerSidePropsContext, NextPage } from "next";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
 import AOS from "aos";
+import GetStarted from "@/components/Marketing/LandingPage/GetStarted";
+import Image from "next/image";
+import HeroImage from "@/components/Marketing/LandingPage/HeroImage";
 interface IProps {
   user: User;
 }
 
 const LandingPage: FC<IProps> = ({ user }) => {
   const { dispatch } = useAppContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 430px)" });
   const courseCategoryFrontend: ICourseCategory = {
     name: "Frontend Development",
     image: "https://torqbit-dev.b-cdn.net/website/img/front-end-development.png",
@@ -115,11 +118,13 @@ const LandingPage: FC<IProps> = ({ user }) => {
   }, []);
 
   return (
-    <MarketingLayout user={user} heroSection={<Hero />}>
-      <CourseCategory direction="ltr" category={courseCategoryFrontend} isMobile={isMobile} />
-      <CourseCategory direction="rtl" category={courseCategoryBackend} isMobile={isMobile} />
-      <CourseCategory direction="ltr" category={courseCategoryDevops} isMobile={isMobile} />
+    <MarketingLayout user={user} heroSection={<Hero isMobile={isMobile} />}>
+      <HeroImage isMobile={isMobile} />
+      <CourseCategory direction="ltr" category={courseCategoryFrontend} index={1} isMobile={isMobile} />
+      <CourseCategory direction="rtl" category={courseCategoryBackend} index={2} isMobile={isMobile} />
+      <CourseCategory direction="ltr" category={courseCategoryDevops} index={3} isMobile={isMobile} />
       <About />
+      <GetStarted />
     </MarketingLayout>
   );
 };

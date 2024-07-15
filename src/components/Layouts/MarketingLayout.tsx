@@ -50,7 +50,7 @@ const MarketingLayout: FC<{
       )}
       <ConfigProvider theme={globalState.theme == "dark" ? darkThemConfig : antThemeConfig}>
         <Head>
-          <title>Torq | Learn to lead</title>
+          <title>Torqbit | Learn to build software products</title>
           <meta name="description" content="Learn, build and solve the problems that matters the most" />
           <link rel="icon" href="/favicon.ico" />
         </Head>

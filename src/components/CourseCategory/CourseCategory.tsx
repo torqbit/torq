@@ -14,33 +14,25 @@ export type ICourseCategory = {
   courses: ICourseDisplay[];
 };
 
-export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCategory; isMobile: boolean }> = ({
+export const CourseCategory: FC<{ direction: "ltr" | "rtl"; category: ICourseCategory; index: number; isMobile: boolean }> = ({
   direction,
   category,
+  index,
   isMobile,
 }) => (
-  <section className={styles.course__category}>
+  <section className={`${styles.course__category}  ${index % 2 != 0 ? styles.odd__category : styles.even__category}`}
+    style={{ paddingTop: 100 }}>
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
-      <div
-        data-aos={`${direction == "ltr" ? "slide-right" : "slide-left"}`}
-        data-aos-offset="100"
-        data-aos-delay="50"
-        data-aos-duration="800"
-        data-aos-easing="ease-in-out"
-      >
-        <Image src={category.image} alt="" height={isMobile ? 250 : 600} width={isMobile ? 254 : 800} loading="lazy" />
+      <div>
+        <span className={styles.tag__stage}>Stage {index}</span>
+        <h2>{category.name}</h2>
+        <p>{category.description}</p>
       </div>
       <div
         className={styles.category__detail}
-        data-aos="fade-up"
-        data-aos-offset="100"
-        data-aos-delay="150"
-        data-aos-duration="800"
-        data-aos-easing="ease-in-out"
       >
-        <h1>{category.name}</h1>
-        <p>{category.description}</p>
-        <Flex align="center" justify="center">
+
+        <Flex align="center" justify="center" gap={20}>
           {category.courses.map((co, index) => (
             <Card key={index} bordered={false} className={styles.cardWrapper} size={isMobile ? "small" : "default"}>
               <p className={styles.course__title}>{co.name}</p>
