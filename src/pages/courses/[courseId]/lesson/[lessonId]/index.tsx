@@ -35,6 +35,7 @@ import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
 import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
+import { useMediaQuery } from "react-responsive";
 export interface ICertficateData {
   loading: boolean;
   certificateId: string;
@@ -83,6 +84,8 @@ const LessonItem: FC<{
 
 const LessonPage: NextPage = () => {
   const router = useRouter();
+  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+
   const [loading, setLoading] = useState<boolean>(false);
   const [courseDetail, setCourseDetails] = useState<{ name: string; description: string; previewMode: boolean }>();
   const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([]);
@@ -292,6 +295,53 @@ const LessonPage: NextPage = () => {
     },
   ];
 
+  const responsiveItems: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "Lessons",
+      children: (
+        <div className={styles.lesson_wrapper}>
+          <div className={styles.lessons_container}>
+            {lessonItems?.map((item, i) => {
+              return (
+                <div key={i} className={styles.lessons_list_wrapper}>
+                  <Collapse
+                    defaultActiveKey={`${currentLesson?.chapterSeq}`}
+                    size="small"
+                    bordered={false}
+                    accordion={false}
+                    activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
+                    items={[
+                      {
+                        key: item.key,
+                        label: item.label,
+                        children: item.children,
+                        showArrow: false,
+                      },
+                    ]}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "2",
+      label: "About",
+      children: currentLesson?.lesson?.description,
+    },
+    {
+      key: "QA",
+      label: "Q & A",
+
+      children: session && currentLesson?.lesson && (
+        <QADiscssionTab loading={loading} resourceId={currentLesson?.lesson?.lessonId} userId={session?.id} />
+      ),
+    },
+  ];
+
   const onMarkAsCompleted = async () => {
     try {
       const res = await postFetch(
@@ -338,6 +388,36 @@ const LessonPage: NextPage = () => {
                 />
               </Flex>
             </div>
+
+            <Flex className={styles.responsive_action_btn} align="center" justify="space-between">
+              <Link href={`/courses/${router.query.courseId}`}>
+                <Button>
+                  <Flex gap={5}>
+                    <i className={styles.goBackArrow}>{SvgIcons.arrowRight}</i>
+                    <div>Go Back</div>
+                  </Flex>
+                </Button>
+              </Link>
+              <>
+                {currentLesson?.lesson ? (
+                  <>
+                    {currentLesson?.lesson?.isWatched && (
+                      <Button>
+                        <Flex gap={5}>{SvgIcons.check} Completed </Flex>
+                      </Button>
+                    )}
+                    {!currentLesson?.lesson?.isWatched && (
+                      <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
+                        Mark as Completed
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Skeleton.Button />
+                )}
+              </>
+            </Flex>
+
             {!certificateData?.completed ? (
               <div className={styles.video_container}>
                 {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
@@ -414,56 +494,62 @@ const LessonPage: NextPage = () => {
               }}
               tabBarExtraContent={
                 <>
-                  {currentLesson?.lesson ? (
+                  {!isMobile && (
                     <>
-                      {currentLesson?.lesson?.isWatched && (
-                        <Button>
-                          <Flex gap={5}>{SvgIcons.check} Completed </Flex>
-                        </Button>
-                      )}
-                      {!currentLesson?.lesson?.isWatched && (
-                        <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
-                          Mark as Completed
-                        </Button>
+                      {currentLesson?.lesson ? (
+                        <>
+                          {currentLesson?.lesson?.isWatched && (
+                            <Button>
+                              <Flex gap={5}>{SvgIcons.check} Completed </Flex>
+                            </Button>
+                          )}
+                          {!currentLesson?.lesson?.isWatched && (
+                            <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
+                              Mark as Completed
+                            </Button>
+                          )}
+                        </>
+                      ) : (
+                        <Skeleton.Button />
                       )}
                     </>
-                  ) : (
-                    <Skeleton.Button />
                   )}
                 </>
               }
               tabBarGutter={40}
               defaultActiveKey={String(router.query.tab)}
               className={styles.add_course_tabs}
-              items={items}
+              items={isMobile ? responsiveItems : items}
             />
           </div>
-          <div className={styles.lesson_wrapper}>
-            <div className={styles.lessons_container}>
-              <h2>Course Content</h2>
-              {lessonItems?.map((item, i) => {
-                return (
-                  <div key={i} className={styles.lessons_list_wrapper}>
-                    <Collapse
-                      defaultActiveKey={`${currentLesson?.chapterSeq}`}
-                      size="small"
-                      bordered={false}
-                      accordion={false}
-                      activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
-                      items={[
-                        {
-                          key: item.key,
-                          label: item.label,
-                          children: item.children,
-                          showArrow: false,
-                        },
-                      ]}
-                    />
-                  </div>
-                );
-              })}
+          {!isMobile && (
+            <div className={styles.lesson_wrapper}>
+              <div className={styles.lessons_container}>
+                <h2>Course Content</h2>
+                {lessonItems?.map((item, i) => {
+                  return (
+                    <div key={i} className={styles.lessons_list_wrapper}>
+                      <Collapse
+                        defaultActiveKey={`${currentLesson?.chapterSeq}`}
+                        size="small"
+                        bordered={false}
+                        accordion={false}
+                        activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
+                        items={[
+                          {
+                            key: item.key,
+                            label: item.label,
+                            children: item.children,
+                            showArrow: false,
+                          },
+                        ]}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </section>
       ) : (
         <SpinLoader className="course__spinner" />

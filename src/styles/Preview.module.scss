@@ -70,3 +70,47 @@
     padding: 0px 10px;
   }
 }
+
+@media only screen and (max-width: 415px) {
+  .preview_container {
+    padding: 20px;
+    .chapter_list {
+      width: calc(100vw - 40px);
+    }
+
+    .course__info {
+      width: calc(100vw - 40px);
+      flex-direction: column;
+      gap: 20px;
+
+      h2,
+      p {
+        max-width: 300px;
+      }
+
+      p {
+        color: var(--font-secondary);
+      }
+    }
+
+    .video_container {
+      .spin_wrapper {
+        position: absolute;
+
+        top: 55px;
+        left: calc(50vw - 40px);
+
+        .loading_icon {
+          font-size: 30px;
+        }
+      }
+      width: calc(100vw - 40px);
+
+      height: calc(50vw);
+
+      margin-bottom: 20px;
+      background-color: var(--bg-primary);
+      position: relative;
+    }
+  }
+}
