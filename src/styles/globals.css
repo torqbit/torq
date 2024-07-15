@@ -47,13 +47,16 @@ body {
   --wave-color: #c4c4c4;
   --ft-color: #0e1326;
   --font-footer: #939db8;
-
+  --strike: #ad5742;
   --theme-btn-bg: #fff;
   --label-color: #68696d;
   --success: #4ece91;
   --danger: #ff0000;
   --primary: #4096ff;
   --border-color: #d9d9d9;
+  --tag-preview: linear-gradient(rgb(238, 227, 240), rgb(227, 234, 244)) padding-box,
+    linear-gradient(to right, #e05050, #475fe5) border-box;
+  --hero-gradient: linear-gradient(120deg, rgb(229 197 236) 0%, rgb(226 133 101) 100%);
   --hover-bg: var(--header-bg);
 }
 
@@ -61,6 +64,8 @@ body {
   --bg-secondary: #202433;
   --bg-primary: #283040;
   --segment-bg: #151823;
+  --strike: #caa3ae;
+  --tag-preview: linear-gradient(#1c1e2f, #1c1e2f) padding-box, linear-gradient(to right, #e05050, #475fe5) border-box;
   --font-primary: #fff;
   --font-dropdown-label: #fff;
   --bg-elevated: #374362;
@@ -83,6 +88,7 @@ body {
   --theme-btn-bg: #394165;
   --label-color: #68696d;
   --primary: #4096ff;
+  --hero-gradient: linear-gradient(120deg, rgba(13, 18, 98, 1) 0%, rgba(242, 124, 101, 1) 100%);
   --hover-bg: var(--header-bg);
 }
 
