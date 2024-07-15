@@ -18,7 +18,7 @@
     </a>
 </p>
 
-The easiest way to get started with Torq is by installing in your local machine.
+The easiest way to get started with Torqbit is by installing in your local machine.
 
 ## 🍙 Self Hosting
 
