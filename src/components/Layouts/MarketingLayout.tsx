@@ -52,6 +52,7 @@ const MarketingLayout: FC<{
         <Head>
           <title>Torqbit | Learn to build software products</title>
           <meta name="description" content="Learn, build and solve the problems that matters the most" />
+          <meta property="og:image" content={"/icon/torqbit.png"} />
           <link rel="icon" href="/favicon.ico" />
         </Head>
 

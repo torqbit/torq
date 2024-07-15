@@ -70,8 +70,6 @@
 
     .card_content,
     .card_img {
-      flex-basis: 50%;
-
       img {
         width: 250px;
         height: 250px;
@@ -352,18 +350,12 @@
               margin-top: 20px;
             }
 
-            flex-basis: 35%;
-
             p {
               margin-bottom: 10px;
               font-size: 13px;
               color: var(--font-secondary);
               margin: 4px;
             }
-          }
-
-          div:last-child {
-            flex-basis: 50%;
           }
         }
       }
@@ -508,10 +500,12 @@
       width: calc(100vw - 40px);
       gap: 10px;
       height: 100px;
+      .card_content {
+        width: 100%;
+      }
 
       .card_content,
       .card_img {
-        flex-basis: 30%;
         img {
           width: 100px;
           height: 100px;

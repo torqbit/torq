@@ -117,6 +117,7 @@ const Preview: FC<{
           </Flex>
           {
             <iframe
+              allowFullScreen
               style={{
                 position: "absolute",
                 width: "100%",
