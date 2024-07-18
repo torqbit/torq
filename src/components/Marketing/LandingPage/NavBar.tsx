@@ -8,77 +8,13 @@ import SvgIcons from "@/components/SvgIcons";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { User } from "@prisma/client";
 
-export const items: MenuProps["items"] = [
-  {
-    key: "1",
-    type: "group",
-    label: "Front end Development",
-    children: [
-      {
-        key: "1-1",
-        label: "Foundations of Web Development",
-      },
-      {
-        key: "1-2",
-        label: "Version Control with Git & Github",
-      },
-      {
-        key: "1-3",
-        label: "Programming with Javascript",
-      },
-      {
-        key: "1-4",
-        label: "UI Development with ReactJS",
-      },
-    ],
-  },
-  {
-    key: "2",
-    type: "group",
-    label: "Back end Development",
-    children: [
-      {
-        key: "2-1",
-        label: "Build CLI Apps with Node.JS",
-      },
-      {
-        key: "2-2",
-        label: "Build APIs with Next.JS",
-      },
-      {
-        key: "2-3",
-        label: "Relational Database & ORM",
-      },
-      {
-        key: "2-4",
-        label: "Authentication with Next Auth",
-      },
-    ],
-  },
-  {
-    key: "3",
-    type: "group",
-    label: "Devops & Infrastructure",
-    children: [
-      {
-        key: "3-1",
-        label: "Container Management",
-      },
-      {
-        key: "3-2",
-        label: "Cloud Deployment with AWS",
-      },
-    ],
-  },
-];
-
 const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
   const { dispatch, globalState } = useAppContext();
 
   const navLinks = [
     {
       title: "Courses",
-      href: "/",
+      href: "#courses",
     },
     {
       title: "Updates",
@@ -121,19 +57,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
             return (
               <li key={i}>
                 {link.title === "Courses" ? (
-                  <Dropdown
-                    menu={{ items }}
-                    trigger={["click"]}
-                    overlayClassName="nav__overlay"
-                    className="another__class"
-                  >
-                    <Link onClick={(e) => e.preventDefault()} href={link.href}>
-                      <Flex align="center" aria-label="dropdown menu for courses" gap={4} style={{ cursor: "pointer" }}>
-                        {link.title}
-                        <i style={{ marginTop: 8 }}> {SvgIcons.chevronDown}</i>
-                      </Flex>
-                    </Link>
-                  </Dropdown>
+                  <a href={link.href}>{link.title}</a>
                 ) : (
                   <Link href={link.href} aria-label={`link to ${link.title} page`}>
                     {link.title}

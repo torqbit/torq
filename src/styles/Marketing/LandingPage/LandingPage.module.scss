@@ -238,6 +238,7 @@
 
     .cardWrapper {
       width: 250px;
+      height: 120px;
     }
 
     & > div {
@@ -502,7 +503,7 @@
     }
   }
 
-  .menuDrawer > a {
+  .menuDrawer > .drawerMenuItems {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -606,6 +607,7 @@
 
       .cardWrapper {
         width: 160px;
+        height: 130px;
       }
 
       h1 {

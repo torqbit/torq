@@ -9,7 +9,6 @@ import { Button, Drawer, Flex, Tooltip } from "antd";
 import appConstant from "@/services/appConstant";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import SvgIcons from "@/components/SvgIcons";
-import { items } from "./NavBar";
 
 const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, onAnchorClick }) => {
   const { dispatch } = useAppContext();
@@ -17,7 +16,7 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
   const menuItems = [
     {
       label: "Courses",
-      href: "#",
+      href: "#courses",
     },
     {
       label: "Updates",
@@ -88,51 +87,20 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
         <div className={styles.menuDrawer}>
           {menuItems.map((item, i) => {
             return (
-              <Link
-                key={i}
-                href={item.href}
-                aria-label={`link to ${item.label}`}
-                onClick={() => item.label === "Courses" && onHandleChildrenDrawer(true)}
-              >
+              <div className={styles.drawerMenuItems} onClick={() => item.label === "Courses" && onAnchorClick()}>
                 {item.label === "Courses" ? (
-                  <div className={styles.menuTitle}>
+                  <a href={item.href} className={styles.menuTitle} aria-label={`link to ${item.label}`}>
                     <div>{item.label}</div>
-                    <i>{SvgIcons.chevronRight}</i>
-                  </div>
+                  </a>
                 ) : (
-                  item.label
+                  <Link key={i} href={item.href} aria-label={`link to ${item.label}`}>
+                    {item.label}
+                  </Link>
                 )}
-              </Link>
-            );
-          })}
-        </div>
-        <Drawer
-          title={<h4 className={styles.childrenDrawerTitle}>Courses</h4>}
-          classNames={{ header: styles.drawerHeader }}
-          width={280}
-          placement="left"
-          size="default"
-          closable={true}
-          onClose={() => onHandleChildrenDrawer(false)}
-          open={showChildrenDrawer}
-        >
-          {items?.map((courses: any, i) => {
-            return (
-              <div key={i} className={styles.coursesListWrapper}>
-                <ul>
-                  <li className={styles.coursesLabel}>{courses.label}</li>
-                  <div>
-                    <ul className={styles.childrenWrapper}>
-                      {courses.children.map((child: any, i: number) => {
-                        return <li key={i}>{child.label}</li>;
-                      })}
-                    </ul>
-                  </div>
-                </ul>
               </div>
             );
           })}
-        </Drawer>
+        </div>
       </Drawer>
     </section>
   );

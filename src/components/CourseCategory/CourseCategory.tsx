@@ -20,7 +20,10 @@ export const CourseCategory: FC<{
   index: number;
   isMobile: boolean;
 }> = ({ direction, category, index, isMobile }) => (
-  <section className={`${styles.course__category}  ${index % 2 != 0 ? styles.odd__category : styles.even__category}`}>
+  <section
+    className={`${styles.course__category}  ${index % 2 != 0 ? styles.odd__category : styles.even__category}`}
+    id="courses"
+  >
     <div className={`${direction == "ltr" ? "" : styles.rtl}`}>
       <div>
         <span className={styles.tag__stage}>Stage {index}</span>
