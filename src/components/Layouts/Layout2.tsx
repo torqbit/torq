@@ -18,6 +18,7 @@ import ConversationCard from "../Conversation/ConversationCard";
 import ConversationService, { IConversationList } from "@/services/ConversationService";
 import { IConversationData } from "@/pages/api/v1/conversation/list";
 import { Scrollbars } from "react-custom-scrollbars";
+import Offline from "../Offline/Offline";
 
 const { Content } = Layout;
 
@@ -235,6 +236,31 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   });
 
   useEffect(() => {
+    window.addEventListener("online", () => {
+      dispatch({
+        type: "SET_ONLINE_STATUS",
+        payload: true,
+      });
+    });
+    window.addEventListener("offline", () => {
+      dispatch({
+        type: "SET_LOADER",
+        payload: false,
+      });
+      dispatch({
+        type: "SET_ONLINE_STATUS",
+        payload: false,
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    !globalState.onlineStatus && message.warning("You are offline! check your internet connection ");
+  }, [globalState.onlineStatus]);
+
+  useEffect(() => {
+    console.log(globalState.onlineStatus, "status checking for online");
+
     if (user) {
       getLatestNotificationCount();
       onChangeSelectedBar();
@@ -272,33 +298,39 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
-          <Layout hasSider className="default-container">
-            <Sidebar
-              menu={user?.role == "AUTHOR" || user?.role == "ADMIN" ? usersMenu.concat(authorSiderMenu) : usersMenu}
-            />
-            <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
-              <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
+          {globalState.onlineStatus ? (
+            <Layout hasSider className="default-container">
+              <Sidebar
+                menu={user?.role == "AUTHOR" || user?.role == "ADMIN" ? usersMenu.concat(authorSiderMenu) : usersMenu}
+              />
+              <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
+                <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
+              </Layout>
+              <div className={styles.responsiveNavContainer}>
+                {responsiveNav.map((nav, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className={
+                        globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar
+                      }
+                      onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
+                    >
+                      <Link key={i} href={`/${nav.link}`}>
+                        <span></span>
+                        <Flex vertical align="center" gap={5} justify="space-between">
+                          <i>{nav.icon}</i>
+                          <div className={styles.navTitle}>{nav.title}</div>
+                        </Flex>
+                      </Link>
+                    </div>
+                  );
+                })}
+              </div>
             </Layout>
-            <div className={styles.responsiveNavContainer}>
-              {responsiveNav.map((nav, i) => {
-                return (
-                  <div
-                    key={i}
-                    className={globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar}
-                    onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
-                  >
-                    <Link key={i} href={`/${nav.link}`}>
-                      <span></span>
-                      <Flex vertical align="center" gap={5} justify="space-between">
-                        <i>{nav.icon}</i>
-                        <div className={styles.navTitle}>{nav.title}</div>
-                      </Flex>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          </Layout>
+          ) : (
+            <Offline />
+          )}
         </ConfigProvider>
       )}
     </>
