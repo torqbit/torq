@@ -10,7 +10,7 @@ const Offline = () => {
         <div className={styles.content}>
           <i>{SvgIcons.noNetwork}</i>
           <div>
-            <h1>You are currently offline!</h1>
+            <h2>You are currently offline!</h2>
             <h4>Please check your internet connection</h4>
           </div>
         </div>
