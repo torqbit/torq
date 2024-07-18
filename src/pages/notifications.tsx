@@ -167,7 +167,6 @@ const Dashboard: FC = () => {
   return (
     <Layout2>
       <section className={styles.dashboard_content}>
-        <h2>Hello {user?.user?.name}</h2>
         <h3>Notification</h3>
 
         <NotificationList />

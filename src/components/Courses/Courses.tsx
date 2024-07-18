@@ -66,8 +66,6 @@ const Courses: FC<{
     <>
       {allCourses.length ? (
         <section className={styles.course_content}>
-          <h2>Hello {user?.user?.name}</h2>
-          <h3>Courses</h3>
           <div className={styles.course_card_wrapper}>
             {allCourses.map((course: any, i) => {
               let totalDuration = 0;

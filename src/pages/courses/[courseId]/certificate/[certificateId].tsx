@@ -42,7 +42,6 @@ const ShowCertificate = () => {
       ) : (
         <Space direction="vertical" size={"middle"} className={styles.certificate_page}>
           <div>
-            <h2>Hello {session?.user?.name}</h2>
             <Breadcrumb
               items={[
                 {
