@@ -119,27 +119,28 @@
 .offline_page_wrapper {
   height: 100vh;
   background-color: var(--bg-secondary);
-  .content {
-    display: flex;
-    gap: 20px;
-  }
-  i {
-    height: 40px;
-    width: 40px;
-    color: var(--font-secondary);
-  }
   img {
     height: 100px;
     width: 100px;
     margin-bottom: 10px;
   }
-  h2 {
-    color: var(--font-primary);
-    text-align: center;
-  }
-  h4 {
-    color: var(--font-secondary);
-    text-align: center;
+  .content {
+    display: flex;
+    gap: 20px;
+    i {
+      height: 40px;
+      width: 40px;
+      color: var(--font-secondary);
+    }
+
+    h2 {
+      color: var(--font-primary);
+      text-align: center;
+    }
+    h4 {
+      color: var(--font-secondary);
+      text-align: center;
+    }
   }
 }
 
