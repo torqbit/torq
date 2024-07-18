@@ -27,6 +27,14 @@
   }
 }
 
+.course_content {
+  padding: 0px 40px 40px 40px;
+}
+
+.courseContainer {
+  padding: 40px 40px 0px 40px;
+}
+
 //no courses found
 
 .no_course_found {
@@ -477,8 +485,12 @@
 
 @media only screen and (max-width: 415px) {
   .course_content {
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     height: 100%;
+  }
+
+  .courseContainer {
+    padding: 20px 20px 0px 20px;
   }
   .setting_content {
     padding: 20px;

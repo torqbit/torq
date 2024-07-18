@@ -189,7 +189,6 @@ const Setting: NextPage = () => {
       {contextMessageHolder}
 
       <section className={styleLayout.setting_content}>
-        <h2>Hello {user?.user?.name}</h2>
         <h3>Setting</h3>
 
         <Tabs defaultActiveKey="1" className="content_tab" items={items} onChange={onChange} />

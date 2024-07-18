@@ -107,8 +107,6 @@ const AnalyticsPage: NextPage = () => {
           <SpinLoader />
         ) : (
           <section className={styles.analyticsContainer}>
-            <h2>Hello {session?.user?.name}</h2>
-
             <div className={styles.learn_breadcrumb}>
               <Flex style={{ fontSize: 20 }}>
                 <Link href={"/admin/content"}>Administration</Link>{" "}

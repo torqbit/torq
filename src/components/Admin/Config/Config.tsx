@@ -4,19 +4,18 @@ import Layout2 from "@/components/Layouts/Layout2";
 
 import styles from "@/styles/Config.module.scss";
 
-import { Breadcrumb, Flex, Form, Tabs, TabsProps, message } from "antd";
+import { Breadcrumb, Form, Tabs, TabsProps, message } from "antd";
 import MediaStorage from "./MediaStorage";
-import { useSession } from "next-auth/react";
 import ProgramService from "@/services/ProgramService";
 import CertificateTemplates from "./Certificate";
 
 const Config: FC = () => {
-  const { data: user } = useSession();
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
 
   const [refresh, setRefresh] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
+  const [activeTab, setActiveTab] = useState<string>("Configurations");
 
   const onRefresh = () => {
     setRefresh(!refresh);
@@ -47,6 +46,8 @@ const Config: FC = () => {
       setActiveKey("3");
     }
     setActiveKey(key);
+    key === "1" && setActiveTab("Configurations");
+    key === "2" && setActiveTab("Certificates");
   };
 
   useEffect(() => {
@@ -89,19 +90,8 @@ const Config: FC = () => {
   return (
     <Layout2>
       <section className={styles.config_page}>
-        <h1>
-          Hello <span>{user?.user?.name}</span>
-        </h1>
-        <Breadcrumb
-          items={[
-            {
-              title: <a href="/">Adminstration</a>,
-            },
-            {
-              title: "Configuration",
-            },
-          ]}
-        />
+        <h3>{activeTab}</h3>
+
         <Tabs
           tabBarGutter={40}
           activeKey={activeKey}

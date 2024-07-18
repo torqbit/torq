@@ -128,7 +128,7 @@ const BlogForm: FC<{
     <section className={styles.blogFormConatiner}>
       <Form form={form}>
         {contextHolder}
-        <h2>Hello {user?.user?.name}</h2>
+
         <Flex className={styles.publishBtn} align="center" gap={10}>
           <Popconfirm
             title={`Delete the blog`}

@@ -3,9 +3,21 @@ import React from "react";
 import styles from "../../styles/Layout2.module.scss";
 import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { IResponsiveNavMenu, ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import { Badge, Button, ConfigProvider, Flex, Input, Layout, MenuProps, Popover, message } from "antd";
+import {
+  Badge,
+  Button,
+  ConfigProvider,
+  Dropdown,
+  Flex,
+  Input,
+  Layout,
+  MenuProps,
+  Popover,
+  Tooltip,
+  message,
+} from "antd";
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
 import { UserSession } from "@/lib/types/user";
@@ -19,6 +31,8 @@ import ConversationService, { IConversationList } from "@/services/ConversationS
 import { IConversationData } from "@/pages/api/v1/conversation/list";
 import { Scrollbars } from "react-custom-scrollbars";
 import Offline from "../Offline/Offline";
+import { Theme } from "@prisma/client";
+import { postFetch } from "@/services/request";
 
 const { Content } = Layout;
 
@@ -182,6 +196,22 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     );
   };
 
+  const updateTheme = async (theme: Theme) => {
+    dispatch({
+      type: "SET_USER",
+      payload: { ...user?.user, theme: theme },
+    });
+
+    dispatch({
+      type: "SWITCH_THEME",
+      payload: theme,
+    });
+    const response = await postFetch({ theme: theme }, "/api/v1/user/theme");
+    if (response.ok) {
+      update({ theme: theme });
+    }
+  };
+
   const getAllConversation = () => {
     ConversationService.getAllConversation(
       (result) => {
@@ -259,7 +289,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   }, [globalState.onlineStatus]);
 
   useEffect(() => {
-
     if (user) {
       getLatestNotificationCount();
       onChangeSelectedBar();
@@ -303,7 +332,46 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
                 menu={user?.role == "AUTHOR" || user?.role == "ADMIN" ? usersMenu.concat(authorSiderMenu) : usersMenu}
               />
               <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
-                <Content className={`${styles.sider_content} ${styles.className}`}>{children}</Content>
+                <Content className={`${styles.sider_content} ${styles.className}`}>
+                  <Flex align="center" justify="space-between" className={styles.userNameWrapper}>
+                    <h2>Hello {user?.user?.name}</h2>
+                    <Dropdown
+                      className={styles.mobileUserMenu}
+                      menu={{
+                        items: [
+                          {
+                            key: "0",
+                            label: (
+                              <div
+                                onClick={() => {
+                                  const newTheme: Theme = globalState.session?.theme == "dark" ? "light" : "dark";
+                                  updateTheme(newTheme);
+                                }}
+                              >
+                                {globalState.session?.theme !== "dark" ? "Dark mode" : "Light mode"}
+                              </div>
+                            ),
+                          },
+
+                          {
+                            key: "1",
+                            label: "Logout",
+                            onClick: () => {
+                              signOut();
+                            },
+                          },
+                        ],
+                      }}
+                      trigger={["click"]}
+                      placement="bottomRight"
+                      arrow={{ pointAtCenter: true }}
+                    >
+                      <i className={styles.verticalDots}>{SvgIcons.verticalThreeDots}</i>
+                    </Dropdown>
+                  </Flex>
+
+                  {children}
+                </Content>
               </Layout>
               <div className={styles.responsiveNavContainer}>
                 {responsiveNav.map((nav, i) => {

@@ -29,25 +29,30 @@ const CoursesPage: NextPage = () => {
   }, []);
 
   return (
-    <Layout2 className={styles.container}>
+    <Layout2>
       {contextMessageHolder}
-      {!loading ? (
-        <>
-          {allCourses && allCourses.filter((c) => c.state === "ACTIVE").length > 0 ? (
-            <Courses allCourses={allCourses.filter((c) => c.state === "ACTIVE")} />
-          ) : (
-            <>
-              <div className={styles.no_course_found}>
-                <img src="/img/common/empty.svg" alt="" />
-                <h2>No Courses were found</h2>
-                <p>Contact support team for more information.</p>
-              </div>
-            </>
-          )}
-        </>
-      ) : (
-        <SpinLoader className="course__spinner" />
-      )}
+      <section>
+        <div className={styles.courseContainer}>
+          <h3>Courses</h3>
+        </div>
+        {!loading ? (
+          <>
+            {allCourses && allCourses.filter((c) => c.state === "ACTIVE").length > 0 ? (
+              <Courses allCourses={allCourses.filter((c) => c.state === "ACTIVE")} />
+            ) : (
+              <>
+                <div className={styles.no_course_found}>
+                  <img src="/img/common/empty.svg" alt="" />
+                  <h2>No Courses were found</h2>
+                  <p>Contact support team for more information.</p>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <SpinLoader className="course__spinner" />
+        )}
+      </section>
     </Layout2>
   );
 };

@@ -405,7 +405,6 @@ const Content: NextPage = () => {
     <Layout2>
       {contextMessageHolder}
       <section className={styles.dashboard_content}>
-        <h2>Hello {user?.user?.name}</h2>
         <h3>Content</h3>
         <Tabs
           tabBarGutter={60}

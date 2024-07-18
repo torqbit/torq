@@ -10,11 +10,28 @@
     flex-basis: 100%;
     height: 100vh;
     overflow-y: scroll;
+    .mobileUserMenu {
+      display: none;
+    }
+
+    .userNameWrapper {
+      padding: 40px 40px 0px 40px;
+
+      h2 {
+        margin-bottom: 0px;
+      }
+    }
+
+    .verticalDots {
+      color: var(--font-secondary);
+    }
+
     h3 {
       margin-top: 30px;
     }
   }
 }
+
 .badgeIndicator {
   color: #fff !important;
 }
@@ -145,6 +162,20 @@
 }
 
 @media only screen and (max-width: 415px) {
+  .layout2_wrapper {
+    .sider_content {
+      .mobileUserMenu {
+        display: flex;
+      }
+      .userNameWrapper {
+        padding: 20px 20px 0px 20px;
+      }
+      h3 {
+        margin-top: 20px;
+      }
+    }
+  }
+
   .responsiveNavContainer {
     background-color: var(--bg-primary);
     width: 100%;

@@ -11,7 +11,6 @@ const QuizzesPage = () => {
     <Layout2>
       <section className={styles.dashboard_content}>
         <div className={styles.guide_wrapper}>
-          <h2>Hello {user?.user?.name}</h2>
           <Space style={{ marginTop: 30, marginBottom: 10 }}>
             <h3 style={{ margin: 0 }}>Quizzes</h3>
             <Tag>Coming Soon</Tag>
