@@ -392,8 +392,8 @@ const LessonPage: NextPage = () => {
             <Flex className={styles.responsive_action_btn} align="center" justify="space-between">
               <Link href={`/courses/${router.query.courseId}`}>
                 <Button>
-                  <Flex gap={5}>
-                    <i className={styles.goBackArrow}>{SvgIcons.arrowRight}</i>
+                  <Flex gap={5} align="center">
+                    <i className={styles.goBackArrow}>{SvgIcons.arrowLeft}</i>
                     <div>Go Back</div>
                   </Flex>
                 </Button>

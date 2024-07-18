@@ -2,22 +2,14 @@
   width: 100%;
   position: relative;
   overflow: hidden;
-  .heroWave {
-    stroke: var(--wave-color);
-  }
-  .heroWaveIcon {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
 
   .blogContentContainer {
     position: relative;
-    z-index: 1;
+    z-index: 0;
     width: 700px;
     margin: 0 auto;
 
-    height: 40vh;
+    height: calc(40vh + 90px);
     display: flex;
     flex-direction: column;
     align-items: center;

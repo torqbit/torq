@@ -62,12 +62,7 @@ const ShowCertificate = () => {
             <span>{session?.user?.name} </span>
           </p>
           <div className={styles.certificate_image}>
-            <img
-              src={String(certificateData?.imgPath)}
-              height={707}
-              width={1000}
-              alt={session?.user?.name ?? "Certificate"}
-            />
+            <img src={String(certificateData?.imgPath)} alt={session?.user?.name ?? "Certificate"} />
 
             <Button
               type="primary"
@@ -77,10 +72,8 @@ const ShowCertificate = () => {
                 );
               }}
             >
-              <Flex align="center" gap={10}>
-                {" "}
-                Download Certificate {SvgIcons.arrowRight}
-              </Flex>
+              <div> Download Certificate </div>
+              <i>{SvgIcons.arrowRight}</i>
             </Button>
           </div>
         </Space>
