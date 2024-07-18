@@ -25,6 +25,7 @@ type AppState = {
   theme?: Theme;
   pageLoading?: boolean;
   selectedResponsiveMenu?: IResponsiveNavMenu;
+  onlineStatus?: boolean;
 };
 
 // Define your action type
@@ -35,12 +36,14 @@ type AppAction =
   | { type: "SET_USER"; payload: UserSession }
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
   | { type: "SWITCH_THEME"; payload: Theme }
+  | { type: "SET_ONLINE_STATUS"; payload: boolean }
   | { type: "SET_LOADER"; payload: boolean };
 
 // Define the initial state
 const initialState: AppState = {
   selectedSiderMenu: "dashboard",
   pageLoading: true,
+  onlineStatus: true,
   selectedResponsiveMenu: "dashboard",
 };
 
@@ -65,6 +68,8 @@ export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
         return { ...currentState, selectedSiderMenu: action.payload };
       case "SET_NAVBAR_MENU":
         return { ...currentState, selectedResponsiveMenu: action.payload };
+      case "SET_ONLINE_STATUS":
+        return { ...currentState, onlineStatus: action.payload };
       case "SET_LOADER":
         return { ...currentState, pageLoading: action.payload };
 
