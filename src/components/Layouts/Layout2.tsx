@@ -259,7 +259,6 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
   }, [globalState.onlineStatus]);
 
   useEffect(() => {
-    console.log(globalState.onlineStatus, "status checking for online");
 
     if (user) {
       getLatestNotificationCount();
