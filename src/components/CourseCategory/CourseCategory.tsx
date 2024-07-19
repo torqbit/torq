@@ -5,6 +5,7 @@ import Image from "next/image";
 
 type ICourseDisplay = {
   name: string;
+  link: string;
   tools: string[];
 };
 export type ICourseCategory = {

@@ -113,7 +113,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
             <Feedback />
 
             <Tooltip className={styles.actionTooltip} title={"Join Discord"}>
-              <Link href={"https://discord.gg/NserMXcx"}>
+              <Link href={"https://discord.gg/DHU38pGw7C"} target="_blank">
                 <i
                   style={{
                     fill: "none",

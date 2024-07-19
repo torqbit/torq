@@ -29,20 +29,23 @@ const LandingPage: FC<IProps> = ({ user }) => {
       "Learn to build a portfolio website using web technologies, that captivates users interest and drives more attention from all around the world",
     courses: [
       {
-        name: "Foundations of Web Development",
+        name: "Build Static Websites",
         tools: ["HTML", "CSS", "Responsive"],
+        link: "/course/build-static-websites",
       },
       {
         name: "Version Control with Git & Github",
-        tools: ["Github", "Git", "Rebase"],
+        tools: ["VCS", "Git", "Rebase"],
+        link: "/course/version-control-with-git-and-github",
       },
       {
-        name: "Programming with Javascript",
+        name: "Program with Javascript & Typescript",
         tools: ["DOM", "ES6+", "OOP"],
+        link: "/course/program-with-javascript-and-typescript",
       },
       {
-        name: "UI Development with ReactJS",
-
+        name: "Develop UI Components with ReactJS",
+        link: "/course/develop-ui-components-with-reactjs",
         tools: ["Hooks", "State", "Context"],
       },
     ],
@@ -57,18 +60,22 @@ const LandingPage: FC<IProps> = ({ user }) => {
       {
         name: "Build CLI Apps with Node.JS",
         tools: ["HTTP", "Async", "File System"],
+        link: "builc-cli-apps-with-nodejs",
       },
       {
         name: "Build APIs with Next.JS",
+        link: "/course/build-apis-with-nextjs",
         tools: ["Routes", "Cache", "SSR"],
       },
       {
-        name: "Relational Database & ORM",
-        tools: ["RDBMS", "MySQL", "ORM"],
+        name: "Store Data in RDBMS",
+        tools: ["Postgres", "MySQL", "ORM"],
+        link: "/course/store-data-in-rdbms",
       },
       {
-        name: "Authentication with Next Auth",
+        name: "Secure APIs with NextAuth.JS",
         tools: ["OAuth", "JWT", "Security"],
+        link: "/course/secure-apis-with-nextauth",
       },
     ],
   };
@@ -80,12 +87,14 @@ const LandingPage: FC<IProps> = ({ user }) => {
       "Move the developed platform into a cloud, to transform into software as a Service using conatainers and leverage AWS cloud infrastructure to host the database, EKS, S3, Route53 and many more to run the service in production",
     courses: [
       {
-        name: "Container Management",
+        name: "Package and Deploy Containter Apps",
+        link: "/course/package-and-deploy-container-apps",
         tools: ["Docker", "Helm", "Kubernetes"],
       },
       {
-        name: "Cloud Development with AWS",
+        name: "Host Services in Cloud with AWS",
         tools: ["S3", "Route53", "ALB", "EC2"],
+        link: "/course/host-services-in-cloud-with-aws",
       },
     ],
   };
