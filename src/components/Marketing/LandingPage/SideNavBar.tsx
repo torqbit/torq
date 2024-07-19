@@ -87,7 +87,11 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
         <div className={styles.menuDrawer}>
           {menuItems.map((item, i) => {
             return (
-              <div className={styles.drawerMenuItems} onClick={() => item.label === "Courses" && onAnchorClick()}>
+              <div
+                key={i}
+                className={styles.drawerMenuItems}
+                onClick={() => item.label === "Courses" && onAnchorClick()}
+              >
                 {item.label === "Courses" ? (
                   <a href={item.href} className={styles.menuTitle} aria-label={`link to ${item.label}`}>
                     <div>{item.label}</div>

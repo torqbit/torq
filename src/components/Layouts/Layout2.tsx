@@ -77,6 +77,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     {
       title: "Notifications",
       icon: SvgIcons.nottification,
+
       link: "notifications",
     },
   ];
@@ -376,21 +377,53 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
               <div className={styles.responsiveNavContainer}>
                 {responsiveNav.map((nav, i) => {
                   return (
-                    <div
-                      key={i}
-                      className={
-                        globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar
-                      }
-                      onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
-                    >
-                      <Link key={i} href={`/${nav.link}`}>
-                        <span></span>
-                        <Flex vertical align="center" gap={5} justify="space-between">
-                          <i>{nav.icon}</i>
-                          <div className={styles.navTitle}>{nav.title}</div>
-                        </Flex>
-                      </Link>
-                    </div>
+                    <>
+                      {nav.title === "Notifications" ? (
+                        <Badge
+                          color="blue"
+                          classNames={{ indicator: styles.badgeIndicator }}
+                          count={
+                            globalState.notifications && globalState.notifications > 0 ? globalState.notifications : 0
+                          }
+                          style={{ fontSize: 8, paddingTop: 1.5 }}
+                          size="small"
+                        >
+                          <div
+                            key={i}
+                            className={
+                              globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar
+                            }
+                            onClick={() =>
+                              dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })
+                            }
+                          >
+                            <Link key={i} href={`/${nav.link}`}>
+                              <span></span>
+                              <Flex vertical align="center" gap={5} justify="space-between">
+                                <i>{nav.icon}</i>
+                                <div className={styles.navTitle}>{nav.title}</div>
+                              </Flex>
+                            </Link>
+                          </div>
+                        </Badge>
+                      ) : (
+                        <div
+                          key={i}
+                          className={
+                            globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar
+                          }
+                          onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
+                        >
+                          <Link key={i} href={`/${nav.link}`}>
+                            <span></span>
+                            <Flex vertical align="center" gap={5} justify="space-between">
+                              <i>{nav.icon}</i>
+                              <div className={styles.navTitle}>{nav.title}</div>
+                            </Flex>
+                          </Link>
+                        </div>
+                      )}
+                    </>
                   );
                 })}
               </div>
