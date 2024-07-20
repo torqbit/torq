@@ -24,7 +24,7 @@ const Label: FC<{
       <Flex justify="space-between" align="center">
         <div>
           <Flex gap={10} align="center">
-            {isCompleted ? SvgIcons.check : icon}
+            <i>{isCompleted ? SvgIcons.check : icon}</i>
             <div>{title}</div>
           </Flex>
         </div>
