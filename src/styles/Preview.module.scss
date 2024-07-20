@@ -74,6 +74,8 @@
 @media only screen and (max-width: 415px) {
   .preview_container {
     padding: 20px;
+    min-height: 100vh;
+    margin-bottom: 60px;
     .chapter_list {
       width: calc(100vw - 40px);
     }

@@ -188,6 +188,8 @@
 @media only screen and (max-width: 415px) {
   .learn_course_page {
     padding: 20px;
+    min-height: 100vh;
+    margin-bottom: 60px;
     .responsive_action_btn {
       margin-bottom: 20px;
       display: flex;
