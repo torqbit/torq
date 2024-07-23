@@ -14,7 +14,7 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
   const navLinks = [
     {
       title: "Courses",
-      href: "#courses",
+      href: "/#courses",
     },
     {
       title: "Updates",
