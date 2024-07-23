@@ -76,6 +76,9 @@
     padding: 20px;
     .chapter_list {
       width: calc(100vw - 40px);
+      .resContainer {
+        height: unset;
+      }
     }
 
     .course__info {

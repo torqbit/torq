@@ -76,7 +76,16 @@ const LoginPage: NextPage = () => {
         >
           Login with GitHub
         </Button>
-        {loginError && <Alert message="Login Failed!" description={loginError} type="error" showIcon closable />}
+        {loginError && (
+          <Alert
+            message="Login Failed!"
+            description={loginError}
+            type="error"
+            showIcon
+            closable
+            className={styles.alertMessage}
+          />
+        )}
       </div>
     </div>
   );
