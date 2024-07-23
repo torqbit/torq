@@ -106,6 +106,7 @@ const Preview: FC<{
                 },
                 {
                   title: `${courseDetail.course.name}`,
+                  className: styles.courseName,
                 },
               ]}
             />

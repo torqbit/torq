@@ -15,7 +15,7 @@ import LegalAgreement from "@/components/Marketing/LegalAgreement";
 
 const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
   const { dispatch } = useAppContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
 
   const termAndCondionList = [
     {

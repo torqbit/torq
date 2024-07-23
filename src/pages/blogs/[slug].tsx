@@ -41,7 +41,7 @@ interface IProps {
 
 const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUrl, hostName }) => {
   const { dispatch } = useAppContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
 
   const setGlobalTheme = (theme: Theme) => {
     dispatch({

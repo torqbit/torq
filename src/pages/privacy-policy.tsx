@@ -16,7 +16,7 @@ import { getToken } from "next-auth/jwt";
 
 const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
   const { dispatch, globalState } = useAppContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
 
   const privacyPoliciesList = [
     {

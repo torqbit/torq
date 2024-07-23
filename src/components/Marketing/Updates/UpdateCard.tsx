@@ -16,7 +16,7 @@ const UpdateCard: FC<{
 
   slug: string;
 }> = ({ date, title, img, description, href, link, slug }) => {
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
   const createdDate = getCreatedDate(new Date(date).getTime());
   return (
     <section className={styles.updateCardWrapper}>

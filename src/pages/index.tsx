@@ -21,7 +21,7 @@ interface IProps {
 
 const LandingPage: FC<IProps> = ({ user }) => {
   const { dispatch } = useAppContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 430px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
   const courseCategoryFrontend: ICourseCategory = {
     name: "Frontend Development",
     image: "https://torqbit-dev.b-cdn.net/website/img/front-end-development.png",

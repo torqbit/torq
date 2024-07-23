@@ -7,7 +7,7 @@ import { useMediaQuery } from "react-responsive";
 
 const UnAuthorized: NextPage = () => {
   const router = useRouter();
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
 
   return (
     <Layout2>

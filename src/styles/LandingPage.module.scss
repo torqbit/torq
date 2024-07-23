@@ -28,11 +28,7 @@
 
   .banner_wrapper {
     position: relative;
-    background: radial-gradient(
-      circle,
-      rgba(38, 105, 119, 1) 0%,
-      rgba(27, 36, 70, 1) 100%
-    );
+    background: radial-gradient(circle, rgba(38, 105, 119, 1) 0%, rgba(27, 36, 70, 1) 100%);
     background-position: 50%;
     background-size: cover;
     height: 100vh;
@@ -199,11 +195,11 @@
   top: -70px;
 }
 
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 435px) {
   .landing_page_wrapper {
     overflow-x: hidden;
     .banner_wrapper {
-      justify-content: flex-start;
+      justify-content: fmax-width: 435px
       background-position: 65%;
       background-size: cover;
 

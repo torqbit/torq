@@ -130,7 +130,7 @@ const NotificationList: FC = () => {
         >
           {" "}
           <Skeleton avatar title={false} loading={item.loading} active>
-            <Flex align="center" justify="space-between">
+            <div className={styles.notification_content}>
               <List.Item.Meta
                 avatar={
                   <Badge color="blue" dot={!item.isView}>
@@ -138,7 +138,7 @@ const NotificationList: FC = () => {
                   </Badge>
                 }
                 title={
-                  <Link href="#">
+                  <Link href="#" className={styles.comment_content}>
                     <span className={styles.title}> {item.fromUser.name}</span>
                     {item.notificationType === "COMMENT" ? (
                       <span className={styles.reply_text}>
@@ -153,7 +153,7 @@ const NotificationList: FC = () => {
                 description={<span className={styles.description_text}>{item.comment.comment} </span>}
               />
               <span>{moment(new Date(item.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}</span>
-            </Flex>
+            </div>
           </Skeleton>
         </List.Item>
       )}
