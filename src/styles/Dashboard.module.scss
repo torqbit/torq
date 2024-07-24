@@ -467,6 +467,11 @@
 .notifications_list {
   .notification_bar {
     background-color: var(--bg-primary);
+    .notification_content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
   .title {
     color: var(--font-primary);
@@ -483,7 +488,31 @@
   }
 }
 
-@media only screen and (max-width: 415px) {
+@media only screen and (max-width: 435px) {
+  .notifications_list {
+    .notification_bar {
+      .notification_content {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        > div:first-child {
+          > div:last-child {
+            width: 100%;
+            a {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+    .reply_text {
+      margin-left: 0px;
+    }
+  }
+
   .course_content {
     padding: 0px 20px 20px 20px;
     height: 100%;
@@ -527,6 +556,10 @@
         }
         .card_footer {
           margin-left: -10px;
+          padding: 5px 10px;
+          .course_duration {
+            font-size: 12px;
+          }
         }
         .card_difficulty_level {
           margin-left: 0px;
@@ -534,14 +567,18 @@
         .card_mode {
           margin-left: 0px;
         }
+        .card_title {
+          padding: 5px 10px;
+          font-size: 12px;
+        }
 
         h4 {
           margin: 0;
           padding: 0;
+          line-height: 1.4;
+
           text-overflow: ellipsis;
           overflow: hidden;
-          white-space: nowrap;
-          width: calc(100vw - 200px);
           padding: 0px 10px;
           -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;

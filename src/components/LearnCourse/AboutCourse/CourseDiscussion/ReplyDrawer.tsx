@@ -22,7 +22,7 @@ const ReplyDrawer: FC<{
   const [listLoading, setListLoading] = useState<boolean>(false);
   const [sltComment, setSltComment] = useState<IComment>();
   const [queryReplies, setQueryReplies] = useState<IComment[]>([]);
-  const isMax415Width = useMediaPredicate("(max-width: 415px)");
+  const isMax415Width = useMediaPredicate("(max-width: 435px)");
   const scrollRef = useRef<any>(null);
 
   const onScollReply = () => {

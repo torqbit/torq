@@ -27,7 +27,7 @@ interface IProps {
 
 const updatePage: FC<IProps> = ({ user, updateData }) => {
   const { dispatch, globalState } = useAppContext();
-  const isMobile = useMediaQuery({ query: "(max-width: 415px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
 
   const setGlobalTheme = (theme: Theme) => {
     dispatch({
