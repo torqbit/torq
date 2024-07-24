@@ -598,3 +598,21 @@
     }
   }
 }
+
+@media (orientation: landscape) {
+  @media only screen and (max-width: 933px) {
+    .setting_content,
+    .course_content,
+    .dashboard_content {
+      margin-left: 60px;
+      padding: 20px 20px 20px 40px;
+    }
+    .courseContainer {
+      padding: 20px 20px 0px 40px;
+
+      h3 {
+        margin-left: 60px;
+      }
+    }
+  }
+}

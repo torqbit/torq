@@ -80,7 +80,7 @@ const ProfileSetting: FC<{
                     {userProfile !== "NULL" ? (
                       <>
                         <img
-                          style={{ borderRadius: "50%", objectFit: "cover", width: 150, height: 150 }}
+                          // style={{ borderRadius: "50%", objectFit: "cover", width: 150, height: 150 }}
                           src={userProfile ? userProfile : String(user.user?.image)}
                         />
 
