@@ -2,9 +2,8 @@
   "name": "Torqbit",
   "short_name": "Torqbit",
   "description": "A learning platform",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
