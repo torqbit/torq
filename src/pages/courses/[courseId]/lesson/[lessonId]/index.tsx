@@ -84,7 +84,8 @@ const LessonItem: FC<{
 
 const LessonPage: NextPage = () => {
   const router = useRouter();
-  const isMobile = useMediaQuery({ query: "(max-width: 435px)" });
+  const isMobile = useMediaQuery({ query: "(max-width: 933px)" });
+  console.log(isMobile, "value of mobile");
 
   const [loading, setLoading] = useState<boolean>(false);
   const [courseDetail, setCourseDetails] = useState<{ name: string; description: string; previewMode: boolean }>();

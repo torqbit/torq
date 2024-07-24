@@ -129,3 +129,36 @@
     }
   }
 }
+
+@media (orientation: landscape) {
+  @media only screen and (max-width: 933px) {
+    .preview_container {
+      margin-left: 60px;
+      .course__info {
+        width: calc(100vw - 120px);
+      }
+      .chapter_list {
+        width: calc(100vw - 120px);
+      }
+      .video_container {
+        .spin_wrapper {
+          position: absolute;
+
+          top: 55px;
+          left: calc(50vw - 40px);
+
+          .loading_icon {
+            font-size: 30px;
+          }
+        }
+        width: calc(100vw - 120px);
+
+        height: calc(50vw - 30px);
+
+        margin-bottom: 20px;
+        background-color: var(--bg-primary);
+        position: relative;
+      }
+    }
+  }
+}

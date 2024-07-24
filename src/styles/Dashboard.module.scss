@@ -614,5 +614,58 @@
         margin-left: 60px;
       }
     }
+    .course_card_wrapper {
+      .course_card {
+        width: calc(100vw - 120px);
+        gap: 10px;
+        height: 100px;
+        .card_content {
+          width: 100%;
+        }
+
+        .card_content,
+        .card_img {
+          img {
+            width: 100px;
+            height: 100px;
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+          }
+          .card_footer {
+            margin-left: -10px;
+            padding: 5px 10px;
+            .course_duration {
+              font-size: 12px;
+            }
+          }
+          .card_difficulty_level {
+            margin-left: 0px;
+          }
+          .card_mode {
+            margin-left: 0px;
+          }
+          .card_title {
+            padding: 5px 10px;
+            font-size: 12px;
+          }
+
+          h4 {
+            margin: 0;
+            padding: 0;
+            line-height: 1.4;
+
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 0px 10px;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            margin-left: -10px;
+          }
+          p {
+            display: none;
+          }
+        }
+      }
+    }
   }
 }
