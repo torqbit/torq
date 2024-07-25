@@ -75,14 +75,10 @@ const ProfileSetting: FC<{
                     beforeUpload={(file) => {
                       uploadFile(file, `${user.user?.name}_profile`);
                     }}
-                    // onChange={handleChange}
                   >
                     {userProfile !== "NULL" ? (
                       <>
-                        <img
-                          style={{ borderRadius: "50%", objectFit: "cover", width: 150, height: 150 }}
-                          src={userProfile ? userProfile : String(user.user?.image)}
-                        />
+                        <img src={userProfile ? userProfile : String(user.user?.image)} />
 
                         <Tooltip title="Upload Profile image">
                           <div className={styles.camera_btn_img}>

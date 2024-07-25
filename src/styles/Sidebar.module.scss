@@ -117,3 +117,9 @@
     display: none;
   }
 }
+
+@media only screen and (max-width: 933px) and (orientation: landscape) {
+  .main_sider {
+    display: none;
+  }
+}

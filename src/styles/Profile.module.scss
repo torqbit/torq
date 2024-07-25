@@ -39,6 +39,13 @@
     width: 150px !important;
     border-radius: 50% !important;
   }
+
+  img {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
   & > div {
     height: 200px;
     width: 200px;
@@ -111,6 +118,21 @@
           width: 100%;
         }
       }
+    }
+  }
+}
+
+@media only screen and (max-width: 933px) and (orientation: landscape) {
+  .upload__thumbnail {
+    > div:first-child {
+      height: 100px !important;
+      width: 100px !important;
+    }
+    img {
+      height: 100px;
+      width: 100px;
+      object-fit: cover;
+      border-radius: 50%;
     }
   }
 }
