@@ -84,38 +84,36 @@
   }
 }
 
-@media (orientation: landscape) {
-  @media only screen and (max-width: 933px) {
-    .certificate_page {
+@media only screen and (max-width: 933px) and (orientation: landscape) {
+  .certificate_page {
+    padding: 20px;
+    margin-left: 80px;
+
+    .certificate_image {
       padding: 20px;
-      margin-left: 80px;
-
-      .certificate_image {
-        padding: 20px;
-        background-color: var(--bg-primary);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        img {
-          height: calc(55vw);
-          width: calc(100vw - 160px);
-        }
-        button {
-          margin-top: 0px;
-
-          align-items: center;
-          justify-content: space-between;
-        }
+      background-color: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      img {
+        height: calc(55vw);
+        width: calc(100vw - 160px);
       }
-      .about_description {
-        max-width: 500px;
-        font-size: 16px;
-        line-height: 1.5;
-        color: var(--font-secondary);
+      button {
+        margin-top: 0px;
 
-        span {
-          color: var(--ft-color-dull);
-        }
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .about_description {
+      max-width: 500px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--font-secondary);
+
+      span {
+        color: var(--ft-color-dull);
       }
     }
   }

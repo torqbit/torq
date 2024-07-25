@@ -122,19 +122,17 @@
   }
 }
 
-@media (orientation: landscape) {
-  @media only screen and (max-width: 933px) {
-    .upload__thumbnail {
-      > div:first-child {
-        height: 100px !important;
-        width: 100px !important;
-      }
-      img {
-        height: 100px;
-        width: 100px;
-        object-fit: cover;
-        border-radius: 50%;
-      }
+@media only screen and (max-width: 933px) and (orientation: landscape) {
+  .upload__thumbnail {
+    > div:first-child {
+      height: 100px !important;
+      width: 100px !important;
+    }
+    img {
+      height: 100px;
+      width: 100px;
+      object-fit: cover;
+      border-radius: 50%;
     }
   }
 }

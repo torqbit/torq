@@ -260,79 +260,77 @@
   }
 }
 
-@media (orientation: landscape) {
-  @media only screen and (max-width: 933px) {
-    .learn_course_page {
-      padding: 20px;
-      min-height: 100vh;
-      margin-bottom: 60px;
-      margin-left: 80px;
+@media only screen and (max-width: 933px) and (orientation: landscape) {
+  .learn_course_page {
+    padding: 20px;
+    min-height: 100vh;
+    margin-bottom: 60px;
+    margin-left: 80px;
 
-      .responsive_action_btn {
-        margin-bottom: 20px;
-        display: flex;
-        .goBackArrow {
-          width: 20px;
-          height: 20px;
+    .responsive_action_btn {
+      margin-bottom: 20px;
+      display: flex;
+      .goBackArrow {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .lessons_video_player_wrapper {
+      width: calc(100vw - 120px);
+    }
+
+    .video_container,
+    .certificatePage {
+      width: calc(100vw - 120px);
+      aspect-ratio: 16/9;
+      min-height: calc(50vw);
+      position: relative;
+      background-color: var(--bg-primary);
+    }
+
+    .certificatePage {
+      .generating_loader {
+        p {
+          position: absolute;
+          top: 50%;
+          left: -70px;
+          width: 150px;
         }
       }
 
-      .lessons_video_player_wrapper {
-        width: calc(100vw - 120px);
+      .certificateBtn {
+        padding: 0px 20px;
+        gap: 20px;
+        h1 {
+          color: var(--font-primary);
+          text-align: center;
+          font-size: 16px;
+        }
+        button {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
       }
+    }
 
-      .video_container,
-      .certificatePage {
-        width: calc(100vw - 120px);
-        aspect-ratio: 16/9;
-        min-height: calc(50vw);
+    .learn_breadcrumb {
+      display: none;
+    }
+    .lesson_wrapper {
+      position: relative;
+      width: calc(100vw - 120px);
+
+      .lessons_container {
+        min-height: 100%;
         position: relative;
-        background-color: var(--bg-primary);
-      }
-
-      .certificatePage {
-        .generating_loader {
-          p {
-            position: absolute;
-            top: 50%;
-            left: -70px;
-            width: 150px;
-          }
-        }
-
-        .certificateBtn {
-          padding: 0px 20px;
-          gap: 20px;
-          h1 {
-            color: var(--font-primary);
-            text-align: center;
-            font-size: 16px;
-          }
-          button {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-          }
-        }
-      }
-
-      .learn_breadcrumb {
-        display: none;
-      }
-      .lesson_wrapper {
-        position: relative;
+        right: 0px;
+        top: 0px;
         width: calc(100vw - 120px);
 
-        .lessons_container {
-          min-height: 100%;
-          position: relative;
-          right: 0px;
-          top: 0px;
-          width: calc(100vw - 120px);
-
-          .lessons_list_wrapper {
-            margin-bottom: 15px;
-          }
+        .lessons_list_wrapper {
+          margin-bottom: 15px;
         }
       }
     }
