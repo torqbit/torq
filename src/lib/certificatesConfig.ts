@@ -43,11 +43,11 @@ export const certificateConfig = [
     coordinates: {
       student: {
         x: 1000,
-        y: 700,
+        y: 760,
       },
       description: {
         x: 1000,
-        y: 900,
+        y: 860,
       },
       dateOfCompletion: {
         x: 545,

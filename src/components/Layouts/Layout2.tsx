@@ -5,19 +5,7 @@ import Head from "next/head";
 import Sidebar from "../Sidebar/Sidebar";
 import { signOut, useSession } from "next-auth/react";
 import { IResponsiveNavMenu, ISiderMenu, useAppContext } from "../ContextApi/AppContext";
-import {
-  Badge,
-  Button,
-  ConfigProvider,
-  Dropdown,
-  Flex,
-  Input,
-  Layout,
-  MenuProps,
-  Popover,
-  Tooltip,
-  message,
-} from "antd";
+import { Badge, ConfigProvider, Dropdown, Flex, Layout, MenuProps, message } from "antd";
 import SvgIcons from "../SvgIcons";
 import Link from "next/link";
 import { UserSession } from "@/lib/types/user";
@@ -26,20 +14,20 @@ import antThemeConfig from "@/services/antThemeConfig";
 import { useRouter } from "next/router";
 import SpinLoader from "../SpinLoader/SpinLoader";
 import NotificationService from "@/services/NotificationService";
-import ConversationCard from "../Conversation/ConversationCard";
 import ConversationService, { IConversationList } from "@/services/ConversationService";
 import { IConversationData } from "@/pages/api/v1/conversation/list";
-import { Scrollbars } from "react-custom-scrollbars";
 import Offline from "../Offline/Offline";
 import { Theme } from "@prisma/client";
 import { postFetch } from "@/services/request";
+import { useMediaQuery } from "react-responsive";
 
 const { Content } = Layout;
 
 const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { data: user, status, update } = useSession();
+  const isMobile = useMediaQuery({ query: "(max-width: 933px)" });
+
   const { globalState, dispatch } = useAppContext();
-  const [chatWindow, setChatWindow] = useState<boolean>(false);
   const [conversationList, setConversationList] = useState<IConversationData[]>();
   const [comment, setComment] = useState<string>("");
 
@@ -65,9 +53,9 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       link: "courses",
     },
     {
-      title: "Guide",
-      icon: SvgIcons.guides,
-      link: "guides",
+      title: "Events",
+      icon: <i className={styles.events_icon}>{SvgIcons.events}</i>,
+      link: "events-list",
     },
     {
       title: "Settings",
@@ -90,17 +78,17 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
 
       children: [
         {
-          label: <Link href="/admin/users">Users</Link>,
+          label: <Link href='/admin/users'>Users</Link>,
           key: "users",
           icon: SvgIcons.userGroup,
         },
         {
-          label: <Link href="/admin/content">Content</Link>,
+          label: <Link href='/admin/content'>Content</Link>,
           key: "content",
           icon: SvgIcons.content,
         },
         {
-          label: <Link href="/admin/config">Configurations</Link>,
+          label: <Link href='/admin/config'>Configurations</Link>,
 
           key: "config",
           icon: SvgIcons.configuration,
@@ -121,22 +109,22 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
       key: "group1",
     },
     {
-      label: <Link href="/dashboard">Dashboard</Link>,
+      label: <Link href='/dashboard'>Dashboard</Link>,
       key: "dashboard",
       icon: SvgIcons.dashboard,
     },
     {
-      label: <Link href="/courses">Courses</Link>,
+      label: <Link href='/courses'>Courses</Link>,
       key: "courses",
       icon: SvgIcons.courses,
     },
     {
-      label: <Link href="/guides">Guides</Link>,
-      key: "guides",
-      icon: SvgIcons.guides,
+      label: <Link href='/events-list'>Events</Link>,
+      key: "events-list",
+      icon: <i style={{ fontSize: 18 }}>{SvgIcons.events}</i>,
     },
     {
-      label: <Link href="/quizzes">Quizzes</Link>,
+      label: <Link href='/quizzes'>Quizzes</Link>,
       key: "quizzes",
       icon: SvgIcons.quiz,
     },
@@ -147,21 +135,20 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     },
 
     {
-      label: <Link href="/setting">Setting</Link>,
+      label: <Link href='/setting'>Setting</Link>,
       key: "setting",
       icon: SvgIcons.setting,
     },
     {
-      label: <Link href="/notifications">Notifications</Link>,
+      label: <Link href='/notifications'>Notifications</Link>,
       key: "notifications",
       icon: (
         <Badge
-          color="blue"
+          color='blue'
           classNames={{ indicator: styles.badgeIndicator }}
           count={globalState.notifications && globalState.notifications > 0 ? globalState.notifications : 0}
           style={{ fontSize: 10, paddingTop: 1.5 }}
-          size="small"
-        >
+          size='small'>
           {SvgIcons.nottification}
         </Badge>
       ),
@@ -289,26 +276,64 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
     !globalState.onlineStatus && message.warning("You are offline! check your internet connection ");
   }, [globalState.onlineStatus]);
 
-  useEffect(() => {
-    if (user) {
-      getLatestNotificationCount();
-      onChangeSelectedBar();
-      onChangeSelectedNavBar();
-      const userSession = user.user as UserSession;
+  const onCollapseChange = () => {
+    const collapsedState = localStorage.getItem("collapsed");
 
+    if (collapsedState === "uncollapsed") {
       dispatch({
-        type: "SET_USER",
-        payload: userSession,
-      });
-
-      dispatch({
-        type: "SWITCH_THEME",
-        payload: userSession.theme || "light",
-      });
-      dispatch({
-        type: "SET_LOADER",
+        type: "SET_COLLAPSED",
         payload: false,
       });
+    } else if (collapsedState === "collapsed") {
+      dispatch({
+        type: "SET_COLLAPSED",
+        payload: true,
+      });
+    }
+  };
+
+  const onLessonCollapseChange = () => {
+    const collapsedState = localStorage.getItem("lessonCollapsed");
+
+    if (collapsedState === "uncollapsed") {
+      dispatch({
+        type: "SET_LESSON_COLLAPSED",
+        payload: false,
+      });
+    } else if (collapsedState === "collapsed") {
+      dispatch({
+        type: "SET_LESSON_COLLAPSED",
+        payload: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (user) {
+        getLatestNotificationCount();
+        onChangeSelectedBar();
+        onChangeSelectedNavBar();
+        const userSession = user.user as UserSession;
+
+        dispatch({
+          type: "SET_USER",
+          payload: userSession,
+        });
+
+        dispatch({
+          type: "SWITCH_THEME",
+          payload: userSession.theme || "light",
+        });
+        onCollapseChange();
+        onLessonCollapseChange();
+        dispatch({
+          type: "SET_LOADER",
+          payload: false,
+        });
+      }
+    } else if (status === "unauthenticated") {
+      router.push("/login");
     }
   }, [user]);
 
@@ -321,21 +346,22 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
           <Head>
             <title>Torqbit | Learn to build software products</title>
 
-            <meta name="description" content="Learn, build and solve the problems that matters the most" />
-            <meta property="og:image" content={"https://torqbit-dev.b-cdn.net/website/img/torqbit-landing.png"} />
+            <meta name='description' content='Learn, build and solve the problems that matters the most' />
+            <meta property='og:image' content={"https://torqbit-dev.b-cdn.net/website/img/torqbit-landing.png"} />
 
-            <link rel="icon" href="/favicon.ico" />
+            <link rel='icon' href='/favicon.ico' />
           </Head>
 
           {globalState.onlineStatus ? (
-            <Layout hasSider className="default-container">
-              <Sidebar
-                menu={user?.role == "AUTHOR" || user?.role == "ADMIN" ? usersMenu.concat(authorSiderMenu) : usersMenu}
-              />
+            <Layout hasSider className='default-container'>
+              <Sidebar menu={user?.role == "AUTHOR" || user?.role == "ADMIN" ? usersMenu.concat(authorSiderMenu) : usersMenu} />
               <Layout className={`layout2-wrapper ${styles.layout2_wrapper} `}>
                 <Content className={`${styles.sider_content} ${styles.className}`}>
-                  <Flex align="center" justify="space-between" className={styles.userNameWrapper}>
-                    <h2>Hello {user?.user?.name}</h2>
+                  <Flex
+                    align='center'
+                    justify='space-between'
+                    className={router.pathname.startsWith("/admin/content/course") ? "" : styles.userNameWrapper}>
+                    {isMobile && <h4>Hello {user?.user?.name}</h4>}
                     <Dropdown
                       className={styles.mobileUserMenu}
                       menu={{
@@ -347,8 +373,7 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
                                 onClick={() => {
                                   const newTheme: Theme = globalState.session?.theme == "dark" ? "light" : "dark";
                                   updateTheme(newTheme);
-                                }}
-                              >
+                                }}>
                                 {globalState.session?.theme !== "dark" ? "Dark mode" : "Light mode"}
                               </div>
                             ),
@@ -364,9 +389,8 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
                         ],
                       }}
                       trigger={["click"]}
-                      placement="bottomRight"
-                      arrow={{ pointAtCenter: true }}
-                    >
+                      placement='bottomRight'
+                      arrow={{ pointAtCenter: true }}>
                       <i className={styles.verticalDots}>{SvgIcons.verticalThreeDots}</i>
                     </Dropdown>
                   </Flex>
@@ -380,26 +404,19 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
                     <>
                       {nav.title === "Notifications" ? (
                         <Badge
-                          color="blue"
+                          key={i}
+                          color='blue'
                           classNames={{ indicator: styles.badgeIndicator }}
-                          count={
-                            globalState.notifications && globalState.notifications > 0 ? globalState.notifications : 0
-                          }
+                          count={globalState.notifications && globalState.notifications > 0 ? globalState.notifications : 0}
                           style={{ fontSize: 8, paddingTop: 1.5 }}
-                          size="small"
-                        >
+                          size='small'>
                           <div
                             key={i}
-                            className={
-                              globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar
-                            }
-                            onClick={() =>
-                              dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })
-                            }
-                          >
+                            className={globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar}
+                            onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}>
                             <Link key={i} href={`/${nav.link}`}>
                               <span></span>
-                              <Flex vertical align="center" gap={5} justify="space-between">
+                              <Flex vertical align='center' gap={5} justify='space-between'>
                                 <i>{nav.icon}</i>
                                 <div className={styles.navTitle}>{nav.title}</div>
                               </Flex>
@@ -409,14 +426,11 @@ const Layout2: FC<{ children?: React.ReactNode; className?: string }> = ({ child
                       ) : (
                         <div
                           key={i}
-                          className={
-                            globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar
-                          }
-                          onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}
-                        >
+                          className={globalState.selectedResponsiveMenu === nav.link ? styles.selectedNavBar : styles.navBar}
+                          onClick={() => dispatch({ type: "SET_NAVBAR_MENU", payload: nav.link as IResponsiveNavMenu })}>
                           <Link key={i} href={`/${nav.link}`}>
                             <span></span>
-                            <Flex vertical align="center" gap={5} justify="space-between">
+                            <Flex vertical align='center' gap={5} justify='space-between'>
                               <i>{nav.icon}</i>
                               <div className={styles.navTitle}>{nav.title}</div>
                             </Flex>

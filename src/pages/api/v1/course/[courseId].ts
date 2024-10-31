@@ -1,11 +1,9 @@
-import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
-import { withMethods } from "@/lib/api-middlewares/with-method";
-import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
-import { $Enums } from "@prisma/client";
+import getCourseDetail, { extractLessonAndChapterDetail } from "@/actions/getCourseDetail";
+import { CourseState } from "@prisma/client";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let cookieName = getCookieName();
@@ -17,111 +15,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       secret: process.env.NEXT_PUBLIC_SECRET,
       cookieName,
     });
-    const userId = token?.id;
-    const alreadyRegisterd = await prisma.courseRegistration.findUnique({
-      where: {
-        studentId_courseId: {
-          studentId: String(userId),
-          courseId: Number(courseId),
-        },
-      },
-      select: {
-        courseId: true,
-        courseState: true,
-      },
-    });
-    let chapterLessons: any[] = [];
-    let courseName = "";
-    let description = "";
-    let trailerVidUrl = "";
-    let resultRows: any[] = [];
-    let previewMode;
 
-    if (alreadyRegisterd && alreadyRegisterd.courseState == "COMPLETED") {
-      resultRows = await prisma.$queryRaw<
-        any[]
-      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, 
-        co.name as courseName, co.description, co.tvUrl,co.previewMode,
-        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
-        ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
-        INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
-        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
-        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-        INNER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
-        WHERE cr.studentId = ${token?.id}
-        AND co.courseId = ${courseId} AND ch.state = ${$Enums.StateType.ACTIVE} AND re.state = ${$Enums.StateType.ACTIVE}
-        ORDER BY chapterSeq, resourceSeq`;
-    } else if (alreadyRegisterd && alreadyRegisterd.courseState == "ENROLLED") {
-      resultRows = await prisma.$queryRaw<
-        any[]
-      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, 
-        co.name as courseName, co.description, co.tvUrl,co.previewMode,
-        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
-        ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
-        INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
-        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
-        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-        LEFT OUTER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
-        WHERE cr.studentId = ${token?.id}
-        AND co.courseId = ${courseId} AND ch.state = ${$Enums.StateType.ACTIVE} AND re.state = ${$Enums.StateType.ACTIVE}
-        ORDER BY chapterSeq, resourceSeq`;
-    } else {
-      resultRows = await prisma.$queryRaw<
-        any[]
-      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, 
-        co.name as courseName, co.description, co.tvUrl,co.previewMode,
-        vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
-        ch.name as chapterName, NULL as watchedRes FROM Course as co 
-        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
-        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-        WHERE co.courseId = ${courseId} AND ch.state = ${$Enums.StateType.ACTIVE} AND re.state = ${$Enums.StateType.ACTIVE}
-        ORDER BY chapterSeq, resourceSeq`;
+    const detail = await getCourseDetail(Number(courseId), token?.role, token?.id);
+
+    if (detail?.courseDetail && detail?.courseDetail.length > 0) {
+      const info = extractLessonAndChapterDetail(
+        detail.courseDetail,
+        detail?.userStatus as CourseState,
+        detail.userRole
+      );
+      return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Fetched course lessons",
+        course: { ...info.courseInfo, progress: info.progress },
+        lessons: info.chapterLessons,
+      });
     }
-
-    if (resultRows.length > 0) {
-      courseName = resultRows[0].courseName;
-      description = resultRows[0].description;
-      trailerVidUrl = resultRows[0].tvUrl;
-      previewMode = resultRows[0].previewMode;
-    }
-    resultRows.forEach((r) => {
-      if (chapterLessons.find((l) => l.chapterSeq == r.chapterSeq)) {
-        const chapter = chapterLessons.find((l) => l.chapterSeq == r.chapterSeq);
-        chapter.lessons.push({
-          title: r.lessonName,
-          videoDuration: r.videoDuration,
-          lessonId: r.resourceId,
-          isWatched: r.watchedRes != null,
-        });
-      } else {
-        chapterLessons.push({
-          chapterSeq: r.chapterSeq,
-          chapterName: r.chapterName,
-          lessons: [
-            {
-              title: r.lessonName,
-              videoDuration: r.videoDuration,
-              lessonId: r.resourceId,
-              isWatched: r.watchedRes != null,
-            },
-          ],
-        });
-      }
-    });
-
-    return res.status(200).json({
-      success: true,
-      statusCode: 200,
-      message: "Fetched course lessons",
-      course: { name: courseName, description: description, courseTrailer: trailerVidUrl, previewMode },
-      lessons: chapterLessons,
-    });
   } catch (error) {
     return errorHandler(error, res);
   }
 };
 
-export default withMethods(["GET"], withAuthentication(handler));
+export default handler;

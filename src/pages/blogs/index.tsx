@@ -15,6 +15,7 @@ import styles from "@/styles/Marketing/Blog/Blog.module.scss";
 
 import Link from "next/link";
 import { UserOutlined } from "@ant-design/icons";
+import appConstant from "@/services/appConstant";
 interface IProps {
   user: User;
   blogData: {
@@ -59,6 +60,7 @@ const BlogPage: FC<IProps> = ({ user, blogData }) => {
 
   return (
     <MarketingLayout
+      courseTitle={`Blog list | ${appConstant.platformName}`}
       user={user}
       heroSection={<HeroBlog title="Blog" description="Our engineering experience, explained in detail" />}
     >

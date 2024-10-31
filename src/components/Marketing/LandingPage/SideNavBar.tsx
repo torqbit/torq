@@ -12,11 +12,10 @@ import SvgIcons from "@/components/SvgIcons";
 
 const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, onAnchorClick }) => {
   const { dispatch } = useAppContext();
-  const [showChildrenDrawer, setShowChildrenDrawer] = useState<boolean>(false);
   const menuItems = [
     {
       label: "Courses",
-      href: "#courses",
+      href: "/#courses",
     },
     {
       label: "Updates",
@@ -27,10 +26,6 @@ const SideNav: FC<{ isOpen: boolean; onAnchorClick: () => void }> = ({ isOpen, o
       href: "/blogs",
     },
   ];
-
-  const onHandleChildrenDrawer = (value: boolean) => {
-    setShowChildrenDrawer(value);
-  };
 
   const onChangeTheme = () => {
     const currentTheme = localStorage.getItem("theme");

@@ -22,32 +22,40 @@ enum Role {
   STUDENT
   AUTHOR
   ADMIN
-  TA
+  MENTOR
+  NOT_ENROLLED
+  NA
 }
 
 model User {
-  id                   String               @id @default(cuid())
+  id                   String                 @id @default(cuid())
   name                 String?
-  email                String?              @unique
+  email                String?                @unique
   phone                String?
   image                String?
   emailVerified        DateTime?
-  isActive             Boolean              @default(true)
-  role                 Role                 @default(STUDENT)
-  theme                Theme                @default(light)
-  dateJoined           DateTime             @default(now())
-  createdAt            DateTime             @default(now())
+  isActive             Boolean                @default(true)
+  role                 Role                   @default(STUDENT)
+  theme                Theme                  @default(light)
+  dateJoined           DateTime               @default(now())
+  createdAt            DateTime               @default(now())
   CourseRegistration   CourseRegistration[]
   account              Account[]
   sessions             Session[]
-  course               Course[]             @relation("userCourse")
+  course               Course[]               @relation("userCourse")
   discussion           Discussion[]
-  fromUserNotification Notification[]       @relation("fromUser")
-  toUserNotification   Notification[]       @relation("toUser")
+  fromUserNotification Notification[]         @relation("fromUser")
+  toUserNotification   Notification[]         @relation("toUser")
   courseCertificate    CourseCertificates[]
   CourseProgress       CourseProgress[]
   conversation         Conversation[]
   blogs                Blog[]
+  payment              Order[]
+  invoices             Invoice[]
+  submissions          AssignmentSubmission[]
+  evaluations          AssignmentEvaluation[]
+  events               Events[]
+  eventsRegistered     EventRegistration[]
 }
 
 //****** User Schema End ******//
@@ -192,22 +200,24 @@ enum ResourceContentType {
 }
 
 model Resource {
-  resourceId     Int                 @id @default(autoincrement())
-  name           String
-  description    String?             @db.Text()
-  chapterId      Int
-  sequenceId     Int
-  contentType    ResourceContentType
-  isActive       Boolean             @default(true)
-  state          StateType           @default(DRAFT)
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  chapter        Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
-  courseProgress CourseProgress[]
-  discussions    Discussion[]
+  resourceId        Int                 @id @default(autoincrement())
+  name              String
+  description       String?             @db.Text()
+  chapterId         Int
+  sequenceId        Int
+  contentType       ResourceContentType
+  isActive          Boolean             @default(true)
+  isStudentNotified Boolean             @default(false)
+  state             StateType           @default(DRAFT)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  chapter           Chapter             @relation(fields: [chapterId], references: [chapterId], onDelete: Cascade)
+  courseProgress    CourseProgress[]
+  discussions       Discussion[]
 
   notifications Notification[]
   video         Video?
+  assignment    Assignment?
 
   @@unique([resourceId])
   @@index([chapterId])
@@ -217,6 +227,7 @@ enum VideoState {
   PROCESSING
   FAILED
   READY
+  UPLOADING
 }
 
 model Video {
@@ -241,21 +252,21 @@ enum CourseState {
 }
 
 model CourseRegistration {
-  registrationId Int         @id @default(autoincrement())
+  registrationId Int                 @id @default(autoincrement())
   courseId       Int
   studentId      String
-  courseState    CourseState @default(ENROLLED)
-  courseType     CourseType  @default(FREE)
+  courseState    CourseState         @default(ENROLLED)
+  courseType     CourseType          @default(FREE)
   image          String?
-  isActive       Boolean     @default(true)
-  dateJoined     DateTime    @default(now())
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  isActive       Boolean             @default(true)
+  dateJoined     DateTime            @default(now())
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
   expireIn       DateTime?
-
-  user        User                @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  course      Course              @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
-  certificate CourseCertificates?
+  order          Order?
+  user           User                @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course         Course              @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  certificate    CourseCertificates?
 
   @@unique([studentId, courseId])
   @@index([studentId])
@@ -287,7 +298,7 @@ model Discussion {
   userId             String
   resourceId         Int
   tagCommentId       Int?
-  comment            String?        @db.Text
+  comment            String?        @db.MediumText
   attachedFiles      Json?
   parentCommentId    Int?
   createdAt          DateTime       @default(now())
@@ -416,4 +427,216 @@ model Blog {
   user        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([authorId])
+}
+
+enum paymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  INITIATED
+}
+
+enum cashfreePaymentStatus {
+  SUCCESS
+  FAILED
+  USER_DROPPED
+}
+
+enum gatewayProvider {
+  CASHFREE
+  STRIPE
+  RAZORPAY
+  CASH
+}
+
+enum paymentMode {
+  OFFLINE
+  ONLINE
+}
+
+model Order {
+  id               String              @id @default(cuid())
+  orderId          String?             @unique
+  latestStatus     paymentStatus?
+  registrationId   Int?                @unique
+  studentId        String
+  courseId         Int
+  currency         String?
+  paymentMode      paymentMode         @default(ONLINE)
+  amount           Int?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @default(now())
+  paymentGateway   gatewayProvider?
+  Invoice          Invoice?
+  registeredCourse CourseRegistration? @relation(fields: [registrationId], references: [registrationId], onDelete: Cascade)
+  user             User                @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, orderId])
+}
+
+model CashfreeOrder {
+  id              String                 @id @default(cuid())
+  studentId       String
+  amount          Int
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @default(now())
+  paymentMethod   String?
+  gatewayStatus   cashfreePaymentStatus?
+  courseId        Int
+  gatewayProvider gatewayProvider?
+  orderId         String?
+  gatewayOrderId  String?
+  paymentId       BigInt?
+  currency        String?
+  message         String?                @db.VarChar(500)
+  paymentChannel  String?
+  bankReference   String?
+  paymentTime     DateTime?
+  sessionId       String?
+  sessionExpiry   DateTime?
+  errorDetails    Json?
+
+  @@index([studentId, gatewayOrderId])
+  @@index([orderId])
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  studentId   String
+  items       Json
+  amountPaid  Int
+  paidDate    DateTime
+  taxRate     Int?
+  taxIncluded Boolean  @default(false)
+  pdfPath     String?  @db.VarChar(500)
+  orderId     String   @unique
+  user        User     @relation(fields: [studentId], references: [id])
+  order       Order    @relation(fields: [orderId], references: [orderId])
+
+  @@index([studentId])
+  @@index([orderId])
+}
+
+model Assignment {
+  id                Int                    @id @unique @default(autoincrement())
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @default(now())
+  lessonId          Int
+  content           Json?
+  assignmentFiles   Json?
+  estimatedDuration Int?
+  lesson            Resource               @relation(fields: [lessonId], references: [resourceId], onDelete: Cascade)
+  submission        AssignmentSubmission[]
+
+  @@unique([lessonId])
+  @@index([lessonId])
+}
+
+enum submissionStatus {
+  PASSED
+  COMPLETED
+  PENDING
+  FAILED
+  NOT_SUBMITTED
+}
+
+model AssignmentSubmission {
+  id           Int                   @id @default(autoincrement())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @default(now())
+  assignmentId Int
+  lessonId     Int
+  studentId    String
+  content      Json?
+  user         User                  @relation(fields: [studentId], references: [id])
+  status       submissionStatus      @default(NOT_SUBMITTED)
+  assignment   Assignment            @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  evaluation   AssignmentEvaluation?
+
+  @@unique([id, studentId, assignmentId])
+  @@index([assignmentId, studentId])
+  @@index([studentId])
+}
+
+model AssignmentEvaluation {
+  id           Int                  @id @default(autoincrement())
+  assignmentId Int
+  submissionId Int                  @unique
+  authorId     String
+  score        Int
+  comment      Json
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @default(now())
+  submission   AssignmentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user         User                 @relation(fields: [authorId], references: [id])
+
+  @@unique([submissionId, assignmentId])
+  @@index([submissionId, assignmentId])
+  @@index([authorId])
+}
+
+enum EventType {
+  WORKSHOP
+  TALK
+}
+
+enum EventMode {
+  ONLINE
+  OFFLINE
+}
+
+model Events {
+  id                  Int                 @id @default(autoincrement())
+  title               String?             @unique
+  banner              String?
+  slug                String?             @unique
+  description         String?             @db.MediumText()
+  startTime           DateTime?
+  endTime             DateTime?
+  eventType           EventType?
+  price               Int?
+  eventInstructions   String?             @db.Text()
+  location            String?
+  certificate         Boolean             @default(false)
+  certificateTemplate String?
+  eventLink           String?
+  eventMode           EventMode?
+  registrationEndDate DateTime?
+  state               StateType           @default(DRAFT)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @default(now())
+  authorId            String
+  user                User                @relation(fields: [authorId], references: [id])
+  attendees           EventRegistration[]
+
+  @@index([authorId])
+}
+
+enum EventAccess {
+  ACCEPTED
+  REJECTED
+  PENDING
+}
+
+model EventRegistration {
+  id                 Int         @id @default(autoincrement())
+  name               String
+  email              String
+  studentId          String?
+  phone              String
+  eventId            Int
+  attended           Boolean     @default(false)
+  certificate        String?
+  certificatePdfPath String?
+  status             EventAccess @default(PENDING)
+  comment            String?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @default(now())
+  user               User?       @relation(fields: [email], references: [email])
+  event              Events      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, email])
+  @@index([email])
+  @@index([eventId])
 }

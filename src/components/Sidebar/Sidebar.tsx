@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "../../styles/Sidebar.module.scss";
 import {
   Avatar,
@@ -31,7 +31,7 @@ import Feedback from "../Feedback/Feedback";
 const { Sider } = Layout;
 
 const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
-  const [collapsed, setCollapsed] = React.useState(false);
+  // const [collapsed, setCollapsed] = React.useState(false);
   const { data: user, status, update } = useSession();
   const { globalState, dispatch } = useAppContext();
 
@@ -60,19 +60,22 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
       className={`${styles.main_sider} main_sider`}
       trigger={null}
       collapsible
-      collapsed={collapsed}
+      collapsed={globalState.collapsed}
     >
       <div
-        className={`${styles.collapsed_btn} ${collapsed ? styles.collapsed : styles.not_collapsed}`}
-        onClick={() => setCollapsed(!collapsed)}
+        className={`${styles.collapsed_btn} ${globalState.collapsed ? styles.collapsed : styles.not_collapsed}`}
+        onClick={() => {
+          dispatch({ type: "SET_COLLAPSED", payload: !globalState.collapsed });
+          localStorage.setItem("collapsed", globalState.collapsed ? "uncollapsed" : "collapsed");
+        }}
       >
-        {collapsed ? SvgIcons.carretRight : SvgIcons.carretLeft}
+        {globalState.collapsed ? SvgIcons.carretRight : SvgIcons.carretLeft}
       </div>
       {contextWrapper}
       <div>
         <div className={styles.logo}>
           <Link href="/">
-            {collapsed ? (
+            {globalState.collapsed ? (
               <Image src="/icon/torqbit.png" alt="torq" width={40} height={40} />
             ) : (
               <Flex align="center" gap={5}>
@@ -93,7 +96,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
         />
       </div>
       <div>
-        {!collapsed && (
+        {!globalState.collapsed && (
           <Flex align="center" justify="space-between" className={styles.actionsWrapper}>
             <Tooltip
               className={styles.actionTooltip}
@@ -129,9 +132,9 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
         )}
 
         <Space
-          direction={collapsed ? "vertical" : "horizontal"}
+          direction={globalState.collapsed ? "vertical" : "horizontal"}
           style={{ cursor: "pointer" }}
-          align={collapsed ? "center" : "start"}
+          align={globalState.collapsed ? "center" : "start"}
           className={styles.user_profile}
         >
           <Dropdown
@@ -143,7 +146,7 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
                 },
                 {
                   key: "1",
-                  label: "Logout",
+                  label: <>Logout</>,
                   onClick: () => {
                     signOut();
                   },
@@ -156,10 +159,10 @@ const Sidebar: FC<{ menu: MenuProps["items"] }> = ({ menu }) => {
           >
             <Space>
               <Avatar src={user?.user?.image} icon={<UserOutlined />} />
-              {!collapsed && (
-                <div>
-                  <h4>{user?.user?.name}</h4>
-                  <h5>{user?.user?.email}</h5>
+              {!globalState.collapsed && (
+                <div className={styles.user_name_email}>
+                  <div>{user?.user?.name}</div>
+                  <div>{user?.user?.email}</div>
                 </div>
               )}
             </Space>

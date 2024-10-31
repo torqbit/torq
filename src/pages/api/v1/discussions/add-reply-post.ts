@@ -5,6 +5,8 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
+import getRoleByLessonId from "@/actions/getRoleByLessonId";
+import { Role } from "@prisma/client";
 
 /**
  * Post reply on a query
@@ -12,6 +14,13 @@ import { getCookieName } from "@/lib/utils";
  * @param res
  * @returns
  */
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -32,9 +41,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           courseId: Number(courseId),
         },
       },
+      select: {
+        course: {
+          select: {
+            authorId: true,
+          },
+        },
+      },
     });
 
-    if (isEnrolled) {
+    const userRole = await getRoleByLessonId(lessonId, token?.role, token?.id);
+
+    if (isEnrolled || userRole === Role.AUTHOR) {
       const queryAuthor = await prisma.discussion.findUnique({
         where: {
           id: parentCommentId,
@@ -76,9 +94,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
 
+      let courseAuthor = {
+        userId: String(isEnrolled?.course.authorId),
+        resourceId: lessonId,
+      };
+
       queryAuthor &&
         repliesAuthors
-          .concat([queryAuthor])
+          .concat(queryAuthor.userId === isEnrolled?.course.authorId ? [queryAuthor] : [queryAuthor, courseAuthor])
           .filter((u) => u.userId !== token?.id)
           .map(async (user) => {
             return prisma.notification.create({

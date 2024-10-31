@@ -12,6 +12,7 @@ import { DummydataList } from "@/lib/dummyData";
 import { useRouter } from "next/router";
 import { getFetch } from "@/services/request";
 import { UserOutlined } from "@ant-design/icons";
+import PurifyContent from "@/components/PurifyContent/PurifyContent";
 
 const NotificationList: FC = () => {
   const router = useRouter();
@@ -56,8 +57,8 @@ const NotificationList: FC = () => {
       let courseId = item.tagCommentId ? item.tagComment?.resource?.chapter?.courseId : item.resource.chapter.courseId;
       let resourceId = item.comment.resourceId;
       item.tagCommentId
-        ? router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&threadId=${item?.tagCommentId}`)
-        : router.push(`/courses/${courseId}/lesson/${resourceId}?tab=QA&queryId=${item?.commentId}`);
+        ? router.push(`/courses/${courseId}/lesson/${resourceId}?tab=discussions&threadId=${item?.tagCommentId}`)
+        : router.push(`/courses/${courseId}/lesson/${resourceId}?tab=discussions&queryId=${item?.commentId}`);
     } catch (err) {}
   };
 
@@ -143,14 +144,26 @@ const NotificationList: FC = () => {
                     {item.notificationType === "COMMENT" ? (
                       <span className={styles.reply_text}>
                         {item.comment.parentCommentId ? " replied on query : " : " posted a query  "}
-                        <span>{truncateString(item?.tagComment?.comment as string, 20)}</span>
+                        <span>
+                          {
+                            <PurifyContent
+                              className="notifications_info"
+                              content={truncateString(item?.tagComment?.comment as string, 20)}
+                            />
+                          }
+                        </span>
                       </span>
                     ) : (
                       ""
                     )}
                   </Link>
                 }
-                description={<span className={styles.description_text}>{item.comment.comment} </span>}
+                description={
+                  // <span className={styles.description_text}>
+                  //   <PurifyContent className="notifications_info" content={item.comment.comment as string} />{" "}
+                  // </span>
+                  <></>
+                }
               />
               <span>{moment(new Date(item.createdAt), "YYYY-MM-DDThh:mm:ss").fromNow()}</span>
             </div>
@@ -162,8 +175,6 @@ const NotificationList: FC = () => {
 };
 
 const Dashboard: FC = () => {
-  const { data: user } = useSession();
-
   return (
     <Layout2>
       <section className={styles.dashboard_content}>

@@ -1,6 +1,6 @@
 import SvgIcons from "@/components/SvgIcons";
 import ProgramService from "@/services/ProgramService";
-import { ChapterDetail, CourseLessons, VideoLesson } from "@/types/courses/Course";
+import { CourseLessons, IAssignmentDetail, VideoLesson } from "@/types/courses/Course";
 import styles from "@/styles/LearnCourses.module.scss";
 import {
   Avatar,
@@ -9,6 +9,7 @@ import {
   Collapse,
   Flex,
   List,
+  MenuProps,
   Segmented,
   Skeleton,
   Space,
@@ -26,16 +27,22 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { IResourceDetail } from "@/lib/types/learn";
 import { convertSecToHourandMin } from "@/pages/admin/content";
 import QADiscssionTab from "@/components/LearnCourse/AboutCourse/CourseDiscussion/CourseDiscussion";
-import { IResponse, getFetch, postFetch } from "@/services/request";
+import { postFetch } from "@/services/request";
 import appConstant from "@/services/appConstant";
 import Layout2 from "@/components/Layouts/Layout2";
 import { ICourseProgressUpdateResponse } from "@/lib/types/program";
 import { getUserEnrolledCoursesId } from "@/actions/getEnrollCourses";
-import { getCookieName } from "@/lib/utils";
+import { generateDayAndYear, getCookieName, getExtension } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
-import { LoadingOutlined } from "@ant-design/icons";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { useMediaQuery } from "react-responsive";
+import { $Enums, ResourceContentType, Role } from "@prisma/client";
+import ViewAssignment from "@/components/Assignment/ViewAssignment";
+import prisma from "@/lib/prisma";
+import AssignmentService from "@/services/AssignmentService";
+import { useAppContext } from "@/components/ContextApi/AppContext";
+import LessonListSideBar from "@/components/Lessons/LessonListSideBar";
+
 export interface ICertficateData {
   loading: boolean;
   certificateId: string;
@@ -67,7 +74,7 @@ const LessonItem: FC<{
             resourceId > 0 ? styles.lessonLabelContainer : styles.labelContainer
           }`}
         >
-          <Flex justify="space-between" align="center">
+          <Flex justify="space-between" align="center" onClick={() => {}}>
             <div className={styles.title_container}>
               <Flex gap={10} align="center">
                 {completed ? SvgIcons.check : icon}
@@ -85,23 +92,28 @@ const LessonItem: FC<{
 const LessonPage: NextPage = () => {
   const router = useRouter();
   const isMobile = useMediaQuery({ query: "(max-width: 933px)" });
-
+  const { globalState } = useAppContext();
   const [loading, setLoading] = useState<boolean>(false);
-  const [courseDetail, setCourseDetails] = useState<{ name: string; description: string; previewMode: boolean }>();
+  const [courseDetail, setCourseDetails] = useState<{
+    name: string;
+    description: string;
+    previewMode: boolean;
+    userRole: string;
+  }>();
   const [courseLessons, setCourseLessons] = useState<CourseLessons[]>([]);
   const [currentLesson, setCurrentLesson] = useState<{
     chapterName?: string;
     chapterSeq?: number;
     lesson?: VideoLesson;
   }>();
-
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loadingLesson, setLessonLoading] = useState<boolean>(false);
   const { data: session } = useSession();
-
   const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [certificateData, setCertificateData] = useState<ICertficateData>();
+  const [assignmentDetail, setAssignmentDetail] = useState<IAssignmentDetail>();
+  const [tabKey, setTabKey] = useState<string>("");
 
   const onCreateCertificate = () => {
     setCertificateData({ ...certificateData, loading: !courseDetail?.previewMode, completed: true } as ICertficateData);
@@ -165,7 +177,7 @@ const LessonPage: NextPage = () => {
       //go to certificate page
       findAndSetCurrentLesson(courseLessons, true);
 
-      !courseDetail?.previewMode && onCreateCertificate();
+      !courseDetail?.previewMode && courseDetail?.userRole === Role.STUDENT && onCreateCertificate();
 
       console.log("go to certificate page");
     } else {
@@ -196,24 +208,52 @@ const LessonPage: NextPage = () => {
     }
   };
 
-  useEffect(() => {
-    router.query.courseId &&
-      ProgramService.getCourseLessons(
-        Number(router.query.courseId),
-        (result) => {
-          setCourseLessons(result.lessons);
-          setLessonLoading(false);
-          setCourseDetails({
-            name: result.course.name,
-            description: result.course.description,
-            previewMode: result.course.previewMode,
-          });
-          findAndSetCurrentLesson(result.lessons, false);
-        },
-        (error) => {
-          setLoading(false);
+  const updateAssignmentWatchedStatus = (chapterSeqId: number, lessonId: number) => {
+    setCourseLessons((prevLessons) =>
+      prevLessons.map((ch) => {
+        if (ch.chapterSeq === chapterSeqId) {
+          return {
+            ...ch,
+            lessons: ch.lessons.map((l) => {
+              if (l.contentType === ResourceContentType.Assignment && l.lessonId === lessonId) {
+                return {
+                  ...l,
+                  isWatched: true,
+                };
+              } else {
+                return l;
+              }
+            }),
+          };
+        } else {
+          return ch;
         }
-      );
+      })
+    );
+  };
+
+  const getLessonsDetail = (courseId: number) => {
+    ProgramService.getCourseLessons(
+      Number(router.query.courseId),
+      (result) => {
+        setCourseLessons(result.lessons);
+        setLessonLoading(false);
+        setCourseDetails({
+          name: result.course.name,
+          description: result.course.description,
+          previewMode: result.course.previewMode,
+          userRole: result.course.userRole,
+        });
+        findAndSetCurrentLesson(result.lessons, false);
+      },
+      (error) => {
+        setLoading(false);
+      }
+    );
+  };
+
+  useEffect(() => {
+    router.query.courseId && getLessonsDetail(Number(router.query.courseId));
   }, [router.query.courseId]);
 
   useEffect(() => {
@@ -246,14 +286,26 @@ const LessonPage: NextPage = () => {
           >
             <Link href={`/courses/${router.query.courseId}/lesson/${item.lessonId}`} className={styles.lesson__item}>
               <div style={{ display: "flex" }}>
-                <i style={{ height: 20 }}>{item.isWatched ? SvgIcons.check : SvgIcons.playBtn}</i>
+                <i style={{ height: 20 }}>
+                  {item.isWatched ? (
+                    SvgIcons.check
+                  ) : (
+                    <>{item.contentType === $Enums.ResourceContentType.Video ? SvgIcons.playBtn : SvgIcons.file}</>
+                  )}
+                </i>
                 <p style={{ marginBottom: 0, marginLeft: 5 }}>{item.title}</p>
               </div>
 
               <div>
-                <Tag style={{ marginRight: 0 }} className={styles.time_tag}>
-                  {convertSecToHourandMin(item.videoDuration)}
-                </Tag>
+                {
+                  <Tag style={{ marginRight: 0 }} className={styles.time_tag}>
+                    {convertSecToHourandMin(
+                      item.contentType === ResourceContentType.Video
+                        ? item.videoDuration
+                        : Number(item.estimatedDuration) * 60
+                    )}
+                  </Tag>
+                }
               </div>
             </Link>
           </List.Item>
@@ -278,6 +330,43 @@ const LessonPage: NextPage = () => {
     };
   });
 
+  const getLessonItems = (contentType: ResourceContentType, isWatched: boolean) => {
+    switch (contentType) {
+      case ResourceContentType.Assignment:
+        return isWatched ? SvgIcons.check : SvgIcons.file;
+
+      case ResourceContentType.Video:
+        return isWatched ? SvgIcons.check : SvgIcons.playBtn;
+    }
+  };
+
+  const lessonMenuList: MenuProps["items"] = courseLessons.map((ch, i) => {
+    return {
+      type: "group",
+      icon: <i style={{ fontSize: 18, width: 20 }}>{SvgIcons.folder}</i>,
+      label: ch.chapterName,
+      key: i,
+      children: ch.lessons.map((l) => {
+        return {
+          label: (
+            <Link href={`/courses/${router.query.courseId}/lesson/${l.lessonId}`}>
+              <Flex align="center" justify="space-between">
+                <span>{l.title}</span>
+                <Tag style={{ marginRight: 0 }} className={styles.time_tag}>
+                  {convertSecToHourandMin(
+                    l.contentType === ResourceContentType.Video ? l.videoDuration : Number(l.estimatedDuration) * 60
+                  )}
+                </Tag>
+              </Flex>
+            </Link>
+          ),
+          key: `${l.lessonId}`,
+          icon: getLessonItems(l.contentType as ResourceContentType, l.isWatched),
+        };
+      }),
+    };
+  });
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -285,46 +374,51 @@ const LessonPage: NextPage = () => {
       children: currentLesson?.lesson?.description,
     },
     {
-      key: "QA",
-      label: "Q & A",
+      key: "discussions",
+      label: "Discussions",
 
       children: session && currentLesson?.lesson && (
-        <QADiscssionTab loading={loading} resourceId={currentLesson?.lesson?.lessonId} userId={session?.id} />
+        <QADiscssionTab
+          loading={loading}
+          resourceId={tabKey === "discussions" ? currentLesson.lesson.lessonId : undefined}
+        />
       ),
     },
   ];
+
+  const ResponsiveLessonItemsList = (
+    <div className={styles.lesson_wrapper}>
+      <div className={styles.lessons_container}>
+        {lessonItems?.map((item, i) => {
+          return (
+            <div key={i} className={styles.lessons_list_wrapper}>
+              <Collapse
+                defaultActiveKey={`${currentLesson?.chapterSeq}`}
+                size="small"
+                bordered={false}
+                accordion={false}
+                activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
+                items={[
+                  {
+                    key: item.key,
+                    label: item.label,
+                    children: item.children,
+                    showArrow: false,
+                  },
+                ]}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   const responsiveItems: TabsProps["items"] = [
     {
       key: "1",
       label: "Lessons",
-      children: (
-        <div className={styles.lesson_wrapper}>
-          <div className={styles.lessons_container}>
-            {lessonItems?.map((item, i) => {
-              return (
-                <div key={i} className={styles.lessons_list_wrapper}>
-                  <Collapse
-                    defaultActiveKey={`${currentLesson?.chapterSeq}`}
-                    size="small"
-                    bordered={false}
-                    accordion={false}
-                    activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
-                    items={[
-                      {
-                        key: item.key,
-                        label: item.label,
-                        children: item.children,
-                        showArrow: false,
-                      },
-                    ]}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ),
+      children: ResponsiveLessonItemsList,
     },
     {
       key: "2",
@@ -332,11 +426,14 @@ const LessonPage: NextPage = () => {
       children: currentLesson?.lesson?.description,
     },
     {
-      key: "QA",
-      label: "Q & A",
+      key: "discussions",
+      label: "Discussions",
 
       children: session && currentLesson?.lesson && (
-        <QADiscssionTab loading={loading} resourceId={currentLesson?.lesson?.lessonId} userId={session?.id} />
+        <QADiscssionTab
+          loading={loading}
+          resourceId={tabKey === "discussions" ? currentLesson.lesson.lessonId : undefined}
+        />
       ),
     },
   ];
@@ -362,11 +459,47 @@ const LessonPage: NextPage = () => {
     }
   };
 
+  const getAssignmentDetail = (lessonId: number) => {
+    AssignmentService.getAssignment(
+      lessonId,
+      (result) => {
+        setAssignmentDetail(result.assignmentDetail);
+      },
+      (error) => {
+        messageApi.error(error);
+      }
+    );
+  };
+
+  useEffect(() => {
+    currentLesson?.lesson?.contentType === ResourceContentType.Assignment &&
+      getAssignmentDetail(currentLesson.lesson.lessonId);
+  }, [currentLesson?.lesson?.lessonId]);
+
+  const getVideoPlayerWidth = () => {
+    if (globalState.collapsed && globalState.lessonCollapsed) {
+      return "calc(100vw - 200px)";
+    } else if (!globalState.collapsed && globalState.lessonCollapsed) {
+      return "calc(100vw - 360px)";
+    } else if (globalState.collapsed && !globalState.lessonCollapsed) {
+      return "calc(100vw - 555px)";
+    } else {
+      return "calc(100vw - 735px)";
+    }
+  };
+
   return (
     <Layout2>
+      {contextMessageHolder}
       {!loading ? (
         <section className={styles.learn_course_page}>
-          <div className={styles.lessons_video_player_wrapper}>
+          <div
+            className={
+              globalState.collapsed
+                ? styles.lessons_collapsed_video_player_wrapper
+                : styles.lessons_video_player_wrapper
+            }
+          >
             <div className={styles.learn_breadcrumb}>
               <Flex style={{ fontSize: 20 }}>
                 <Breadcrumb
@@ -376,12 +509,6 @@ const LessonPage: NextPage = () => {
                     },
                     {
                       title: courseDetail?.name,
-                    },
-                    {
-                      title: currentLesson?.chapterName,
-                    },
-                    {
-                      title: currentLesson?.lesson?.title,
                     },
                   ]}
                 />
@@ -397,47 +524,75 @@ const LessonPage: NextPage = () => {
                   </Flex>
                 </Button>
               </Link>
-              <>
-                {currentLesson?.lesson ? (
-                  <>
-                    {currentLesson?.lesson?.isWatched && (
-                      <Button>
-                        <Flex gap={5}>{SvgIcons.check} Completed </Flex>
-                      </Button>
-                    )}
-                    {!currentLesson?.lesson?.isWatched && (
-                      <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
-                        Mark as Completed
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <Skeleton.Button />
-                )}
-              </>
+              {courseDetail?.userRole === Role.STUDENT && (
+                <>
+                  {currentLesson?.lesson ? (
+                    <>
+                      {currentLesson?.lesson?.isWatched && (
+                        <Button>
+                          <Flex gap={5}>{SvgIcons.check} Completed </Flex>
+                        </Button>
+                      )}
+                      {!currentLesson?.lesson?.isWatched && (
+                        <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
+                          Mark as Completed
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    <Skeleton.Button />
+                  )}
+                </>
+              )}
             </Flex>
 
             {!certificateData?.completed ? (
-              <div className={styles.video_container}>
-                {currentLesson?.lesson?.videoUrl && !loadingLesson ? (
-                  <>
-                    <iframe
-                      allowFullScreen
-                      style={{
-                        position: "absolute",
-                        width: "100%",
-                        height: "100%",
-                        outline: "none",
-                        border: "none",
-                      }}
-                      src={currentLesson?.lesson?.videoUrl}
-                    ></iframe>
-                  </>
+              <div
+                className={
+                  currentLesson?.lesson?.contentType === $Enums.ResourceContentType.Video
+                    ? styles.video_container
+                    : styles.assignment_container
+                }
+              >
+                {currentLesson?.lesson && (currentLesson?.lesson?.videoUrl || assignmentDetail) && !loadingLesson ? (
+                  <div
+                    className={styles.lesson_preview_container}
+                    style={{ marginTop: currentLesson.lesson.contentType === ResourceContentType.Assignment ? -15 : 0 }}
+                  >
+                    {currentLesson.lesson.contentType === $Enums.ResourceContentType.Assignment ? (
+                      <div>
+                        <ViewAssignment
+                          lessonId={currentLesson.lesson.lessonId}
+                          discussionLoader={loading}
+                          assignmentId={Number(assignmentDetail?.assignmentId)}
+                          userRole={courseDetail?.userRole as Role}
+                          ResponsiveLessonItemsList={ResponsiveLessonItemsList}
+                          assignmentFiles={assignmentDetail?.assignmentFiles as string[]}
+                          updateAssignmentWatchedStatus={updateAssignmentWatchedStatus}
+                          chapterSeqId={Number(currentLesson.chapterSeq)}
+                        />
+                      </div>
+                    ) : (
+                      <iframe
+                        allowFullScreen
+                        style={{
+                          position: "absolute",
+                          width: isMobile ? "100%" : getVideoPlayerWidth(),
+                          height: "100%",
+                          outline: "none",
+                          border: "none",
+                          transition: "all .4s ease",
+                          backgroundColor: "#283040",
+                        }}
+                        src={currentLesson?.lesson?.videoUrl}
+                      ></iframe>
+                    )}
+                  </div>
                 ) : (
                   <Skeleton.Image
                     style={{
                       position: "absolute",
-                      width: "100%",
+                      width: isMobile ? "100%" : getVideoPlayerWidth(),
                       height: "100%",
                       top: 0,
                     }}
@@ -487,67 +642,50 @@ const LessonPage: NextPage = () => {
               </>
             )}
 
-            <Tabs
-              style={{
-                padding: "0 0 10px",
-              }}
-              tabBarExtraContent={
-                <>
-                  {!isMobile && (
-                    <>
-                      {currentLesson?.lesson ? (
-                        <>
-                          {currentLesson?.lesson?.isWatched && (
-                            <Button>
-                              <Flex gap={5}>{SvgIcons.check} Completed </Flex>
-                            </Button>
-                          )}
-                          {!currentLesson?.lesson?.isWatched && (
-                            <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
-                              Mark as Completed
-                            </Button>
-                          )}
-                        </>
-                      ) : (
-                        <Skeleton.Button />
-                      )}
-                    </>
-                  )}
-                </>
-              }
-              tabBarGutter={40}
-              defaultActiveKey={String(router.query.tab)}
-              className={styles.add_course_tabs}
-              items={isMobile ? responsiveItems : items}
-            />
+            {currentLesson?.lesson?.contentType === $Enums.ResourceContentType.Video && (
+              <Tabs
+                style={{
+                  padding: "0 0 10px",
+                  width: isMobile ? "100%" : getVideoPlayerWidth(),
+                }}
+                tabBarExtraContent={
+                  <>
+                    {!isMobile && courseDetail?.userRole === Role.STUDENT && (
+                      <>
+                        {currentLesson?.lesson ? (
+                          <>
+                            {currentLesson?.lesson?.isWatched && (
+                              <Button>
+                                <Flex gap={5}>{SvgIcons.check} Completed </Flex>
+                              </Button>
+                            )}
+                            {!currentLesson?.lesson?.isWatched && (
+                              <Button loading={loadingBtn} type="primary" onClick={onMarkAsCompleted}>
+                                Mark as Completed
+                              </Button>
+                            )}
+                          </>
+                        ) : (
+                          <Skeleton.Button />
+                        )}
+                      </>
+                    )}
+                  </>
+                }
+                onChange={(key) => {
+                  setTabKey(key);
+                }}
+                tabBarGutter={40}
+                defaultActiveKey={String(router.query.tab)}
+                className={styles.add_course_tabs}
+                items={isMobile ? responsiveItems : items}
+              />
+            )}
           </div>
           {!isMobile && (
-            <div className={styles.lesson_wrapper}>
-              <div className={styles.lessons_container}>
-                <h2>Course Content</h2>
-                {lessonItems?.map((item, i) => {
-                  return (
-                    <div key={i} className={styles.lessons_list_wrapper}>
-                      <Collapse
-                        defaultActiveKey={`${currentLesson?.chapterSeq}`}
-                        size="small"
-                        bordered={false}
-                        accordion={false}
-                        activeKey={courseLessons.map((ch) => ch.chapterSeq.toString())}
-                        items={[
-                          {
-                            key: item.key,
-                            label: item.label,
-                            children: item.children,
-                            showArrow: false,
-                          },
-                        ]}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <>
+              <LessonListSideBar menu={lessonMenuList} defaulSelectedKey={`${currentLesson?.lesson?.lessonId}`} />
+            </>
           )}
         </section>
       ) : (
@@ -566,8 +704,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
 
   if (user && params) {
+    const courseAuthor = await prisma?.course.findUnique({
+      where: {
+        courseId: Number(params?.courseId),
+      },
+      select: {
+        authorId: true,
+      },
+    });
     const isEnrolled = await getUserEnrolledCoursesId(Number(params.courseId), user?.id);
-    if (!isEnrolled) {
+    if (!isEnrolled && user.id !== courseAuthor?.authorId) {
       return {
         redirect: {
           permanent: false,

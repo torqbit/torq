@@ -23,13 +23,8 @@ export type ApiResponse = {
     courseName: string;
   };
   certificateIssueId: string;
+  nextLessonId: number;
 
-  enrollStatus: {
-    isEnrolled: boolean;
-    nextLessonId: number;
-    courseStarted: boolean;
-    courseCompleted: boolean;
-  };
   latestProgress: {
     nextChap: ChapterDetail;
     nextLesson: IResourceDetail;
@@ -289,8 +284,12 @@ class ProgramService {
     });
   };
 
-  getCoursesByAuthor = (onSuccess: (response: ApiResponse) => void, onFailure: (message: string) => void) => {
-    fetch(`/api/v1/course/list/coursesByAuthor`, {
+  getCoursesByAuthor = (
+    courseListPreview: boolean,
+    onSuccess: (response: ApiResponse) => void,
+    onFailure: (message: string) => void
+  ) => {
+    fetch(`/api/v1/course/list/coursesByAuthor?courseListPreview=${courseListPreview}`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -600,7 +599,7 @@ class ProgramService {
   updateResState = (
     resourceId: number,
     state: string,
-
+    notifyStudent: boolean,
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
@@ -610,7 +609,7 @@ class ProgramService {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ resourceId, state }),
+      body: JSON.stringify({ resourceId, state, notifyStudent }),
     }).then((result) => {
       if (result.status == 400) {
         result.json().then((r) => {
@@ -912,13 +911,13 @@ class ProgramService {
     });
   };
 
-  getEnrollmentStatus = (
+  getNextLessonId = (
     courseId: number,
 
     onSuccess: (response: ApiResponse) => void,
     onFailure: (message: string) => void
   ) => {
-    fetch(`/api/v1/course/${courseId}/check-enrollment-status`, {
+    fetch(`/api/v1/course/${courseId}/getNextLessonId`, {
       method: "GET",
       headers: {
         Accept: "application/json",

@@ -6,7 +6,7 @@ import CommentBox from "./CommentBox";
 import QAForm from "./DiscussionForm";
 import { UserOutlined } from "@ant-design/icons";
 import { useMediaPredicate } from "react-media-hook";
-import { Element, animateScroll as scroll, scrollSpy, scroller } from "react-scroll";
+import { Element, scroller } from "react-scroll";
 import DiscussionsService from "@/services/DiscussionsService";
 import { getDummyArray } from "@/lib/dummyData";
 import { useRouter } from "next/router";
@@ -138,7 +138,9 @@ const ReplyDrawer: FC<{
         placement="right"
         onClose={onCloseDrawer}
         open={replyDrawer.isOpen}
-        footer={<QAForm placeholder="Reply" loadingPage={false} onPost={onPostReply} />}
+        footer={
+          <QAForm placeholder="Reply" reply={true} editorBorderRadius={8} loadingPage={false} onPost={onPostReply} />
+        }
       >
         <div id="reply_cmt_list" ref={scrollRef}>
           <section className={styles.list_reply_cmt} id="list_reply_cmt">
@@ -152,6 +154,7 @@ const ReplyDrawer: FC<{
               queryReplies.map((comment, i) => {
                 return (
                   <CommentBox
+                    listLoading={listLoading}
                     replyList={true}
                     showReplyDrawer={() => {}}
                     resourceId={resourceId}

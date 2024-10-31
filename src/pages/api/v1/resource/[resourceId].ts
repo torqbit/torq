@@ -13,12 +13,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       include: {
         video: {},
+        assignment: {},
       },
     });
+
     return res.status(200).json({
       info: false,
       success: true,
-      message: "Resource found",
+      message: "Resource has been fetched",
       resource: resource,
     });
   } catch (error) {

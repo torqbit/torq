@@ -1,14 +1,17 @@
 .blogFormConatiner {
-  padding: 40px;
+  padding: 20px 40px;
   position: relative;
 
   .publishBtn {
-    position: absolute;
+    position: fixed;
     top: 20px;
-    right: 20px;
+    right: 40px;
   }
   .editorContainer {
+    background-color: var(--bg-primary);
     margin: 10px 0px;
+    width: 800px;
+    height: 440px;
   }
   .formContainer {
     max-width: 800px;
@@ -112,20 +115,24 @@ p.emptyPlaceholder:first-child::before {
 //blog page
 
 .blogPageWrapper {
-  max-width: 800px;
+  max-width: var(--marketing-container-width);
   margin: 0 auto;
+  padding: 100px 0px 50px 0px;
   h1 {
     margin: 0;
     font-size: 30px;
     line-height: 1.6;
   }
-  background-color: var(--bg-secondary);
   img {
+    width: var(--marketing-container-width);
+    height: auto;
     border-radius: 8px;
     aspect-ratio: 16/8;
   }
   .authorInfo {
     img {
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
     }
 
@@ -142,6 +149,26 @@ p.emptyPlaceholder:first-child::before {
     span {
       color: var(--font-secondary);
     }
+  }
+}
+
+.blog_info {
+  max-width: var(--marketing-container-width);
+  margin: 0 auto;
+  padding: 40px 0px;
+  p {
+    color: var(--font-secondary);
+  }
+  img {
+    max-width: 600px;
+    height: 300px;
+  }
+
+  pre {
+    max-width: 500px;
+    padding: 10px 15px;
+    background-color: var(--bg-primary);
+    color: var(--font-primary);
   }
 }
 
@@ -195,10 +222,8 @@ p.emptyPlaceholder:first-child::before {
   rotate: 90deg;
 }
 
-//blog index page
-
 .blogListPageWrapper {
-  max-width: 1000px;
+  max-width: var(--marketing-container-width);
   margin: 40px auto;
   display: flex;
   align-items: center;
@@ -275,6 +300,14 @@ p.emptyPlaceholder:first-child::before {
   }
   .doubleSecondaryBlog {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+.instruction_editor {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  &:hover {
+    border: 1px solid var(--btn-primary);
   }
 }
 

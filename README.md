@@ -1,8 +1,8 @@
 <br /><br />
 
 <p align="center">
-<a href="https://torqbit.com/torq">
-  <img src="public/icon/torq-long.svg" alt="Torq Logo" width="180">
+<a href="https://torqbit.com/torqbit">
+  <img src="https://cdn.torqbit.com/static/torq.png" alt="Torq Logo" width="180">
 </a>
 </p>
 
@@ -30,8 +30,8 @@ Development system must have docker engine installed and running.
 
 Setting up local environment is extremely easy and straight forward. Follow the below step and you will be ready to contribute
 
-1. Clone the code locally using `git clone https://github.com/torqbit/torq`
-1. Switch to the code folder `cd torq`
+1. Clone the code locally using `git clone https://github.com/torqbit/torqbit`
+1. Switch to the code folder `cd torqbit`
 1. Edit the `docker-compose.yml` file to include the Google & Github client credentials, and the email id that will be the admin for the platform.
 1. Now run the command `docker-compose up` to launch the web app and the MySQL server.
 

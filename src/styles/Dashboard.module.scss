@@ -1,7 +1,7 @@
 .setting_content,
 .course_content,
 .dashboard_content {
-  padding: 40px;
+  padding: 20px 40px;
 
   .enrolled_course_list {
     width: 100%;
@@ -32,7 +32,7 @@
 }
 
 .courseContainer {
-  padding: 40px 40px 0px 40px;
+  padding: 20px 40px 0px 40px;
 }
 
 //no courses found
@@ -153,6 +153,9 @@
   }
 }
 
+.input_amount {
+  width: 100%;
+}
 .add_user_btn {
   // width: 140px;
   display: flex;
@@ -167,7 +170,7 @@
     height: 50px;
     width: 100%;
     background-color: var(--bg-primary);
-    padding-right: 15px;
+    padding: 0 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -177,29 +180,25 @@
       justify-content: space-between;
       align-items: center;
 
-      h3 {
-        padding-left: 15px;
+      h4 {
         color: var(--font-secondary);
         margin: 0;
       }
+      a {
+        stroke: var(--font-secondary);
+        font-size: 1.8rem;
+        line-height: 0;
+        transition: all 0.3s;
 
-      .cancel_add_course {
-        a {
-          stroke: var(--font-secondary);
+        &:hover {
+          stroke: var(--font-primary);
         }
-        cursor: pointer;
-        width: 50px;
-        height: 100%;
-        border-right: 1px solid var(--font-secondary);
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
     }
   }
 
   .add_course_tabs {
-    padding: 10px 20px;
+    padding: 10px 40px;
 
     .add_course_setting {
       padding: 20px 40px;
@@ -471,6 +470,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 5px;
     }
   }
   .title {
@@ -485,11 +485,14 @@
   }
   .description_text {
     color: var(--font-secondary);
+    width: 80vw;
   }
 }
 
 @media only screen and (max-width: 435px) {
   .notifications_list {
+    margin-bottom: 60px;
+
     .notification_bar {
       .notification_content {
         display: flex;

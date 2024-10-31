@@ -5,7 +5,6 @@ import { getCookieName } from "./lib/utils";
 
 export default async function middleware(req: NextRequest, event: NextFetchEvent) {
   let cookieName = getCookieName();
-
   const token = await getToken({
     req,
     secret: process.env.NEXT_PUBLIC_SECRET,
@@ -13,7 +12,7 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
   });
   const isAuthenticated = token != null;
   if (!isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL(`/login?redirect=${req.nextUrl.pathname}`, req.url));
   }
 
   if (token != null && !token.isActive) {
@@ -34,13 +33,6 @@ export default async function middleware(req: NextRequest, event: NextFetchEvent
     !(token.role === "AUTHOR" || token.role === "ADMIN")
   ) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
-  }
-  if (
-    req.nextUrl.pathname.startsWith("/program/add-program") &&
-    isAuthenticated &&
-    !(token.role === "AUTHOR" || token.role === "ADMIN")
-  ) {
-    return NextResponse.redirect(new URL("/programs", req.url));
   }
 }
 

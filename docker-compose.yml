@@ -2,35 +2,52 @@ version: "3"
 
 services:
   web:
-    image: torqbit/torq:0.1.0
+    image: torqbit:v1
     ports:
       - "3000:3000"
+    build: .
+    command: ["sh", "-c", "npx prisma db push --accept-data-loss && cat ascii && yarn start"]
+
     depends_on:
-      - db
-    environment:
-      - DATABASE_URL=mysql://root:torq123@db.torqbit.com/torqdb
-      - GOOGLE_ID=*****************
-      - GOOGLE_SECRET=*************
-      - GITHUB_ID=*****************
-      - GITHUB_SECRET=*************
-      - NEXT_PUBLIC_SECRET=d090c4d9bea3f1076d6ebc47460d0e0988a9924ddfa1e8691cbbf28e3f4638cd
-      - JWT_SECRET=uPijyPl163ihk570eXbQrNMnKW4
-      - NEXTAUTH_URL=http://localhost:3000
-      - ADMIN_EMAIL=your@mail.com
-      - NEXT_PUBLIC_APP_ENV=development
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/user/get-all || exit 1"]
+      interval: 30s
+      timeout: 2s
+      retries: 5
+      start_period: 10s
+
+    env_file:
+      - "./docker.env"
+
     networks:
       - app-network
 
   db:
     image: mysql:8.0
     hostname: db.torqbit.com
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "mysqladmin -uroot -pMehrab@123 status && mysql -uroot -pMehrab@123 -e 'USE console; SHOW TABLES ; SELECT * FROM User;'",
+        ]
+      interval: 30s
+      timeout: 2s
+      retries: 5
+      start_period: 10s
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: torq123
-      MYSQL_DATABASE: torqdb
+      MYSQL_ROOT_PASSWORD: Mehrab@123
+      MYSQL_DATABASE: console
     volumes:
       - db-data:/var/lib/mysql
+      - /c/Users/mehra/training/database_backup:/backups
+
     networks:
       - app-network
 

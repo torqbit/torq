@@ -9,8 +9,11 @@ import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { Course } from "@prisma/client";
 import BlogList from "@/components/Admin/Content/BlogList";
-import BlogService, { latestBlogs } from "@/services/BlogService";
-import appConstant from "@/services/appConstant";
+import BlogService from "@/services/BlogService";
+import SubmissionList from "@/components/Assignment/Submissions/SubmissionList";
+import EventList from "@/components/Events/EventList";
+import EventService from "@/services/EventService";
+import { IContentTabType } from "@/types/courses/Course";
 
 export const convertSecToHourandMin = (seconds: number) => {
   let result = "";
@@ -141,6 +144,8 @@ const EnrolledCourseList: FC<{
       chap.resource?.forEach((r: any) => {
         if (r.video) {
           totalDuration = totalDuration + r.video?.videoDuration;
+        } else if (r.assignment) {
+          totalDuration = totalDuration + Number(r.assignment?.estimatedDuration) * 60;
         }
       });
     });
@@ -187,13 +192,20 @@ const Content: NextPage = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const onChange = (key: string) => {
-    if (key === "2") {
-      setActiveTab("Add Blog");
-    } else if (key === "3") {
-      setActiveTab("Add Updates");
-    } else {
-      setActiveTab("Add Course");
+  const onChange = (key: IContentTabType) => {
+    switch (key) {
+      case "BLOGS":
+        return setActiveTab("Add Blog");
+      case "UPDATES":
+        return setActiveTab("Add Updates");
+
+      case "SUBMISSIONS":
+        return setActiveTab("Submission");
+      case "EVENTS":
+        return setActiveTab("Add Event");
+
+      default:
+        return setActiveTab("Add Course");
     }
   };
   const onCourseDelete = (courseId: number) => {
@@ -217,6 +229,7 @@ const Content: NextPage = () => {
     setLoading(true);
 
     ProgramService.getCoursesByAuthor(
+      false,
       (res) => {
         setCoursesAuthored({
           ...coursesAuthored,
@@ -226,7 +239,7 @@ const Content: NextPage = () => {
         setLoading(false);
       },
       (err) => {
-        setCoursesAuthored({ ...coursesAuthored, fetchCourses: false, refresh: !coursesAuthored.refresh });
+        setCoursesAuthored({ ...coursesAuthored, fetchCourses: false });
         messageApi.error(`Unable to get the courses due to ${err}`);
         setLoading(false);
       }
@@ -274,7 +287,7 @@ const Content: NextPage = () => {
 
   const items: TabsProps["items"] = [
     {
-      key: "1",
+      key: "COURSES" as IContentTabType,
       label: "Courses",
       children: (
         <EnrolledCourseList
@@ -286,14 +299,24 @@ const Content: NextPage = () => {
       ),
     },
     {
-      key: "2",
+      key: "BLOGS" as IContentTabType,
       label: "Blogs",
       children: <BlogList contentType="BLOG" />,
     },
     {
-      key: "3",
+      key: "UPDATES" as IContentTabType,
       label: "Updates",
       children: <BlogList contentType="UPDATE" />,
+    },
+    {
+      key: "SUBMISSIONS" as IContentTabType,
+      label: "Submissions",
+      children: <SubmissionList />,
+    },
+    {
+      key: "EVENTS" as IContentTabType,
+      label: "Events",
+      children: <EventList />,
     },
   ];
 
@@ -364,6 +387,7 @@ const Content: NextPage = () => {
       );
     }
   };
+
   const onCreateDraftBlog = (contentType: string) => {
     showModal();
     if (router.query.blogId) {
@@ -401,6 +425,20 @@ const Content: NextPage = () => {
     }
   };
 
+  const handleActionButton = () => {
+    switch (activeTab) {
+      case "Add Course":
+        return onCreateDraftCourse();
+
+      case "Add Blog":
+        return onCreateDraftBlog("BLOG");
+      case "Add Updates":
+        return onCreateDraftBlog("UPDATE");
+      case "Add Event":
+        return router.push(`/admin/content/events/add`);
+    }
+  };
+
   return (
     <Layout2>
       {contextMessageHolder}
@@ -413,29 +451,19 @@ const Content: NextPage = () => {
           }}
           tabBarExtraContent={
             <>
-              <Button
-                type="primary"
-                onClick={() => {
-                  if (activeTab === "Add Course") {
-                    onCreateDraftCourse();
-                  }
-                  if (activeTab === "Add Blog") {
-                    onCreateDraftBlog("BLOG");
-                  }
-                  if (activeTab === "Add Updates") {
-                    onCreateDraftBlog("UPDATE");
-                  }
-                }}
-                className={styles.add_user_btn}
-              >
-                <span>{activeTab}</span>
-                {SvgIcons.arrowRight}
-              </Button>
+              {activeTab !== "Submission" && (
+                <Button type="primary" onClick={handleActionButton} className={styles.add_user_btn}>
+                  <span>{activeTab}</span>
+                  {SvgIcons.arrowRight}
+                </Button>
+              )}
             </>
           }
-          defaultActiveKey="1"
+          defaultActiveKey={"COURSES" as IContentTabType}
           items={items}
-          onChange={onChange}
+          onChange={(key) => {
+            onChange(key as IContentTabType);
+          }}
         />
         {contextWrapper}
       </section>

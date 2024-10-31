@@ -5,7 +5,7 @@ import {
   VideoAPIResponse,
   VideoInfo,
 } from "@/types/courses/Course";
-import { BunnyConfig, BunnyMediaProvider, GetVideo } from "./BunnyMediaProvider";
+import { BunnyConfig, BunnyMediaProvider } from "./BunnyMediaProvider";
 import prisma from "@/lib/prisma";
 import { VideoState } from "@prisma/client";
 
@@ -16,6 +16,8 @@ export interface ContentServiceProvider {
   uploadFile(name: string, file: Buffer, bannerPath: string): Promise<FileUploadResponse>;
   deleteVideo(videoProviderId: string): Promise<BasicAPIResponse>;
   deleteFile(filePath: string): Promise<BasicAPIResponse>;
+  uploadVideoThumbnail(thumbnail: string, videoId: string): Promise<BasicAPIResponse>;
+  uploadThumbnailToCdn(thumbnail: string): Promise<string | undefined>;
 }
 
 export class ContentManagementService {
@@ -38,6 +40,18 @@ export class ContentManagementService {
     }
   };
 
+  uploadThumbnailToCdn = async (thumbnail: string, csp: ContentServiceProvider): Promise<string | undefined> => {
+    return csp.uploadThumbnailToCdn(thumbnail);
+  };
+
+  uploadVideoThumbnail = async (
+    thumbnail: string,
+    videoId: string,
+    csp: ContentServiceProvider
+  ): Promise<BasicAPIResponse> => {
+    return csp.uploadVideoThumbnail(thumbnail, videoId);
+  };
+
   uploadVideo = async (
     title: string,
     file: Buffer,
@@ -46,6 +60,7 @@ export class ContentManagementService {
     objectType: UploadVideoObjectType
   ): Promise<VideoAPIResponse> => {
     const videoResponse = await csp.uploadVideo(title, file);
+
     if (objectType == "lesson") {
       const newVideo = await prisma.video.create({
         data: {
@@ -58,19 +73,39 @@ export class ContentManagementService {
           mediaProvider: csp.name,
         },
       });
+
       csp.trackVideo(videoResponse.video, async (videoLen: number) => {
+        let thumbnail = newVideo.thumbnail;
+
+        const uploadResponse = await csp.uploadThumbnailToCdn(thumbnail);
+        if (uploadResponse) {
+          thumbnail = uploadResponse;
+        } else {
+          const getExistingVideoThumbnail = await prisma.video.findUnique({
+            where: {
+              id: newVideo.id,
+            },
+            select: {
+              thumbnail: true,
+            },
+          });
+          thumbnail = String(getExistingVideoThumbnail?.thumbnail);
+        }
+
         const updatedVideo = prisma.video.update({
           where: {
             id: newVideo.id,
           },
           data: {
-            state: "READY",
+            state: VideoState.READY,
             videoDuration: videoLen,
+            thumbnail: thumbnail,
           },
         });
         const r = await updatedVideo;
         return r.state;
       });
+      return { ...videoResponse, video: { ...videoResponse.video, id: Number(newVideo.id) } };
     }
     if (objectType == "course") {
       await prisma.course.update({
@@ -81,7 +116,7 @@ export class ContentManagementService {
           tvProviderId: videoResponse.video.videoId,
           tvProviderName: csp.name,
           tvUrl: videoResponse.video.videoUrl,
-          tvState: "PROCESSING",
+          tvState: VideoState.PROCESSING,
           tvThumbnail: videoResponse.video.thumbnail,
         },
       });
@@ -91,12 +126,13 @@ export class ContentManagementService {
             courseId: id,
           },
           data: {
-            tvState: "READY",
+            tvState: VideoState.READY,
           },
         });
         const r = await updatedVideo;
         return r.state;
       });
+      return videoResponse;
     }
     return videoResponse;
   };
@@ -112,14 +148,14 @@ export class ContentManagementService {
     csp: ContentServiceProvider
   ) => {
     const deleteResponse = await csp.deleteVideo(videoProviderId);
-    if (deleteResponse.success && objectType == "lesson") {
+    if ((deleteResponse.success || deleteResponse.statusCode === 404) && objectType == "lesson") {
       const videoDel = await prisma.video.delete({
         where: {
           resourceId: objectId,
           providerVideoId: videoProviderId,
         },
       });
-    } else if (deleteResponse.success && objectType == "course") {
+    } else if ((deleteResponse.success || deleteResponse.statusCode === 404) && objectType == "course") {
       await prisma.course.update({
         where: {
           courseId: objectId,

@@ -4,9 +4,6 @@ import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
 import prisma from "@/lib/prisma";
 import { Theme, User } from "@prisma/client";
-import StarterKit from "@tiptap/starter-kit";
-import { JSONContent } from "@tiptap/react";
-import { generateHTML } from "@tiptap/html";
 import { FC, useEffect } from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { useMediaQuery } from "react-responsive";
@@ -19,12 +16,11 @@ import { UserOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import appConstant from "@/services/appConstant";
 import { truncateString } from "@/services/helper";
-import TextEditor from "@/components/Editor/Editor";
-import UploadImage from "@/components/Editor/Extension/UploadExtension";
+import PurifyContent from "@/components/PurifyContent/PurifyContent";
 
 interface IProps {
   user: User;
-  htmlData: HTMLElement;
+  htmlData: string;
   description: string;
   currentUrl: string;
   hostName: string;
@@ -70,17 +66,12 @@ const BlogPage: FC<IProps> = ({ user, htmlData, updateData, description, current
   }, []);
   return (
     <MarketingLayout
+      courseTitle={`${updateData.title} | ${appConstant.platformName}`}
       user={user}
       heroSection={
         <section className={styles.blogPageWrapper}>
           <Flex vertical gap={20}>
             <h1>{updateData.title}</h1>
-            <Image
-              src={updateData.banner}
-              height={isMobile ? 175 : 400}
-              width={isMobile ? 350 : 800}
-              alt={"blog-banner"}
-            />
             <Flex align="center" gap={10} className={styles.authorInfo}>
               {updateData.authorImage ? (
                 <Image
@@ -96,26 +87,22 @@ const BlogPage: FC<IProps> = ({ user, htmlData, updateData, description, current
                 </div>
               )}
               <Space direction="vertical" size={"small"}>
-                <span>A Blog by</span>
+                <span>A Update by</span>
                 <div>{updateData.authorName}</div>
               </Space>
-            </Flex>
-            <TextEditor
-              contentData={htmlData}
-              currentContentData={{} as JSONContent}
-              setContent={() => {}}
-              isEditable={false}
-              contentType={updateData.contentType}
+            </Flex>{" "}
+            <Image
+              src={updateData.banner}
+              height={isMobile ? 175 : 400}
+              width={isMobile ? 350 : 800}
+              alt={"update-banner"}
             />
           </Flex>
         </section>
       }
     >
       <Head>
-        <title>
-          {appConstant.platformName} | {updateData.title}
-        </title>
-        <meta name="description" content={truncateString(description)} />
+        <meta name="description" content={truncateString(description, 50)} />
         <link rel="icon" href="/favicon.ico" />
 
         {<meta property="og:url" content={currentUrl} />}
@@ -131,6 +118,9 @@ const BlogPage: FC<IProps> = ({ user, htmlData, updateData, description, current
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={updateData.banner} />
       </Head>
+      <div className={styles.blog_info}>
+        <PurifyContent content={htmlData} />
+      </div>
     </MarketingLayout>
   );
 };
@@ -165,14 +155,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   if (update) {
-    const jsonValue = update?.content;
-    const htmlData = update && update.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
-
     return {
       props: {
         user,
-        htmlData: htmlData,
-        description: update.content.content[0].content[0].text,
+        htmlData: update?.content,
         currentUrl,
         hostName: `${host}`,
         updateData: {

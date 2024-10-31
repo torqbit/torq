@@ -8,7 +8,8 @@
   }
   .termAndCondionContent {
     background-color: var(--bg-secondary);
-    max-width: 1200px;
+    max-width: var(--marketing-container-width);
+
     margin: 0 auto;
     padding: 50px 0;
     li {

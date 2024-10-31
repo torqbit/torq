@@ -4,20 +4,38 @@ export default {
     colorText: "#939db8",
     colorBgContainer: "#283040",
     colorBorder: "#374362",
-    colorTextPlaceholder: "#2f3647",
+    colorTextPlaceholder: "#666",
     colorPrimary: "#5b63d3",
+
     colorSplit: "#2f3647",
-    colorTextDisabled: "#68696d",
+    colorTextDisabled: "#939db8",
   },
 
   components: {
     Layout: {
       bodyBg: "#202433",
     },
-
+    Statistic: {
+      contentFontSize: 12,
+      titleFontSize: 12,
+      marginXXS: 0,
+      colorTextDescription: "#fff",
+    },
+    Progress: {
+      remainingColor: "#d4d4d4",
+    },
+    Tree: {
+      nodeSelectedBg: "#283040",
+      directoryNodeSelectedBg: "#283040",
+      directoryNodeSelectedColor: "#fff",
+    },
     Menu: {
       itemColor: "#939db8",
       groupTitleColor: "#eee",
+      itemActiveBg: "#202433",
+      itemSelectedBg: "#202433",
+      itemSelectedColor: "#fff",
+      itemBg: "#283040",
     },
     Radio: {
       buttonSolidCheckedActiveBg: "#000",
@@ -36,6 +54,7 @@ export default {
     },
     Card: {
       paddingLG: 20,
+      colorBorderSecondary: "#2f3647",
     },
     Form: {
       labelColor: "#888",
@@ -90,6 +109,7 @@ export default {
       itemHoverColor: "#fff",
       cardBg: "#939db8",
     },
+
     Drawer: {
       zIndexPopup: 1001,
       padding: 10,

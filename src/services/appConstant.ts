@@ -1,16 +1,59 @@
 export default {
   cmnErrorMsg: "Something went wrong. Please try again later",
   platformName: "Torqbit",
+  platformLogo: `/public/icon/torqbit.png`,
   courseTags: ["HTML", "CSS", "JS", "ReactJS"],
   assignmentLang: ["html", "css", "javascript", "java", "python", "go", "nodejs", "reactjs"],
+  assignmentFiles: ["index.html", "global.css", "index.js", , "index.ts", "index.tsx", "index.jsx"],
   courseType: ["FREE", "PAID"],
   defaultPageSize: 5,
+  address: "Memco More, Bhuli Hirak Rd",
+  state: "Jharkhand",
+  country: "India",
   privatePath: ["/add-course"],
   attachmentFileFolder: "discussion-attachment",
   assignmentFileFolder: "assignment-files",
-  assignmentMaxScore: 10,
   certificateDirectory: "/courses/certificates/",
   supportEmail: "support@torqbit.com",
+  thumbnailCdnPath: "/courses/lesson/thumbnails/",
+  convertMiliSecondsToMinutes: 60 * 1000,
+  assignmentSubmissionLimit: 3,
+  assignmentMinScore: 1,
+  assignmentMaxScore: 10,
+  assignmentPassingMarks: 8,
+  certificateTempFolder: "certificates",
+  mediaTempDir: "media",
+  assignmentTempDir: "assignments",
+  invoiceTempDir: "invoices",
+
+  contacts: [
+    {
+      title: "Legal Entity",
+      description: "TORQBIT",
+    },
+    {
+      title: "Registered Address",
+      description: "3rd floor, Ramajee Complex, Memco More, DHANBAD, Jharkhand, PIN: 826004",
+    },
+    {
+      title: "Operational Address",
+      description: "3rd floor, Ramajee Complex, Memco More, DHANBAD, Jharkhand, PIN: 826004",
+    },
+    {
+      title: "Telephone No",
+      description: "7463811090",
+    },
+    {
+      title: "E-Mail ID",
+      description: "train@torqbit.com",
+    },
+  ],
+  payment: {
+    lockoutMinutes: 30 * 1000,
+    sessionExpiryDuration: 24 * 60 * 60 * 1000,
+    version: "2022-09-01",
+    taxRate: 18,
+  },
 
   fontDirectory: {
     dmSerif: {

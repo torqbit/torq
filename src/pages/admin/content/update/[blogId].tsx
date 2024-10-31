@@ -2,13 +2,10 @@ import BlogForm from "@/components/Admin/Content/BlogForm";
 import Layout2 from "@/components/Layouts/Layout2";
 import { GetServerSidePropsContext } from "next";
 import prisma from "@/lib/prisma";
-import { generateHTML } from "@tiptap/html";
-import StarterKit from "@tiptap/starter-kit";
-import { JSONContent } from "@tiptap/react";
 import { FC } from "react";
 import { StateType } from "@prisma/client";
 interface IProps {
-  htmlData: HTMLElement;
+  htmlData: string;
   bannerImage: string;
   title: string;
   state: StateType;
@@ -41,12 +38,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     },
   });
   if (contentData) {
-    const jsonValue = contentData?.content;
-    const htmlData = contentData && contentData.content && generateHTML(jsonValue as JSONContent, [StarterKit]);
-
     return {
       props: {
-        htmlData,
+        htmlData: contentData?.content,
         bannerImage: contentData?.banner,
         title: contentData?.title,
         state: contentData.state,

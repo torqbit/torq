@@ -4,16 +4,38 @@ export default {
     colorText: "#666",
     colorPrimary: "#5b63d3",
     colorSplit: "#888",
+    colorTextDisabled: "#666",
   },
   components: {
     Layout: {
       bodyBg: "#f5f5f5",
     },
+    Progress: {
+      remainingColor: "#666",
+    },
+    Tree: {
+      nodeSelectedBg: "#fff",
+      directoryNodeSelectedBg: "#fff",
+      directoryNodeSelectedColor: "#000",
+    },
+    Modal: {
+      contentBg: "#f5f5f5",
+    },
     Menu: {
       itemColor: "#666",
+      itemActiveBg: "#eee",
+      itemSelectedBg: "#eee",
+      itemSelectedColor: "#000",
+      itemBg: "#fff",
     },
     Divider: {
       colorSplit: "#d9d9d9",
+    },
+    Statistic: {
+      contentFontSize: 12,
+      titleFontSize: 12,
+      marginXXS: 0,
+      colorTextDescription: "#000",
     },
     Popover: {
       colorBgElevated: "#fff",
@@ -31,6 +53,7 @@ export default {
     },
     Card: {
       paddingLG: 20,
+      colorBorderSecondary: "#d9d9d9",
     },
     Form: {
       labelColor: "#888",

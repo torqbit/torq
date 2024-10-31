@@ -1,22 +1,37 @@
 .learn_course_page {
-  padding: 20px 0 0 20px;
+  padding: 20px 0 0 40px;
   overflow-y: hidden;
   display: flex;
+  justify-content: space-between;
   gap: 20px;
 
   .responsive_action_btn {
     display: none;
   }
   .lessons_video_player_wrapper {
-    width: calc(100vw - 720px);
+    width: calc(100vw - 560px);
+    transition: all 0.4s ease;
+  }
+  .lessons_collapsed_video_player_wrapper {
+    width: calc(100vw - 380px);
+    transition: all 0.4s ease;
+  }
+  .video_container {
+    min-height: 400px;
   }
   .video_container,
-  .certificatePage {
+  .certificatePage,
+  .assignment_container {
+    transition: all 0.4s ease;
     width: 100%;
     aspect-ratio: 16/9;
-    min-height: 400px;
+
     position: relative;
-    background-color: var(--bg-primary);
+  }
+  .assignment_container {
+    img {
+      width: 100%;
+    }
   }
 
   .certificatePage {
@@ -199,7 +214,8 @@
       }
     }
 
-    .lessons_video_player_wrapper {
+    .lessons_video_player_wrapper,
+    .lessons_collapsed_video_player_wrapper {
       width: calc(100vw - 40px);
     }
 

@@ -2,7 +2,8 @@
   background-color: var(--bg-primary);
   border-top: 1px solid var(--border-color);
   > div:first-child {
-    max-width: 1000px;
+    max-width: var(--marketing-container-width);
+
     margin: 0 auto;
     > div:first-child {
       margin: 0 40px;

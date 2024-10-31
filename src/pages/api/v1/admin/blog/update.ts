@@ -5,6 +5,13 @@ import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 import { createSlug, getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

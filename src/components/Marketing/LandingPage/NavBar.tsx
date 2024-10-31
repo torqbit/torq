@@ -8,7 +8,7 @@ import SvgIcons from "@/components/SvgIcons";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { User } from "@prisma/client";
 
-const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
+const NavBar: FC<{ user: User | undefined; offlineCourse: boolean | undefined }> = ({ user, offlineCourse }) => {
   const { dispatch, globalState } = useAppContext();
 
   const navLinks = [
@@ -17,8 +17,8 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
       href: "/#courses",
     },
     {
-      title: "Updates",
-      href: "/updates",
+      title: "Events",
+      href: "/events",
     },
     {
       title: "Blogs",
@@ -67,22 +67,35 @@ const NavBar: FC<{ user: User | undefined }> = ({ user }) => {
             );
           })}
         </ul>
-        <Tooltip title={"Switch Theme"}>
-          <Button
-            type="default"
-            name="theme button"
-            aria-label="Theme Switch"
-            className={styles.switchBtn}
-            shape="circle"
-            onClick={() => {
-              onChangeTheme();
-            }}
-            icon={globalState.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
-          />
-        </Tooltip>
-        <Link href={user ? `/dashboard` : `/login`} aria-label="Get started">
-          <Button type="primary">{user ? "Go to Dashboard" : "Get Started"}</Button>
-        </Link>
+        <Flex align="center" gap={20}>
+          <Tooltip title={"Switch Theme"}>
+            <Button
+              type="default"
+              name="theme button"
+              aria-label="Theme Switch"
+              className={styles.switchBtn}
+              shape="circle"
+              onClick={() => {
+                onChangeTheme();
+              }}
+              icon={globalState.theme == "dark" ? SvgIcons.sun : SvgIcons.moon}
+            />
+          </Tooltip>
+          {offlineCourse ? (
+            <Link href={"tel:7463811090"} aria-label="Get started">
+              <Button type="primary" className={styles.contact_button}>
+                <Flex align="center" gap={5}>
+                  <i className={styles.button_icon}>{SvgIcons.phone}</i>
+                  +91-7463811090
+                </Flex>
+              </Button>
+            </Link>
+          ) : (
+            <Link href={user ? `/dashboard` : `/login`} aria-label="Get started">
+              <Button type="primary">{user ? "Go to Dashboard" : "Get Started"}</Button>
+            </Link>
+          )}
+        </Flex>
       </nav>
     </div>
   );

@@ -38,7 +38,7 @@ const WelcomeEmailPage = ({ configData }: IProps) => {
                 height={50}
                 width={50}
                 style={{ display: "unset" }}
-                src={`https://torqbit-dev.b-cdn.net/static/torq.png`}
+                src={`https://cdn.torqbit.com/static/torq.png`}
               />
             </Heading>
             <Hr className="border border-solid border-[#eaeaea]  mx-0 w-full" />

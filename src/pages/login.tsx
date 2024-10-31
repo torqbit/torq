@@ -8,7 +8,7 @@ import SpinLoader from "@/components/SpinLoader/SpinLoader";
 import { getToken } from "next-auth/jwt";
 import appConstant from "@/services/appConstant";
 import { getCookieName } from "@/lib/utils";
-import { LoadingOutlined } from "@ant-design/icons";
+
 import Image from "next/image";
 
 const LoginPage: NextPage = () => {

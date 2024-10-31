@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import styles from "@/styles/LearnLecture.module.scss";
-import { Button, Divider, Flex, message } from "antd";
+import { Button, Divider, Flex, message, Spin } from "antd";
 import { Discussion } from "@prisma/client";
 import QAForm from "./DiscussionForm";
 import CommentBox from "./CommentBox";
@@ -8,6 +8,7 @@ import ReplyDrawer from "./ReplyDrawer";
 import { useRouter } from "next/router";
 import DiscussionsService from "@/services/DiscussionsService";
 import appConstant from "@/services/appConstant";
+import SpinLoader from "@/components/SpinLoader/SpinLoader";
 
 export interface IComment extends Discussion {
   comment: string;
@@ -26,9 +27,9 @@ export interface IReplyDrawer {
   sltCommentId?: number;
 }
 
-const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean }> = ({
+const QADiscssionTab: FC<{ resourceId?: number; loading: boolean }> = ({
   resourceId,
-  userId,
+
   loading,
 }) => {
   const router = useRouter();
@@ -71,18 +72,19 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     setListLoading(true);
 
     DiscussionsService.getCommentsList(
-      resourceId,
+      Number(resourceId),
       pageSize,
       (result) => {
         setComments(result.comments);
         setCommentCount(result.total);
+        setTimeout(() => {
+          setListLoading(false);
+        }, 500);
       },
       (error) => {
         message.error(error);
       }
     );
-
-    setListLoading(false);
   };
 
   const fetchAllDiscussion = () => {
@@ -140,7 +142,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
     try {
       setLoading(true);
       DiscussionsService.postQuery(
-        resourceId,
+        Number(resourceId),
         Number(router.query.courseId),
         comment,
         (result) => {
@@ -169,23 +171,34 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
   return (
     <section className={styles.qa_discussion_tab}>
-      <QAForm loadingPage={loading} placeholder="Ask a Question" onPost={onQueryPost} />
-      {comments.map((comment, i) => {
-        return (
-          <CommentBox
-            resourceId={resourceId}
-            showReplyDrawer={showReplyDrawer}
-            comment={comment}
-            key={i}
-            replyList={false}
-            comments={comments}
-            setAllComment={setComments}
-            onUpdateReplyCount={onUpdateReplyCount}
-            setCommentCount={setCommentCount}
-            commentCount={commentCount}
-          />
-        );
-      })}
+      <QAForm loadingPage={loading} editorBorderRadius={8} placeholder="Ask a Question" onPost={onQueryPost} />
+      <>
+        {listLoading ? (
+          <Flex align="center" justify="center">
+            <SpinLoader className="editor_spinner" />
+          </Flex>
+        ) : (
+          <>
+            {comments.map((comment, i) => {
+              return (
+                <CommentBox
+                  resourceId={Number(resourceId)}
+                  showReplyDrawer={showReplyDrawer}
+                  comment={comment}
+                  key={i}
+                  listLoading={listLoading}
+                  replyList={false}
+                  comments={comments}
+                  setAllComment={setComments}
+                  onUpdateReplyCount={onUpdateReplyCount}
+                  setCommentCount={setCommentCount}
+                  commentCount={commentCount}
+                />
+              );
+            })}
+          </>
+        )}
+      </>
 
       {router.query.queryId && (
         <Flex align="center" justify="flex-end">
@@ -204,7 +217,7 @@ const QADiscssionTab: FC<{ resourceId: number; userId: string; loading: boolean 
 
       <ReplyDrawer
         replyDrawer={replyDrawer}
-        resourceId={resourceId}
+        resourceId={Number(resourceId)}
         onCloseDrawer={onCloseDrawer}
         comments={comments}
         onUpdateReplyCount={onUpdateReplyCount}

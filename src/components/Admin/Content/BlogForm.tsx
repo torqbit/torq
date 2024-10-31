@@ -1,5 +1,4 @@
-import { useSession } from "next-auth/react";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import styles from "@/styles/Marketing/Blog/Blog.module.scss";
 import { Button, Dropdown, Flex, Form, Input, Popconfirm, Tooltip, Upload, UploadProps, message } from "antd";
 import ImgCrop from "antd-img-crop";
@@ -8,27 +7,24 @@ import SvgIcons from "@/components/SvgIcons";
 import { postWithFile } from "@/services/request";
 import { createSlug } from "@/lib/utils";
 
-import { JSONContent } from "@tiptap/react";
 import BlogService from "@/services/BlogService";
 import { useRouter } from "next/router";
 import { StateType } from "@prisma/client";
-import TextEditor from "@/components/Editor/Editor";
-
+import TextEditor from "@/components/Editor/Quilljs/Editor";
+import DOMPurify from "isomorphic-dompurify";
 const BlogForm: FC<{
-  htmlData: HTMLElement;
+  htmlData: string;
   bannerImage: string;
   title: string;
   state: StateType;
   contentType: string;
 }> = ({ htmlData, title, bannerImage, state, contentType }) => {
-  const { data: user } = useSession();
   const [blogBanner, setBlogBanner] = useState<string>(bannerImage);
   const [blogTitle, setBlogTitle] = useState<string>(title);
-
+  const [editorValue, setEditorValue] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
 
-  const [currentContentData, setCurrentContentData] = useState<JSONContent>();
   const router = useRouter();
   const [currentState, setCurrentState] = useState<StateType>(state);
 
@@ -37,6 +33,10 @@ const BlogForm: FC<{
     discard: false,
     publish: false,
   });
+
+  const handleEditorValue = (value: string) => {
+    setEditorValue(value);
+  };
 
   const uploadFile = async (file: any, title: string) => {
     if (file) {
@@ -60,7 +60,7 @@ const BlogForm: FC<{
         setBlogBanner(res.fileCDNPath);
         BlogService.updateBlog(
           undefined,
-          undefined,
+          "",
           state,
           res.fileCDNPath,
           String(router.query.blogId),
@@ -88,7 +88,7 @@ const BlogForm: FC<{
     setLoader({ ...loader, publish: true });
     BlogService.updateBlog(
       blogTitle,
-      currentContentData,
+      DOMPurify.sanitize(editorValue),
       state,
       blogBanner,
       String(router.query.blogId),
@@ -172,7 +172,7 @@ const BlogForm: FC<{
             />
           </Form.Item>
           <div className={styles.video_container}>
-            <ImgCrop rotationSlider aspect={16 / 8}>
+            <ImgCrop rotationSlider aspect={16 / 9}>
               <Upload
                 name="avatar"
                 listType="picture-card"
@@ -215,11 +215,13 @@ const BlogForm: FC<{
         </div>
         <div className={styles.editorContainer}>
           <TextEditor
-            contentData={htmlData}
-            currentContentData={currentContentData as JSONContent}
-            setContent={setCurrentContentData}
-            isEditable={true}
-            contentType={contentType}
+            defaultValue={editorValue ? editorValue : htmlData}
+            handleDefaultValue={handleEditorValue}
+            readOnly={false}
+            width={800}
+            height={400}
+            theme="snow"
+            placeholder={`Start writing your ${contentType.toLowerCase()}`}
           />
         </div>
       </Form>

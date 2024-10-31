@@ -2,6 +2,8 @@ import { VideoState } from "@prisma/client";
 import { ContentServiceProvider } from "./ContentManagementService";
 import { BasicAPIResponse, FileUploadResponse, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
 import url from "url";
+import appConstant from "../appConstant";
+import { fetchImageBuffer } from "@/actions/fetchImageBuffer";
 
 export type GetVideo = {
   guid: string;
@@ -30,6 +32,7 @@ type BunnyVideoAPIResponse = {
 };
 export class BunnyMediaProvider implements ContentServiceProvider {
   name: string = "bunny";
+  libraryUrl: string = "https://video.bunnycdn.com/library";
   accessKey: string;
   libraryId: string;
   streamCDNHostname: string;
@@ -57,14 +60,14 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   }
 
   createVideoUrl(key: string) {
-    return `https://video.bunnycdn.com/library/${key}/videos`;
+    return `${this.libraryUrl}/${key}/videos`;
   }
 
   getUploadUrl(id: string, libId: string) {
-    return `https://video.bunnycdn.com/library/${libId}/videos/${id}`;
+    return `${this.libraryUrl}/${libId}/videos/${id}`;
   }
   getVideoUrl(id: string, libId: string) {
-    return `https://video.bunnycdn.com/library/${libId}/videos/${id}`;
+    return `${this.libraryUrl}/${libId}/videos/${id}`;
   }
 
   getUploadFileUrl(file: string, path: string) {
@@ -163,13 +166,13 @@ export class BunnyMediaProvider implements ContentServiceProvider {
     let videoData = await videoResult.json();
     let state: string = "";
     if (videoData.status === 0 || videoData.status === 1 || videoData.status === 2 || videoData.status === 3) {
-      state = "PROCESSING";
+      state = VideoState.PROCESSING;
     }
     if (videoData.status === 4) {
-      state = "READY";
+      state = VideoState.READY;
     }
     if (videoData.status === 5 || videoData.status === 6) {
-      state = "FAILED";
+      state = VideoState.FAILED;
     }
     return {
       statusCode: videoResult.status,
@@ -201,7 +204,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   }
 
   async deleteVideo(videoProviderId: string): Promise<BasicAPIResponse> {
-    const deleteUrl = `https://video.bunnycdn.com/library/${this.libraryId}/videos/${videoProviderId}`;
+    const deleteUrl = `${this.libraryUrl}/${this.libraryId}/videos/${videoProviderId}`;
     const response = await fetch(deleteUrl, this.getDeleteOption(this.accessKey));
     if (response.ok) {
       return (await response.json()) as BasicAPIResponse;
@@ -217,7 +220,7 @@ export class BunnyMediaProvider implements ContentServiceProvider {
   async deleteFile(filePath: string): Promise<BasicAPIResponse> {
     const parseUrl = filePath && url.parse(filePath);
     const existingPath = parseUrl && parseUrl.pathname;
-    if (parseUrl && parseUrl.host === this.connectedCDNHostname) {
+    if (parseUrl && parseUrl.host === this.connectedCDNHostname && !filePath.includes(this.streamCDNHostname)) {
       const deleteUrl = `https://storage.bunnycdn.com/torqbit-files${existingPath}`;
       const response = await fetch(deleteUrl, this.getDeleteOption(this.storagePassword));
       if (response.ok) {
@@ -239,6 +242,39 @@ export class BunnyMediaProvider implements ContentServiceProvider {
         message: "Ignoring the delete operation as image is not stored in this storage provider",
         success: true,
       } as BasicAPIResponse;
+    }
+  }
+
+  async uploadVideoThumbnail(thumbnail: string, videoId: string): Promise<BasicAPIResponse> {
+    let uploadUrl = `${this.libraryUrl}/${this.libraryId}/videos/${videoId}/thumbnail?thumbnailUrl=${thumbnail}`;
+    const response = await fetch(uploadUrl, this.getPostOption("", this.accessKey));
+    if (response.ok) {
+      return {
+        statusCode: response.status,
+        message: response.statusText,
+        success: true,
+      } as BasicAPIResponse;
+    } else {
+      return {
+        statusCode: response.status,
+        message: response.statusText,
+        success: false,
+      };
+    }
+  }
+
+  async uploadThumbnailToCdn(thumbnail: string): Promise<string | undefined> {
+    if (thumbnail.includes(this.streamCDNHostname)) {
+      let fullName = thumbnail.split("/")[thumbnail.split("/").length - 1];
+      const fileBuffer = await fetchImageBuffer(thumbnail);
+      if (fileBuffer) {
+        const uploadResponse = await this.uploadFile(
+          fullName,
+          fileBuffer,
+          `${appConstant.thumbnailCdnPath}/${new Date().getTime()}-${fullName}`
+        );
+        return uploadResponse.fileCDNPath;
+      }
     }
   }
 }

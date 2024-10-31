@@ -1,5 +1,5 @@
-.preview_container {
-  padding: 40px;
+.preview_container,
+.add_preview_container {
   .coursehHeaderLinks {
     color: var(--font-secondary);
     a:hover {
@@ -50,6 +50,18 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
+      padding: 2px 15px;
+      height: 100%;
+      .lockIcon {
+        padding-top: 5px;
+      }
+    }
+    .coursePrice {
+      font-size: 30px;
+      color: var(--font-primary);
+      i {
+        color: var(--font-secondary);
+      }
     }
   }
 
@@ -67,6 +79,29 @@
   .time_tag {
     color: var(--font-secondary);
     padding: 0px 10px;
+  }
+}
+
+.add_preview_container {
+  padding: 0px;
+}
+.preview_container {
+  padding: 20px 40px;
+}
+
+.alertMessage {
+  width: 800px;
+  height: 100px;
+  padding: 10px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  margin-left: 40px;
+  margin-top: 20px;
+  h4 {
+    color: var(--font-primary);
+  }
+  a {
+    color: var(--btn-primary);
   }
 }
 
@@ -128,9 +163,18 @@
       position: relative;
     }
   }
+  .alertMessage {
+    width: calc(100vw - 40px);
+    margin-left: 20px;
+    height: 150px;
+  }
 }
 
 @media only screen and (max-width: 933px) and (orientation: landscape) {
+  .preview_container {
+    padding: 10px 40px;
+  }
+
   .preview_container {
     margin-left: 60px;
     .course__info {
@@ -158,5 +202,9 @@
       background-color: var(--bg-primary);
       position: relative;
     }
+  }
+  .alertMessage {
+    width: calc(100vw - 120px);
+    margin-left: 100px;
   }
 }

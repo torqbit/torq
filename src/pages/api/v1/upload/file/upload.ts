@@ -23,20 +23,21 @@ export function getFileExtension(fileName: string) {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { fields, files } = (await readFieldWithFile(req)) as any;
+
     if (files.file) {
       const name = fields.title[0].replaceAll(" ", "_");
       const dir = fields.dir[0];
+      const fileType = fields.hasOwnProperty("fileType") && fields.fileType[0];
 
       const extension = getFileExtension(files.file[0].originalFilename);
       const sourcePath = files.file[0].filepath;
       const currentTime = new Date().getTime();
       const fullName = `${name.replace(/\s+/g, "-")}-${currentTime}.${extension}`;
-
       const bannerPath = `${dir}${fullName}`;
 
-      const localPath = await saveToDir(fullName, sourcePath);
+      const localPath = await saveToDir(fullName, sourcePath, res);
 
-      const fileBuffer = await fs.promises.readFile(localPath);
+      const fileBuffer = await fs.promises.readFile(`${localPath}`);
 
       const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
         where: {
@@ -57,11 +58,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
+        if (fileType === "thumbnail") {
+          await prisma.video
+            .update({
+              where: {
+                id: Number(fields.videoId[0]),
+              },
+              data: {
+                thumbnail: uploadResponse.fileCDNPath,
+              },
+            })
+            .then(async (result) => {
+              const videoThumbnailResponse = await cms.uploadVideoThumbnail(
+                uploadResponse.fileCDNPath,
+                `${fields.providerVideoId[0]}`,
+                serviceProvider
+              );
+              if (!videoThumbnailResponse.success && videoThumbnailResponse.statusCode !== 404) {
+                throw new Error(`Unable to upload the file due to : ${videoThumbnailResponse.message}`);
+              }
+            });
+        }
         if (localPath != "") {
-          fs.unlinkSync(localPath);
+          fs.unlinkSync(`${localPath}`);
         }
 
-        return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });
+        const findVideoState =
+          fields.hasOwnProperty("videoId") &&
+          (await prisma.video.findUnique({
+            where: {
+              id: Number(fields.videoId[0]),
+            },
+            select: {
+              state: true,
+            },
+          }));
+
+        return res
+          .status(uploadResponse?.statusCode || 200)
+          .json({ ...uploadResponse, videoState: findVideoState?.state });
       } else {
         throw new Error("No Media Provder has been configured");
       }

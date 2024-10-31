@@ -206,8 +206,8 @@ const LearnCourse: FC<{}> = () => {
       children: selectedLesson?.description,
     },
     {
-      key: "2",
-      label: "Q & A",
+      key: "discussions",
+      label: "Discussions",
 
       children: session && selectedLesson && (
         <QADiscssionTab loading={loading} resourceId={selectedLesson?.resourceId} userId={session?.id} />

@@ -5,6 +5,7 @@ import { convertSecToHourandMin } from "@/pages/admin/content";
 import ProgramService from "@/services/ProgramService";
 import styles from "@/styles/Preview.module.scss";
 import { CourseLessonAPIResponse, VideoLesson } from "@/types/courses/Course";
+import { $Enums, CourseState, CourseType, ResourceContentType, Role } from "@prisma/client";
 import { Breadcrumb, Button, Collapse, Flex, Space, Tag } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,7 +19,8 @@ const Label: FC<{
   resourceId?: number;
   isCompleted?: boolean;
   icon: ReactNode;
-}> = ({ title, time, keyValue, icon, isCompleted, resourceId }) => {
+  contentType: ResourceContentType;
+}> = ({ title, time, keyValue, icon, isCompleted, resourceId, contentType }) => {
   return (
     <div className={styles.labelContainer}>
       <Flex justify="space-between" align="center">
@@ -40,36 +42,62 @@ const Preview: FC<{
   courseDetail?: CourseLessonAPIResponse;
   addContentPreview?: boolean;
   videoUrl?: string;
-  enrolled?: boolean;
-  isCourseCompleted?: boolean;
   onEnrollCourse?: () => void;
-  isCourseStarted?: boolean;
-}> = ({ addContentPreview, videoUrl, onEnrollCourse, enrolled, isCourseCompleted, courseDetail, isCourseStarted }) => {
+  paymentDisable?: boolean;
+  paymentStatusLoading?: boolean;
+  loading?: boolean;
+  paymentStatus?: $Enums.paymentStatus;
+}> = ({
+  addContentPreview,
+  videoUrl,
+  paymentStatusLoading,
+  paymentDisable,
+  onEnrollCourse,
+  courseDetail,
+  loading,
+  paymentStatus,
+}) => {
   const router = useRouter();
+  let isCourseCompleted = courseDetail?.course.userStatus === CourseState.COMPLETED;
 
   const items = courseDetail?.lessons.map((content, i) => {
     let totalTime = 0;
     content.lessons.forEach((data) => {
-      if (data) {
+      if (data && data.videoDuration) {
         totalTime = totalTime + data.videoDuration;
+      } else if (data && data.estimatedDuration) {
+        totalTime = totalTime + data.estimatedDuration * 60;
       }
     });
     const duration = convertSecToHourandMin(totalTime);
     return {
       key: `${i + 1}`,
-      label: <Label title={content.chapterName} icon={SvgIcons.folder} time={duration} keyValue={`${i + 1}`} />,
+      label: (
+        <Label
+          title={content.chapterName}
+          icon={SvgIcons.folder}
+          time={duration}
+          keyValue={`${i + 1}`}
+          contentType={$Enums.ResourceContentType.Video}
+        />
+      ),
       children: content.lessons.map((res: VideoLesson, i: any) => {
         if (res) {
-          const duration = convertSecToHourandMin(res.videoDuration);
+          const duration = addContentPreview
+            ? convertSecToHourandMin(res.videoDuration)
+            : convertSecToHourandMin(
+                res.contentType === ResourceContentType.Video ? res.videoDuration : Number(res.estimatedDuration) * 60
+              );
           return (
             <div className={styles.resContainer}>
               <Label
                 title={res.title}
-                icon={SvgIcons.playBtn}
+                icon={res.contentType === $Enums.ResourceContentType.Assignment ? SvgIcons.file : SvgIcons.playBtn}
                 time={duration}
                 isCompleted={res.isWatched}
                 resourceId={res.videoId}
                 keyValue={`${i + 1}`}
+                contentType={res.contentType as ResourceContentType}
               />
             </div>
           );
@@ -95,7 +123,7 @@ const Preview: FC<{
     );
   };
   return (
-    <section className={styles.preview_container}>
+    <section className={addContentPreview ? styles.add_preview_container : styles.preview_container}>
       <Space direction="vertical">
         <div style={{ fontSize: 20 }} className={styles.coursehHeaderLinks}>
           {courseDetail && !addContentPreview && (
@@ -136,44 +164,100 @@ const Preview: FC<{
             <p>{courseDetail?.course.description}</p>
           </Space>
 
-          {enrolled ? (
-            <>
-              {isCourseCompleted ? (
-                <Flex align="center" gap={10}>
-                  {!courseDetail?.course.previewMode && <Button onClick={onViewCertificate}>View Certificate</Button>}
-                  <Link
-                    href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}
-                  >
-                    <Button type="primary">Rewatch</Button>
-                  </Link>
+          <Flex vertical gap={8}>
+            {courseDetail?.course.courseType === $Enums.CourseType.PAID &&
+              courseDetail.course.userRole !== Role.STUDENT && (
+                <Flex className={styles.coursePrice} align="center" gap={2}>
+                  <i> {SvgIcons.rupees}</i>
+                  {courseDetail.course.coursePrice}
                 </Flex>
-              ) : (
-                <Button
-                  className={styles.save_btn}
-                  type="primary"
-                  onClick={() => {
-                    !addContentPreview && onEnrollCourse && onEnrollCourse();
-                  }}
-                >
-                  {!isCourseStarted ? "Start Course" : "Resume"}
-                  {SvgIcons.arrowRight}
-                </Button>
               )}
-            </>
-          ) : (
-            <>
-              <Button
-                className={styles.save_btn}
-                type="primary"
-                onClick={() => {
-                  !addContentPreview && onEnrollCourse && onEnrollCourse();
-                }}
-              >
-                {courseDetail?.course.previewMode ? " Preview Course" : " Enroll Course"}
-                {SvgIcons.arrowRight}
-              </Button>
-            </>
-          )}
+            {courseDetail?.course.userRole === Role.STUDENT && (
+              <>
+                {isCourseCompleted ? (
+                  <Flex align="center" gap={10}>
+                    {!courseDetail?.course.previewMode && <Button onClick={onViewCertificate}>View Certificate</Button>}
+                    <Link
+                      href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}
+                    >
+                      <Button type="primary">Rewatch</Button>
+                    </Link>
+                  </Flex>
+                ) : (
+                  <Button
+                    loading={loading}
+                    className={styles.save_btn}
+                    type="primary"
+                    onClick={() => {
+                      !addContentPreview && onEnrollCourse && onEnrollCourse();
+                    }}
+                  >
+                    {courseDetail && courseDetail?.course.progress > 0 ? "Resume" : "Start Course"}
+                    {SvgIcons.arrowRight}
+                  </Button>
+                )}
+              </>
+            )}
+
+            {(courseDetail?.course.userRole === Role.ADMIN || courseDetail?.course.userRole === Role.AUTHOR) && (
+              <Link href={`/courses/${router.query.courseId}/lesson/${courseDetail?.lessons[0].lessons[0].lessonId}`}>
+                <Button type="primary">View Course</Button>
+              </Link>
+            )}
+            {courseDetail?.course.userRole === "NOT_ENROLLED" && (
+              <>
+                {courseDetail.course.courseType === CourseType.PAID ? (
+                  <Button
+                    loading={loading}
+                    className={styles.save_btn}
+                    disabled={paymentDisable}
+                    type="primary"
+                    onClick={() => {
+                      !addContentPreview && onEnrollCourse && onEnrollCourse();
+                    }}
+                  >
+                    {paymentDisable ? (
+                      "Payment  in Progress"
+                    ) : (
+                      <>
+                        {paymentStatus === $Enums.paymentStatus.PENDING ? (
+                          "Complete the payment"
+                        ) : (
+                          <>
+                            {courseDetail?.course.courseType === $Enums.CourseType.PAID && (
+                              <Flex align="center" gap={10}>
+                                <i className={styles.lockIcon}>{SvgIcons.lock}</i>
+                                <div> Buy Course</div>
+                              </Flex>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    loading={loading}
+                    className={styles.save_btn}
+                    type="primary"
+                    onClick={() => {
+                      !addContentPreview && onEnrollCourse && onEnrollCourse();
+                    }}
+                  >
+                    <Flex align="center" gap={10}>
+                      {courseDetail?.course.previewMode ? " Preview Course" : " Enroll Course"}
+                      {SvgIcons.arrowRight}
+                    </Flex>
+                  </Button>
+                )}
+              </>
+            )}
+            {courseDetail?.course.userRole === "NA" && (
+              <Link href={`/login?redirect=/course/${router.query.courseId}`}>
+                <Button type="primary">Login</Button>
+              </Link>
+            )}
+          </Flex>
         </div>
 
         <h2>Table of Contents</h2>

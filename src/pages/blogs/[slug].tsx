@@ -4,9 +4,7 @@ import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
 import prisma from "@/lib/prisma";
 import { Theme, User } from "@prisma/client";
-import StarterKit from "@tiptap/starter-kit";
-import { JSONContent } from "@tiptap/react";
-import { generateHTML } from "@tiptap/html";
+
 import { FC, useEffect } from "react";
 import { useAppContext } from "@/components/ContextApi/AppContext";
 import { useMediaQuery } from "react-responsive";
@@ -19,12 +17,11 @@ import { UserOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import appConstant from "@/services/appConstant";
 import { truncateString } from "@/services/helper";
-import TextEditor from "@/components/Editor/Editor";
-import UploadImage from "@/components/Editor/Extension/UploadExtension";
+import PurifyContent from "@/components/PurifyContent/PurifyContent";
 
 interface IProps {
   user: User;
-  htmlData: HTMLElement;
+  htmlData: string;
   description: string;
   currentUrl: string;
   hostName: string;
@@ -64,23 +61,18 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
       payload: false,
     });
   };
-
   useEffect(() => {
     onCheckTheme();
   }, []);
   return (
     <MarketingLayout
+      courseTitle={`${blogData.title} | ${appConstant.platformName}`}
       user={user}
       heroSection={
         <section className={styles.blogPageWrapper}>
           <Flex vertical gap={20}>
             <h1>{blogData.title}</h1>
-            <Image
-              src={blogData.banner}
-              height={isMobile ? 175 : 400}
-              width={isMobile ? 350 : 800}
-              alt={"blog-banner"}
-            />
+
             <Flex align="center" gap={10} className={styles.authorInfo}>
               {blogData.authorImage ? (
                 <Image
@@ -100,22 +92,18 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
                 <div>{blogData.authorName}</div>
               </Space>
             </Flex>
-            <TextEditor
-              contentData={htmlData}
-              currentContentData={{} as JSONContent}
-              setContent={() => {}}
-              isEditable={false}
-              contentType={blogData.contentType}
+            <Image
+              src={blogData.banner}
+              height={isMobile ? 175 : 400}
+              width={isMobile ? 350 : 800}
+              alt={"blog-banner"}
             />
           </Flex>
         </section>
       }
     >
       <Head>
-        <title>
-          {appConstant.platformName} | {blogData.title}
-        </title>
-        <meta name="description" content={truncateString(description)} />
+        <meta name="description" content={truncateString(description, 50)} />
         <link rel="icon" href="/favicon.ico" />
 
         {<meta property="og:url" content={currentUrl} />}
@@ -131,6 +119,10 @@ const BlogPage: FC<IProps> = ({ user, htmlData, blogData, description, currentUr
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={blogData.banner} />
       </Head>
+
+      <div className={styles.blog_info}>
+        <PurifyContent content={htmlData} />
+      </div>
     </MarketingLayout>
   );
 };
@@ -139,10 +131,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const params = ctx?.params;
   let cookieName = getCookieName();
 
-  const protocol = req.headers["x-forwarded-proto"] || "http"; // Detect protocol
-  const host = req.headers["x-forwarded-host"] || req.headers.host; // Detect host
-  const currentUrl = `${protocol}://${host}${req.url}`; // Construct full URL
-  const blog = (await prisma.blog.findUnique({
+  const protocol = req.headers["x-forwarded-proto"] || "http";
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
+  const currentUrl = `${protocol}://${host}${req.url}`;
+  const blog = await prisma.blog.findUnique({
     where: {
       slug: String(params?.slug),
       state: "ACTIVE",
@@ -161,21 +153,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       slug: true,
       contentType: true,
     },
-  })) as any;
+  });
 
   const user = await getToken({ req, secret: process.env.NEXT_PUBLIC_SECRET, cookieName });
   if (blog) {
-    const jsonValue = blog?.content;
-
-    const htmlData = blog && blog.content && generateHTML(jsonValue as JSONContent, [StarterKit, UploadImage]);
-
     return {
       props: {
         user,
-        htmlData: htmlData,
-        description: blog.content.content[0].content
-          ? blog.content.content[0].content.filter((c: any) => c.type === "text")[0].text
-          : "",
+        htmlData: blog?.content,
+
         currentUrl,
         hostName: `${host}`,
         blogData: {

@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   height: 100vh;
+  overflow-x: hidden;
 
   .layout_header {
     padding: 40px 40px 0 40px;
@@ -15,7 +16,7 @@
     }
 
     .userNameWrapper {
-      padding: 40px 40px 0px 40px;
+      padding: 0px 40px 0px 40px;
 
       h2 {
         margin-bottom: 0px;
@@ -27,7 +28,7 @@
     }
 
     h3 {
-      margin-top: 30px;
+      margin-top: 0px;
     }
   }
 }
@@ -91,6 +92,11 @@
       margin: 0;
     }
   }
+}
+.events_icon {
+  font-size: 18px;
+  line-height: 0;
+  color: var(--font-secondary);
 }
 
 .popconfirm_title {
@@ -169,9 +175,6 @@
       }
       .userNameWrapper {
         padding: 20px 20px 0px 20px;
-      }
-      h3 {
-        margin-top: 20px;
       }
     }
   }

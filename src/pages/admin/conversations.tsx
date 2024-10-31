@@ -169,7 +169,7 @@ const ConversationPage: NextPage = () => {
 
                     <div>
                       <h1>{list.user.name}</h1>
-                      <p>{truncateString(String(list.comment))}</p>
+                      <p>{truncateString(String(list.comment), 50)}</p>
                     </div>
                   </Flex>
                 </div>

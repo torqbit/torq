@@ -1,14 +1,24 @@
 import { IResourceDetail } from "@/lib/types/learn";
 import {
+  $Enums,
   Chapter,
-  Course,
+  CourseState,
+  CourseType,
   Resource,
   ResourceContentType,
+  Role,
   StateType,
   Video,
   VideoState,
   courseDifficultyType,
 } from "@prisma/client";
+
+export interface IHeroCoursePreview {
+  courseName: string;
+  authorImage: string;
+  authorName: string;
+  courseTrailer: string;
+}
 
 export interface ChapterDetail {
   sequenceId: number;
@@ -21,6 +31,13 @@ export interface ChapterDetail {
   name: string;
   resource: IResourceDetail[];
 }
+export interface IAssignmentDetail {
+  assignmentId: number;
+  content: string;
+  assignmentFiles: string[];
+  name?: string;
+  estimatedDuration: number;
+}
 export interface VideoLesson {
   videoId: number;
   lessonId: number;
@@ -29,18 +46,97 @@ export interface VideoLesson {
   description: string;
   isWatched: boolean;
   title: string;
+  contentType?: ResourceContentType;
+  estimatedDuration?: number;
 }
 export interface CourseLessons {
   chapterSeq: number;
   chapterName: string;
   lessons: Array<VideoLesson>;
 }
+export interface ICertificateReponse {
+  info: boolean;
+  success: boolean;
+  message: string;
+  certificateIssueId: string;
+}
+
+export interface ICertificateInfo {
+  studentId: string;
+  courseId: number;
+  authorName: string;
+  courseName: string;
+  studentEmail: string;
+  studentName: string;
+  certificateTemplate: string;
+}
+
+export interface StaticVideoLesson {
+  lessonId: number;
+  videoDuration: number;
+  isWatched: boolean;
+  title: string;
+  contentType: ResourceContentType;
+}
+
+interface StaticCourseLessons {
+  chapterSeq: number;
+  chapterName: string;
+  lessons: Array<StaticVideoLesson>;
+}
+
+export interface ICoursePreviewDetail {
+  chapterSeq?: number;
+  resourceSeq?: number;
+  resourceId?: number;
+  lessonName?: string;
+  courseName?: string;
+  description?: string;
+  tvUrl?: string;
+  previewMode?: boolean;
+  courseType?: CourseType;
+  coursePrice?: number;
+  videoUrl?: string;
+  contentType?: ResourceContentType;
+  videoId?: number;
+  videoDuration?: number;
+  chaterId?: number;
+  chapterName?: string;
+  watchedRes?: number;
+  courseState: StateType;
+  thumbnail?: string;
+  difficultyLevel?: courseDifficultyType;
+  authorImage?: string;
+  authorName?: string;
+  userStatus: CourseState;
+  estimatedDuration: number;
+  videoThumbnail: string;
+  progress?: number;
+}
+
+export interface ICoursePriviewInfo {
+  name: string;
+  description: string;
+  courseTrailer: string;
+  previewMode: boolean;
+  courseType: CourseType;
+  coursePrice: number;
+  userRole: Role;
+  progress: number;
+  totalWatched: number;
+  courseState: $Enums.StateType;
+  thumbnail: string;
+  difficultyLevel: $Enums.courseDifficultyType;
+  authorImage: string;
+  authorName: string;
+  userStatus: CourseState;
+}
 
 export interface CourseLessonAPIResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  course: { name: string; description: string; courseTrailer: string; previewMode: boolean };
+  course: ICoursePriviewInfo;
   lessons: CourseLessons[];
 }
 export interface CourseAPIResponse {
@@ -57,17 +153,16 @@ export interface CourseData {
   chapters: ChapterDetail[];
   difficultyLevel?: courseDifficultyType;
   certificateTemplate?: string;
+  courseType?: string;
+  coursePrice?: number;
 }
 export interface CourseInfo {
   about: string;
   previewMode: boolean;
-
   user: {
     name: string;
   };
-
   authorId: string;
-
   sequenceId: number;
   skills: string[];
   tvThumbnail: string;
@@ -77,7 +172,6 @@ export interface CourseInfo {
   thumbnail: string;
   videoUrl: string;
   chapters: ChapterDetail[];
-
   courseId: number;
   coursePrice: number;
   courseType: string;
@@ -114,6 +208,7 @@ export interface VideoInfo {
   videoDuration: number;
   state: VideoState;
   videoUrl: string;
+  id?: number;
 }
 
 export interface VideoAPIResponse {
@@ -128,6 +223,7 @@ export interface FileUploadResponse {
   statusCode: number;
   message: string;
   fileCDNPath: string;
+  videoState?: VideoState;
 }
 
 export type UploadVideoObjectType = "lesson" | "course";
@@ -149,6 +245,18 @@ interface IResource extends Resource {
 interface IChapter extends Chapter {
   resource: IResource[];
 }
+
+export interface IStaticCourseTemplate {
+  authorImage: string;
+  authorName: string;
+  coursePrice: number;
+  description: string;
+  difficultyLevel: string;
+  name: string;
+  thumbnail: string;
+  chapters: StaticCourseLessons[];
+}
+
 export interface ICoursePageDetail {
   courseId: number;
   state: StateType;
@@ -157,10 +265,35 @@ export interface ICoursePageDetail {
   thumbnail: string;
   difficultyLevel: string;
   tvUrl: string;
-
-  chapters: IChapter[];
-  user: {
-    name: string;
-    image: string;
-  };
+  userRole: Role;
+  coursePrice: number;
+  courseType: CourseType;
+  chapters: CourseLessons[];
+  progress: number;
+  userStatus: CourseState;
+  authorName?: string;
+  authorImage?: string;
+  previewMode: boolean;
+  videoThumbnail: string;
 }
+
+export interface ILessonPreviewDetail {
+  chapterSeq?: number;
+  resourceSeq?: number;
+  resourceId?: number;
+  lessonName?: string;
+  courseName?: string;
+  description?: string;
+  previewMode?: number;
+  lessonDescription?: string;
+  videoId?: string;
+  videoUrl?: string;
+  videoDuration?: number;
+  chapterId?: number;
+  contentType?: ResourceContentType;
+  chapterName?: string;
+  watchedRes?: number;
+  estimatedDuration: number;
+}
+
+export type IContentTabType = "COURSES" | "BLOGS" | "UPDATES" | "SUBMISSIONS" | "EVENTS";
