@@ -17,6 +17,7 @@ const CoursesPage: NextPage = () => {
   useEffect(() => {
     setLoading(true);
     ProgramService.getCoursesByAuthor(
+      true,
       (res) => {
         setAllCourses(res.courses);
         setLoading(false);

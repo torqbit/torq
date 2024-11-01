@@ -5,6 +5,8 @@ import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
+import getRoleByLessonId from "@/actions/getRoleByLessonId";
+import { Role } from "@prisma/client";
 
 /**
  * Post a query
@@ -12,6 +14,14 @@ import { getCookieName } from "@/lib/utils";
  * @param res
  * @returns
  */
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -45,7 +55,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    if (isEnrolled) {
+    const userRole = await getRoleByLessonId(lessonId, token?.role, token?.id);
+
+    if (isEnrolled || userRole === Role.AUTHOR) {
       const addDiscussion = await prisma.discussion.create({
         data: {
           userId: String(token?.id),
@@ -62,7 +74,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         },
       });
-      if (isEnrolled.course.user.id != token?.id) {
+      if (isEnrolled && isEnrolled.course.user.id != token?.id) {
         await prisma.notification.create({
           data: {
             notificationType: "COMMENT",

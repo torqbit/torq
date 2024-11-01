@@ -7,6 +7,8 @@ import * as z from "zod";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { getToken } from "next-auth/jwt";
 import { getCookieName } from "@/lib/utils";
+import { ResourceContentType } from "@prisma/client";
+import updateCourseProgress from "@/actions/updateCourseProgress";
 
 export const validateReqBody = z.object({
   resourceId: z.number(),
@@ -36,37 +38,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         courseId: true,
       },
     });
+
     if (isEnrolled?.courseId) {
-      try {
-        userId &&
-          (await prisma.courseProgress.create({
-            data: {
-              courseId: Number(courseId),
-              resourceId: resourceId,
-              studentId: userId,
-            },
-          }));
-      } catch (error: any) {
-        //ignore this error
-        console.log(error);
-      }
+      const courseProgress = await updateCourseProgress(
+        Number(courseId),
+        Number(resourceId),
+        String(token?.id),
+        ResourceContentType.Video
+      );
 
-      const courseProgress = await prisma.$queryRaw<
-        any[]
-      >`select COUNT(re.resourceId) as lessons, COUNT(cp.resourceId) as watched_lessons FROM Course as co
-      INNER JOIN Chapter as ch ON co.courseId = ch.courseId 
-      INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
-      INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-      LEFT OUTER JOIN CourseProgress as cp ON re.resourceId = cp.resourceId AND cr.studentId = cp.studentId
-      WHERE co.courseId = ${Number(courseId)} AND re.state = 'ACTIVE' AND cr.studentId = ${userId}`;
-
-      if (courseProgress.length > 0) {
+      if (courseProgress) {
         return res.status(200).json({
           success: true,
           message: "Course progress updated successfully",
           progress: {
-            lessonsCompleted: Number(courseProgress[0].watched_lessons),
-            totalLessons: Number(courseProgress[0].lessons),
+            lessonsCompleted: Number(courseProgress.lessonsCompleted),
+            totalLessons: Number(courseProgress.totalLessons),
           },
         });
       } else {

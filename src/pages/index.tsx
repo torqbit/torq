@@ -15,6 +15,7 @@ import AOS from "aos";
 import GetStarted from "@/components/Marketing/LandingPage/GetStarted";
 import Image from "next/image";
 import HeroImage from "@/components/Marketing/LandingPage/HeroImage";
+import appConstant from "@/services/appConstant";
 interface IProps {
   user: User;
 }
@@ -127,7 +128,11 @@ const LandingPage: FC<IProps> = ({ user }) => {
   }, []);
 
   return (
-    <MarketingLayout user={user} heroSection={<Hero isMobile={isMobile} user={user} />}>
+    <MarketingLayout
+      courseTitle={`Learn to build software products | ${appConstant.platformName}`}
+      user={user}
+      heroSection={<Hero isMobile={isMobile} user={user} />}
+    >
       <HeroImage isMobile={isMobile} />
       <CourseCategory direction="ltr" category={courseCategoryFrontend} index={1} isMobile={isMobile} />
       <CourseCategory direction="rtl" category={courseCategoryBackend} index={2} isMobile={isMobile} />

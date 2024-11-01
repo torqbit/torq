@@ -1,4 +1,4 @@
-import { CourseRegistration, Resource, Video } from "@prisma/client";
+import { Assignment, CourseRegistration, Resource, Video } from "@prisma/client";
 
 export interface Chapter {
   chapterId: number;
@@ -50,6 +50,7 @@ export interface IChapter extends Chapter {
 
 export interface IResourceDetail extends Resource {
   video: Video;
+  assignment: Assignment;
 }
 
 export interface VideoDetails {
@@ -143,11 +144,4 @@ export interface IProgram {
       ];
     }
   ];
-}
-
-export interface ICourseEnrollementStatus {
-  isEnrolled: boolean;
-  nextLessonId: number;
-  courseStarted: boolean;
-  courseCompleted: boolean;
 }

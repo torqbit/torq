@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+const cacheConfig = require("./cacheConfig");
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -38,6 +40,8 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+
+  runtimeCaching: cacheConfig,
 });
 
 module.exports = withPWA(nextConfig);

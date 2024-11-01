@@ -22,7 +22,7 @@ const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
       title: "INTRODUCTION",
       label: "",
       description: [
-        `${appConstant.platformName}  provides online courses and conducts online classes, live demo, doubt clearing sessions for the students seeking to enrol for such courses (the " Services"), which Services are accessible at ${process.env.NEXTAUTH_URL} and any other websites through which ${appConstant.platformName} makes the Services available (collectively, the "Site ") and as applications for mobile, tablet and other smart devices and application program interfaces (collectively, the "Applications").`,
+        `${appConstant.platformName}  provides online courses and conducts online classes, live demo, doubt clearing sessions for the students seeking to enroll for such courses (the " Services"), which Services are accessible at ${process.env.NEXTAUTH_URL} and any other websites through which ${appConstant.platformName} makes the Services available (collectively, the "Site ") and as applications for mobile, tablet and other smart devices and application program interfaces (collectively, the "Applications").`,
         " By accessing or using the Site, Application or Services or by downloading or posting any content from or on the Site, via the Applications, you would be indicating that you have read, and that you understand and agree to be bound by these terms and receive our Services (“ Terms of Services” or “Terms”), whether or not you have registered with the Site and/or Application.",
         "Therefore, kindly read these Terms of service before accessing or using the Site, Application or Services or downloading or posting any content from or on the Site, via the Application or through the Services, carefully as they contain important information regarding your legal rights, remedies and obligations",
         "If you do not agree to these Terms, then you have no right to access or use the Site, Application, Services, or Collective Content (as defined below).",
@@ -49,7 +49,15 @@ const TermAndConditonPage: FC<{ user: User }> = ({ user }) => {
       ],
     },
     {
-      label: `${appConstant.platformName}Respects And Complies With The EU General Data Protection Regulations (GDPR). Some Of The Key Ways We Comply With These Regulations Are:`,
+      label: "",
+      title: "Refund & Cancellation Policy",
+      id: "refund",
+      description: [
+        `There is a Strict no refund & no cancellation policy. You are entitled to a refund only in the case where you have not been allotted the course after payment.`,
+      ],
+    },
+    {
+      label: `${appConstant.platformName} Respects And Complies With The EU General Data Protection Regulations (GDPR). Some Of The Key Ways We Comply With These Regulations Are:`,
 
       title: "GDPR COMPLIANCE STATEMENT",
       description: [
@@ -320,6 +328,7 @@ Violate These Terms Or ${appConstant.platformName}'s Then-Current Policies And O
 
   return (
     <MarketingLayout
+      courseTitle={`Term & Conditions | ${appConstant.platformName}`}
       user={user}
       heroSection={
         <DefaulttHero

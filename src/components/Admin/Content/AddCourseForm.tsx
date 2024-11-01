@@ -3,35 +3,27 @@ import Layout2 from "@/components/Layouts/Layout2";
 import Link from "next/link";
 import Setting from "./Setting";
 import styles from "@/styles/Dashboard.module.scss";
-import { Dropdown, Form, Tabs, TabsProps, message } from "antd";
+import { Divider, Dropdown, Form, Tabs, TabsProps, message } from "antd";
 import SvgIcons from "@/components/SvgIcons";
 import Curriculum from "./Curriculum";
 import { useRouter } from "next/router";
 import Preview from "./Preview";
 import ProgramService from "@/services/ProgramService";
-import {
-  CourseAPIResponse,
-  CourseData,
-  CourseLessonAPIResponse,
-  IVideoLesson,
-  UploadedResourceDetail,
-  VideoAPIResponse,
-  VideoInfo,
-} from "@/types/courses/Course";
+import { ChapterDetail, CourseData, CourseLessonAPIResponse, IVideoLesson, VideoAPIResponse, VideoInfo } from "@/types/courses/Course";
 import AddCourseChapter from "@/components/Admin/Content/AddCourseChapter";
-import { ResourceContentType } from "@prisma/client";
+import { $Enums, ResourceContentType, StateType, VideoState } from "@prisma/client";
 import { ResourceDetails } from "@/lib/types/program";
-import AddVideoLesson from "@/components/Admin/Content/AddVideoLesson";
 import { RcFile } from "antd/es/upload";
 import { postWithFile } from "@/services/request";
+
+import AddLesson from "./AddLesson";
 
 const AddCourseForm: FC = () => {
   const [courseBannerUploading, setCourseBannerUploading] = useState<boolean>(false);
   const [courseTrailerUploading, setCourseTrailerUploading] = useState<boolean>(false);
-  const [resourceVideoUploading, setResourceVideoUploading] = useState<boolean>(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [resourceContentType, setContentType] = useState<ResourceContentType>();
   const [refresh, setRefresh] = useState<boolean>(false);
-  const [checkVideoState, setCheckVideoState] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string>("1");
   const [isEdit, setEdit] = useState<boolean>(false);
   const [isChapterEdit, setChapterEdit] = useState<boolean>(false);
@@ -44,6 +36,22 @@ const AddCourseForm: FC = () => {
   const [form] = Form.useForm();
   const [videoForm] = Form.useForm();
   const [settingloading, setSettingloading] = useState<boolean>(false);
+  const [checkVideoState, setCheckVideoState] = useState<boolean>(false);
+
+  const [selectedCourseType, setSelectedCourseType] = useState<{
+    free: boolean;
+    paid: boolean;
+  }>({
+    free: false,
+    paid: false,
+  });
+
+  const selectCourseType = (courseType: $Enums.CourseType) => {
+    courseType === $Enums.CourseType.FREE
+      ? setSelectedCourseType({ paid: false, free: true })
+      : setSelectedCourseType({ paid: true, free: false });
+    onSetCourseData("courseType", courseType);
+  };
 
   const [showResourceDrawer, setResourceDrawer] = useState<boolean>(false);
   const onRefresh = () => {
@@ -74,9 +82,8 @@ const AddCourseForm: FC = () => {
     description: "",
     expiryInDays: 365,
     chapters: [],
+    courseType: $Enums.CourseType.FREE,
   });
-
-  const [uploadResourceUrl, setUploadResUrl] = useState<UploadedResourceDetail>();
 
   const onDiscard = () => {
     ProgramService.deleteCourse(
@@ -102,6 +109,8 @@ const AddCourseForm: FC = () => {
       difficultyLevel: courseData.difficultyLevel,
       certificateTemplate: courseData.certificateTemplate,
       previewMode: form.getFieldsValue().previewMode ? form.getFieldsValue().previewMode : false,
+      courseType: courseData.courseType,
+      coursePrice: courseData.courseType === $Enums.CourseType.FREE ? 0 : Number(courseData.coursePrice),
     };
     ProgramService.updateCourse(
       course,
@@ -132,18 +141,6 @@ const AddCourseForm: FC = () => {
     setOpen(value);
   };
 
-  const deleteChapter = (id: number) => {
-    ProgramService.deleteChapter(
-      id,
-      (result) => {
-        messageApi.success(result.message);
-        onRefresh();
-      },
-      (error) => {
-        messageApi.error(error);
-      }
-    );
-  };
   const onDeleteResource = (id: number) => {
     ProgramService.deleteResource(
       id,
@@ -155,30 +152,6 @@ const AddCourseForm: FC = () => {
       (error) => {
         messageApi.error(error);
       }
-    );
-  };
-
-  const updateChapterState = (id: number, state: string) => {
-    ProgramService.updateChapterState(
-      id,
-      state,
-      (result) => {
-        messageApi.success(result.message);
-
-        onRefresh();
-      },
-      (error) => {}
-    );
-  };
-  const updateResState = (id: number, state: string) => {
-    ProgramService.updateResState(
-      id,
-      state,
-      (result) => {
-        messageApi.success(result.message);
-        onRefresh();
-      },
-      (error) => {}
     );
   };
 
@@ -203,73 +176,6 @@ const AddCourseForm: FC = () => {
     );
   };
 
-  const createChapter = async (courseId: number) => {
-    setLoading(true);
-    let chaptereData = {
-      name: chapterForm.getFieldsValue().name,
-      description: chapterForm.getFieldsValue().description,
-      duration: chapterForm.getFieldsValue().duration,
-      courseId: courseId,
-      sequenceId: Number(courseData.chapters.length + 1),
-    };
-
-    ProgramService.createChapter(
-      chaptereData,
-      (result) => {
-        setLoading(false);
-        messageApi.info(result.message);
-        onRefresh();
-        showChapterDrawer(false);
-        chapterForm.resetFields();
-      },
-      (error) => {
-        setLoading(false);
-        messageApi.error(error);
-      }
-    );
-  };
-
-  const updateChapter = async (chapterId: number) => {
-    setLoading(true);
-
-    ProgramService.updateChapter(
-      chapterId,
-      chapterForm.getFieldsValue().name,
-      chapterForm.getFieldsValue().description,
-      Number(chapterForm.getFieldsValue().index),
-      (result) => {
-        setLoading(false);
-        messageApi.info(result.message);
-        onRefresh();
-        showChapterDrawer(false);
-        chapterForm.resetFields();
-        setEdit(false);
-      },
-      (error) => {
-        setLoading(false);
-        setEdit(false);
-        messageApi.error(error);
-      }
-    );
-  };
-
-  const onFindResource = (chapterId: number, content: ResourceContentType) => {
-    setEdit(false);
-    ProgramService.getResources(
-      chapterId,
-      (result) => {
-        videoForm.resetFields();
-        setLoading(false);
-        !showResourceDrawer && setResourceDrawer(true);
-        setUploadResUrl({});
-        setVideoLesson({ ...videoLesson, chapterId: chapterId });
-      },
-      (error) => {
-        messageApi.error(error);
-      }
-    );
-  };
-
   const onAddResource = (chapterId: number, content: ResourceContentType) => {
     setEdit(false);
     ProgramService.createResource(
@@ -280,12 +186,14 @@ const AddCourseForm: FC = () => {
         contentType: content,
       } as ResourceDetails,
       (result) => {
+        content === $Enums.ResourceContentType.Assignment;
         videoForm.setFieldValue("name", result.resource.name);
         videoForm.setFieldValue("description", result.resource.description);
         setResId(result.resource.resourceId);
         setLoading(false);
         !showResourceDrawer && setResourceDrawer(true);
         setVideoLesson({ ...videoLesson, chapterId: chapterId, video: undefined });
+        setContentType(content);
       },
       (error) => {
         messageApi.error(error);
@@ -293,51 +201,16 @@ const AddCourseForm: FC = () => {
     );
   };
 
-  const onUpdateVideoLesson = (resId: number) => {
-    setLoading(true);
-
-    let resData = {
-      name: videoForm.getFieldsValue().name,
-      resourceId: resId,
-      description: videoForm.getFieldsValue().description,
-    };
-
-    ProgramService.updateResource(
-      resData,
-      (result) => {
-        messageApi.success(result.message);
-        videoLesson.chapterId && onFindResource(videoLesson.chapterId, "Video");
-        videoForm.resetFields();
-        setLoading(false);
-        videoForm.setFieldValue("contentType", "Video");
-        setEdit(false);
-        setResourceDrawer(false);
-        onRefresh();
-      },
-      (error) => {
-        onRefresh();
-        messageApi.error(error);
-        setLoading(false);
-      }
-    );
-  };
-
-  const onDeleteThumbnail = (name: string, dir: string) => {
-    ProgramService.deleteFile(
-      name,
-      dir,
-      (result) => {},
-      (error) => {}
-    );
-  };
-
-  const onUploadVideo = async (file: RcFile, title: string, resourceId: number) => {
-    setResourceVideoUploading(true);
+  const onUploadTrailer = async (file: RcFile, title: string) => {
+    setCourseTrailerUploading(true);
 
     const chunkSize = 2 * 1024 * 1024; // 1MB chunks (adjust as needed)
     const totalChunks = Math.ceil(file.size / chunkSize);
     let start = 0;
     let end = chunkSize;
+    const name = title.replace(/\s+/g, "-");
+
+    let courseIdStr = router.query.id?.toString();
 
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
       const chunk = file.slice(start, end);
@@ -345,80 +218,38 @@ const AddCourseForm: FC = () => {
       formData.append("file", chunk, file.name);
       formData.append("chunkIndex", String(chunkIndex));
       formData.append("totalChunks", String(totalChunks));
-      formData.append("title", title);
-      formData.append("objectId", resourceId.toString());
-      formData.append("objectType", "lesson");
-
+      formData.append("title", name);
+      formData.append("objectId", courseIdStr || "");
+      formData.append("objectType", "course");
       const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
+
       start = end;
       end = start + chunkSize;
       if (!postRes.ok) {
-        setResourceVideoUploading(false);
+        setLoading(false);
+        const response = (await postRes.json()) as VideoAPIResponse;
+
+        messageApi.error(response.message);
+
+        setCourseTrailerUploading(false);
       }
       const res = (await postRes.json()) as VideoAPIResponse;
 
       if (res.success) {
-        setVideoLesson({
-          ...videoLesson,
-          video: {
-            id: 0,
-            providerVideoId: res.video.videoId,
-            videoUrl: res.video.videoUrl,
-            thumbnail: res.video.thumbnail,
-            resourceId: currResId || 0,
-            state: res.video.state,
-            mediaProvider: res.video.mediaProviderName,
-            videoDuration: res.video.videoDuration,
-          },
-        });
-        setCheckVideoState(true);
-        setUploadResUrl({
-          videoId: String(res.video.videoId),
+        setUploadVideo({
+          ...uploadVideo,
+          videoId: res.video.videoId,
           videoUrl: res.video.videoUrl,
           thumbnail: res.video.thumbnail,
-          state: res.video.state,
-          mediaProvider: res.video.mediaProviderName,
+          previewUrl: res.video.previewUrl,
           videoDuration: res.video.videoDuration,
+          state: res.video.state,
+          mediaProviderName: res.video.mediaProviderName,
         });
-        setResourceVideoUploading(false);
+        messageApi.success("Course trailer video has been uploaded");
+        setCourseTrailerUploading(false);
+        setCheckVideoState(true);
       }
-    }
-  };
-
-  const onUploadTrailer = async (file: RcFile, title: string) => {
-    setCourseTrailerUploading(true);
-    const name = title.replace(/\s+/g, "-");
-    let courseIdStr = router.query.id?.toString();
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("title", name);
-    formData.append("objectId", courseIdStr || "");
-    formData.append("objectType", "course");
-    const postRes = await postWithFile(formData, `/api/v1/upload/video/upload`);
-
-    if (!postRes.ok) {
-      setLoading(false);
-      const response = (await postRes.json()) as VideoAPIResponse;
-
-      messageApi.error(response.message);
-
-      setCourseTrailerUploading(false);
-    } else {
-      const res = (await postRes.json()) as VideoAPIResponse;
-
-      setUploadVideo({
-        ...uploadVideo,
-        videoId: res.video.videoId,
-        videoUrl: res.video.videoUrl,
-        thumbnail: res.video.thumbnail,
-        previewUrl: res.video.previewUrl,
-        videoDuration: res.video.videoDuration,
-        state: res.video.state,
-        mediaProviderName: res.video.mediaProviderName,
-      });
-      messageApi.success("Course trailer video has been uploaded");
-      setCourseTrailerUploading(false);
-      setCheckVideoState(true);
     }
   };
 
@@ -461,17 +292,19 @@ const AddCourseForm: FC = () => {
     }
   };
 
-  const onEditResource = (id: number) => {
+  const onEditResource = (id: number, content: ResourceContentType) => {
     setResId(id);
+    setContentType(content);
     ProgramService.getResource(
       id,
       (result) => {
         videoForm.setFieldValue("name", result.resource?.name);
         videoForm.setFieldValue("description", result.resource?.description);
         videoForm.setFieldValue("videoUrl", result.resource?.video?.videoUrl);
-        setEdit(true);
         setVideoLesson({ ...videoLesson, chapterId: result.resource.chapterId, video: result.resource.video });
+
         setResourceDrawer(true);
+        setEdit(true);
       },
       (error) => {
         messageApi.error(error);
@@ -480,10 +313,7 @@ const AddCourseForm: FC = () => {
   };
 
   const onPublishCourse = (state: string) => {
-    if (
-      courseData.chapters.length > 0 &&
-      courseData.chapters[0].resource.filter((r) => r.state === "ACTIVE").length >= 2
-    ) {
+    if (courseData.chapters.length > 0 && courseData.chapters[0].resource.filter((r) => r.state === StateType.ACTIVE).length >= 2) {
       ProgramService.updateCourseState(
         Number(router.query.id),
         state,
@@ -508,26 +338,21 @@ const AddCourseForm: FC = () => {
           onSubmit={onSubmit}
           onDiscard={onDiscard}
           courseData={courseData}
-          onRefresh={onRefresh}
           onUploadTrailer={onUploadTrailer}
           uploadFile={uploadFile}
-          onDeleteThumbnail={onDeleteThumbnail}
           uploadVideo={uploadVideo}
           courseBannerUploading={courseBannerUploading}
           courseTrailerUploading={courseTrailerUploading}
           courseBanner={courseThumbnail}
-          refresh={refresh}
           settingLoading={settingloading}
+          selectedCourseType={selectedCourseType}
+          selectCourseType={selectCourseType}
         />
       ),
     },
     {
       key: "2",
-      label: (
-        <span onClick={() => !tabActive && message.error("First fill and  save  the add course form ")}>
-          Curriculum
-        </span>
-      ),
+      label: <span onClick={() => !tabActive && message.error("First fill and  save  the add course form ")}>Curriculum</span>,
       disabled: (!courseThumbnail && !uploadVideo?.videoUrl) || !tabActive,
 
       children: courseThumbnail && uploadVideo?.videoUrl && (
@@ -536,10 +361,7 @@ const AddCourseForm: FC = () => {
           onRefresh={onRefresh}
           handleNewChapter={handleNewChapter}
           onAddResource={onAddResource}
-          deleteChapter={deleteChapter}
-          updateChapterState={updateChapterState}
           handleEditChapter={handleChapterEdit}
-          updateResState={updateResState}
           deleteRes={onDeleteResource}
           onEditResource={onEditResource}
           onSave={onChange}
@@ -550,14 +372,11 @@ const AddCourseForm: FC = () => {
 
     {
       key: "3",
-      label: (
-        <span onClick={() => !tabActive && message.error("First fill and  save  the add course form ")}>Preview</span>
-      ),
+      label: <span onClick={() => !tabActive && message.error("First fill and  save  the add course form ")}>Preview</span>,
       disabled: (!courseThumbnail && !uploadVideo?.videoUrl) || !tabActive,
       children: courseThumbnail && uploadVideo?.videoUrl && (
         <Preview
           videoUrl={uploadVideo?.videoUrl}
-          enrolled={false}
           onEnrollCourse={() => {}}
           courseDetail={
             {
@@ -566,7 +385,7 @@ const AddCourseForm: FC = () => {
                 description: courseData.description,
                 courseTrailer: uploadVideo.videoUrl,
               },
-              lessons: courseData.chapters.map((c) => {
+              lessons: courseData.chapters.map((c: ChapterDetail) => {
                 return {
                   chapterSeq: c.sequenceId,
                   chapterName: c.name,
@@ -579,6 +398,15 @@ const AddCourseForm: FC = () => {
                         videoDuration: r.video.videoDuration,
                         isWatched: false,
                         title: r.name,
+                        contentType: r.contentType,
+                      };
+                    } else if (r.assignment) {
+                      return {
+                        lessonId: r.resourceId,
+                        isWatched: false,
+                        title: r.name,
+                        contentType: r.contentType,
+                        videoDuration: r.assignment.estimatedDuration ? r.assignment.estimatedDuration * 60 : 0,
                       };
                     }
                   }),
@@ -586,8 +414,6 @@ const AddCourseForm: FC = () => {
               }),
             } as CourseLessonAPIResponse
           }
-          isCourseCompleted={false}
-          isCourseStarted={false}
           addContentPreview={true}
         />
       ),
@@ -596,7 +422,7 @@ const AddCourseForm: FC = () => {
 
   useEffect(() => {
     let intervalId: NodeJS.Timer | undefined;
-    if (checkVideoState && uploadVideo && uploadVideo.state == "PROCESSING" && typeof intervalId === "undefined") {
+    if (checkVideoState && uploadVideo && uploadVideo.state == VideoState.PROCESSING && typeof intervalId === "undefined") {
       intervalId = setInterval(() => {
         ProgramService.getCourseDetails(
           Number(router.query.id),
@@ -611,7 +437,7 @@ const AddCourseForm: FC = () => {
               state: result.courseDetails.tvState,
               mediaProviderName: "",
             });
-            setCheckVideoState(result.courseDetails.tvState == "PROCESSING");
+            setCheckVideoState(result.courseDetails.tvState == VideoState.PROCESSING);
           },
           (error) => {
             messageApi.error(error);
@@ -619,7 +445,7 @@ const AddCourseForm: FC = () => {
         );
       }, 1000 * 5); // in milliseconds
     }
-    if (intervalId && uploadVideo && uploadVideo.state == "READY") {
+    if (intervalId && uploadVideo && uploadVideo.state == VideoState.READY) {
       clearInterval(Number(intervalId));
     }
     return () => intervalId && clearInterval(Number(intervalId));
@@ -642,7 +468,7 @@ const AddCourseForm: FC = () => {
             state: result.courseDetails.tvState,
             mediaProviderName: "",
           });
-          setCheckVideoState(result.courseDetails.tvState == "PROCESSING");
+          setCheckVideoState(result.courseDetails.tvState == VideoState.PROCESSING);
           form.setFieldValue("course_name", result.courseDetails.name);
           form.setFieldValue("course_description", result.courseDetails.description);
           form.setFieldValue("course_duration", result.courseDetails.expiryInDays);
@@ -653,7 +479,7 @@ const AddCourseForm: FC = () => {
           if (result.courseDetails.chapters.length > 0 || result.courseDetails.videoUrl) {
             setTabActive(true);
           }
-
+          selectCourseType(result.courseDetails.courseType as $Enums.CourseType);
           setCourseData({
             ...courseData,
             expiryInDays: result.courseDetails.expiryInDays,
@@ -662,7 +488,11 @@ const AddCourseForm: FC = () => {
             chapters: result.courseDetails.chapters,
             difficultyLevel: result.courseDetails.difficultyLevel,
             state: result?.courseDetails.state,
+            coursePrice: result.courseDetails.coursePrice,
+
+            courseType: result.courseDetails.courseType,
           });
+
           setCourseThumbnail(result.courseDetails.thumbnail);
           setSettingloading(false);
         },
@@ -679,69 +509,62 @@ const AddCourseForm: FC = () => {
       <section className={styles.add_course_page}>
         <div className={styles.add_course_header}>
           <div className={styles.left_icon}>
-            <div className={styles.cancel_add_course}>
-              <Link href="/admin/content">{SvgIcons.xMark}</Link>
-            </div>
-            <h3>EDIT COURSE</h3>
+            <Link href='/admin/content'>{SvgIcons.xMark}</Link>
+            <Divider type='vertical' style={{ height: "1.2rem" }} />
+            <h4>Edit Course</h4>
           </div>
           <div>
             <Dropdown.Button
-              type="primary"
+              type='primary'
               onClick={() => {
-                courseData.state === "DRAFT" ? onPublishCourse("ACTIVE") : onPublishCourse("DRAFT");
+                courseData.state === StateType.DRAFT ? onPublishCourse(StateType.ACTIVE) : onPublishCourse(StateType.DRAFT);
               }}
               icon={SvgIcons.chevronDown}
               menu={{
                 items: [
                   {
                     key: 1,
-                    label: courseData.state === "DRAFT" ? "Save and exit" : "Publish Course",
+                    label: courseData.state === StateType.DRAFT ? "Save and exit" : "Publish Course",
                     onClick: () => {
                       router.push("/admin/content");
                     },
                   },
                 ],
-              }}
-            >
-              {courseData.state === "DRAFT" ? "  Publish Course" : "Save as Draft"}
+              }}>
+              {courseData.state === StateType.DRAFT ? "  Publish Course" : "Save as Draft"}
             </Dropdown.Button>
           </div>
         </div>
-        <Tabs
-          tabBarGutter={40}
-          activeKey={activeKey}
-          className={styles.add_course_tabs}
-          items={items}
-          onChange={onChange}
-        />
+        <Tabs tabBarGutter={40} activeKey={activeKey} className={styles.add_course_tabs} items={items} onChange={onChange} />
       </section>
       <AddCourseChapter
-        createChapter={createChapter}
         courseId={Number(router.query.id)}
-        updateChapter={updateChapter}
+        onRefresh={onRefresh}
         currentSeqIds={currentSeqIds}
         showChapterDrawer={showChapterDrawer}
         loading={loading}
-        edit={isChapterEdit}
-        open={open}
         form={chapterForm}
+        chapterLength={courseData.chapters.length}
+        open={open}
         chapterId={selectedChapterId}
+        edit={isChapterEdit}
+        setEdit={setChapterEdit}
       />
 
       {currResId && (
-        <AddVideoLesson
+        <AddLesson
+          showResourceDrawer={showResourceDrawer}
+          setVideoLesson={setVideoLesson}
           videoLesson={videoLesson}
           onRefresh={onRefresh}
-          setVideoLesson={setVideoLesson}
+          setResourceDrawer={setResourceDrawer}
+          contentType={resourceContentType as ResourceContentType}
           currResId={currResId}
           onDeleteResource={onDeleteResource}
+          form={videoForm}
           isEdit={isEdit}
-          onUpdateVideoLesson={onUpdateVideoLesson}
-          onUploadVideo={onUploadVideo}
-          formData={videoForm}
-          setResourceDrawer={setResourceDrawer}
-          showResourceDrawer={showResourceDrawer}
-          videoUploading={resourceVideoUploading}
+          setCheckVideoState={setCheckVideoState}
+          setEdit={setEdit}
         />
       )}
     </Layout2>

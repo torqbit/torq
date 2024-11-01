@@ -23,8 +23,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
           include: {
             resource: {
+              orderBy: {
+                sequenceId: "asc",
+              },
               include: {
                 video: {},
+                assignment: {},
               },
             },
           },

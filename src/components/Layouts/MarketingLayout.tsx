@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import React from "react";
 import styles from "@/styles/Marketing/LandingPage/LandingPage.module.scss";
 import Head from "next/head";
@@ -22,7 +22,11 @@ const MarketingLayout: FC<{
   className?: string;
   heroSection?: React.ReactNode;
   user?: User;
-}> = ({ children, className, heroSection, user }) => {
+  courseTitle: string;
+  description?: string;
+  thumbnail?: string;
+  offlineCourse?: boolean;
+}> = ({ children, className, heroSection, offlineCourse, user, courseTitle, description, thumbnail }) => {
   const { globalState } = useAppContext();
 
   const [showSideNav, setSideNav] = useState(false);
@@ -30,12 +34,21 @@ const MarketingLayout: FC<{
   const onAnchorClick = () => {
     setSideNav(false);
   };
+
+  useEffect(() => {
+    document.title = courseTitle;
+  }, [courseTitle]);
+
+  let contentDescription = description ? description : "Learn, build and solve the problems that matters the most";
+  let ogImage = thumbnail ? thumbnail : "https://torqbit-dev.b-cdn.net/website/img/torqbit-landing.png";
+
   return (
     <>
-      {globalState.pageLoading && (
+      {
         <div
           style={{
             position: "fixed",
+            display: globalState.pageLoading || !courseTitle ? "unset" : "none",
             top: 0,
             left: 0,
             bottom: 0,
@@ -47,19 +60,19 @@ const MarketingLayout: FC<{
         >
           <SpinLoader className="marketing__spinner" />
         </div>
-      )}
+      }
       <ConfigProvider theme={globalState.theme == "dark" ? darkThemConfig : antThemeConfig}>
         <Head>
-          <title>Torqbit | Learn to build software products</title>
-          <meta name="description" content="Learn, build and solve the problems that matters the most" />
-          <meta property="og:image" content={"https://torqbit-dev.b-cdn.net/website/img/torqbit-landing.png"} />
+          <title>{courseTitle}</title>
+          <meta name="description" content={contentDescription} />
+          <meta property="og:image" content={ogImage} />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
         <section className={styles.heroWrapper}>
-          <NavBar user={user} />
+          <NavBar user={user} offlineCourse={offlineCourse} />
           <SideNav isOpen={showSideNav} onAnchorClick={onAnchorClick} />
           <Link href={"/"} className={styles.platformNameLogo}>
             <Flex align="center" gap={5}>
@@ -80,7 +93,7 @@ const MarketingLayout: FC<{
           </div>
           {heroSection}
         </section>
-        {children}
+        <div className={styles.children_wrapper}>{children}</div>
         <Footer />
       </ConfigProvider>
     </>

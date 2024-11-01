@@ -22,6 +22,12 @@ const Footer = () => {
           href: "/blogs",
           label: "Blogs",
         },
+        {
+          arialLabel: "link for event page",
+
+          href: "/events",
+          label: "Events",
+        },
       ],
     },
     {
@@ -30,7 +36,7 @@ const Footer = () => {
         {
           arialLabel: "link for discord page",
 
-          href: "https://discord.gg/NserMXcx",
+          href: "https://discord.gg/DHU38pGw7C",
           label: "Discord",
         },
         {
@@ -62,6 +68,12 @@ const Footer = () => {
           href: "#",
           label: "Team",
         },
+        {
+          arialLabel: "link for contact page",
+
+          href: "/contact-us",
+          label: "Contact Us",
+        },
       ],
     },
     {
@@ -70,7 +82,7 @@ const Footer = () => {
         {
           arialLabel: "link for terms & conditions page",
 
-          href: "terms-and-conditions",
+          href: "/terms-and-conditions",
           label: "Terms & Conditions",
         },
         {
@@ -78,6 +90,11 @@ const Footer = () => {
 
           href: "/privacy-policy",
           label: "Privacy Policy",
+        },
+        {
+          arialLabel: "link for refund policy page",
+          href: "/terms-and-conditions/#refund",
+          label: "Refund & Cancellation Policy",
         },
       ],
     },

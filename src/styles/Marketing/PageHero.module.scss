@@ -9,7 +9,7 @@
     width: 700px;
     margin: 0 auto;
 
-    height: calc(40vh + 90px);
+    min-height: calc(40vh + 90px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -35,7 +35,7 @@
   .heroBlogWrapper {
     .blogContentContainer {
       width: 350px;
-      height: 60vh;
+      min-height: 30vh;
 
       h1 {
         font-size: 30px;

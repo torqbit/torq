@@ -61,7 +61,6 @@ const CourseCard: FC<ICourseCard> = ({
 const Courses: FC<{
   allCourses: any[];
 }> = ({ allCourses }) => {
-  const { data: user } = useSession();
   return (
     <>
       {allCourses.length ? (
@@ -73,6 +72,8 @@ const Courses: FC<{
                 chap.resource.forEach((r: any) => {
                   if (r.video) {
                     totalDuration = totalDuration + r.video?.videoDuration;
+                  } else if (r.assignment) {
+                    totalDuration = totalDuration + Number(r.assignment.estimatedDuration) * 60;
                   }
                 });
               });

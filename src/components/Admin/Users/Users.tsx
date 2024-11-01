@@ -3,8 +3,10 @@ import styles from "@/styles/Dashboard.module.scss";
 import {
   Button,
   Dropdown,
+  Flex,
   Form,
   Input,
+  InputNumber,
   Modal,
   Select,
   Space,
@@ -19,27 +21,60 @@ import SvgIcons from "@/components/SvgIcons";
 import Layout2 from "@/components/Layouts/Layout2";
 import { useSession } from "next-auth/react";
 import { IResponse, getFetch, postFetch } from "@/services/request";
-import { User } from "@prisma/client";
+import { Course, User } from "@prisma/client";
 import moment from "moment";
 import appConstant from "@/services/appConstant";
 
 const UserList: FC = () => {
   const [allUsers, setAllUsers] = React.useState<User[]>([]);
   const [form] = Form.useForm();
+  const [registrationModal, setRegistrationModal] = useState(false);
+  const [courseList, setCourseList] = useState<Course[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string>("");
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [messageApi, contextholder] = message.useMessage();
 
   const [data, setData] = React.useState<{
     updateLoading: boolean;
     loading: boolean;
     isModalOpen: boolean;
-    storeDate: { startDate: string; endDate: string };
-    selectedUserId: string;
   }>({
     updateLoading: false,
     loading: false,
     isModalOpen: false,
-    storeDate: { startDate: "", endDate: "" },
-    selectedUserId: "0",
   });
+
+  const handleCourseAccess = async (studentId: string) => {
+    const res = await getFetch(`/api/v1/course/list/unenrolledCourses/${studentId}`);
+    const result = await res.json();
+    if (res.ok) {
+      setCourseList(result.courses);
+      setSelectedUser(studentId);
+      setRegistrationModal(true);
+    } else {
+      messageApi.error(result.error);
+    }
+  };
+
+  const onRegisterCourse = async () => {
+    setRegisterLoading(true);
+    let data = {
+      courseId: Number(form.getFieldsValue().course),
+      studentId: selectedUser,
+      amount: form.getFieldsValue().amount,
+    };
+    const res = await postFetch(data, "/api/v1/admin/courseRegistration/add");
+    const result = await res.json();
+    if (res.ok) {
+      form.resetFields();
+      setRegistrationModal(false);
+      setRegisterLoading(false);
+      messageApi.success(result.message);
+    } else {
+      setRegisterLoading(false);
+      messageApi.error(result.error);
+    }
+  };
 
   const getAllUser = async () => {
     setData({ ...data, loading: true });
@@ -59,7 +94,7 @@ const UserList: FC = () => {
   }, []);
 
   const onModalClose = () => {
-    setData({ ...data, isModalOpen: false, selectedUserId: "0" });
+    setData({ ...data, isModalOpen: false });
 
     form.resetFields(["name", "role", "isActive"]);
   };
@@ -68,12 +103,13 @@ const UserList: FC = () => {
     form.setFieldValue("name", user.name);
     form.setFieldValue("role", user.role);
     form.setFieldValue("isActive", user.isActive);
-    setData({ ...data, selectedUserId: user.id, isModalOpen: true });
+    setSelectedUser(user.id);
+    setData({ ...data, isModalOpen: true });
   };
 
   const onUpdateUser = async (u: User) => {
     setData({ ...data, updateLoading: true });
-    const updateUserRes = await postFetch({ userId: data.selectedUserId, ...u }, "/api/user/update");
+    const updateUserRes = await postFetch({ userId: selectedUser, ...u }, "/api/user/update");
     const result = (await updateUserRes.json()) as IResponse;
 
     if (updateUserRes.ok && result.success) {
@@ -100,6 +136,11 @@ const UserList: FC = () => {
       },
       {
         key: "3",
+        label: "Course Access",
+        onClick: () => handleCourseAccess(user.id),
+      },
+      {
+        key: "4",
         label: "Delete",
       },
     ];
@@ -157,8 +198,16 @@ const UserList: FC = () => {
     },
   ];
 
+  const onCloseRegistrationModal = () => {
+    setRegistrationModal(false);
+    setSelectedUser("");
+    setCourseList([]);
+    form.resetFields();
+  };
+
   return (
     <>
+      {contextholder}
       <Table size="small" loading={data.loading} className="users_table" columns={columns} dataSource={allUsers} />
 
       <Modal open={data.isModalOpen} footer={null} onCancel={onModalClose}>
@@ -207,6 +256,52 @@ const UserList: FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <Modal
+        title={<div>Course Registration</div>}
+        open={registrationModal}
+        footer={null}
+        onCancel={onCloseRegistrationModal}
+      >
+        <Form
+          className={styles.userForm}
+          name="data"
+          onFinish={(value) => {
+            onRegisterCourse();
+          }}
+          form={form}
+          autoComplete="off"
+          layout="vertical"
+        >
+          <Form.Item name="course" label="Courses" rules={[{ required: true, message: "Select a course " }]}>
+            <Select placeholder="Choose course">
+              {courseList.map((course, i) => {
+                return (
+                  <Select.Option key={i} value={`${course.courseId}`}>
+                    {course.name}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item name="amount" label="Amount" rules={[{ required: true, message: "Please input the amount" }]}>
+            <InputNumber
+              disabled={courseList.length === 0}
+              className={styles.input_amount}
+              type="number"
+              placeholder="Add amount"
+            />
+          </Form.Item>
+
+          <Flex align="center" justify="right" gap={10}>
+            <Button loading={registerLoading} disabled={courseList.length === 0} type="primary" htmlType="submit">
+              Register
+            </Button>
+            <Button danger onClick={onCloseRegistrationModal}>
+              Cancel
+            </Button>
+          </Flex>
+        </Form>
+      </Modal>
     </>
   );
 };
@@ -214,6 +309,7 @@ const UserList: FC = () => {
 const Users: FC = () => {
   const { data: user } = useSession();
   const [onModal, setModal] = useState(false);
+
   const [modal, contextholder] = Modal.useModal();
   const [loading, setLoading] = useState<boolean>(false);
 

@@ -7,7 +7,7 @@ export type ISiderMenu =
   | "dashboard"
   | "courses"
   | "certifications"
-  | "guides"
+  | "events-list"
   | "quiz"
   | "setting"
   | "notification"
@@ -15,7 +15,7 @@ export type ISiderMenu =
   | "content"
   | "addCourseForm"
   | "configuration";
-export type IResponsiveNavMenu = "dashboard" | "courses" | "guides" | "setting" | "notification";
+export type IResponsiveNavMenu = "dashboard" | "courses" | "events-list" | "setting" | "notification";
 
 // Define your state type
 type AppState = {
@@ -26,6 +26,8 @@ type AppState = {
   pageLoading?: boolean;
   selectedResponsiveMenu?: IResponsiveNavMenu;
   onlineStatus?: boolean;
+  collapsed?: boolean;
+  lessonCollapsed?: boolean;
 };
 
 // Define your action type
@@ -37,7 +39,9 @@ type AppAction =
   | { type: "SET_SELECTED_SIDER_MENU"; payload: ISiderMenu }
   | { type: "SWITCH_THEME"; payload: Theme }
   | { type: "SET_ONLINE_STATUS"; payload: boolean }
-  | { type: "SET_LOADER"; payload: boolean };
+  | { type: "SET_LOADER"; payload: boolean }
+  | { type: "SET_LESSON_COLLAPSED"; payload: boolean }
+  | { type: "SET_COLLAPSED"; payload: boolean };
 
 // Define the initial state
 const initialState: AppState = {
@@ -45,6 +49,8 @@ const initialState: AppState = {
   pageLoading: true,
   onlineStatus: true,
   selectedResponsiveMenu: "dashboard",
+  collapsed: false,
+  lessonCollapsed: false,
 };
 
 // Create the context
@@ -72,6 +78,10 @@ export const AppProvider: React.FC<{ children: any }> = ({ children }) => {
         return { ...currentState, onlineStatus: action.payload };
       case "SET_LOADER":
         return { ...currentState, pageLoading: action.payload };
+      case "SET_COLLAPSED":
+        return { ...currentState, collapsed: action.payload };
+      case "SET_LESSON_COLLAPSED":
+        return { ...currentState, lessonCollapsed: action.payload };
 
       case "SWITCH_THEME":
         let mainHTML = document.getElementsByTagName("html").item(0);

@@ -37,7 +37,7 @@ export const CourseCompletionEmail = ({ configData }: IProps) => {
                 height={50}
                 width={50}
                 style={{ display: "unset" }}
-                src={`https://torqbit-dev.b-cdn.net/static/torq.png`}
+                src={`https://cdn.torqbit.com/static/torq.png`}
               />
             </Heading>
             <Hr className="border border-solid border-[#eaeaea]  mx-0 w-full" />
@@ -53,7 +53,7 @@ export const CourseCompletionEmail = ({ configData }: IProps) => {
               <Section className="flex item-center gap-5">
                 <Link href={configData.url}>
                   <Img
-                    src={`https://torqbit-dev.b-cdn.net/static/certificate-template.png`}
+                    src={`https://cdn.torqbit.com/static/certificate-template.png`}
                     className="w-full"
                     alt="course"
                   />

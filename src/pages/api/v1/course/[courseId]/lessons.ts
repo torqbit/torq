@@ -1,11 +1,10 @@
-import prisma from "@/lib/prisma";
 import { NextApiResponse, NextApiRequest } from "next";
 import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withAuthentication } from "@/lib/api-middlewares/with-authentication";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
-import { $Enums } from "@prisma/client";
+import getLessonDetail from "@/actions/getLessonDetail";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -19,95 +18,65 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       cookieName,
     });
 
-    const alreadyRegisterd = await prisma.courseRegistration.findUnique({
-      where: {
-        studentId_courseId: {
-          studentId: String(token?.id),
-          courseId: Number(courseId),
-        },
-      },
-
-      select: {
-        courseId: true,
-        courseState: true,
-      },
-    });
-
-    let resultRows: any[] = [];
     let chapterLessons: any[] = [];
-    let courseName = "";
-    let description = "";
+    let courseName;
+    let description;
     let previewMode;
-    if (alreadyRegisterd && alreadyRegisterd.courseState == "COMPLETED") {
-      resultRows = await prisma.$queryRaw<
-        any[]
-      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,co.previewMode,
-        re.description as lessonDescription, vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
-        ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
-        INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
-        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
-        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-        INNER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
-        WHERE cr.studentId = ${token?.id} AND  re.state = ${$Enums.StateType.ACTIVE} 
-        AND co.courseId = ${courseId}
-        ORDER BY chapterSeq, resourceSeq`;
-    } else {
-      resultRows = await prisma.$queryRaw<
-        any[]
-      >`SELECT  ch.sequenceId as chapterSeq, re.sequenceId as resourceSeq, re.resourceId, re.name as lessonName, co.name as courseName, co.description,co.previewMode,
-        re.description as lessonDescription, vi.id as videoId, vi.videoUrl, vi.videoDuration, ch.chapterId, 
-        ch.name as chapterName, cp.resourceId as watchedRes FROM Course as co 
-        INNER JOIN CourseRegistration as cr ON co.courseId = cr.courseId
-        INNER JOIN Chapter as ch ON co.courseId = ch.courseId
-        INNER JOIN Resource as re ON ch.chapterId = re.chapterId
-        INNER JOIN Video as vi ON re.resourceId = vi.resourceId
-        LEFT OUTER JOIN CourseProgress as cp ON cp.studentId = cr.studentId AND cp.resourceId = re.resourceId
-        WHERE cr.studentId = ${token?.id}
-        AND co.courseId = ${courseId} AND
-        re.state = ${$Enums.StateType.ACTIVE} 
-        ORDER BY chapterSeq, resourceSeq`;
+    let estimatedDuration;
+
+    const detail = await getLessonDetail(Number(courseId), token?.role, token?.id);
+
+    if (detail?.lessonDetail && detail.lessonDetail.length > 0) {
+      courseName = detail?.lessonDetail[0].courseName;
+      description = detail?.lessonDetail[0].description;
+      previewMode = detail?.lessonDetail[0].previewMode;
+      estimatedDuration = detail.lessonDetail[0].estimatedDuration;
     }
-    if (resultRows.length > 0) {
-      courseName = resultRows[0].courseName;
-      description = resultRows[0].description;
-      previewMode = resultRows[0].previewMode;
-    }
-    resultRows.forEach((r) => {
-      if (chapterLessons.find((l) => l.chapterSeq == r.chapterSeq)) {
-        const chapter = chapterLessons.find((l) => l.chapterSeq == r.chapterSeq);
-        chapter.lessons.push({
-          videoId: r.videoId,
-          title: r.lessonName,
-          videoDuration: r.videoDuration,
-          description: r.lessonDescription,
-          lessonId: r.resourceId,
-          videoUrl: r.videoUrl,
-          isWatched: r.watchedRes != null,
-        });
-      } else {
-        chapterLessons.push({
-          chapterSeq: r.chapterSeq,
-          chapterName: r.chapterName,
-          lessons: [
-            {
-              videoId: r.videoId,
-              title: r.lessonName,
-              videoDuration: r.videoDuration,
-              description: r.lessonDescription,
-              lessonId: r.resourceId,
-              videoUrl: r.videoUrl,
-              isWatched: r.watchedRes != null,
-            },
-          ],
-        });
-      }
-    });
+    detail?.lessonDetail &&
+      detail?.lessonDetail.forEach((r) => {
+        if (chapterLessons.find((l) => l.chapterSeq == r.chapterSeq)) {
+          const chapter = chapterLessons.find((l) => l.chapterSeq == r.chapterSeq);
+          chapter.lessons.push({
+            videoId: r.videoId,
+            title: r.lessonName,
+            videoDuration: r.videoDuration,
+            description: r.lessonDescription,
+            lessonId: r.resourceId,
+            videoUrl: r.videoUrl,
+            isWatched: r.watchedRes != null,
+            contentType: r.contentType,
+            estimatedDuration: r.estimatedDuration,
+          });
+        } else {
+          chapterLessons.push({
+            chapterSeq: r.chapterSeq,
+            chapterName: r.chapterName,
+            lessons: [
+              {
+                videoId: r.videoId,
+                title: r.lessonName,
+                videoDuration: r.videoDuration,
+                description: r.lessonDescription,
+                lessonId: r.resourceId,
+                videoUrl: r.videoUrl,
+                isWatched: r.watchedRes != null,
+                contentType: r.contentType,
+                estimatedDuration: r.estimatedDuration,
+              },
+            ],
+          });
+        }
+      });
     return res.status(200).json({
       success: true,
       statusCode: 200,
       message: "Fetched course lessons",
-      course: { name: courseName, description: description, previewMode: previewMode === 1 ? true : false },
+      course: {
+        name: courseName,
+        description: description,
+        previewMode: previewMode === 1 ? true : false,
+        userRole: detail?.userRole,
+      },
       lessons: chapterLessons,
     });
   } catch (error) {

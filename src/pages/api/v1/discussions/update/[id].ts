@@ -10,6 +10,14 @@ export const validateReqBody = z.object({
   comment: z.string(),
 });
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body = await req.body;
@@ -23,13 +31,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    return res
-      .status(200)
-      .json({
-        comment: newComment,
-        success: true,
-        message: newComment.parentCommentId ? "Reply has been edited" : "Query has been edited",
-      });
+    return res.status(200).json({
+      comment: newComment,
+      success: true,
+      message: newComment.parentCommentId ? "Reply has been edited" : "Query has been edited",
+    });
   } catch (error) {
     return errorHandler(error, res);
   }

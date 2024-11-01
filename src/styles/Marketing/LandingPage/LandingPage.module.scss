@@ -2,9 +2,11 @@
 
 .navBarContainer {
   position: relative;
-  width: 800px;
   margin: 0 auto;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   nav {
     position: absolute;
@@ -18,6 +20,13 @@
     justify-content: space-between;
     padding: 5px 15px;
     box-shadow: var(--box-shadow);
+    .contact_button {
+      width: 100%;
+      padding: 0px 15px;
+    }
+    .button_icon {
+      line-height: 0;
+    }
 
     h1 {
       margin: 0;
@@ -98,6 +107,7 @@
   position: relative;
   z-index: 1;
   background: var(--hero-gradient);
+  min-height: 50vh;
 
   .heroContentContainer {
     position: relative;
@@ -111,7 +121,7 @@
 
     .preview__tag {
       padding: 10px 15px;
-      color: var(--font-primary);
+      color: var(--font-trainer-primary);
       background: var(--tag-preview);
       border-radius: 50em;
       border: 4px solid transparent;
@@ -208,7 +218,8 @@
 
   & > div {
     display: flex;
-    max-width: 1000px;
+    max-width: var(--marketing-container-width);
+
     margin: 0 auto;
     gap: 40px;
   }
@@ -274,7 +285,8 @@
 
   & > div {
     margin: 0 auto;
-    width: 1000px;
+    width: var(--marketing-container-width);
+
     padding: 100px 20px;
     display: flex;
     align-items: center;
@@ -339,7 +351,8 @@
 
   & > div {
     margin: 0 auto;
-    width: 1000px;
+    width: var(--marketing-container-width);
+
     padding: 100px 20px;
     text-align: center;
   }
@@ -365,15 +378,13 @@
   background-color: #000;
   color: #fff;
   padding: 40px 0px;
-  display: flex;
-  justify-content: center;
 
   footer {
-    max-width: 1200px;
+    max-width: var(--marketing-container-width);
     margin: 0 auto;
     display: flex;
-    gap: 120px;
     align-items: flex-start;
+    justify-content: space-between;
 
     h1 {
       color: #fff;
@@ -398,7 +409,7 @@
 
     .linkWrapper {
       display: flex;
-      gap: 120px;
+      gap: 100px;
 
       .linkList {
         display: flex;
@@ -528,9 +539,20 @@
     display: none;
   }
 
+  //children
+
+  .children_wrapper {
+    background-color: var(--bg-secondary);
+  }
+
   // Hero
 
   .heroWrapper {
+    min-height: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     .heroContentContainer {
       width: 100vw;
       padding: 150px 0;
@@ -607,7 +629,7 @@
 
       .cardWrapper {
         width: 160px;
-        height: 130px;
+        height: 100%;
       }
 
       h1 {
@@ -667,16 +689,19 @@
   // Footer
 
   .footerContainer {
-    footer {
-      gap: 40px;
+    padding: 20px;
+    display: flex;
 
+    footer {
+      width: calc(100vw - 40px);
+      gap: 40px;
       flex-direction: column-reverse;
 
       > div:first-child {
         flex-direction: row;
         align-items: center;
-        gap: 60px;
-
+        width: 100%;
+        gap: 70px;
         .socialIcons {
           margin: 0;
         }
@@ -686,9 +711,6 @@
         display: grid;
 
         grid-template-columns: repeat(2, 1fr);
-
-        flex-direction: column;
-
         gap: 40px;
 
         .linkList {

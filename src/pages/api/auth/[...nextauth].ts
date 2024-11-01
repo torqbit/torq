@@ -72,7 +72,7 @@ export const authOptions: NextAuthOptions = {
           token.role = "STUDENT";
         }
 
-        return token;
+        return this.signIn;
       }
       return {
         ...token,

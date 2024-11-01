@@ -1,7 +1,5 @@
 import { Blog, StateType } from "@prisma/client";
 import { getDelete, getFetch, postFetch } from "./request";
-import { title } from "process";
-import { JSONContent } from "@tiptap/react";
 export interface latestBlogs extends Blog {
   user: {
     name: string;
@@ -46,7 +44,7 @@ class BlogService {
 
   updateBlog = (
     title: string | undefined,
-    content: JSONContent | undefined,
+    content: string | undefined,
     state: StateType,
     banner: string | undefined,
     blogId: string,

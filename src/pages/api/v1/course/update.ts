@@ -4,7 +4,6 @@ import { errorHandler } from "@/lib/api-middlewares/errorHandler";
 import { withMethods } from "@/lib/api-middlewares/with-method";
 import { withUserAuthorized } from "@/lib/api-middlewares/with-authorized";
 import { createSlug } from "@/lib/utils";
-import { title } from "process";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

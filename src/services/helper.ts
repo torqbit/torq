@@ -26,7 +26,7 @@ export const getPercentage = (partialValue: number, totalValue: number) => {
   return (100 * partialValue) / totalValue;
 };
 
-export const truncateString = (string = "", maxLength = 50) =>
+export const truncateString = (string = "", maxLength: number) =>
   string.length > maxLength ? `${string.substring(0, maxLength)}…` : string;
 
 export const bytesToSize = (bytes: number) => {

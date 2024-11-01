@@ -34,9 +34,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const bannerPath = `${dir}${fullName}`;
 
-      const localPath = await saveToDir(fullName, sourcePath);
+      const localPath = await saveToDir(fullName, sourcePath, res);
 
-      const fileBuffer = await fs.promises.readFile(localPath);
+      const fileBuffer = await fs.promises.readFile(`${localPath}`);
 
       const serviceProviderResponse = await prisma?.serviceProvider.findFirst({
         where: {
@@ -51,7 +51,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         const uploadResponse = await cms.uploadFile(fullName, fileBuffer, bannerPath, serviceProvider);
         if (localPath != "") {
-          fs.unlinkSync(localPath);
+          fs.unlinkSync(`${localPath}`);
         }
 
         return res.status(uploadResponse?.statusCode || 200).json({ ...uploadResponse });

@@ -4,7 +4,7 @@ import styles from "@/styles/Marketing/LegalAgreement/LegalAgreement.module.scss
 import { FC, ReactNode } from "react";
 
 interface IProps {
-  content: { label?: string; title: string; description: string[] | ReactNode[] }[];
+  content: { label?: string; title: string; description: string[] | ReactNode[]; id?: string }[];
   isMobile: boolean;
   titleDescription?: ReactNode;
 }
@@ -17,7 +17,7 @@ const LegalAgreement: FC<IProps> = ({ content, titleDescription, isMobile }) => 
         <div>
           {content.map((list, i) => {
             return (
-              <Space key={i} direction="vertical">
+              <Space key={i} direction="vertical" id={list.id}>
                 <Flex align={isMobile ? "flex-start" : "flex-start"} gap={5} className={styles.titleWrapper}>
                   {i + 1}.<h1>{list.title}</h1>
                 </Flex>

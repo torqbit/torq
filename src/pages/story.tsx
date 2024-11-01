@@ -8,6 +8,7 @@ import HeroBlog from "@/components/Marketing/Blog/DefaultHero";
 import { useMediaQuery } from "react-responsive";
 import { getCookieName } from "@/lib/utils";
 import { getToken } from "next-auth/jwt";
+import appConstant from "@/services/appConstant";
 
 const StoryPage: FC<{ user: User }> = ({ user }) => {
   const { dispatch, globalState } = useAppContext();
@@ -41,6 +42,7 @@ const StoryPage: FC<{ user: User }> = ({ user }) => {
 
   return (
     <MarketingLayout
+      courseTitle={`Story | ${appConstant.platformName}`}
       user={user}
       heroSection={
         <HeroBlog

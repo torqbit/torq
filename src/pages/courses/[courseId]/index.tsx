@@ -1,34 +1,78 @@
 import Preview from "@/components/Admin/Content/Preview";
 import Layout2 from "@/components/Layouts/Layout2";
 import SpinLoader from "@/components/SpinLoader/SpinLoader";
-import { ICourseEnrollementStatus } from "@/lib/types/learn";
 import ProgramService from "@/services/ProgramService";
-import { IResponse, postFetch } from "@/services/request";
-import { ChapterDetail, CourseInfo, CourseLessonAPIResponse } from "@/types/courses/Course";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Modal, Spin, message } from "antd";
+import { getFetch, IResponse, postFetch } from "@/services/request";
+import { CourseLessonAPIResponse } from "@/types/courses/Course";
+import { Alert, AlertProps, Button, Form, InputNumber, Modal, message } from "antd";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { load } from "@cashfreepayments/cashfree-js";
+import { $Enums, Role } from "@prisma/client";
+import styles from "@/styles/Preview.module.scss";
+import { useAppContext } from "@/components/ContextApi/AppContext";
+import { useSession } from "next-auth/react";
+import appConstant from "@/services/appConstant";
+import AddPhone from "@/components/AddPhone/AddPhone";
 
 const LearnCoursesPage: NextPage = () => {
   const router = useRouter();
+  const [form] = Form.useForm();
+  const { data: user, update } = useSession();
+
   const [courseDetail, setCourseDetail] = useState<CourseLessonAPIResponse>();
   const [messageApi, contextMessageHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>();
-  const [courseStatus, setCourseStatus] = useState<ICourseEnrollementStatus>();
+  const [nextLessonId, setNextLessonId] = useState<number>();
+  const [paymentDisable, setPaymentDisable] = useState<boolean>(false);
+  const [paymentStatusLoading, setPaymentStatusLaoding] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
+  const [modal, contextModalHolder] = Modal.useModal();
+  const { dispatch, globalState } = useAppContext();
 
-  const onCheckEnrollment = async () => {
-    ProgramService.getEnrollmentStatus(
+  const [enableModal, setModal] = useState<{ active: boolean; message: string }>({ active: false, message: "" });
+
+  const [alertConfig, setAlertConfig] = useState<AlertProps>({
+    type: "info",
+    description: "",
+    message: "",
+  });
+
+  const [paymentStatus, setPaymentStatus] = useState<$Enums.paymentStatus>();
+
+  const handleCheckout = async (sessionId: string, gatewayName: string) => {
+    switch (gatewayName) {
+      case $Enums.gatewayProvider.CASHFREE:
+        const cashfree = await load({
+          mode: "sandbox",
+        });
+
+        let checkoutOptions = {
+          paymentSessionId: sessionId,
+          redirectTarget: "_self",
+        };
+        cashfree.checkout(checkoutOptions).then((result: any) => {
+          if (result.paymentDetails) {
+            setPaymentDisable(false);
+            setPaymentStatus($Enums.paymentStatus.SUCCESS);
+            setRefresh(!refresh);
+          }
+          setLoading(false);
+        });
+
+        break;
+      default:
+        setLoading(false);
+        messageApi.error("Unable to find the payment provider.Contact the support team");
+    }
+  };
+
+  const getNextLessonId = async () => {
+    ProgramService.getNextLessonId(
       Number(router.query.courseId),
       (result) => {
-        setCourseStatus({
-          ...courseStatus,
-          isEnrolled: result.enrollStatus.isEnrolled,
-          courseStarted: result.enrollStatus.courseStarted,
-          nextLessonId: result.enrollStatus.nextLessonId,
-          courseCompleted: result.enrollStatus.courseCompleted,
-        });
+        setNextLessonId(result.nextLessonId);
       },
       (error) => {}
     );
@@ -37,8 +81,12 @@ const LearnCoursesPage: NextPage = () => {
   const onEnrollCourse = async () => {
     setLoading(true);
     try {
-      if (courseStatus?.isEnrolled) {
-        router.replace(`/courses/${router.query.courseId}/lesson/${courseStatus?.nextLessonId}`);
+      if (
+        courseDetail?.course.userRole === Role.AUTHOR ||
+        courseDetail?.course.userRole === Role.ADMIN ||
+        courseDetail?.course.userRole === Role.STUDENT
+      ) {
+        router.replace(`/courses/${router.query.courseId}/lesson/${nextLessonId}`);
         return;
       }
       const res = await postFetch(
@@ -48,22 +96,35 @@ const LearnCoursesPage: NextPage = () => {
         "/api/v1/course/enroll"
       );
       const result = (await res.json()) as IResponse;
+
       if (res.ok && result.success) {
-        if (result.already) {
-          router.replace(`/courses/${router.query.courseId}/lesson/${courseStatus?.nextLessonId}`);
+        getPaymentStatus();
+        if (courseDetail?.course.courseType === $Enums.CourseType.FREE) {
           setLoading(false);
-        } else {
-          Modal.info({
+          setRefresh(!refresh);
+
+          modal.success({
             title: result.message,
             onOk: () => {
-              onCheckEnrollment();
-              setLoading(false);
+              getNextLessonId();
             },
           });
+        } else if (courseDetail?.course.courseType === $Enums.CourseType.PAID) {
+          handleCheckout(result.gatewayResponse.sessionId, result.gatewayName);
         }
       } else {
-        messageApi.error(result.error);
-        setLoading(false);
+        if (result.alreadyEnrolled) {
+          router.replace(`/courses/${router.query.courseId}/lesson/${nextLessonId}`);
+          setLoading(false);
+        } else {
+          if (result.phoneNotFound && result.error) {
+            setModal({ active: true, message: result.error });
+          } else {
+            messageApi.error(result.error);
+          }
+          getPaymentStatus();
+          setLoading(false);
+        }
       }
     } catch (err: any) {
       messageApi.error("Error while enrolling course ", err?.message);
@@ -73,7 +134,9 @@ const LearnCoursesPage: NextPage = () => {
 
   useEffect(() => {
     if (router.query.courseId) {
-      onCheckEnrollment();
+      getNextLessonId();
+      getPaymentStatus();
+
       ProgramService.getCourses(
         Number(router.query.courseId),
         (result) => {
@@ -83,24 +146,86 @@ const LearnCoursesPage: NextPage = () => {
           message.error(error);
         }
       );
+      setTimeout(() => {
+        getPaymentStatus();
+      }, appConstant.payment.lockoutMinutes + 3000);
     }
-  }, [router.query.courseId]);
+  }, [router.query.courseId, refresh]);
 
+  const getPaymentStatus = async () => {
+    setPaymentStatusLaoding(true);
+    const res = await getFetch(`/api/v1/course/payment/paymentStatus?courseId=${router.query.courseId}`);
+    const result = (await res.json()) as IResponse;
+    if (router.query.callback) {
+      setAlertConfig({ type: result.alertType, message: result.alertMessage, description: result.alertDescription });
+    }
+
+    if (result.success) {
+      setPaymentDisable(result.paymentDisable);
+      setPaymentStatus(result.status);
+      setPaymentStatusLaoding(false);
+    } else {
+      setPaymentDisable(false);
+      setPaymentStatus(result.status);
+      setPaymentStatusLaoding(false);
+    }
+  };
+
+  const onCloseAlert = () => {
+    router.replace(`/courses/${router.query.courseId}`);
+  };
+
+  const onCloseModal = () => {
+    setModal({ active: false, message: "" });
+    form.resetFields();
+  };
+
+  const addPhone = async () => {
+    const res = await postFetch({ phone: form.getFieldsValue().phone }, "/api/user/update");
+    const result = (await res.json()) as IResponse;
+    if (res.ok && result.success) {
+      update({
+        phone: form.getFieldsValue().phone,
+      });
+      dispatch({ type: "SET_USER", payload: { ...globalState.session, phone: form.getFieldsValue().phone } });
+      onCloseModal();
+      messageApi.success(result.message);
+    } else {
+      console.log(result.error);
+      messageApi.error(result.error);
+    }
+  };
   return (
     <Layout2>
       {contextMessageHolder}
+      {contextModalHolder}
+
+      {router.query.callback && alertConfig.message && (
+        <Alert
+          message={alertConfig.message}
+          description={alertConfig.description}
+          type={alertConfig.type}
+          showIcon
+          onClose={onCloseAlert}
+          closable
+          className={styles.alertMessage}
+        />
+      )}
       {courseDetail ? (
         <Preview
           videoUrl={courseDetail?.course.courseTrailer}
-          enrolled={courseStatus?.isEnrolled}
           onEnrollCourse={onEnrollCourse}
           courseDetail={courseDetail}
-          isCourseCompleted={courseStatus?.courseCompleted}
-          isCourseStarted={courseStatus?.courseStarted}
+          paymentDisable={paymentDisable}
+          paymentStatus={paymentStatus}
+          paymentStatusLoading={paymentStatusLoading}
+          loading={loading}
         />
       ) : (
         <SpinLoader className="course__spinner" />
       )}
+
+      <AddPhone title={enableModal.message} open={enableModal.active} onCloseModal={onCloseModal} />
     </Layout2>
   );
 };
